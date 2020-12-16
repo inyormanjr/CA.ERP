@@ -1,5 +1,7 @@
 using AutoMapper;
 using CA.ERP.Lib.DAL;
+using CA.ERP.Lib.DAL.IRepositories;
+using CA.ERP.Lib.DAL.Repositories;
 using CA.ERP.WebApp.Helpers;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,7 +40,7 @@ namespace CA.ERP.WebApp
             services.AddCors();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-
+            services.AddScoped<IAuthRepo, AuthRepo>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

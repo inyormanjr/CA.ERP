@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CA.ERP.Lib.Domain.UserAgg;
+using CA.ERP.WebApp.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace CA.ERP.WebApp.Helpers
     {
         public AutoMapperProfiles()
         {
-            
+            CreateMap<User, UserRegistrationDTO>().ReverseMap();
         }
     }
 }

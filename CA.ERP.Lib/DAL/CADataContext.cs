@@ -17,8 +17,8 @@ namespace CA.ERP.Lib.DAL
 
         }
 
-        DbSet<Branch> Branches { get; set; }
-        DbSet<User> Users { get; set; }
+       public  DbSet<Branch> Branches { get; set; }
+       public  DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
