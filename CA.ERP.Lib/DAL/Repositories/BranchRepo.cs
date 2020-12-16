@@ -1,8 +1,9 @@
 ﻿using CA.ERP.Lib.DAL.IRepositories;
 using CA.ERP.Lib.Domain.BranchAgg;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;

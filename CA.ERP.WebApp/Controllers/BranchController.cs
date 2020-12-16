@@ -21,14 +21,14 @@ namespace CA.ERP.WebApp.Controllers
 
         public IBranchRepo Repo { get; }
 
-        [HttpGet("GetBranches")]
+        [HttpGet()]
         public async Task<IActionResult> Get()
         {
             var branches = await this.Repo.GetAll();
             return Ok(branches);
         }
 
-        [HttpPost("CreateBranch")]
+        [HttpPost]
         public async Task<IActionResult> CreateBranch(Branch branch)
         {
             this.Repo.Insert(branch);
@@ -55,7 +55,8 @@ namespace CA.ERP.WebApp.Controllers
             var branchFromRepo = await this.Repo.GetById(id);
             if (branchFromRepo == null) return BadRequest("No Branch Found");
             this.Repo.Delete(branchFromRepo);
-            if(await this.Repo.SaveAll()) return Ok("Branch deleted.");
+            if(await this.Repo.SaveAll()) 
+                return Ok("Branch deleted.");
             throw new System.Exception($"Updating data {id} failed");
         }
     }

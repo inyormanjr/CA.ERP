@@ -41,6 +41,7 @@ namespace CA.ERP.WebApp
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddScoped<IAuthRepo, AuthRepo>();
+            services.AddScoped<IBranchRepo, BranchRepo>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

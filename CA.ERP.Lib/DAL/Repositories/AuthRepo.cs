@@ -3,7 +3,7 @@ using CA.ERP.Lib.Domain.UserAgg;
 using CA.ERP.Lib.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Threading.Tasks;
 
