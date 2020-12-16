@@ -9,7 +9,8 @@ namespace CA.ERP.Lib.Domain.UserAgg
     public class User
     {
         public int Id { get; set; }
-        public string PasswordSalt { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public byte[] PasswordHash { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public UserRole Role { get; set; }

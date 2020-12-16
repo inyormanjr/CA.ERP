@@ -1,4 +1,8 @@
+using AutoMapper;
 using CA.ERP.Lib.DAL;
+using CA.ERP.WebApp.Helpers;
+using Microsoft.AspNetCore.Authentication.Certificate;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp
 {
@@ -26,8 +33,38 @@ namespace CA.ERP.WebApp
             services.AddDbContext<CADataContext>(dbc =>
 
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.WebApp")));
-            ;
-            services.AddControllersWithViews();
+            
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddCors();
+
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer( options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("AppSettings:Token").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                    
+                };
+
+                options.Events = new JwtBearerEvents { 
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        context.Token = accessToken;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme);
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -55,9 +92,12 @@ namespace CA.ERP.WebApp
             {
                 app.UseSpaStaticFiles();
             }
-
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
