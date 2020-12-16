@@ -4,14 +4,16 @@ using CA.ERP.Lib.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CA.ERP.WebApp.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    partial class CADataContextModelSnapshot : ModelSnapshot
+    [Migration("20201216054434_username_set_unique")]
+    partial class username_set_unique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
