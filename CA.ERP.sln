@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.Lib", "CA.ERP.Lib\CA.ERP.Lib.csproj", "{314BA293-E8DD-473F-9245-085FE76613E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA.ERP.WebApp", "CA.ERP.WebApp\CA.ERP.WebApp.csproj", "{71A43266-0539-425A-ADF1-A765010FC126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.WebApp", "CA.ERP.WebApp\CA.ERP.WebApp.csproj", "{71A43266-0539-425A-ADF1-A765010FC126}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3124A50D-3FF5-41A5-BF5C-798DA5A48299}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.WebApp.Test.Integration", "Test\CA.ERP.WebApp.Test.Integration\CA.ERP.WebApp.Test.Integration.csproj", "{3B4BEF44-A293-4D4D-899C-422C1070597E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{71A43266-0539-425A-ADF1-A765010FC126}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71A43266-0539-425A-ADF1-A765010FC126}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71A43266-0539-425A-ADF1-A765010FC126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B4BEF44-A293-4D4D-899C-422C1070597E} = {3124A50D-3FF5-41A5-BF5C-798DA5A48299}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFEB0817-9C31-4B40-898B-F7BA2B76EC9A}
