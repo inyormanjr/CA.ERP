@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3124A50D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.WebApp.Test.Integration", "Test\CA.ERP.WebApp.Test.Integration\CA.ERP.WebApp.Test.Integration.csproj", "{3B4BEF44-A293-4D4D-899C-422C1070597E}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{94006458-CCC5-4BCA-96E8-349C2CFAF824}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B4BEF44-A293-4D4D-899C-422C1070597E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94006458-CCC5-4BCA-96E8-349C2CFAF824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94006458-CCC5-4BCA-96E8-349C2CFAF824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94006458-CCC5-4BCA-96E8-349C2CFAF824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94006458-CCC5-4BCA-96E8-349C2CFAF824}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
