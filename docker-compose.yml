@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  ca.erp.webapp:
+    image: ${DOCKER_REGISTRY-}caerpwebapp
+    build:
+      context: .
+      dockerfile: CA.ERP.WebApp/Dockerfile

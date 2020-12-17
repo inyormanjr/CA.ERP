@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CA.ERP.Lib.Domain.BranchAgg;
-using CA.ERP.Lib.Domain.UserAgg;
+using CA.ERP.Domain.BranchAgg;
+using CA.ERP.Domain.UserAgg;
 using CA.ERP.WebApp.DTO;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace CA.ERP.WebApp.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<User, UserRegistrationDTO>().ReverseMap();
-            CreateMap<Branch, Branch>();
         }
     }
 }
