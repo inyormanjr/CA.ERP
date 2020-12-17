@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Lib.Domain.BranchAgg
+namespace CA.ERP.DataAccess.Entities
 {
     public class Branch
     {
@@ -10,7 +10,7 @@ namespace CA.ERP.Lib.Domain.BranchAgg
         public string Name { get; set; }
         public int BranchNo { get; set; }
         public string Code { get; set; }
-        public string Address  { get; set; }
+        public string Address { get; set; }
         public string Contact { get; set; }
     }
 }

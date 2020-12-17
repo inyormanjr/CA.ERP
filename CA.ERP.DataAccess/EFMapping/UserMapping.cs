@@ -1,12 +1,11 @@
-﻿using CA.ERP.Lib.Domain.UserAgg;
+﻿using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure.Annotations;
 using System.Text;
 
-namespace CA.ERP.Lib.DAL.FluentApiMapping
+namespace CA.ERP.Lib.DAL.EFMapping
 {
     public class UserMapping : IEntityTypeConfiguration<User>
     {

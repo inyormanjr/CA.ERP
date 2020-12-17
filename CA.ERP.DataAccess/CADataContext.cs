@@ -1,14 +1,9 @@
 ﻿
-using CA.ERP.Lib.DAL.FluentApiMapping;
-using CA.ERP.Lib.Domain.BranchAgg;
-using CA.ERP.Lib.Domain.UserAgg;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CA.ERP.DataAccess.Entities;
+using CA.ERP.Lib.DAL.EFMapping;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace CA.ERP.Lib.DAL
+namespace CA.ERP.DataAccess
 {
     public class CADataContext: DbContext
     {

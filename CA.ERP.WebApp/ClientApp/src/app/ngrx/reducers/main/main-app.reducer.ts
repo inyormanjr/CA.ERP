@@ -12,8 +12,13 @@ export const initialState: State = {
 };
 
 
-export const reducer = createReducer(
-  initialState,
+const _reducer = createReducer(
+  initialState
 
 );
+
+export function reducer(initialState, action) {
+  return _reducer(initialState, action);
+}
+
 

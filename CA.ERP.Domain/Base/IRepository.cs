@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CA.ERP.Lib.DAL.IRepositories
+namespace CA.ERP.Domain.Base
 {
-    public interface IRepoBase<T>
+    public interface IRepository {
+    
+    }
+    public interface IRepository<T> : IRepository
     {
         void Insert(T entity);
-        void Delete(T entity);
+        void Delete(int id);
         Task<List<T>> GetAll();
         Task<List<T>> GetAll(int skip, int take);
         Task<T> GetById(int id);

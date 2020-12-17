@@ -1,7 +1,8 @@
 using AutoMapper;
-using CA.ERP.Lib.DAL;
-using CA.ERP.Lib.DAL.IRepositories;
-using CA.ERP.Lib.DAL.Repositories;
+using CA.ERP.DataAccess;
+using CA.ERP.DataAccess.AutoMapperProfiles;
+using CA.ERP.DataAccess.Repositories;
+using CA.ERP.Domain.Base;
 using CA.ERP.WebApp.Helpers;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,9 +42,15 @@ namespace CA.ERP.WebApp
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
 
-            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            services.AddScoped<IAuthRepo, AuthRepo>();
-            services.AddScoped<IBranchRepo, BranchRepo>();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly, typeof(UserMapping).Assembly);
+
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(AuthenticationRepository))
+                .AddClasses(classes => classes.AssignableTo<IRepository>())
+                .AsImplementedInterfaces()
+                .WithTransientLifetime()
+            );
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,10 +78,10 @@ namespace CA.ERP.WebApp
 
             services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme);
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            //services.AddSpaStaticFiles(configuration =>
+            //{
+            //    configuration.RootPath = "ClientApp/dist";
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

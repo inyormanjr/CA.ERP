@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CA.ERP.Lib.DAL.IRepositories
+namespace CA.ERP.Domain.UserAgg
 {
-    public interface IAuthRepo
+    public interface IAuthenticationRepository
     {
         Task<User> Register(User user, string password);
 

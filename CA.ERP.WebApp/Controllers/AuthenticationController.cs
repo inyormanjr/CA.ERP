@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using CA.ERP.Lib.DAL.IRepositories;
-using CA.ERP.Lib.Domain.UserAgg;
-using CA.ERP.Lib.Helpers;
+using CA.ERP.Domain.UserAgg;
 using CA.ERP.WebApp.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,20 +19,20 @@ namespace CA.ERP.WebApp.Controllers
         private readonly IMapper mapper;
         private readonly IConfiguration config;
 
-        public AuthenticationController(IMapper mapper, IAuthRepo repo, IConfiguration config)
+        public AuthenticationController(IMapper mapper, IAuthenticationRepository authenticationRepository, IConfiguration config)
         {
             this.mapper = mapper;
-            Repo = repo;
+            AthenticationRepository = authenticationRepository;
             this.config = config;
         }
 
-        public IAuthRepo Repo { get; }
+        public IAuthenticationRepository AthenticationRepository { get; }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register (UserRegistrationDTO dto)
         {
             var mapped = this.mapper.Map<User>(dto);
-            var user = await this.Repo.Register(mapped, dto.Password);
+            var user = await this.AthenticationRepository.Register(mapped, dto.Password);
             return Ok(user);
         }
 
@@ -42,7 +40,7 @@ namespace CA.ERP.WebApp.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDTO loginCredentials)
         {
-            var user = await this.Repo.Login(loginCredentials.Username, loginCredentials.Password);
+            var user = await this.AthenticationRepository.Login(loginCredentials.Username, loginCredentials.Password);
             if (user == null) return Unauthorized();
 
             var claims = new[] {

@@ -1,10 +1,7 @@
-﻿using CA.ERP.Lib.Domain.BranchAgg;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CA.ERP.Domain.BranchAgg;
+using CA.ERP.Lib.Domain.UserAgg;
 
-namespace CA.ERP.Lib.Domain.UserAgg
+namespace CA.ERP.Domain.UserAgg
 {
     public class User
     {

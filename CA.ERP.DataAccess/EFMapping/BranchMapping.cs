@@ -1,11 +1,11 @@
-﻿using CA.ERP.Lib.Domain.BranchAgg;
+﻿using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Lib.DAL.FluentApiMapping
+namespace CA.ERP.Lib.DAL.EFMapping
 {
     class BranchMapping : IEntityTypeConfiguration<Branch>
     {
