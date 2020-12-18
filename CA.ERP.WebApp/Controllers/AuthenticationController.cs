@@ -31,6 +31,10 @@ namespace CA.ERP.WebApp.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register (UserRegistrationDTO dto)
         {
+            if (string.IsNullOrEmpty(dto.UserName) || string.IsNullOrEmpty(dto.Password) || dto.BranchId == 0)
+            {
+                return BadRequest();
+            }
             var mapped = this.mapper.Map<User>(dto);
             var user = await this.AthenticationRepository.Register(mapped, dto.Password);
             //security issue don't return the user. It has password hash.

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace CA.ERP.WebApp.Test.Integration.Tests
 {
-    public class RegisterTest :  IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
+    public class RegisterTest :  IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private CustomWebApplicationFactory<Startup> _factory;
         private HttpClient _client;
@@ -26,11 +26,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-            _factory.Dispose();
-        }
 
         [Fact]
         public async Task ShouldRegisterSuccessful()
@@ -39,6 +34,15 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
+        }
+
+        [Fact]
+        public async Task ShouldRegisterFail_EmptyUsernamePassword()
+        {
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new UserRegistrationDTO() { UserName = "", Password = "", BranchId = 1 });
+
+
+            Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
         }
     }
 }
