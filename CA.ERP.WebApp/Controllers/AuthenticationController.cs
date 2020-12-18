@@ -10,23 +10,25 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Controllers
 {
     public class AuthenticationController:BaseApiController
     {
-        private readonly IMapper mapper;
-        private readonly IConfiguration config;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly UserService _userService;
 
-        public AuthenticationController(IMapper mapper, IAuthenticationRepository authenticationRepository, IConfiguration config)
+        public AuthenticationController(IMapper mapper,  IConfiguration config, UserService userService)
         {
-            this.mapper = mapper;
-            AthenticationRepository = authenticationRepository;
-            this.config = config;
+            _mapper = mapper;
+            _config = config;
+            _userService = userService;
         }
 
-        public IAuthenticationRepository AthenticationRepository { get; }
+        public IUserRepository AthenticationRepository { get; }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register (UserRegistrationDTO dto)
@@ -35,24 +37,24 @@ namespace CA.ERP.WebApp.Controllers
             {
                 return BadRequest();
             }
-            var mapped = this.mapper.Map<User>(dto);
-            var user = await this.AthenticationRepository.Register(mapped, dto.Password);
-            //security issue don't return the user. It has password hash.
-            return Ok(user);
+            var id = await _userService.AddUserAsync(dto.UserName, dto.Password, dto.BranchId);
+
+            //change to proper dto 
+            return Ok(new { id = id });
         }
 
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginDTO loginCredentials)
+        public async Task<IActionResult> Login(LoginDTO loginCredentials, CancellationToken cancellationToken)
         {
-            var user = await this.AthenticationRepository.Login(loginCredentials.Username, loginCredentials.Password);
-            if (user == null) return Unauthorized();
+            var userId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
+            if (userId == null) return Unauthorized();
 
             var claims = new[] {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userId)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor {

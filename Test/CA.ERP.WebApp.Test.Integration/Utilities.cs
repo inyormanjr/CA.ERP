@@ -15,11 +15,11 @@ namespace CA.ERP.WebApp.Test.Integration
         /// default pupulation for the database to be use in testing.
         /// </summary>
         /// <param name="db">The db context</param>
-        public static void InitializeDbForTests(CADataContext db)
+        public static void InitializeDbForTests(CADataContext db, PasswordManagementHelper passwordManagementHelper)
         {
             //add user for login.
             string password = "password";
-            PasswordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var user = new User() { Username = "ExistingUser", BranchId = 1 };
             user.SetHashAndSalt(passwordHash, passwordSalt);
