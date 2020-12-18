@@ -8,7 +8,7 @@ using Xunit;
 
 namespace CA.ERP.WebApp.Test.Integration.Tests
 {
-    public class HealthTest : IClassFixture<WebApplicationFactory<Startup>>
+    public class HealthTest : IClassFixture<WebApplicationFactory<Startup>>, IDisposable
     {
         private WebApplicationFactory<Startup> _factory;
         private HttpClient _client;
@@ -22,6 +22,13 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             });
 
         }
+
+        public void Dispose()
+        {
+            _client.Dispose();
+            _factory.Dispose();
+        }
+
         [Fact]
         public async Task ShouldReturnHealthy()
         {

@@ -33,6 +33,7 @@ namespace CA.ERP.WebApp.Controllers
         {
             var mapped = this.mapper.Map<User>(dto);
             var user = await this.AthenticationRepository.Register(mapped, dto.Password);
+            //security issue don't return the user. It has password hash.
             return Ok(user);
         }
 
