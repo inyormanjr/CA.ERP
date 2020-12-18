@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using CA.ERP.Domain.Helpers;
 
 namespace CA.ERP.WebApp.Test.Integration.Fixtures
 {
@@ -44,7 +45,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
                     try
                     {
-                        Utilities.InitializeDbForTests(db);
+                        Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
                     }
                     catch (Exception ex)
                     {

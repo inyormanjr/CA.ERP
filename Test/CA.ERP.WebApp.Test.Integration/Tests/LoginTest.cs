@@ -11,12 +11,12 @@ using Xunit;
 
 namespace CA.ERP.WebApp.Test.Integration.Tests
 {
-    public class RegisterTest :  IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class LoginTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private CustomWebApplicationFactory<Startup> _factory;
         private HttpClient _client;
 
-        public RegisterTest(CustomWebApplicationFactory<Startup> factory)
+        public LoginTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
             _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -26,20 +26,19 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
         }
 
-
         [Fact]
-        public async Task ShouldRegisterSuccessful()
+        public async Task ShouldLoginSuccessful()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new UserRegistrationDTO() { UserName = "User1", Password = "12345", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginDTO() { Username = "ExistingUser", Password = "password" });
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
         }
 
         [Fact]
-        public async Task ShouldRegisterFail_EmptyUsernamePassword()
+        public async Task ShouldLoginFail()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new UserRegistrationDTO() { UserName = "", Password = "", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginDTO() { Username = "ExistingUser", Password = "incorrectPassword" });
 
 
             Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");

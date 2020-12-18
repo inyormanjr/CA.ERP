@@ -3,6 +3,8 @@ using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
 using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.UserAgg;
 using CA.ERP.WebApp.Helpers;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,12 +47,38 @@ namespace CA.ERP.WebApp
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly, typeof(UserMapping).Assembly);
 
+
+            //register repositories
             services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(AuthenticationRepository))
+                scan.FromAssembliesOf(typeof(UserRepository))
                 .AddClasses(classes => classes.AssignableTo<IRepository>())
                 .AsImplementedInterfaces()
-                .WithTransientLifetime()
+                .WithScopedLifetime()
             );
+
+            //register factories
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(UserFactory))
+                .AddClasses(classes => classes.AssignableTo<IFactory>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
+
+            //register services
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(UserService))
+                .AddClasses(classes => classes.AssignableTo<ServiceBase>())
+                .AsSelf()
+                .WithScopedLifetime()
+            );
+
+            //register helpers
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
+                .AddClasses(classes => classes.AssignableTo<HelperBase>())
+                .AsSelf()
+                .WithScopedLifetime()
+                );
 
             services.AddAuthentication(options =>
             {

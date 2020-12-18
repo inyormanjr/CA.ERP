@@ -1,16 +1,16 @@
-﻿using System;
+﻿using CA.ERP.Domain.Base;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace CA.ERP.Domain.Helpers
 {
-    public class PasswordManagementHelper
+    public class PasswordManagementHelper : HelperBase
     {
 
-        public PasswordManagementHelper() { }
 
-        public static bool VerifyPasswordhash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public bool VerifyPasswordhash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using(var hmac = new HMACSHA512(passwordSalt))
             {
@@ -23,7 +23,7 @@ namespace CA.ERP.Domain.Helpers
             return true;
         }
 
-        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
