@@ -13,7 +13,7 @@ namespace CA.ERP.WebApp.Helpers
     {
         public AutoMapperProfiles()
         {
-            CreateMap<User, UserRegistrationDTO>().ReverseMap();
+            CreateMap<User, RegisterRequest>().ReverseMap();
         }
     }
 }

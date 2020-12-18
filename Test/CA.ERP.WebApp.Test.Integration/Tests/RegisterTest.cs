@@ -30,7 +30,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterSuccessful()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new UserRegistrationDTO() { UserName = "User1", Password = "12345", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User1", Password = "12345", BranchId = 1 });
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
@@ -39,7 +39,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterFail_EmptyUsernamePassword()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new UserRegistrationDTO() { UserName = "", Password = "", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "", Password = "", BranchId = 1 });
 
 
             Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");

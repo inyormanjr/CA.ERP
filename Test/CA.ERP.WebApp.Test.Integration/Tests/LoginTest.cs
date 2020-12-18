@@ -29,7 +29,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldLoginSuccessful()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginDTO() { Username = "ExistingUser", Password = "password" });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "password" });
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
@@ -38,7 +38,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldLoginFail()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginDTO() { Username = "ExistingUser", Password = "incorrectPassword" });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "incorrectPassword" });
 
 
             Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
