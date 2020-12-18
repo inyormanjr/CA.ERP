@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -98,12 +99,10 @@ namespace CA.ERP.WebApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //temp disable
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -120,18 +119,29 @@ namespace CA.ERP.WebApp
 
             });
 
-            app.UseSpa(spa =>
+            bool.TryParse(Environment.GetEnvironmentVariable("DISABLE_SPA"), out bool disbaleSpa);
+            if (!disbaleSpa)
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
+                if (!env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    app.UseSpaStaticFiles();
                 }
-            });
+
+                app.UseSpa(spa =>
+                {
+                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                    // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                    spa.Options.SourcePath = "ClientApp";
+
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseAngularCliServer(npmScript: "start");
+                    }
+                });
+            }
+            
+            
         }
     }
 }
