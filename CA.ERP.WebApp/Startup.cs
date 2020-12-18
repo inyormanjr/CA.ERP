@@ -41,7 +41,9 @@ namespace CA.ERP.WebApp
             services.AddDbContext<CADataContext>(dbc =>
 
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
-            
+
+            services.AddSwaggerGen();
+
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
 
@@ -137,6 +139,13 @@ namespace CA.ERP.WebApp
 
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -146,6 +155,9 @@ namespace CA.ERP.WebApp
                 endpoints.MapHealthChecks("/health");
 
             });
+
+            
+
 
             bool.TryParse(Environment.GetEnvironmentVariable("DISABLE_SPA"), out bool disbaleSpa);
             if (!disbaleSpa)

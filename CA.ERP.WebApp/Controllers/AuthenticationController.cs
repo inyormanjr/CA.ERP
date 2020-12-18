@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.UserAgg;
 using CA.ERP.WebApp.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -30,22 +31,28 @@ namespace CA.ERP.WebApp.Controllers
 
         public IUserRepository AthenticationRepository { get; }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
-        public async Task<IActionResult> Register (RegisterRequest dto)
+        public async Task<ActionResult<RegisterResponse>> Register (RegisterRequest dto)
         {
-            if (string.IsNullOrEmpty(dto.UserName) || string.IsNullOrEmpty(dto.Password) || dto.BranchId == 0)
-            {
-                return BadRequest();
-            }
+
             var id = await _userService.AddUserAsync(dto.UserName, dto.Password, dto.BranchId);
 
             //change to proper dto 
             return Ok(new RegisterResponse() {  UserId = id});
         }
 
-
+        /// <summary>
+        /// Login using username and password
+        /// </summary>
+        /// <param name="loginCredentials"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Token use to login</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginRequest loginCredentials, CancellationToken cancellationToken)
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginCredentials, CancellationToken cancellationToken)
         {
             var userId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
             if (userId == null) return Unauthorized();
