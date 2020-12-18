@@ -21,7 +21,7 @@ namespace CA.ERP.Lib.DAL.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public void Delete(int entityId)
+        public void Delete(string entityId)
         {
             var toDelete = _context.Branches.FirstOrDefault(b => b.Id == entityId);
             if (toDelete != null)
@@ -42,7 +42,7 @@ namespace CA.ERP.Lib.DAL.Repositories
             return _mapper.Map<List<Branch>>(branches);
         }
 
-        public async Task<Branch> GetById(int id)
+        public async Task<Branch> GetById(string id)
         {
             var branch = await this._context.Branches.FirstOrDefaultAsync(x => x.Id == id);
             if (branch == null) return null;

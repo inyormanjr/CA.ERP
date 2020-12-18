@@ -37,7 +37,7 @@ namespace CA.ERP.WebApp.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBranch(int id, Branch branch)
+        public async Task<IActionResult> UpdateBranch(string id, Branch branch)
         {
             var branchFromRepo = await this._branchRepository.GetById(id);
             if (branchFromRepo == null) return BadRequest("No Branch Found");
@@ -49,11 +49,9 @@ namespace CA.ERP.WebApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBranch(int id)
+        public async Task<IActionResult> DeleteBranch(string id)
         {
-            var branchFromRepo = await this._branchRepository.GetById(id);
-            if (branchFromRepo == null) return BadRequest("No Branch Found");
-            this._branchRepository.Delete(branchFromRepo.Id);
+            _branchRepository.Delete(id);
             if(await this._branchRepository.SaveAll()) 
                 return Ok("Branch deleted.");
             throw new System.Exception($"Updating data {id} failed");

@@ -12,6 +12,7 @@ namespace CA.ERP.Lib.DAL.EFMapping
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
             builder.HasIndex(x => x.Username).IsUnique(true);
             builder.HasOne(x => x.Branch).WithMany();
  
