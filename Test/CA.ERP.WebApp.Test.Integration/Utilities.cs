@@ -1,4 +1,6 @@
 ﻿using CA.ERP.DataAccess;
+using CA.ERP.DataAccess.Entities;
+using CA.ERP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,15 @@ namespace CA.ERP.WebApp.Test.Integration
         /// <param name="db">The db context</param>
         public static void InitializeDbForTests(CADataContext db)
         {
-            //empty for now
+            //add user for login.
+            string password = "password";
+            PasswordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var user = new User() { Username = "ExistingUser", BranchId = 1 };
+            user.SetHashAndSalt(passwordHash, passwordSalt);
+            db.Users.Add(user);
+
+            db.SaveChanges();
         }
     }
 }
