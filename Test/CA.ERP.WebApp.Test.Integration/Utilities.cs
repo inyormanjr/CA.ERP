@@ -21,7 +21,7 @@ namespace CA.ERP.WebApp.Test.Integration
             string password = "password";
             passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var user = new User() { Username = "ExistingUser", BranchId = 1 };
+            var user = new User() { Id = Guid.NewGuid().ToString(), Username = "ExistingUser", BranchId = 1 };
             user.SetHashAndSalt(passwordHash, passwordSalt);
             db.Users.Add(user);
 

@@ -11,10 +11,10 @@ namespace CA.ERP.Domain.Base
     public interface IRepository<T> : IRepository
     {
         void Insert(T entity);
-        void Delete(int id);
+        void Delete(string id);
         Task<List<T>> GetAll();
         Task<List<T>> GetAll(int skip, int take);
-        Task<T> GetById(int id);
+        Task<T> GetById(string id);
 
         Task<bool> SaveAll();
     }

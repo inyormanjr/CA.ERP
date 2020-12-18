@@ -21,7 +21,7 @@ namespace CA.ERP.Domain.UserAgg
             _passwordManagementHelper = passwordManagementHelper;
         }
 
-        public async Task<int> AddUserAsync(string username, string password, int branchId)
+        public async Task<string> AddUserAsync(string username, string password, int branchId)
         {
             var user = _userFactory.CreateUser(username, password, branchId);
             _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);

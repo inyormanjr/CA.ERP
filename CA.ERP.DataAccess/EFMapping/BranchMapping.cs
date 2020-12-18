@@ -12,6 +12,7 @@ namespace CA.ERP.Lib.DAL.EFMapping
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
         }
     }
 }
