@@ -31,7 +31,7 @@ namespace CA.ERP.WebApp.Controllers
         public IUserRepository AthenticationRepository { get; }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register (UserRegistrationDTO dto)
+        public async Task<IActionResult> Register (RegisterRequest dto)
         {
             if (string.IsNullOrEmpty(dto.UserName) || string.IsNullOrEmpty(dto.Password) || dto.BranchId == 0)
             {
@@ -40,12 +40,12 @@ namespace CA.ERP.WebApp.Controllers
             var id = await _userService.AddUserAsync(dto.UserName, dto.Password, dto.BranchId);
 
             //change to proper dto 
-            return Ok(new { id = id });
+            return Ok(new RegisterResponse() {  UserId = id});
         }
 
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginDTO loginCredentials, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login(LoginRequest loginCredentials, CancellationToken cancellationToken)
         {
             var userId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
             if (userId == null) return Unauthorized();
@@ -66,7 +66,7 @@ namespace CA.ERP.WebApp.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
              SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
              
-            return Ok(new { 
+            return Ok(new LoginResponse() { 
                 token = tokenHandler.WriteToken(token)
             });
         }
