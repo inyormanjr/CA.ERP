@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CA.ERP.Common\CA.ERP.Common.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
   </ItemGroup>
 
