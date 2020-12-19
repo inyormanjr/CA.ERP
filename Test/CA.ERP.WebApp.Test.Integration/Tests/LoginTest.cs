@@ -1,4 +1,4 @@
-﻿using CA.ERP.WebApp.DTO;
+﻿using CA.ERP.WebApp.Dto;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;

@@ -1,4 +1,5 @@
-﻿using CA.ERP.DataAccess;
+﻿using Bogus;
+using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Helpers;
 using System;
@@ -24,6 +25,18 @@ namespace CA.ERP.WebApp.Test.Integration
             var user = new User() { Id = Guid.NewGuid().ToString(), Username = "ExistingUser", BranchId = 1 };
             user.SetHashAndSalt(passwordHash, passwordSalt);
             db.Users.Add(user);
+
+            var fakeBranchGenerator = new Faker<Branch>()
+                .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid().ToString() })
+                .RuleFor(f => f.Name, f => f.Address.City())
+                .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1,2,3,4,5))
+                .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
+                .RuleFor(f => f.Address, f => f.Address.StreetAddress())
+                .RuleFor(f => f.Contact, f => f.Name.FullName());
+
+            //add branch for testing
+            var branch = fakeBranchGenerator.Generate();
+            db.Branches.Add(branch);
 
             db.SaveChanges();
         }

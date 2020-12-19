@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.UserAgg;
-using CA.ERP.WebApp.DTO;
+using CA.ERP.WebApp.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

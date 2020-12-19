@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class RegisterResponse
+    public class GetBranchResponse
     {
-
-        public string UserId { get; set; }
+        public ICollection<Branch> Branches { get; set; }
     }
 }

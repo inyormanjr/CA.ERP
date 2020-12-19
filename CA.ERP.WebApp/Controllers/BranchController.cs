@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
+using DTO =  CA.ERP.WebApp.Dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +13,14 @@ namespace CA.ERP.WebApp.Controllers
 {
     public class BranchController:BaseApiController
     {
+        private readonly ILogger<BranchController> _logger;
+        private readonly BranchService _branchService;
         private readonly IMapper _mapper;
 
-        public BranchController(IBranchRepository branchRepository, IMapper mapper)
+        public BranchController(ILogger<BranchController> logger, BranchService branchService,IBranchRepository branchRepository, IMapper mapper)
         {
+            _logger = logger;
+            _branchService = branchService;
             _branchRepository = branchRepository;
             _mapper = mapper;
         }
@@ -21,10 +28,17 @@ namespace CA.ERP.WebApp.Controllers
         public IBranchRepository _branchRepository { get; }
 
         [HttpGet()]
-        public async Task<IActionResult> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetBranchResponse>> Get()
         {
-            var branches = await this._branchRepository.GetAll();
-            return Ok(branches);
+            
+            var branches = await _branchService.GetAsync();
+            var dtoBranches = _mapper.Map<List<Dto.Branch>>(branches);
+            var response = new Dto.GetBranchResponse() {
+                Branches = dtoBranches
+            };
+            return Ok(response);
         }
 
         [HttpPost]
