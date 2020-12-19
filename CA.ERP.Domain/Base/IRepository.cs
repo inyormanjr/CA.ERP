@@ -1,6 +1,9 @@
-﻿using System;
+﻿using OneOf;
+using OneOf.Types;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.Base
@@ -10,12 +13,12 @@ namespace CA.ERP.Domain.Base
     }
     public interface IRepository<T> : IRepository
     {
-        void Insert(T entity);
-        void Delete(string id);
-        Task<List<T>> GetAll();
-        Task<List<T>> GetAll(int skip, int take);
-        Task<T> GetById(string id);
+        Task<OneOf<T, None>> AddAsync(T entity, CancellationToken cancellationToken = default);
+        Task<OneOf<T, None>> UpdateAsync(string Id, T entity, CancellationToken cancellationToken = default);
+        Task<OneOf<Success, None>> DeleteAsync(string id, CancellationToken cancellationToken = default);
+        Task<List<T>> GetAll(CancellationToken cancellationToken = default);
+        Task<List<T>> GetAll(int skip, int take, CancellationToken cancellationToken = default);
+        Task<OneOf<T, None>> GetByIdAsync(string id, CancellationToken cancellationToken = default);
 
-        Task<bool> SaveAll();
     }
 }

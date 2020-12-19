@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CA.ERP.WebApp.Dto;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class LoginRequest
+    public class CreateBranchRequest
     {
         [Required]
-        public string Username { get; set; }
-        [Required]
-        public string Password { get; set; }
+        public Branch Branch { get; set; }
     }
 }

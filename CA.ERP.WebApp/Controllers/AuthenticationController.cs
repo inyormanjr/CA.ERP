@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.UserAgg;
-using CA.ERP.WebApp.DTO;
+using CA.ERP.WebApp.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -31,16 +31,25 @@ namespace CA.ERP.WebApp.Controllers
 
         public IUserRepository AthenticationRepository { get; }
 
+        /// <summary>
+        /// Register user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
-        public async Task<ActionResult<RegisterResponse>> Register (RegisterRequest dto)
+        public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request, CancellationToken cancellationToken)
         {
 
-            var id = await _userService.AddUserAsync(dto.UserName, dto.Password, dto.BranchId);
+            var result = await _userService.CreateUserAsync(request.UserName, request.Password, request.BranchId, cancellationToken: cancellationToken);
 
             //change to proper dto 
-            return Ok(new RegisterResponse() {  UserId = id});
+            return result.Match<ActionResult>(
+                f0: userId => Ok(new RegisterResponse() { UserId = userId }),
+                f1: error => BadRequest()
+                );
         }
 
         /// <summary>
@@ -54,28 +63,35 @@ namespace CA.ERP.WebApp.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginCredentials, CancellationToken cancellationToken)
         {
-            var userId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
-            if (userId == null) return Unauthorized();
+            var optionUserId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
 
-            var claims = new[] {
+            var actionResult = optionUserId.Match<ActionResult>(f0: userId =>
+            {
+                var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, userId)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(30),
-                SigningCredentials = creds
-            };
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.Now.AddDays(30),
+                    SigningCredentials = creds
+                };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-             
-            return Ok(new LoginResponse() { 
-                token = tokenHandler.WriteToken(token)
-            });
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+                return Ok(new LoginResponse()
+                {
+                    token = tokenHandler.WriteToken(token)
+                });
+            },
+            f1: (none) => Unauthorized());
+
+            return actionResult;
         }
     }
 }

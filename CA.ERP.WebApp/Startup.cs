@@ -5,7 +5,7 @@ using CA.ERP.DataAccess.Repositories;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Helpers;
 using CA.ERP.Domain.UserAgg;
-using CA.ERP.WebApp.Helpers;
+using DtoMapping = CA.ERP.WebApp.Mapping;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -47,7 +47,7 @@ namespace CA.ERP.WebApp
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
 
-            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly, typeof(UserMapping).Assembly);
+            services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
 
             //register repositories

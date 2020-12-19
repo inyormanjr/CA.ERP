@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CA.ERP.WebApp.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class RegisterResponse
+    public class CreateBranchResponse
     {
-
-        public string UserId { get; set; }
+        public Branch Branch { get; set; }
     }
 }
