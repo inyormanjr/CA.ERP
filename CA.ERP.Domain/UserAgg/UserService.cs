@@ -1,5 +1,7 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Helpers;
+using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,24 +23,24 @@ namespace CA.ERP.Domain.UserAgg
             _passwordManagementHelper = passwordManagementHelper;
         }
 
-        public async Task<string> AddUserAsync(string username, string password, int branchId)
+        public async Task<OneOf<string, Error>> CreateUserAsync(string username, string password, int branchId, CancellationToken cancellationToken)
         {
             var user = _userFactory.CreateUser(username, password, branchId);
             _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
             user.SetHashAndSalt(passwordHash, passwordSalt);
-            user = await _userRepository.Add(user);
-            return user.Id;
+            var result = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
+            return result.Match<OneOf<string, Error>>(
+                f0: (u) => u.Id,
+                f1: (none) => default(Error)
+                );
         }
 
-        public async Task<string> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
+        public async Task<OneOf<string, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
-            string userId = null;
-            var user = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
-            if (user != null && _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                userId = user.Id.ToString();
-            }
-            return userId;
+            
+            var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
+            return optionUser.MapT0(user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user.Id : null);
+
         }
     }
 }

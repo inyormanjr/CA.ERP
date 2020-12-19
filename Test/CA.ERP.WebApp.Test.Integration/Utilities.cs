@@ -27,7 +27,7 @@ namespace CA.ERP.WebApp.Test.Integration
             db.Users.Add(user);
 
             var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid().ToString() })
+                .CustomInstantiator(f => new Branch() { Id = "56e5e4fc-c583-4186-a288-55392a6946d4" })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1,2,3,4,5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -35,8 +35,7 @@ namespace CA.ERP.WebApp.Test.Integration
                 .RuleFor(f => f.Contact, f => f.Name.FullName());
 
             //add branch for testing
-            var branch = fakeBranchGenerator.Generate();
-            db.Branches.Add(branch);
+            db.Branches.Add(fakeBranchGenerator.Generate());
 
             db.SaveChanges();
         }

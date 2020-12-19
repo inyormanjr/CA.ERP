@@ -9,6 +9,10 @@ using Dal = CA.ERP.DataAccess.Entities;
 using AutoMapper;
 using CA.ERP.Domain.UserAgg;
 using System.Threading;
+using System.Diagnostics.CodeAnalysis;
+using OneOf;
+using OneOf.Types;
+using CA.ERP.Common.Extensions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -22,20 +26,24 @@ namespace CA.ERP.DataAccess.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<Dom.User> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Dom.User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default)
         {
+            OneOf<Dom.User, None> result = null;
             var user = await this._context.Users.FirstOrDefaultAsync(x => x.Username == username);
-            if (user == null) return null;
+            if (user != null) {
+                result = _mapper.Map<Dom.User>(user);
+            };
 
-            return _mapper.Map<Dom.User>(user);
+            return result;
         }
 
-        public async Task<Dom.User> Add(Dom.User user)
+        public async Task<OneOf<User, None>> AddAsync(Dom.User user, CancellationToken cancellationToken = default)
         {
+            user.ThrowIfNullArgument(nameof(user));
 
             var dalUser = _mapper.Map<Dal.User>(user);
-            await _context.Users.AddAsync(dalUser);
-            await _context.SaveChangesAsync();
+            await _context.Users.AddAsync(dalUser, cancellationToken: cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
             return user;
         }
     }
