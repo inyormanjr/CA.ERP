@@ -22,11 +22,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public BranchTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _client = factory.CreateClient(new WebApplicationFactoryClientOptions
-            {
-                AllowAutoRedirect = false
-            });
-
+            _client = factory.CreateClientWithAuthorization();
         }
 
         [Fact]

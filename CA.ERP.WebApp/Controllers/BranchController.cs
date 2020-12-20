@@ -12,9 +12,11 @@ using Dto = CA.ERP.WebApp.Dto;
 using Dom = CA.ERP.Domain.BranchAgg;
 using OneOf;
 using OneOf.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CA.ERP.WebApp.Controllers
 {
+    [Authorize]
     public class BranchController:BaseApiController
     {
         private readonly ILogger<BranchController> _logger;
@@ -36,7 +38,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetBranchResponse>> Get()
         {
-            
+            bool isAdmin = HttpContext.User.IsInRole("Admin");
             var branches = await _branchService.GetAsync();
             var dtoBranches = _mapper.Map<List<Dto.Branch>>(branches);
             var response = new Dto.GetBranchResponse() {
@@ -48,6 +50,7 @@ namespace CA.ERP.WebApp.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateBranchResponse>> CreateBranch(Dto.CreateBranchRequest request, CancellationToken cancellationToken)
         {
 
@@ -70,6 +73,7 @@ namespace CA.ERP.WebApp.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBranch(string id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
             var domBranch = _mapper.Map<Dom.Branch>(request.Branch);
@@ -84,6 +88,7 @@ namespace CA.ERP.WebApp.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBranch(string id, CancellationToken cancellationToken)
         {
             OneOf<Success, NotFound> result = await _branchService.DeleteAsync(id, cancellationToken);

@@ -146,6 +146,7 @@ namespace CA.ERP.WebApp
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
