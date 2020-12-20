@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CA.ERP.Domain.Helpers;
+using System.Net.Http;
+using CA.ERP.WebApp.Dto;
+using System.Net.Http.Headers;
 
 namespace CA.ERP.WebApp.Test.Integration.Fixtures
 {
@@ -27,9 +30,10 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
                 services.Remove(descriptor);
 
+                string dbName = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
                 services.AddDbContext<CADataContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("InMemoryDbForTesting_" + dbName);
                 });
 
                 var sp = services.BuildServiceProvider();
@@ -54,6 +58,21 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                     }
                 }
             });
+        }
+        public HttpClient CreateClientWithAuthorization()
+        {
+            var client = CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
+            var response = client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "password" }).GetAwaiter().GetResult();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var loginResponse = response.Content.ReadAsAsync<LoginResponse>().GetAwaiter().GetResult();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.token}");
+            }
+            return client;
         }
 
 

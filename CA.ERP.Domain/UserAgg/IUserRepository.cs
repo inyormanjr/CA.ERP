@@ -1,5 +1,4 @@
 ﻿using CA.ERP.Domain.Base;
-using CA.ERP.Lib.Domain.UserAgg;
 using OneOf;
 using OneOf.Types;
 using System;

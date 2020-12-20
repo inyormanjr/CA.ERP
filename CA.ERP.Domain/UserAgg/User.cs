@@ -1,5 +1,4 @@
 ﻿using CA.ERP.Domain.BranchAgg;
-using CA.ERP.Lib.Domain.UserAgg;
 
 namespace CA.ERP.Domain.UserAgg
 {
@@ -20,5 +19,6 @@ namespace CA.ERP.Domain.UserAgg
             this.PasswordHash = hash;
             this.PasswordSalt = salt;
         }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CA.ERP.Domain.Helpers;
 using CA.ERP.Domain.UserAgg;
 using CA.ERP.WebApp.Dto;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +22,14 @@ namespace CA.ERP.WebApp.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly UserService _userService;
+        private readonly EnumFlagsHelper _enumFlagsHelper;
 
-        public AuthenticationController(IMapper mapper,  IConfiguration config, UserService userService)
+        public AuthenticationController(IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper)
         {
             _mapper = mapper;
             _config = config;
             _userService = userService;
+            _enumFlagsHelper = enumFlagsHelper;
         }
 
         public IUserRepository AthenticationRepository { get; }
@@ -65,11 +68,18 @@ namespace CA.ERP.WebApp.Controllers
         {
             var optionUserId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
 
-            var actionResult = optionUserId.Match<ActionResult>(f0: userId =>
-            {
-                var claims = new[] {
-                new Claim(ClaimTypes.NameIdentifier, userId)
-            };
+                var actionResult = optionUserId.Match<ActionResult>(f0: user =>
+                {
+                    
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    };
+
+                    var roles = _enumFlagsHelper.ConvertToList(user.Role);
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+                    }
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

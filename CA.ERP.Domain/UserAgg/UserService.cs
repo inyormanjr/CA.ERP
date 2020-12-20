@@ -35,11 +35,11 @@ namespace CA.ERP.Domain.UserAgg
                 );
         }
 
-        public async Task<OneOf<string, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
+        public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
             
             var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
-            return optionUser.MapT0(user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user.Id : null);
+            return optionUser.MapT0(user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user : null);
 
         }
     }
