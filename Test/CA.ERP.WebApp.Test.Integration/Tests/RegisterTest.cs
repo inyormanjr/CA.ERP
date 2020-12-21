@@ -30,7 +30,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterSuccessful()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User1", Password = "12345", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User1", Password = "12345", Branches = new List<Guid> { Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") } });
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
@@ -39,7 +39,16 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterFail_EmptyUsernamePassword()
         {
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "", Password = "", BranchId = 1 });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "", Password = "", Branches = new List<Guid> { Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") } });
+
+
+            Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
+        }
+
+        [Fact]
+        public async Task ShouldRegisterFail_InvalidBranch()
+        {
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User2", Password = "12345", Branches = new List<Guid> { Guid.NewGuid() } });
 
 
             Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");

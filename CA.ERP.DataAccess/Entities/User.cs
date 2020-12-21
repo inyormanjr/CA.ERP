@@ -4,17 +4,19 @@ using System.Text;
 
 namespace CA.ERP.DataAccess.Entities
 {
-    public class User
+    public class User : EntityBase
     {
-        public string Id { get; set; }
+        public User()
+        {
+            UserBranches = new List<UserBranch>();
+        }
         public string Username { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public UserRole Role { get; set; }
-        public int BranchId { get; set; }
-        public virtual Branch Branch { get; set; }
+        public List<UserBranch> UserBranches { get; set; }
 
         public void SetHashAndSalt(byte[] hash, byte[] salt)
         {

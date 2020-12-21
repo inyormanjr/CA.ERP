@@ -46,7 +46,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request, CancellationToken cancellationToken)
         {
 
-            var result = await _userService.CreateUserAsync(request.UserName, request.Password, request.BranchId, cancellationToken: cancellationToken);
+            var result = await _userService.CreateUserAsync(request.UserName, request.Password, request.Branches, cancellationToken: cancellationToken);
 
             //change to proper dto 
             return result.Match<ActionResult>(
@@ -72,7 +72,7 @@ namespace CA.ERP.WebApp.Controllers
                 {
                     
                     var claims = new List<Claim> {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     };
 
                     var roles = _enumFlagsHelper.ConvertToList(user.Role);

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Lib.DAL.EFMapping
+namespace CA.ERP.DataAccess.EFMapping
 {
     public class UserMapping : IEntityTypeConfiguration<User>
     {
@@ -14,7 +14,10 @@ namespace CA.ERP.Lib.DAL.EFMapping
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
             builder.HasIndex(x => x.Username).IsUnique(true);
-            builder.HasOne(x => x.Branch).WithMany();
+
+            builder.HasMany(x => x.UserBranches)
+                .WithOne(x => x.User)
+                .HasForeignKey(x=>x.UserId);
  
         }
     }

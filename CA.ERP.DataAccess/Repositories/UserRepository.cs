@@ -42,7 +42,7 @@ namespace CA.ERP.DataAccess.Repositories
             user.ThrowIfNullArgument(nameof(user));
 
             var dalUser = _mapper.Map<Dal.User>(user);
-            await _context.Users.AddAsync(dalUser, cancellationToken: cancellationToken);
+            _context.Entry<Dal.User>(dalUser).State = EntityState.Added;
             await _context.SaveChangesAsync(cancellationToken: cancellationToken);
             return user;
         }

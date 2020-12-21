@@ -11,6 +11,6 @@ namespace CA.ERP.Domain.BranchAgg
 {
     public interface IBranchRepository : IRepository<Branch>
     {
-        
+        Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken);
     }
 }

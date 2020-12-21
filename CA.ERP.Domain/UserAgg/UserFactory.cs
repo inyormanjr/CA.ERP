@@ -7,9 +7,9 @@ namespace CA.ERP.Domain.UserAgg
 {
     public class UserFactory : IUserFactory
     {
-        public User CreateUser(string username, string password, int branchId)
+        public User CreateUser(string username)
         {
-            return new User() { Username = username, BranchId = branchId };
+            return new User() { Username = username };
         }
 
     }

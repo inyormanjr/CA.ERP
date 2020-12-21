@@ -41,7 +41,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldCreateBranchSuccessfully()
         {
             var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = null })
+                .CustomInstantiator(f => new Branch() { Id = Guid.Empty })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -71,7 +71,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateBranch_NoContent()
         {
             var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = null })
+                .CustomInstantiator(f => new Branch() { Id = Guid.Empty })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -82,7 +82,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var branch = fakeBranchGenerator.Generate();
 
             //id is static from utilities
-            branch.Id = "56e5e4fc-c583-4186-a288-55392a6946d4";
+            branch.Id = Guid.Parse( "56e5e4fc-c583-4186-a288-55392a6946d4");
             var request = new UpdateBranchRequest()
             {
                 Branch = branch
@@ -99,7 +99,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateBranch_NotFound()
         {
             var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = null })
+                .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid() })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -110,7 +110,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var branch = fakeBranchGenerator.Generate();
 
             //id is static from utilities
-            branch.Id = "56e5e4fc-c583-4186-a288";
             var request = new UpdateBranchRequest()
             {
                 Branch = branch
@@ -143,7 +142,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
 
             //id is static from utilities
-            var branchId = "56e5e4fc-c583-4186-a288";
+            var branchId = Guid.NewGuid().ToString();
 
 
             var response = await _client.DeleteAsync($"api/Branch/{branchId}");

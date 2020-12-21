@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CA.ERP.WebApp.Dto
 {
     public class Branch
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         public int BranchNo { get; set; }

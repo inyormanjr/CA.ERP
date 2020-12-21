@@ -47,7 +47,7 @@ namespace CA.ERP.Domain.BranchAgg
             return await _branchRepository.AddAsync(branch, cancellationToken);
         }
 
-        public async Task<OneOf<Branch, NotFound>> UpdateAsync(string id, Branch domBranch, CancellationToken cancellationToken)
+        public async Task<OneOf<Branch, NotFound>> UpdateAsync(Guid id, Branch domBranch, CancellationToken cancellationToken)
         {
             var fromDal = await _branchRepository.UpdateAsync(id, domBranch, cancellationToken);
             return fromDal.Match<OneOf<Branch, NotFound>>(
@@ -56,7 +56,7 @@ namespace CA.ERP.Domain.BranchAgg
             );
         }
 
-        public async Task<OneOf<Success, NotFound>> DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task<OneOf<Success, NotFound>> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
              var result = await _branchRepository.DeleteAsync(id, cancellationToken);
             return result.Match<OneOf<Success, NotFound>>(

@@ -37,7 +37,7 @@ namespace CA.ERP.Lib.DAL.Repositories
             return branch;
         }
 
-        public async Task<OneOf<Success, None>> DeleteAsync(string entityId, CancellationToken cancellationToken)
+        public async Task<OneOf<Success, None>> DeleteAsync(Guid entityId, CancellationToken cancellationToken)
         {
             OneOf<Success, None> ret = default(None);
             var toDelete = await _context.Branches.FirstOrDefaultAsync(b => b.Id == entityId, cancellationToken: cancellationToken);
@@ -66,7 +66,7 @@ namespace CA.ERP.Lib.DAL.Repositories
 
 
 
-        public async Task<OneOf<Branch, None>> UpdateAsync(string id, Branch entity, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Branch, None>> UpdateAsync(Guid id, Branch entity, CancellationToken cancellationToken = default)
         {
             OneOf<Branch, None> result = default(None);
             var count = await _context.Branches.CountAsync<Dal.Branch>(b => b.Id == id, cancellationToken: cancellationToken);
@@ -83,12 +83,17 @@ namespace CA.ERP.Lib.DAL.Repositories
             return result;
         }
 
-        public async Task<OneOf<Branch, None>> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Branch, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
             if (branch == null) return null;
             return _mapper.Map<Branch>(branch);
         }
 
+        public async Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken = default)
+        {
+            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id)).ToListAsync();
+            return _mapper.Map<List<Branch>>(branches);
+        }
     }
 }
