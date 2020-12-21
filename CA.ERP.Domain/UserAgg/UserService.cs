@@ -1,9 +1,11 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Helpers;
 using OneOf;
 using OneOf.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,33 +15,62 @@ namespace CA.ERP.Domain.UserAgg
     public class UserService : ServiceBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IBranchRepository _branchRepository;
         private readonly IUserFactory _userFactory;
         private readonly PasswordManagementHelper _passwordManagementHelper;
 
-        public UserService(IUserRepository userRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper)
+        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper)
         {
             _userRepository = userRepository;
+            _branchRepository = branchRepository;
             _userFactory = userFactory;
             _passwordManagementHelper = passwordManagementHelper;
         }
 
-        public async Task<OneOf<string, Error>> CreateUserAsync(string username, string password, int branchId, CancellationToken cancellationToken)
+        public async Task<OneOf<string, Error<string>>> CreateUserAsync(string username, string password, List<Guid> branchIds, CancellationToken cancellationToken)
         {
-            var user = _userFactory.CreateUser(username, password, branchId);
-            _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.SetHashAndSalt(passwordHash, passwordSalt);
-            var result = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
-            return result.Match<OneOf<string, Error>>(
-                f0: (u) => u.Id,
-                f1: (none) => default(Error)
-                );
+            //init result
+            OneOf<string, Error<string>> ret = default(Error<string>);
+            //get branches
+            List<Branch> branches = await _branchRepository.GetBranchsAsync(branchIds, cancellationToken: cancellationToken);
+
+            //validate all branch id are present
+            var notFoundBranches = branchIds.Except(branches.Select(b => b.Id));
+            if (notFoundBranches.Any())
+            {
+                ret = new Error<string>("One or more branch is invalid.");
+            }
+            else
+            {
+                var user = _userFactory.CreateUser(username);
+
+                foreach (var branch in branches)
+                {
+                    user.UserBranches.Add(new UserBranch() { BranchId = branch.Id });
+                }
+
+                _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                user.SetHashAndSalt(passwordHash, passwordSalt);
+
+                var result = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
+                ret = result.Match<OneOf<string, Error<string>>>(
+                    f0: (u) => u.Id.ToString(),
+                    f1: (none) => new Error<string>("Unknown Error")
+                    );
+            }
+            return ret;
+
+            
         }
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
             
             var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
-            return optionUser.MapT0(user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user : null);
+            return optionUser.Match(
+                f0: user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user : null,
+                f1 : none => null
+            );
 
         }
     }

@@ -7,6 +7,6 @@ namespace CA.ERP.Domain.UserAgg
 {
     public interface IUserFactory : IFactory<User>
     {
-        User CreateUser(string username, string password, int branchId);
+        User CreateUser(string username);
     }
 }

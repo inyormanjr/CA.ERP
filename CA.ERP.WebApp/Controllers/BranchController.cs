@@ -74,7 +74,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateBranch(string id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateBranch(Guid id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
             var domBranch = _mapper.Map<Dom.Branch>(request.Branch);
             OneOf<Branch, NotFound> result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
@@ -89,7 +89,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteBranch(string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteBranch(Guid id, CancellationToken cancellationToken)
         {
             OneOf<Success, NotFound> result = await _branchService.DeleteAsync(id, cancellationToken);
             return result.Match<IActionResult>(

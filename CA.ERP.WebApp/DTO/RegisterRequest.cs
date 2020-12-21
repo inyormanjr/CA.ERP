@@ -12,7 +12,7 @@ namespace CA.ERP.WebApp.Dto
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
-        public int BranchId { get; set; }
+        public List<Guid> Branches { get; set; }
 
     }
 }

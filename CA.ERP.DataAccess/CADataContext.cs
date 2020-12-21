@@ -1,6 +1,6 @@
 ﻿
+using CA.ERP.DataAccess.EFMapping;
 using CA.ERP.DataAccess.Entities;
-using CA.ERP.Lib.DAL.EFMapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace CA.ERP.DataAccess
@@ -19,6 +19,7 @@ namespace CA.ERP.DataAccess
         {
             builder.ApplyConfiguration(new BranchMapping());
             builder.ApplyConfiguration(new UserMapping());
+            builder.ApplyConfiguration(new UserBranchMapping());
             base.OnModelCreating(builder);
         }
     }
