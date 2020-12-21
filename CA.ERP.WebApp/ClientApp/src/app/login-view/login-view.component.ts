@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserLogin } from '../models/UserAgg/user.login';
 import { AuthService } from '../services/auth.service';
 
@@ -9,19 +10,27 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginViewComponent implements OnInit {
   userLogin: UserLogin;
-  constructor(private authService: AuthService) {
-    this.userLogin = {username: '', password: ''};
-  }
+  constructor(private authService: AuthService, fb: FormBuilder) {
+    this.userLogin = { username: '', password: '' };
 
+    this.userLoginForm = fb.group({
+      'username': ['', [Validators.required]],
+      'password': ['', [Validators.required]]
+    });
+  }
+  userLoginForm: FormGroup;
   ngOnInit() {
   }
 
   login() {
-    this.authService.login(this.userLogin).subscribe(response => {
 
-    }, error => {
+    const userCredentials = Object.assign([], this.userLoginForm.value);
+    this.authService.login(userCredentials).subscribe(
+      (response) => {},
+      (error) => {
         console.log(error.error.title);
-    });
+      }
+    );
   }
 
 }
