@@ -10,22 +10,23 @@ namespace CA.ERP.WebApp.Helpers
 {
     public class UserHelper : IUserHelper
     {
-        private readonly HttpContext _httpContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserHelper(HttpContext httpContext)
+        public UserHelper(IHttpContextAccessor httpContextAccessor)
         {
-            _httpContext = httpContext;
+            _httpContextAccessor = httpContextAccessor;
         }
         public Guid GetCurrentUserId()
         {
             var userId = Guid.Empty;
-            if (_httpContext.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
+            if (_httpContextAccessor.HttpContext.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
             {
-                Claim claim = _httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                Claim claim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                 Guid.TryParse(claim.Value.ToString(), out userId);
             }
 
             return userId;
         }
+
     }
 }

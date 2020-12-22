@@ -38,7 +38,6 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetBranchResponse>> Get()
         {
-            bool isAdmin = HttpContext.User.IsInRole("Admin");
             var branches = await _branchService.GetAsync();
             var dtoBranches = _mapper.Map<List<Dto.Branch>>(branches);
             var response = new Dto.GetBranchResponse() {
@@ -77,7 +76,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<IActionResult> UpdateBranch(Guid id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
             var domBranch = _mapper.Map<Dom.Branch>(request.Branch);
-            OneOf<Branch, NotFound> result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
+            OneOf<Guid, NotFound> result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
 
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),

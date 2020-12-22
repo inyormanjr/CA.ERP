@@ -41,7 +41,7 @@ namespace CA.ERP.WebApp.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
         public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request, CancellationToken cancellationToken)
         {
@@ -51,7 +51,8 @@ namespace CA.ERP.WebApp.Controllers
             //change to proper dto 
             return result.Match<ActionResult>(
                 f0: userId => Ok(new RegisterResponse() { UserId = userId }),
-                f1: error => BadRequest()
+                f1: validationFailures => BadRequest(new ErrorResponse() { GeneralError = "Validation Error", ValidationErrors =_mapper.Map<List<ValidationError>>(validationFailures) }),
+                f2 : error => BadRequest(new ErrorResponse() { GeneralError = error.Value})
                 );
         }
 

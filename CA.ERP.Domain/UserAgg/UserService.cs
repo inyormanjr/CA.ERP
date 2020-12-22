@@ -1,6 +1,7 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Helpers;
+using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;
 using System;
@@ -27,10 +28,10 @@ namespace CA.ERP.Domain.UserAgg
             _passwordManagementHelper = passwordManagementHelper;
         }
 
-        public async Task<OneOf<string, Error<string>>> CreateUserAsync(string username, string password, List<Guid> branchIds, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>, Error<string>>> CreateUserAsync(string username, string password, List<Guid> branchIds, CancellationToken cancellationToken)
         {
             //init result
-            OneOf<string, Error<string>> ret = default(Error<string>);
+            OneOf<Guid, List<ValidationFailure>, Error<string>> ret = new List<ValidationFailure>();
             //get branches
             List<Branch> branches = await _branchRepository.GetBranchsAsync(branchIds, cancellationToken: cancellationToken);
 
@@ -52,11 +53,8 @@ namespace CA.ERP.Domain.UserAgg
                 _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
                 user.SetHashAndSalt(passwordHash, passwordSalt);
 
-                var result = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
-                ret = result.Match<OneOf<string, Error<string>>>(
-                    f0: (u) => u.Id.ToString(),
-                    f1: (none) => new Error<string>("Unknown Error")
-                    );
+                ret = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
+                
             }
             return ret;
 

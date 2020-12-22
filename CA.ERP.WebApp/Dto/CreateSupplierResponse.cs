@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class RegisterResponse
+    public class CreateSupplierResponse 
     {
-
-        public Guid UserId { get; set; }
+        public Guid SupplierId { get;  set; }
+        
     }
 }

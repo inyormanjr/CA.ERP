@@ -20,6 +20,9 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using CA.ERP.WebApp.Helpers;
+using CA.ERP.Domain.SupplierAgg;
+using FluentValidation;
 
 namespace CA.ERP.WebApp
 {
@@ -49,6 +52,15 @@ namespace CA.ERP.WebApp
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
+            services.AddHttpContextAccessor();
+
+            //register web api helpers
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(UserHelper))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
 
             //register repositories
             services.Scan(scan =>
@@ -78,6 +90,14 @@ namespace CA.ERP.WebApp
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
                 .AddClasses(classes => classes.AssignableTo<HelperBase>())
+                .AsSelf()
+                .WithScopedLifetime()
+                );
+
+            //register validators
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(SupplierValidator))
+                .AddClasses(classes => classes.AssignableTo<IValidator>())
                 .AsSelf()
                 .WithScopedLifetime()
                 );
