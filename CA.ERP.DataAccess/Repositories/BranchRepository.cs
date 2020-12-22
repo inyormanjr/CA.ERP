@@ -58,7 +58,8 @@ namespace CA.ERP.Lib.DAL.Repositories
             return _mapper.Map<List<Branch>>(branches);
         }
 
-        public async Task<List<Branch>> GetAll(int skip, int take, CancellationToken cancellationToken)
+
+        public async Task<List<Branch>> GetAll(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             var branches = await this._context.Branches.AsQueryable().Skip(skip).Take(take).ToListAsync(cancellationToken: cancellationToken);
             return _mapper.Map<List<Branch>>(branches);
@@ -66,12 +67,11 @@ namespace CA.ERP.Lib.DAL.Repositories
 
 
 
-
         public async Task<OneOf<Guid, None>> UpdateAsync(Guid id, Branch branch, CancellationToken cancellationToken = default)
         {
             OneOf<Guid, None> result = default(None);
             var dalBranch = await _context.Branches.FirstOrDefaultAsync<Dal.Branch>(b => b.Id == id, cancellationToken: cancellationToken);
-            if (branch != null)
+            if (dalBranch != null)
             {
                 _mapper.Map(branch, dalBranch);
                 dalBranch.Id = id;
@@ -99,9 +99,6 @@ namespace CA.ERP.Lib.DAL.Repositories
 
 
        
-        public Task<List<Branch>> GetAll(int skip = 0, int take = 0, Status status = Status.Active, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

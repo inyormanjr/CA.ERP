@@ -60,7 +60,7 @@ namespace CA.ERP.WebApp.Controllers
                 {
                     var response = new Dto.CreateBranchResponse()
                     {
-                        Branch = _mapper.Map<Dto.Branch>(branch)
+                        BranchId = branch
                     };
                     return Ok(response);
                 },

@@ -13,6 +13,7 @@ namespace CA.ERP.DataAccess.Entities
         {
             CreatedBy = Guid.Empty;
             UpdatedBy = Guid.Empty;
+            Status = Status.Active;
         }
         public Guid Id { get; set; }
         public Status Status { get; set; }
