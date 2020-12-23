@@ -17,6 +17,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from './ngrx/reducers/main/main-app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
+import * as fromAuth from './reducers';
 
 
 export function tokenGetter() {
@@ -63,6 +64,7 @@ export function tokenGetter() {
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ]),
+    StoreModule.forFeature(fromAuth.authFeatureKey, fromAuth.reducers, { metaReducers: fromAuth.metaReducers }),
   ],
   providers: [AlertifyService],
   bootstrap: [AppComponent],
