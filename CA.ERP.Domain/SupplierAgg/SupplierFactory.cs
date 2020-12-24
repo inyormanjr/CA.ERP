@@ -11,7 +11,7 @@ namespace CA.ERP.Domain.SupplierAgg
             return new Supplier() {
                 Name = name,
                 Address = address,
-                Contact = contact
+                ContactPerson = contact
             };
         }
     }

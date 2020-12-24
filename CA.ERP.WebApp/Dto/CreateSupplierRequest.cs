@@ -8,9 +8,18 @@ namespace CA.ERP.WebApp.Dto
 {
     public class CreateSupplierRequest
     {
+        /// <summary>
+        /// Name of the supplier.
+        /// </summary>
         [Required]
         public string Name { get;  set; }
+        /// <summary>
+        /// Adress of the supplier
+        /// </summary>
         public string Address { get;  set; }
-        public string Contact { get;  set; }
+        /// <summary>
+        /// The name of the contact person for the supplier
+        /// </summary>
+        public string ContactPerson { get;  set; }
     }
 }

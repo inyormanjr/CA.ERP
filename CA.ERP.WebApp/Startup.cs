@@ -24,6 +24,9 @@ using CA.ERP.WebApp.Helpers;
 using CA.ERP.Domain.SupplierAgg;
 using FluentValidation;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CA.ERP.WebApp
 {
@@ -102,7 +105,7 @@ namespace CA.ERP.WebApp
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(SupplierValidator))
                 .AddClasses(classes => classes.AssignableTo<IValidator>())
-                .AsSelf()
+                .AsImplementedInterfaces()
                 .WithScopedLifetime()
                 );
 
@@ -137,6 +140,14 @@ namespace CA.ERP.WebApp
             //{
             //    configuration.RootPath = "ClientApp/dist";
             //});
+
+            //override asp.net validation to nothing    
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

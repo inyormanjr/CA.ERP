@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.Helpers;
 using CA.ERP.Domain.UserAgg;
-using CA.ERP.WebApp.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -41,18 +40,18 @@ namespace CA.ERP.WebApp.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse),StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
-        public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.RegisterResponse>> Register(Dto.RegisterRequest request, CancellationToken cancellationToken)
         {
 
-            var result = await _userService.CreateUserAsync(request.UserName, request.Password, request.Branches, cancellationToken: cancellationToken);
+            var result = await _userService.CreateUserAsync(request.UserName, request.Password, (UserRole)(int)request.Role, request.FirstName, request.LastName, request.Branches, cancellationToken: cancellationToken);
 
             //change to proper dto 
             return result.Match<ActionResult>(
-                f0: userId => Ok(new RegisterResponse() { UserId = userId }),
-                f1: validationFailures => BadRequest(new ErrorResponse() { GeneralError = "Validation Error", ValidationErrors =_mapper.Map<List<ValidationError>>(validationFailures) }),
-                f2 : error => BadRequest(new ErrorResponse() { GeneralError = error.Value})
+                f0: userId => Ok(new Dto.RegisterResponse() { UserId = userId }),
+                f1: validationFailures => BadRequest(new Dto.ErrorResponse() { GeneralError = "Validation Error", ValidationErrors =_mapper.Map<List<Dto.ValidationError>>(validationFailures) }),
+                f2 : error => BadRequest(new Dto.ErrorResponse() { GeneralError = error.Value})
                 );
         }
 
@@ -65,7 +64,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("Login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginCredentials, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.LoginResponse>> Login(Dto.LoginRequest loginCredentials, CancellationToken cancellationToken)
         {
             var optionUserId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
 
@@ -95,7 +94,7 @@ namespace CA.ERP.WebApp.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
-                return Ok(new LoginResponse()
+                return Ok(new Dto.LoginResponse()
                 {
                     token = tokenHandler.WriteToken(token)
                 });

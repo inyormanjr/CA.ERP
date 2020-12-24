@@ -60,12 +60,17 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<OneOf<Guid, None>> UpdateAsync(Guid supplierId, Supplier supplier, CancellationToken cancellationToken = default)
         {
-
+            OneOf<Guid, None> ret = default(None);
             var dalSupplier = await _context.Suppliers.FirstOrDefaultAsync(s => s.Id == supplierId, cancellationToken: cancellationToken);
-            _mapper.Map<Supplier, Dal.Supplier>(supplier, dalSupplier);
-            dalSupplier.Id = supplierId;
-            await _context.SaveChangesAsync();
-            return dalSupplier.Id;
+            if (dalSupplier != null)
+            {
+                _mapper.Map<Supplier, Dal.Supplier>(supplier, dalSupplier);
+                dalSupplier.Id = supplierId;
+                await _context.SaveChangesAsync();
+                ret = dalSupplier.Id;
+            }
+            
+            return ret;
         }
 
         public async Task<OneOf<Success, None>> DeleteAsync(Guid supplierId, CancellationToken cancellationToken = default)

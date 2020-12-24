@@ -1,5 +1,6 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.UserAgg;
+using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;
@@ -17,9 +18,9 @@ namespace CA.ERP.Domain.SupplierAgg
         private readonly ISupplierRepository _supplierRepository;
         private readonly ISupplierFactory _supplierFactory;
         private readonly IUserHelper _userHelper;
-        private readonly SupplierValidator _supplerValidator;
+        private readonly IValidator<Supplier> _supplerValidator;
 
-        public SupplierService(ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper, SupplierValidator supplerValidator)
+        public SupplierService(ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper, IValidator<Supplier> supplerValidator)
         {
             _supplierRepository = supplierRepository;
             _supplierFactory = supplierFactory;

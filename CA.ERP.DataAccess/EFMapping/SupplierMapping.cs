@@ -17,7 +17,7 @@ namespace CA.ERP.DataAccess.EFMapping
             builder.HasIndex(t => t.Name).IsUnique(true);
             builder.Property(t => t.Name).HasMaxLength(100);
             builder.Property(t => t.Address).HasMaxLength(200);
-            builder.Property(t => t.Contact).HasMaxLength(100);
+            builder.Property(t => t.ContactPerson).HasMaxLength(100);
 
             builder.HasMany(t => t.SupllierBrands)
                 .WithOne(t => t.Supplier)
