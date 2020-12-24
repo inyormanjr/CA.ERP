@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { UserLogin } from '../models/UserAgg/user.login';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +9,9 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+  currentUser$: UserLogin;
+  constructor() {
+  }
 
   collapse() {
     this.isExpanded = false;
