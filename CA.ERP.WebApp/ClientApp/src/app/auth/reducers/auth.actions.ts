@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { UserLogin } from '../models/UserAgg/user.login';
+import { UserLogin } from '../../models/UserAgg/user.login';
 
 export const loadAuths = createAction(
   '[Auth] Load Auths'
@@ -7,7 +7,7 @@ export const loadAuths = createAction(
 
 export const login = createAction(
   '[Login Page] Authenticate User',
-  props<{ userLogin: UserLogin }>()
+  props<{ token: any }>()
 );
 
 export const logOut = createAction(

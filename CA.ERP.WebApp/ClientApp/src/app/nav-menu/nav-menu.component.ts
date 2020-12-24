@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { AuthState } from '../auth/reducers';
 import { UserLogin } from '../models/UserAgg/user.login';
 
 @Component({
@@ -10,7 +11,7 @@ import { UserLogin } from '../models/UserAgg/user.login';
 export class NavMenuComponent {
   isExpanded = false;
   currentUser$: UserLogin;
-  constructor() {
+  constructor(private authStore: Store<AuthState>) {
   }
 
   collapse() {
