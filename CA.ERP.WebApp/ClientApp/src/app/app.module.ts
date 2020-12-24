@@ -1,12 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { LoginViewComponent } from './login-view/login-view.component';
 import { HomeViewComponent } from './home-view/home-view.component';
@@ -14,9 +13,10 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { AlertifyService } from './services/alertify/alertify.service';
 import { StoreModule } from '@ngrx/store';
-import { reducer } from './ngrx/reducers/main/main-app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
+import * as fromMainApp from './reducers/main-app-reducer';
+import { AuthModule } from './auth/auth.module';
 
 
 export function tokenGetter() {
@@ -26,23 +26,24 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     NavMenuComponent,
-    CounterComponent,
     FetchDataComponent,
     LoginViewComponent,
     HomeViewComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
+
     StoreModule.forRoot(
-      { 'main-app': reducer },
-      { runtimeChecks: { strictStateSerializability: true } }
+      { 'main-app': fromMainApp.mainAppReducer },
+       {runtimeChecks: {strictStateSerializability: true}}
     ),
+    AuthModule,
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
     }),
-     EffectsModule.forRoot([]),
+    EffectsModule.forRoot([]),
     FormsModule,
     JwtModule.forRoot({
       config: {
@@ -59,7 +60,6 @@ export function tokenGetter() {
         loadChildren: () =>
           import('../app/home/home.module').then((x) => x.HomeModule),
       },
-      { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ]),
   ],
