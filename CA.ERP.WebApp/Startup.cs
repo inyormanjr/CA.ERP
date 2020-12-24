@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using CA.ERP.WebApp.Helpers;
 using CA.ERP.Domain.SupplierAgg;
 using FluentValidation;
+using System.IO;
 
 namespace CA.ERP.WebApp
 {
@@ -45,7 +46,10 @@ namespace CA.ERP.WebApp
 
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(setup => {
+                var docs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.WebApp.xml");
+                setup.IncludeXmlComments(docs);
+            });
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();

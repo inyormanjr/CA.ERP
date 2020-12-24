@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CA.ERP.WebApp</name>
+    </assembly>
+    <members>
+        <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Register(CA.ERP.WebApp.Dto.RegisterRequest,System.Threading.CancellationToken)">
+            <summary>
+            Register user
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
+            <summary>
+            Login using username and password
+            </summary>
+            <param name="loginCredentials"></param>
+            <param name="cancellationToken"></param>
+            <returns>Token use to login</returns>
+        </member>
+    </members>
+</doc>
