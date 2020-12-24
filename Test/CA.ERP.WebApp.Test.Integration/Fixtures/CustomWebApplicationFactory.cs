@@ -30,10 +30,11 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
                 services.Remove(descriptor);
 
-                string dbName = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+                string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
                 services.AddDbContext<CADataContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting_" + dbName);
+                    
+                    options.UseInMemoryDatabase("InMemoryDbForTesting);
                 });
 
                 var sp = services.BuildServiceProvider();
