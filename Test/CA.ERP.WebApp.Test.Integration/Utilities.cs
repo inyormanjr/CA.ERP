@@ -18,7 +18,11 @@ namespace CA.ERP.WebApp.Test.Integration
         /// <param name="db">The db context</param>
         public static void InitializeDbForTests(CADataContext db, PasswordManagementHelper passwordManagementHelper)
         {
-           
+            var existingBranchIdFlag = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4");
+            if (db.Branches.Any(b => b.Id == existingBranchIdFlag))
+            {
+                return;
+            }
 
             var fakeBranchGenerator = new Faker<Branch>()
                 .CustomInstantiator(f => new Branch() { Id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") })
