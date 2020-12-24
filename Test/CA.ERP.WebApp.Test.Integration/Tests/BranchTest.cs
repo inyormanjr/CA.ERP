@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using CA.ERP.WebApp.Dto;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
+using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
@@ -14,7 +15,7 @@ using Xunit;
 
 namespace CA.ERP.WebApp.Test.Integration.Tests
 {
-    public class BranchTest : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class BranchTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IAsyncLifetime
     {
         private CustomWebApplicationFactory<Startup> _factory;
         private HttpClient _client;
@@ -22,7 +23,20 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public BranchTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _client = factory.CreateClientWithAuthorization();
+            _client = factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _client.AddAuthorizationHeader();
+        }
+
+        public  Task DisposeAsync()
+        {
+            return Task.FromResult(0);
         }
 
         [Fact]
@@ -150,5 +164,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
+        
     }
 }
