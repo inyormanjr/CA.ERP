@@ -37,6 +37,18 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.Get(System.Threading.CancellationToken)">
+            <summary>
+            Get multiple suppliers
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.Get(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Get single supplier
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
             <summary>
             Name of the supplier.
@@ -90,6 +102,16 @@
         <member name="P:CA.ERP.WebApp.Dto.DtoBase.UpdatedBy">
             <summary>
             The unique identifier for the user who last updated the data.
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.GetSuppliersResponse">
+            <summary>
+            Get multiple supplier response wrapper
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.GetSuppliersResponse.Suppliers">
+            <summary>
+            List of suppliers. Can be empty but never null
             </summary>
         </member>
         <member name="T:CA.ERP.WebApp.Dto.Status">

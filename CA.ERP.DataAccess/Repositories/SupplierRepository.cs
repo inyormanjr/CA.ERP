@@ -38,7 +38,7 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<OneOf<Supplier, None>> GetByIdAsync(Guid supplierId, CancellationToken cancellationToken = default)
         {
-            OneOf<Supplier, None> ret = null;
+            OneOf<Supplier, None> ret = default(None);
 
             var dalSupplier = await _context.Suppliers.Include(s => s.SupllierBrands).FirstOrDefaultAsync(s => s.Id == supplierId);
 
