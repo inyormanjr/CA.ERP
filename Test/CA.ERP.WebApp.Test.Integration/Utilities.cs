@@ -40,7 +40,7 @@ namespace CA.ERP.WebApp.Test.Integration
             string password = "password";
             passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var user = new User() { Id = Guid.NewGuid(), Username = "ExistingUser", Role = UserRole.Admin };
+            var user = new User() { Id = Guid.NewGuid(), Username = "ExistingUser", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
             user.SetHashAndSalt(passwordHash, passwordSalt);
 
             user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
