@@ -1,16 +1,18 @@
 import { createAction, props } from '@ngrx/store';
-import { User } from 'oidc-client';
+import { UserLogin } from '../models/UserAgg/user.login';
 
 export const loadAuths = createAction(
   '[Auth] Load Auths'
 );
 
-export const login = createAction('[Login Page] login User',
-
-  props <{currentUser: User}>()
+export const login = createAction(
+  '[Login Page] Authenticate User',
+  props<{ userLogin: UserLogin }>()
 );
 
-export const logOut = createAction('[Top Navmenu] LogOut');
+export const logOut = createAction(
+  '[MainNav] Log-Out User'
+);
 
 export const loadAuthsSuccess = createAction(
   '[Auth] Load Auths Success',

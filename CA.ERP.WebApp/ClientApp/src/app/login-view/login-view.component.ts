@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { AuthState } from '../auth/reducers';
 import { UserLogin } from '../models/UserAgg/user.login';
-import { AuthState } from '../reducers';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -14,8 +14,8 @@ export class LoginViewComponent implements OnInit {
   userLogin: UserLogin;
   constructor(
     private authService: AuthService,
-    fb: FormBuilder,
-    private authStore: Store<AuthState>
+    private fb: FormBuilder,
+    private authState: Store<AuthState>
   ) {
     this.userLogin = { username: '', password: '' };
 

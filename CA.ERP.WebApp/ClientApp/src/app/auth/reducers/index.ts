@@ -5,17 +5,19 @@ import {
   createSelector,
   MetaReducer
 } from '@ngrx/store';
-import { User } from 'oidc-client';
-import { environment } from '../../environments/environment';
+import { UserLogin } from 'src/app/models/UserAgg/user.login';
+import { environment } from 'src/environments/environment';
 
 export const authFeatureKey = 'auth';
 
 export interface AuthState {
-  currentUser: User;
+  currentUser: String;
+  token: String;
 }
 
 export const reducers: ActionReducerMap<AuthState> = {
-   currentUser: undefined
+  currentUser: undefined,
+  token: undefined
 };
 
 
