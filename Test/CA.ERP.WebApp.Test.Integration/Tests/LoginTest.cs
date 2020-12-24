@@ -1,9 +1,11 @@
 ﻿using CA.ERP.WebApp.Dto;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +42,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "incorrectPassword" });
 
-
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
             Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
         }
     }

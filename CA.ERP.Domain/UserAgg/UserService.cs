@@ -74,13 +74,24 @@ namespace CA.ERP.Domain.UserAgg
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
-            
-            var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
-            return optionUser.Match(
-                f0: user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user : null,
-                f1 : none => null
-            );
-
+            OneOf<User, None> ret = default(None);
+            //manual validation
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
+                return optionUser.Match<OneOf<User, None>>(
+                    f0: user => {
+                        OneOf<User, None> ret = default(None);
+                        if (_passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt))
+                        {
+                            ret = user;
+                        }
+                        return ret;
+                    },
+                    f1: none => default(None)
+                );
+            }
+            return ret;
         }
     }
 }
