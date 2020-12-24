@@ -31,8 +31,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterSuccessful()
         {
-            var faker = new Faker();
-            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User1", Password = "12345", Role = UserRole.Admin, FirstName = faker.Name.FirstName(), LastName = faker.Name.LastName(), Branches = new List<Guid> { Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") } });
+            var response = await _client.PostAsJsonAsync("api/Authentication/Register", new RegisterRequest() { UserName = "User1", Password = "12345", Role = UserRole.Admin, FirstName = "Firstname", LastName = "Lastname", Branches = new List<Guid> { Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") } });
 
 
             Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");

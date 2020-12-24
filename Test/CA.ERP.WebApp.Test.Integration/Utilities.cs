@@ -60,10 +60,10 @@ namespace CA.ERP.WebApp.Test.Integration
             db.Suppliers.Add(supplier);
 
             //more supplier
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    db.Suppliers.Add(fakeSupplierGenerator.Generate());
-            //}
+            for (int i = 0; i < 10; i++)
+            {
+                db.Suppliers.Add(fakeSupplierGenerator.Generate());
+            }
 
             db.SaveChanges();
         }
