@@ -71,7 +71,7 @@ namespace CA.ERP.WebApp.Controllers
         /// Updates supplier
         /// </summary>
         /// <param name="id">The id of the supplier to update</param>
-        /// <param name="request"></param>
+        /// <param name="request">The request data</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
@@ -124,9 +124,12 @@ namespace CA.ERP.WebApp.Controllers
             return Ok(response);
         }
 
+
         /// <summary>
         /// Get single supplier
         /// </summary>
+        /// <param name="id">The id of suppler to get.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
