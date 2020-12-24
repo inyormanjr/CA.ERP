@@ -51,7 +51,12 @@ namespace CA.ERP.WebApp
 
             services.AddSwaggerGen(setup => {
                 var docs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.WebApp.xml");
-                setup.IncludeXmlComments(docs);
+                if (File.Exists(docs))
+                {
+                    setup.IncludeXmlComments(docs);
+                }
+                
+                
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
