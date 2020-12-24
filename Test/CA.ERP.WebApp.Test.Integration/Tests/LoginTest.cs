@@ -35,8 +35,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "password" });
 
-            
-            Assert.True(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
+
+            response.IsSuccessStatusCode.Should().BeTrue();
             var loginResponse =await response.Content.ReadAsAsync<LoginResponse>();
             loginResponse.Should().NotBeNull();
             var token = loginResponse.token;
@@ -71,7 +71,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var response = await _client.PostAsJsonAsync("api/Authentication/Login", new LoginRequest() { Username = "ExistingUser", Password = "incorrectPassword" });
 
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            Assert.False(response.IsSuccessStatusCode, $"Invalid http status code. actual status code {response.StatusCode}");
         }
     }
 }
