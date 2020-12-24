@@ -98,6 +98,16 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
+        public async Task ShouldGetOneSupplierSuccessOk()
+        {
+            var id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+            var response = await _client.GetAsync($"api/Supplier/{id}");
+
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
         public async Task ShouldGetOneSupplierFail_NotFound()
         {
             var id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f3");
