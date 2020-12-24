@@ -2,6 +2,13 @@
 {
     /// <summary>
     /// User roles. Can have multiple values using enum flags
+    ///  Admin = 1,
+    ///  Moderator = 2,
+    ///  Marketing = 4,
+    ///  Cashier = 8,
+    ///  Stocks = 16,
+    ///  CC = 32,
+    ///  Encoder = 64
     /// </summary>
     public enum UserRole: int
     {

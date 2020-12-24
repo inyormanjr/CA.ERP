@@ -33,6 +33,10 @@ namespace CA.ERP.WebApp.Controllers
 
         public IBranchRepository _branchRepository { get; }
 
+        /// <summary>
+        /// Get multiple branches
+        /// </summary>
+        /// <returns></returns>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,6 +50,12 @@ namespace CA.ERP.WebApp.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Create branch
+        /// </summary>
+        /// <param name="request">The request data</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -68,7 +78,13 @@ namespace CA.ERP.WebApp.Controllers
              );
         }
 
-
+        /// <summary>
+        /// Update branch base on Id
+        /// </summary>
+        /// <param name="id">The branch Id</param>
+        /// <param name="request">Updated data</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +100,13 @@ namespace CA.ERP.WebApp.Controllers
             );
         }
 
+        /// <summary>
+        /// Delete the branch base on Id.
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

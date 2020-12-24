@@ -20,6 +20,38 @@
             <param name="cancellationToken"></param>
             <returns>Token use to login</returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.Get">
+            <summary>
+            Get multiple branches
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.CreateBranch(CA.ERP.WebApp.Dto.CreateBranchRequest,System.Threading.CancellationToken)">
+            <summary>
+            Create branch
+            </summary>
+            <param name="request">The request data</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.UpdateBranchRequest,System.Threading.CancellationToken)">
+            <summary>
+            Update branch base on Id
+            </summary>
+            <param name="id">The branch Id</param>
+            <param name="request">Updated data</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.DeleteBranch(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Delete the branch base on Id.
+            
+            </summary>
+            <param name="id"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.CreateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Creates new supplier
@@ -33,7 +65,7 @@
             Updates supplier
             </summary>
             <param name="id">The id of the supplier to update</param>
-            <param name="request"></param>
+            <param name="request">The request data</param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -47,6 +79,8 @@
             <summary>
             Get single supplier
             </summary>
+            <param name="id">The id of suppler to get.</param>
+            <param name="cancellationToken"></param>
             <returns></returns>
         </member>
         <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
@@ -167,6 +201,13 @@
         <member name="T:CA.ERP.WebApp.Dto.UserRole">
             <summary>
             User roles. Can have multiple values using enum flags
+             Admin = 1,
+             Moderator = 2,
+             Marketing = 4,
+             Cashier = 8,
+             Stocks = 16,
+             CC = 32,
+             Encoder = 64
             </summary>
         </member>
         <member name="T:CA.ERP.WebApp.Mapping.ValidationErrorMapping">

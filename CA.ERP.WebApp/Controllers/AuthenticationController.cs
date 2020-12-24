@@ -73,6 +73,10 @@ namespace CA.ERP.WebApp.Controllers
                     
                     var claims = new List<Claim> {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim("RoleInt", ((int)user.Role).ToString()),
+                        new Claim("Username", user.Username),
+                        new Claim("FirstName", user.FirstName),
+                        new Claim("LastName", user.LastName),
                     };
 
                     var roles = _enumFlagsHelper.ConvertToList(user.Role);
@@ -81,7 +85,7 @@ namespace CA.ERP.WebApp.Controllers
                         claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
                     }
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
                 var tokenDescriptor = new SecurityTokenDescriptor
