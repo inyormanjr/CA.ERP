@@ -2,9 +2,9 @@ name: .NET Web API Dev Deploy
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, diagrams ]
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, diagrams ]
 
 jobs:
   build:
