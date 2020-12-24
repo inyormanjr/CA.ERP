@@ -8,6 +8,6 @@ namespace CA.ERP.WebApp.Dto
     public class RegisterResponse
     {
 
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

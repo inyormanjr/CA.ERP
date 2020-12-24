@@ -8,6 +8,6 @@ namespace CA.ERP.WebApp.Dto
 {
     public class CreateBranchResponse
     {
-        public Branch Branch { get; set; }
+        public Guid BranchId { get; set; }
     }
 }

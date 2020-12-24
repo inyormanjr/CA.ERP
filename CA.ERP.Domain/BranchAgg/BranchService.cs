@@ -40,17 +40,17 @@ namespace CA.ERP.Domain.BranchAgg
         /// <param name="domBranch"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<OneOf<Branch, None>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Guid, None>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
         {
             //validate branch here/ no idea how to validate yet.
             var branch = _branchFactory.Create(name, branchNo, code, address, contact);
             return await _branchRepository.AddAsync(branch, cancellationToken);
         }
 
-        public async Task<OneOf<Branch, NotFound>> UpdateAsync(Guid id, Branch domBranch, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, NotFound>> UpdateAsync(Guid id, Branch domBranch, CancellationToken cancellationToken)
         {
             var fromDal = await _branchRepository.UpdateAsync(id, domBranch, cancellationToken);
-            return fromDal.Match<OneOf<Branch, NotFound>>(
+            return fromDal.Match<OneOf<Guid, NotFound>>(
                 f0: (branch) => branch,
                 f1: (none) => default(NotFound)
             );

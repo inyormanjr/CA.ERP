@@ -41,11 +41,20 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -54,6 +63,163 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Branches");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Brand", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Brand");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Model")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("Model")
+                        .IsUnique()
+                        .HasFilter("[Model] IS NOT NULL");
+
+                    b.ToTable("MasterProducts");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ContactPerson")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("SupplierBrands");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>
@@ -65,6 +231,9 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
@@ -81,8 +250,14 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(450)");
@@ -108,7 +283,37 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("UserBranch");
+                    b.ToTable("UserBranches");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
+                        .WithMany("MasterProducts")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
+                        .WithMany("SupplierBrands")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("SupllierBrands")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.UserBranch", b =>
@@ -133,6 +338,18 @@ namespace CA.ERP.DataAccess.Migrations
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Branch", b =>
                 {
                     b.Navigation("UserBranches");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Brand", b =>
+                {
+                    b.Navigation("MasterProducts");
+
+                    b.Navigation("SupplierBrands");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
+                {
+                    b.Navigation("SupllierBrands");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>

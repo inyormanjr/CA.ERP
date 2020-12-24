@@ -13,6 +13,8 @@ using System.Diagnostics.CodeAnalysis;
 using OneOf;
 using OneOf.Types;
 using CA.ERP.Common.Extensions;
+using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Common;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -37,14 +39,36 @@ namespace CA.ERP.DataAccess.Repositories
             return result;
         }
 
-        public async Task<OneOf<User, None>> AddAsync(Dom.User user, CancellationToken cancellationToken = default)
+        public async Task<Guid> AddAsync(Dom.User user, CancellationToken cancellationToken = default)
         {
             user.ThrowIfNullArgument(nameof(user));
 
             var dalUser = _mapper.Map<Dal.User>(user);
             _context.Entry<Dal.User>(dalUser).State = EntityState.Added;
             await _context.SaveChangesAsync(cancellationToken: cancellationToken);
-            return user;
+            return user.Id;
+        }
+
+
+
+        public Task<OneOf<Guid, None>> UpdateAsync(Guid Id, User entity, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OneOf<Success, None>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(int skip = 0, int take = 0, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OneOf<User, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

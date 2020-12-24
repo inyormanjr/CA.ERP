@@ -20,6 +20,13 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using CA.ERP.WebApp.Helpers;
+using CA.ERP.Domain.SupplierAgg;
+using FluentValidation;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CA.ERP.WebApp
 {
@@ -42,13 +49,25 @@ namespace CA.ERP.WebApp
 
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(setup => {
+                var docs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.WebApp.xml");
+                setup.IncludeXmlComments(docs);
+            });
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
+            services.AddHttpContextAccessor();
+
+            //register web api helpers
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(UserHelper))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
 
             //register repositories
             services.Scan(scan =>
@@ -79,6 +98,14 @@ namespace CA.ERP.WebApp
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
                 .AddClasses(classes => classes.AssignableTo<HelperBase>())
                 .AsSelf()
+                .WithScopedLifetime()
+                );
+
+            //register validators
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(SupplierValidator))
+                .AddClasses(classes => classes.AssignableTo<IValidator>())
+                .AsImplementedInterfaces()
                 .WithScopedLifetime()
                 );
 
@@ -113,6 +140,14 @@ namespace CA.ERP.WebApp
             //{
             //    configuration.RootPath = "ClientApp/dist";
             //});
+
+            //override asp.net validation to nothing    
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

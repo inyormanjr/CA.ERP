@@ -14,6 +14,7 @@ using OneOf.Types;
 using System.Threading;
 using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Common;
 
 namespace CA.ERP.Lib.DAL.Repositories
 {
@@ -28,13 +29,13 @@ namespace CA.ERP.Lib.DAL.Repositories
             _mapper = mapper;
         }
 
-        public async Task<OneOf<Branch, None>> AddAsync(Branch branch, CancellationToken cancellationToken)
+        public async Task<Guid> AddAsync(Branch branch, CancellationToken cancellationToken)
         {
             branch.ThrowIfNullArgument(nameof(branch));
             var dalBranch = _mapper.Map<Dal.Branch>(branch);
             await _context.AddAsync(dalBranch, cancellationToken: cancellationToken);
             branch.Id = dalBranch.Id;
-            return branch;
+            return branch.Id;
         }
 
         public async Task<OneOf<Success, None>> DeleteAsync(Guid entityId, CancellationToken cancellationToken)
@@ -57,7 +58,8 @@ namespace CA.ERP.Lib.DAL.Repositories
             return _mapper.Map<List<Branch>>(branches);
         }
 
-        public async Task<List<Branch>> GetAll(int skip, int take, CancellationToken cancellationToken)
+
+        public async Task<List<Branch>> GetAll(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             var branches = await this._context.Branches.AsQueryable().Skip(skip).Take(take).ToListAsync(cancellationToken: cancellationToken);
             return _mapper.Map<List<Branch>>(branches);
@@ -65,23 +67,22 @@ namespace CA.ERP.Lib.DAL.Repositories
 
 
 
-
-        public async Task<OneOf<Branch, None>> UpdateAsync(Guid id, Branch entity, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Guid, None>> UpdateAsync(Guid id, Branch branch, CancellationToken cancellationToken = default)
         {
-            OneOf<Branch, None> result = default(None);
-            var count = await _context.Branches.CountAsync<Dal.Branch>(b => b.Id == id, cancellationToken: cancellationToken);
-            if (count > 0)
+            OneOf<Guid, None> result = default(None);
+            var dalBranch = await _context.Branches.FirstOrDefaultAsync<Dal.Branch>(b => b.Id == id, cancellationToken: cancellationToken);
+            if (dalBranch != null)
             {
-                var dalBranch = _mapper.Map<Dal.Branch>(entity);
-                entity.Id = id;
+                _mapper.Map(branch, dalBranch);
                 dalBranch.Id = id;
                 _context.Entry(dalBranch).State = EntityState.Modified;
                 await _context.SaveChangesAsync(cancellationToken: cancellationToken);
-                result = entity;
+                result = dalBranch.Id;
             }
-            
+
             return result;
         }
+
 
         public async Task<OneOf<Branch, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
@@ -95,5 +96,9 @@ namespace CA.ERP.Lib.DAL.Repositories
             var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id)).ToListAsync();
             return _mapper.Map<List<Branch>>(branches);
         }
+
+
+       
+        
     }
 }

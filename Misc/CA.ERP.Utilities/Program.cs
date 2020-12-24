@@ -43,7 +43,7 @@ namespace CA.ERP.Utilities
             using (var db = new CADataContext(options: optionsBuilder.Options))
             {
                 //create database not present else do nothing;
-                db.Database.EnsureCreated();
+                db.Database.Migrate();
                 var branches = generateBranch(10).ToList();
                 db.Branches.AddRange(branches);
 

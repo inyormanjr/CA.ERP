@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CA.ERP.WebApp</name>
+    </assembly>
+    <members>
+        <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Register(CA.ERP.WebApp.Dto.RegisterRequest,System.Threading.CancellationToken)">
+            <summary>
+            Register user
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
+            <summary>
+            Login using username and password
+            </summary>
+            <param name="loginCredentials"></param>
+            <param name="cancellationToken"></param>
+            <returns>Token use to login</returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.CreateSupplierRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates new supplier
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.UpdateSupplierRequest,System.Threading.CancellationToken)">
+            <summary>
+            Updates supplier
+            </summary>
+            <param name="id">The id of the supplier to update</param>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
+            <summary>
+            Name of the supplier.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Address">
+            <summary>
+            Adress of the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.ContactPerson">
+            <summary>
+            The name of the contact person for the supplier
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.DtoBase">
+            <summary>
+            Base class for dto poco classes
+            </summary>
+        </member>
+        <member name="M:CA.ERP.WebApp.Dto.DtoBase.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.Id">
+            <summary>
+            The unique identifier for the data
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.Status">
+            <summary>
+            Active or Inactive consider the data deleted if inactive.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.CreatedAt">
+            <summary>
+            Date the data was created
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.CreatedBy">
+            <summary>
+            The unique identifier for the user who created the data.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.UpdatedAt">
+            <summary>
+            The date the data was last updated.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.DtoBase.UpdatedBy">
+            <summary>
+            The unique identifier for the user who last updated the data.
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.Status">
+            <summary>
+            Enum status for dto
+            </summary>
+        </member>
+        <member name="F:CA.ERP.WebApp.Dto.Status.Inactive">
+            <summary>
+            Consider the item deleted
+            </summary>
+        </member>
+        <member name="F:CA.ERP.WebApp.Dto.Status.Active">
+            <summary>
+            Should be the default status
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.Supplier">
+            <summary>
+            Supplier Dto
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.Name">
+            <summary>
+            The name of the supplier.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.Address">
+            <summary>
+            Adress of the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.ContactPerson">
+            <summary>
+            The name of the contact person for the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupllierBrands">
+            <summary>
+            Brands available to the supplier
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.UpdateSupplierRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.UpdateSupplierRequest.Supplier">
+            <summary>
+            The supplier data
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.UserRole">
+            <summary>
+            User roles. Can have multiple values using enum flags
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Mapping.ValidationErrorMapping">
+            <summary>
+            Maps Fluent validation failiure to dto ValidationError
+            </summary>
+        </member>
+        <member name="M:CA.ERP.WebApp.Mapping.ValidationErrorMapping.#ctor">
+            <summary>
+            Maps Fluent validation failiure to dto ValidationError
+            </summary>
+        </member>
+    </members>
+</doc>

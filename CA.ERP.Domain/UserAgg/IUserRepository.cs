@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.UserAgg
 {
-    public interface IUserRepository : IRepository
+    public interface IUserRepository : IRepository<User>
     {
-        Task<OneOf<User, None>> AddAsync(User user, CancellationToken cancellationToken);
 
         Task<OneOf<User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken);
         

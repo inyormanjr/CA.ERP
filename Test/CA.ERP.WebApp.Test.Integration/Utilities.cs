@@ -43,6 +43,24 @@ namespace CA.ERP.WebApp.Test.Integration
 
             db.Users.Add(user);
 
+            //add suppliers
+            var fakeSupplierGenerator = new Faker<Supplier>()
+                .CustomInstantiator(f => new Supplier())
+                .RuleFor(f => f.Name, f => f.Company.CompanyName())
+                .RuleFor(f => f.Address, f => f.Address.StreetAddress())
+                .RuleFor(f => f.ContactPerson, f => f.Name.FullName());
+
+            var supplier = fakeSupplierGenerator.Generate();
+            supplier.Id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+
+            db.Suppliers.Add(supplier);
+
+            //more supplier
+            for (int i = 0; i < 10; i++)
+            {
+                db.Suppliers.Add(fakeSupplierGenerator.Generate());
+            }
+
             db.SaveChanges();
         }
     }

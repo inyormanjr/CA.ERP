@@ -5,6 +5,7 @@ namespace CA.ERP.Domain.UserAgg
     [Flags]
     public enum UserRole : int
     {
+        None = 0,
         Admin = 1, 
         Moderator = 2, 
         Marketing =4, 

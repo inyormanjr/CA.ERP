@@ -1,6 +1,8 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Helpers;
+using FluentValidation;
+using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;
 using System;
@@ -18,19 +20,21 @@ namespace CA.ERP.Domain.UserAgg
         private readonly IBranchRepository _branchRepository;
         private readonly IUserFactory _userFactory;
         private readonly PasswordManagementHelper _passwordManagementHelper;
+        private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper)
+        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator )
         {
             _userRepository = userRepository;
             _branchRepository = branchRepository;
             _userFactory = userFactory;
             _passwordManagementHelper = passwordManagementHelper;
+            _userValidator = userValidator;
         }
 
-        public async Task<OneOf<string, Error<string>>> CreateUserAsync(string username, string password, List<Guid> branchIds, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>, Error<string>>> CreateUserAsync(string username, string password, UserRole role, string firstName, string lastName, List<Guid> branchIds, CancellationToken cancellationToken)
         {
             //init result
-            OneOf<string, Error<string>> ret = default(Error<string>);
+            OneOf<Guid, List<ValidationFailure>, Error<string>> ret = new List<ValidationFailure>();
             //get branches
             List<Branch> branches = await _branchRepository.GetBranchsAsync(branchIds, cancellationToken: cancellationToken);
 
@@ -42,7 +46,7 @@ namespace CA.ERP.Domain.UserAgg
             }
             else
             {
-                var user = _userFactory.CreateUser(username);
+                var user = _userFactory.CreateUser(username, role, firstName, lastName);
 
                 foreach (var branch in branches)
                 {
@@ -52,11 +56,16 @@ namespace CA.ERP.Domain.UserAgg
                 _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
                 user.SetHashAndSalt(passwordHash, passwordSalt);
 
-                var result = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
-                ret = result.Match<OneOf<string, Error<string>>>(
-                    f0: (u) => u.Id.ToString(),
-                    f1: (none) => new Error<string>("Unknown Error")
-                    );
+                //validate user;
+                var validationResult = _userValidator.Validate(user);
+                if (!validationResult.IsValid)
+                {
+                    ret = validationResult.Errors.ToList();
+                }
+                else
+                {
+                    ret = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
+                }
             }
             return ret;
 
@@ -65,13 +74,24 @@ namespace CA.ERP.Domain.UserAgg
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
-            
-            var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
-            return optionUser.Match(
-                f0: user => _passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt) ? user : null,
-                f1 : none => null
-            );
-
+            OneOf<User, None> ret = default(None);
+            //manual validation
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                var optionUser = await _userRepository.GetUserByUsernameAsync(username, cancellationToken);
+                return optionUser.Match<OneOf<User, None>>(
+                    f0: user => {
+                        OneOf<User, None> ret = default(None);
+                        if (_passwordManagementHelper.VerifyPasswordhash(password, user.PasswordHash, user.PasswordSalt))
+                        {
+                            ret = user;
+                        }
+                        return ret;
+                    },
+                    f1: none => default(None)
+                );
+            }
+            return ret;
         }
     }
 }

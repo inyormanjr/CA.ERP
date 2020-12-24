@@ -63,8 +63,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var createBranchResponse = await response.Content.ReadAsAsync<CreateBranchResponse>();
 
             createBranchResponse.Should().NotBeNull();
-            createBranchResponse.Branch.Should().NotBeNull();
-            createBranchResponse.Branch.Name.Should().NotBeNullOrEmpty();
+            createBranchResponse.BranchId.Should().NotBe(Guid.Empty);
         }
 
         [Fact]
