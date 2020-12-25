@@ -27,6 +27,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 namespace CA.ERP.WebApp
 {
@@ -50,13 +51,36 @@ namespace CA.ERP.WebApp
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
 
             services.AddSwaggerGen(setup => {
+                //add xml for endpoint description.
                 var docs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.WebApp.xml");
                 if (File.Exists(docs))
                 {
                     setup.IncludeXmlComments(docs);
                 }
-                
-                
+
+                //add security scheme
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // must be lower case
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                setup.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                        {securityScheme, new string[] { }}
+
+                });
+
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
