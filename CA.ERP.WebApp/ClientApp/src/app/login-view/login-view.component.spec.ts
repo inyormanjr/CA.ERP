@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { JwtModule } from '@auth0/angular-jwt';
 import { StoreModule } from '@ngrx/store';
 import { environment } from 'src/environments/environment';
@@ -17,6 +18,7 @@ describe('LoginViewComponent', () => {
       imports: [
         ReactiveFormsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         StoreModule.forRoot(
           { 'main-app': fromMainApp.mainAppReducer },
           { runtimeChecks: { strictStateSerializability: true } }
@@ -40,5 +42,9 @@ describe('LoginViewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should login', () => {
+    expect(component.login()).toBe();
   });
 });
