@@ -1,4 +1,6 @@
-﻿namespace CA.ERP.WebApp.Dto
+﻿using System;
+
+namespace CA.ERP.WebApp.Dto
 {
     /// <summary>
     /// User roles. Can have multiple values using enum flags
@@ -10,6 +12,7 @@
     ///  CC = 32,
     ///  Encoder = 64
     /// </summary>
+    [Flags]
     public enum UserRole: int
     {
         Admin = 1,

@@ -28,6 +28,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using CA.ERP.WebApp.CustomAuthentication;
 
 namespace CA.ERP.WebApp
 {
@@ -176,6 +178,10 @@ namespace CA.ERP.WebApp
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+
+            //add principal/user tranformer
+            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
 
         }
 
