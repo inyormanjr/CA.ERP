@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.BrandAgg;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.MasterProductAgg;
 using System;
 using System.Collections.Generic;

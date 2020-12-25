@@ -20,7 +20,7 @@ namespace CA.ERP.DataAccess
        public  DbSet<UserBranch> UserBranches { get; set; }
        public  DbSet<Supplier> Suppliers { get; set; }
        public  DbSet<SupplierBrand> SupplierBrands { get; set; }
-       public  DbSet<Brand> Brand { get; set; }
+       public  DbSet<Brand> Brands { get; set; }
        public  DbSet<MasterProduct> MasterProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

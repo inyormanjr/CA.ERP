@@ -38,7 +38,9 @@ namespace CA.ERP.Domain.SupplierAgg
         {
             OneOf<Supplier, None> supplierOption = await _supplierRepository.GetByIdAsync(supplierId, cancellationToken: cancellationToken);
             return supplierOption.Match<OneOf<Supplier, NotFound>>(
-                f0: suppler => suppler,
+                f0: suppler => {
+                    return suppler;
+                },
                 f1: none => default(NotFound)
                 );
         }
