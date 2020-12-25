@@ -17,6 +17,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import * as fromMainApp from './reducers/main-app-reducer';
 import { AuthModule } from './auth/auth.module';
+import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 
 
 export function tokenGetter() {
@@ -29,6 +30,7 @@ export function tokenGetter() {
     FetchDataComponent,
     LoginViewComponent,
     HomeViewComponent,
+    HomeNavComponent,
   ],
   imports: [
     ReactiveFormsModule,

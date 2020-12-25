@@ -39,11 +39,14 @@ export class LoginViewComponent implements OnInit {
     this.isLoading = true;
     this.authService.login(userCredentials).subscribe(
       (response) => {
-       this.isLoading = false;
         this.authState.dispatch(ERP_Auth_Actions.login({
           token: localStorage.getItem('token')
         }));
+        const decoded = this.authService.decodedToken();
+        console.log(decoded);
+        this.authState.dispatch(ERP_Auth_Actions.attachCurrentUser({currentUser: decoded}));
         this.router.navigateByUrl('home');
+        this.isLoading = false;
       },
       (error) => {
         this.isLoading = false;
