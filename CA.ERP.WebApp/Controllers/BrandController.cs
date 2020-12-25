@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.UserAgg;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +64,32 @@ namespace CA.ERP.WebApp.Controllers
 
                 _logger.LogInformation("User {0} supplier branch creation failed.", _userHelper.GetCurrentUserId());
                 return BadRequest(response);
-            }
-         );
+            });
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(Guid id, Dto.UpdateBrandRequest request, CancellationToken cancellationToken)
+        {
+            var domBrand = _mapper.Map<Brand>(request.Data);
+            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _brandService.UpdateBrandAsync(id, domBrand, cancellationToken);
+
+            return result.Match<IActionResult>(
+                f0: (branch) => NoContent(),
+                f1: (validationErrors) => {
+                    var response = new Dto.ErrorResponse()
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+
+                    _logger.LogInformation("User {0} brand update failed.", _userHelper.GetCurrentUserId());
+                    return BadRequest(response);
+                },
+                f2: (error) => NotFound()
+            );
         }
 
     }

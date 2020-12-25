@@ -70,7 +70,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierSuccess_NoContent()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Supplier = new Supplier() { Name = "Supplier Updated" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "Supplier Updated" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -80,7 +80,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierFail_NotFound()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f2");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Supplier = new Supplier() { Name = "Supplier Updated" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "Supplier Updated" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.IsSuccessStatusCode.Should().BeFalse();
@@ -91,7 +91,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierFail_BadRequest()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Supplier = new Supplier() { Name = "" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.IsSuccessStatusCode.Should().BeFalse();

@@ -70,18 +70,89 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             var request = new CreateBrandRequest()
             {
-                Description = fake.Company.CompanyName()
+                Description = fake.Company.CatchPhrase()
             };
 
 
             var response = await _client.PostAsJsonAsync<CreateBrandRequest>("api/Brand/", request);
 
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest, "Brand name is null");
 
             var createBranchResponse = await response.Content.ReadAsAsync<CreateResponse>();
 
             createBranchResponse.Should().NotBeNull();
             createBranchResponse.Id.Should().Be(Guid.Empty);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateBrandSuccess_Ok()
+        {
+            var fake = new Faker();
+
+
+            var request = new UpdateBrandRequest()
+            {
+                Data = new Dto.Brand()
+                {
+                    Name = fake.Company.CompanyName(),
+                    Description = fake.Company.CompanyName()
+                }
+            };
+
+            var id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c");
+
+            var response = await _client.PutAsJsonAsync($"api/Brand/{id}", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateBrandFail_BadRequest()
+        {
+            var fake = new Faker();
+
+
+            var request = new UpdateBrandRequest()
+            {
+                Data = new Dto.Brand()
+                {
+                    Description = fake.Company.CompanyName()
+                }
+            };
+
+            var id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c");
+
+            var response = await _client.PutAsJsonAsync($"api/Brand/{id}", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            var createResponse = await response.Content.ReadAsAsync<ErrorResponse>();
+
+            createResponse.Should().NotBeNull();
+            createResponse.GeneralError.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task ShouldUpdateBrandFail_NotFound()
+        {
+            var fake = new Faker();
+
+
+            var request = new UpdateBrandRequest()
+            {
+                Data = new Dto.Brand()
+                {
+                    Name = fake.Company.CompanyName(),
+                    Description = fake.Company.CompanyName()
+                }
+            };
+
+            var id = Guid.Empty;
+
+            var response = await _client.PutAsJsonAsync($"api/Brand/{id}", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
         }
     }
 }

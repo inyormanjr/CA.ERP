@@ -98,7 +98,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             branch.Id = Guid.Parse( "56e5e4fc-c583-4186-a288-55392a6946d4");
             var request = new UpdateBranchRequest()
             {
-                Branch = branch
+                Data = branch
             };
 
 
@@ -125,7 +125,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             //id is static from utilities
             var request = new UpdateBranchRequest()
             {
-                Branch = branch
+                Data = branch
             };
 
 

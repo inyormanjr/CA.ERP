@@ -220,14 +220,26 @@
             Brands available to the supplier
             </summary>
         </member>
+        <member name="T:CA.ERP.WebApp.Dto.UpdateBaseRequest`1">
+            <summary>
+            Base class for update request
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.UpdateBaseRequest`1.Data">
+            <summary>
+            The data to update
+            </summary>
+            
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.UpdateBranchRequest">
+            <summary>
+            Hold update data for updating the branch
+            </summary>
+        </member>
         <member name="T:CA.ERP.WebApp.Dto.UpdateSupplierRequest">
             <summary>
             
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.UpdateSupplierRequest.Supplier">
-            <summary>
-            The supplier data
             </summary>
         </member>
         <member name="T:CA.ERP.WebApp.Dto.UserRole">

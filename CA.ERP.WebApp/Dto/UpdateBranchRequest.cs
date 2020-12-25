@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class UpdateBranchRequest
+    /// <summary>
+    /// Hold update data for updating the branch
+    /// </summary>
+    public class UpdateBranchRequest : UpdateBaseRequest<Branch>
     {
-        [Required]
-        public Branch Branch { get; set; }
     }
 }
