@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Controllers
 {
+    /// <summary>
+    /// Contains supplier and supllier brands related endpoints
+    /// </summary>
     [Authorize]
     public class SupplierController : BaseApiController
     {

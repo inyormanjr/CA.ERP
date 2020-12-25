@@ -52,6 +52,11 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:CA.ERP.WebApp.Controllers.SupplierController">
+            <summary>
+            Contains supplier and supllier brands related endpoints
+            </summary>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.CreateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Creates new supplier
@@ -82,6 +87,14 @@
             <param name="id">The id of suppler to get.</param>
             <param name="cancellationToken"></param>
             <returns></returns>
+        </member>
+        <member name="T:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal">
+            <summary>
+            A custom principal for modified behavior.
+            </summary>
+        </member>
+        <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.#ctor(System.Security.Principal.IPrincipal)">
+            <inheritdoc></inheritdoc>/>
         </member>
         <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
             <summary>
