@@ -6,7 +6,7 @@ namespace CA.ERP.WebApp.Dto
     /// <summary>
     /// Supplier Dto
     /// </summary>
-    public class Supplier
+    public class Supplier : DtoBase
     {
         /// <summary>
         /// The name of the supplier.

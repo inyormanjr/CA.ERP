@@ -44,11 +44,11 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var response = await _client.GetAsync("api/Branch/");
 
-            var getBranchResponse = await response.Content.ReadAsAsync<GetBranchResponse>();
+            var getBranchResponse = await response.Content.ReadAsAsync<GetManyResponse<Branch>>();
 
             response.IsSuccessStatusCode.Should().BeTrue();
             getBranchResponse.Should().NotBeNull();
-            getBranchResponse.Branches.Should().HaveCount(c => c >= 1);
+            getBranchResponse.Data.Should().HaveCount(c => c >= 1);
         }
 
         [Fact]
@@ -74,10 +74,10 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.IsSuccessStatusCode.Should().BeTrue($"Status code was {response.StatusCode}");
 
-            var createBranchResponse = await response.Content.ReadAsAsync<CreateBranchResponse>();
+            var createBranchResponse = await response.Content.ReadAsAsync<CreateResponse>();
 
             createBranchResponse.Should().NotBeNull();
-            createBranchResponse.BranchId.Should().NotBe(Guid.Empty);
+            createBranchResponse.Id.Should().NotBe(Guid.Empty);
         }
 
         [Fact]

@@ -46,10 +46,10 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var createSupplierResponse = await response.Content.ReadAsAsync<CreateSupplierResponse>();
+            var createSupplierResponse = await response.Content.ReadAsAsync<CreateResponse>();
 
             createSupplierResponse.Should().NotBeNull();
-            createSupplierResponse.SupplierId.Should().NotBe(Guid.Empty);
+            createSupplierResponse.Id.Should().NotBe(Guid.Empty);
         }
 
         [Fact]
@@ -106,10 +106,10 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var getSuppliersResponse = await response.Content.ReadAsAsync<GetSuppliersResponse>();
+            var getSuppliersResponse = await response.Content.ReadAsAsync<GetManyResponse<Supplier>>();
             getSuppliersResponse.Should().NotBeNull();
-            getSuppliersResponse.Suppliers.Should().HaveCountGreaterThan(0);
-            getSuppliersResponse.Suppliers.FirstOrDefault().Name.Should().NotBeNullOrEmpty();
+            getSuppliersResponse.Data.Should().HaveCountGreaterThan(0);
+            getSuppliersResponse.Data.FirstOrDefault().Name.Should().NotBeNullOrEmpty();
         }
 
         [Fact]

@@ -52,6 +52,11 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:CA.ERP.WebApp.Controllers.BrandController">
+            <summary>
+            Handles brand related operations.
+            </summary>
+        </member>
         <member name="T:CA.ERP.WebApp.Controllers.SupplierController">
             <summary>
             Contains supplier and supllier brands related endpoints
@@ -98,6 +103,16 @@
         </member>
         <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.IsInRole(System.String)">
             <inheritdoc/>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.CreateResponse">
+            <summary>
+            The default response for creating data.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.CreateResponse.Id">
+            <summary>
+            Id of the created data.
+            </summary>
         </member>
         <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
             <summary>
@@ -154,14 +169,15 @@
             The unique identifier for the user who last updated the data.
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.GetSuppliersResponse">
+        <member name="T:CA.ERP.WebApp.Dto.GetManyResponse`1">
             <summary>
-            Get multiple supplier response wrapper
+            Default response for getting list of data.
             </summary>
+            <typeparam name="T"></typeparam>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.GetSuppliersResponse.Suppliers">
+        <member name="P:CA.ERP.WebApp.Dto.GetManyResponse`1.Data">
             <summary>
-            List of suppliers. Can be empty but never null
+            A list of data
             </summary>
         </member>
         <member name="T:CA.ERP.WebApp.Dto.Status">

@@ -40,12 +40,12 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetBranchResponse>> Get()
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch>>> Get()
         {
             var branches = await _branchService.GetAsync();
             var dtoBranches = _mapper.Map<List<Dto.Branch>>(branches);
-            var response = new Dto.GetBranchResponse() {
-                Branches = dtoBranches
+            var response = new Dto.GetManyResponse<Dto.Branch>() {
+                Data = dtoBranches
             };
             return Ok(response);
         }
@@ -60,17 +60,17 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateBranchResponse>> CreateBranch(Dto.CreateBranchRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.CreateBranchRequest request, CancellationToken cancellationToken)
         {
 
             var createResult = await _branchService.CreateBranchAsync(request.Branch.Name, request.Branch.BranchNo, request.Branch.Code, request.Branch.Address, request.Branch.Contact, cancellationToken);
 
             return createResult.Match<ActionResult>(
-                f0: (branch) =>
+                f0: (brandId) =>
                 {
-                    var response = new Dto.CreateBranchResponse()
+                    var response = new Dto.CreateResponse()
                     {
-                        BranchId = branch
+                        Id = brandId
                     };
                     return Ok(response);
                 },

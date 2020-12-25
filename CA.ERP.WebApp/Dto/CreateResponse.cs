@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 namespace CA.ERP.WebApp.Dto
 {
     /// <summary>
-    /// Get multiple supplier response wrapper
+    /// The default response for creating data.
     /// </summary>
-    public class GetSuppliersResponse
+    public class CreateResponse
     {
         /// <summary>
-        /// List of suppliers. Can be empty but never null
+        /// Id of the created data.
         /// </summary>
-        public ICollection<Supplier> Suppliers { get; set; }
+        public Guid Id { get; set; }
     }
 }

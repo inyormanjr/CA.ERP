@@ -42,16 +42,16 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateSupplierResponse>> CreateSupplier(Dto.CreateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.CreateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating supplier.", _userHelper.GetCurrentUserId());
             var createResult = await _supplierService.CreateSupplierAsync(request.Name, request.Address, request.ContactPerson, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (supplierId) =>
             {
-                var response = new Dto.CreateSupplierResponse()
+                var response = new Dto.CreateResponse()
                 {
-                    SupplierId = supplierId
+                    Id = supplierId
                 };
                 _logger.LogInformation("User {0} supplier branch creation succeeded.", _userHelper.GetCurrentUserId());
                 return Ok(response);
@@ -116,13 +116,13 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetSuppliersResponse>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier>>> Get(CancellationToken cancellationToken)
         {
             var suppliers = await _supplierService.GetSuppliersAsync(cancellationToken: cancellationToken);
             var dtoSuppliers = _mapper.Map<List<Dto.Supplier>>(suppliers);
-            var response = new Dto.GetSuppliersResponse()
+            var response = new Dto.GetManyResponse<Dto.Supplier>()
             {
-                Suppliers = dtoSuppliers
+                Data = dtoSuppliers
             };
             return Ok(response);
         }
@@ -137,7 +137,7 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetSuppliersResponse>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Supplier>> Get(Guid id, CancellationToken cancellationToken)
         {
             var supplierOption = await _supplierService.GetSupplierAsync(id, cancellationToken: cancellationToken);
             return supplierOption.Match<ActionResult>(
