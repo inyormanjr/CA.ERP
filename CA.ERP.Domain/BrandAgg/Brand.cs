@@ -1,9 +1,10 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.MasterProductAgg;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Domain.MasterProductAgg
+namespace CA.ERP.Domain.BrandAgg
 {
     public class Brand: ModelBase
     {

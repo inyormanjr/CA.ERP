@@ -128,7 +128,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f3");
             var response = await _client.GetAsync($"api/Supplier/{id}");
 
-            response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 

@@ -18,16 +18,14 @@ using CA.ERP.Domain.Common;
 
 namespace CA.ERP.DataAccess.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository :AbstractRepository<User, Dal.User>, IUserRepository
     {
-        private readonly CADataContext _context;
-        private readonly IMapper _mapper;
 
-        public UserRepository(CADataContext context, IMapper mapper)
+        public UserRepository(CADataContext context, IMapper mapper) : base(context, mapper)
         {
-            _context = context;
-            _mapper = mapper;
+
         }
+
         public async Task<OneOf<Dom.User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default)
         {
             OneOf<Dom.User, None> result = null;
@@ -39,36 +37,6 @@ namespace CA.ERP.DataAccess.Repositories
             return result;
         }
 
-        public async Task<Guid> AddAsync(Dom.User user, CancellationToken cancellationToken = default)
-        {
-            user.ThrowIfNullArgument(nameof(user));
 
-            var dalUser = _mapper.Map<Dal.User>(user);
-            _context.Entry<Dal.User>(dalUser).State = EntityState.Added;
-            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
-            return user.Id;
-        }
-
-
-
-        public Task<OneOf<Guid, None>> UpdateAsync(Guid Id, User entity, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OneOf<Success, None>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(int skip = 0, int take = 0, Status status = Status.Active, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OneOf<User, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

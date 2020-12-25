@@ -96,6 +96,9 @@
         <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.#ctor(System.Security.Principal.IPrincipal)">
             <inheritdoc></inheritdoc>/>
         </member>
+        <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.IsInRole(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
             <summary>
             Name of the supplier.
