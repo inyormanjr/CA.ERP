@@ -91,7 +91,7 @@ namespace CA.ERP.WebApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBranch(Guid id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
-            var domBranch = _mapper.Map<Dom.Branch>(request.Branch);
+            var domBranch = _mapper.Map<Dom.Branch>(request.Data);
             OneOf<Guid, NotFound> result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
 
             return result.Match<IActionResult>(

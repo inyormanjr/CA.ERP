@@ -84,7 +84,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<IActionResult> UpdateSupplier(Guid id, Dto.UpdateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} updating supplier.", _userHelper.GetCurrentUserId());
-            var domSupplier = _mapper.Map<Supplier>(request.Supplier);
+            var domSupplier = _mapper.Map<Supplier>(request.Data);
             var createResult = await _supplierService.UpdateSupplierAsync(id, domSupplier, cancellationToken: cancellationToken);
             return createResult.Match<IActionResult>(
                 f0: (supplierId) =>

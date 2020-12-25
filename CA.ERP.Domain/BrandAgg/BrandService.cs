@@ -3,6 +3,7 @@ using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,28 @@ namespace CA.ERP.Domain.BrandAgg
                 brand.CreatedBy = _userHelper.GetCurrentUserId();
                 brand.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _brandRepository.AddAsync(brand, cancellationToken: cancellationToken);
+            }
+            return ret;
+        }
+
+        public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateBrandAsync(Guid id, Brand brand, CancellationToken cancellationToken)
+        {
+            OneOf<Guid, List<ValidationFailure>, NotFound> ret;
+
+            //validation
+            var validationResult = _brandValidator.Validate(brand);
+            if (!validationResult.IsValid)
+            {
+                ret = validationResult.Errors.ToList();
+            }
+            else
+            {
+                var supplierOption = await _brandRepository.UpdateAsync(id, brand, cancellationToken: cancellationToken);
+                ret = supplierOption.Match<OneOf<Guid, List<ValidationFailure>, NotFound>>(
+                    f0: supplierId => supplierId,
+                    f1: none => default(NotFound)
+                    );
+
             }
             return ret;
         }

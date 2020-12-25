@@ -68,6 +68,22 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Suppliers.Add(fakeSupplierGenerator.Generate());
                 }
 
+
+                //add brands
+                var fakeBrandGenerator = new Faker<Brand>()
+                    .RuleFor(f => f.Name, f => f.Company.CompanyName())
+                    .RuleFor(f => f.Description, f => f.Company.CatchPhrase());
+
+                for (int i = 0; i < 10; i++)
+                {
+                    var brand = fakeBrandGenerator.Generate();
+                    if (i == 0)
+                    {
+                        brand.Id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c");
+                    }
+                    db.Brands.Add(brand);
+                }
+
                 db.SaveChanges();
             }
         }
