@@ -20,4 +20,10 @@ export class AuthService {
         }
     }));
   }
+
+  decodedToken(): any {
+    const token = localStorage.getItem('token');
+    const decoded = this.jwtHelper.decodeToken(token);
+    return decoded;
+  }
 }

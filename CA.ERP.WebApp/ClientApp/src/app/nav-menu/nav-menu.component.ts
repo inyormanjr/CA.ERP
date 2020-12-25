@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { AuthState } from '../auth/reducers';
+import { currentUser, decodedToken } from '../auth/reducers/auth.selectors';
 import { UserLogin } from '../models/UserAgg/user.login';
 
 @Component({
@@ -8,10 +10,15 @@ import { UserLogin } from '../models/UserAgg/user.login';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit{
   isExpanded = false;
-  currentUser$: UserLogin;
+  currentUser$: Observable<any>;
+  decodedToken$: Observable<any>;
   constructor(private authStore: Store<AuthState>) {
+
+  }
+  ngOnInit(): void {
+     this.currentUser$ = this.authStore.pipe(select(currentUser));
   }
 
   collapse() {

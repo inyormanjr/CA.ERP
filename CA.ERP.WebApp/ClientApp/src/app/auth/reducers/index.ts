@@ -13,25 +13,34 @@ import { ERP_Auth_Actions } from './auth.action.types';
 export const authFeatureKey = 'auth';
 
 export interface AuthState {
-  currentUser: String;
+  currentUser: any;
   token: String;
+  decodedToken: any;
 }
 
 export const initialAuthState: AuthState = {
   currentUser: undefined,
-  token: ''
+  token: '',
+  decodedToken: null
 };
 
-export const reducers = createReducer(initialAuthState,
+export const reducers = createReducer(
+  initialAuthState,
   on(ERP_Auth_Actions.login, (state, action) => {
     return {
       ...state,
-      token: action.token
+      token: action.token,
+    };
+  }),
+  on(ERP_Auth_Actions.attachCurrentUser, (state, action) => {
+    return {
+      ...state,
+      currentUser: action.currentUser,
     };
   }),
   on(ERP_Auth_Actions.logOut, (state, action) => {
     return { ...state, token: undefined };
-})
+  })
 );
 
 

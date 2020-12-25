@@ -10,6 +10,12 @@ export const login = createAction(
   props<{ token: any }>()
 );
 
+export const attachCurrentUser = createAction(
+  '[Auth] Attach Decoded token',
+  props<{currentUser: any}>()
+);
+
+
 export const logOut = createAction(
   '[MainNav] Log-Out User'
 );
