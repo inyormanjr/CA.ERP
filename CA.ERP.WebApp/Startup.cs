@@ -35,6 +35,8 @@ namespace CA.ERP.WebApp
 {
     public class Startup
     {
+        private string _corsAllowAll = "AllowAll";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -86,7 +88,15 @@ namespace CA.ERP.WebApp
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddCors();
+            services.AddCors(option => {
+                option.AddDefaultPolicy(builder => {
+                    builder
+                    .SetIsOriginAllowed(origin => true)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                } );
+            });
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
@@ -204,11 +214,14 @@ namespace CA.ERP.WebApp
             app.UseStaticFiles();
             
             app.UseRouting();
+
+            app.UseCors();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
