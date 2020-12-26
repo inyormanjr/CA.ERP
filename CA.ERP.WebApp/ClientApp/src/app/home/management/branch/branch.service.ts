@@ -14,6 +14,7 @@ export class BranchService {
 
   get(): Observable<BranchView[]> {
     return this.http.get<BranchView[]>(this.baseUrl).pipe(map((response: any) => {
+      console.log(response);
       return response.data;
     }));
   }
