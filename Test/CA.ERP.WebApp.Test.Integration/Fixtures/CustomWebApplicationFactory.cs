@@ -34,7 +34,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                 services.AddDbContext<CADataContext>(options =>
                 {
                     
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
                 });
 
                 var sp = services.BuildServiceProvider();

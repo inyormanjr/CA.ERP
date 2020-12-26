@@ -27,11 +27,9 @@ namespace CA.ERP.WebApp.Controllers
         {
             _logger = logger;
             _branchService = branchService;
-            _branchRepository = branchRepository;
             _mapper = mapper;
         }
 
-        public IBranchRepository _branchRepository { get; }
 
         /// <summary>
         /// Get multiple branches
