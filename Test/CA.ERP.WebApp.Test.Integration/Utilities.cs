@@ -81,6 +81,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         brand.Id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c");
                     }
+                    else if (i == 1)
+                    {
+                        brand.Id = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d");
+                    }
                     db.Brands.Add(brand);
                 }
 
