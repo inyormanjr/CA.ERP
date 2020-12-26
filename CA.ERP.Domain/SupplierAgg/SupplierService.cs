@@ -30,7 +30,7 @@ namespace CA.ERP.Domain.SupplierAgg
 
         public async Task<List<Supplier>> GetSuppliersAsync(CancellationToken cancellationToken = default)
         {
-            List<Supplier> suppliers = await _supplierRepository.GetAll(cancellationToken:cancellationToken);
+            List<Supplier> suppliers = await _supplierRepository.GetManyAsync(cancellationToken:cancellationToken);
             return suppliers;
         }
 

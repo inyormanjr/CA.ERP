@@ -31,7 +31,7 @@ namespace CA.ERP.Domain.BranchAgg
         {
             _logger.LogInformation($"Getting all branch");
 
-            return await _branchRepository.GetAll();
+            return await _branchRepository.GetManyAsync();
         }
 
         /// <summary>

@@ -92,5 +92,34 @@ namespace CA.ERP.WebApp.Controllers
             );
         }
 
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand>>> Get(CancellationToken cancellationToken)
+        {
+            var brands = await _brandService.GetBrandsAsync(cancellationToken);
+            var dtoBrands = _mapper.Map<List<Dto.Brand>>(brands);
+            var response = new Dto.GetManyResponse<Dto.Brand>()
+            {
+                Data = dtoBrands
+            };
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.Brand>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var brandOption = await _brandService.GetBrandByIdAsync(id, cancellationToken);
+            return brandOption.Match<ActionResult>(
+                f0: brand =>
+                {
+                    return Ok(_mapper.Map<Dto.Brand>(brand));
+                },
+                f1: notfound => NotFound()
+            );
+        }
+
     }
 }

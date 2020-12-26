@@ -17,7 +17,7 @@ namespace CA.ERP.Domain.Base
         Task<Guid> AddAsync(T entity, CancellationToken cancellationToken = default);
         Task<OneOf<Guid, None>> UpdateAsync(Guid Id, T entity, CancellationToken cancellationToken = default);
         Task<OneOf<Success, None>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<List<T>> GetAll(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default);
+        Task<List<T>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default);
        Task<OneOf<T, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     }

@@ -47,7 +47,7 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task<List<T1>> GetAll(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public async Task<List<T1>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             var entities = await _context.Set<T2>().ToListAsync(cancellationToken: cancellationToken);
             return _mapper.Map<List<T1>>(entities);
