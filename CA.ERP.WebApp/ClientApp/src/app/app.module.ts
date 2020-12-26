@@ -19,6 +19,7 @@ import * as fromMainApp from './reducers/main-app-reducer';
 import { AuthModule } from './auth/auth.module';
 import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -33,12 +34,13 @@ export function tokenGetter() {
     HomeNavComponent,
   ],
   imports: [
+    BrowserAnimationsModule,
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
 
     StoreModule.forRoot(
       { 'main-app': fromMainApp.mainAppReducer },
-       {runtimeChecks: {strictStateSerializability: true}}
+      { runtimeChecks: { strictStateSerializability: true } }
     ),
     AuthModule,
     StoreDevtoolsModule.instrument({

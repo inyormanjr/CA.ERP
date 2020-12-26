@@ -1,1 +1,14 @@
-<p>management-view works!</p>
+<div class="h-100 d-flex flex-row ">
+  <div class="menu-section">
+    <div class="list-group">
+      <a routerlinkActive="active" [routerLinkActive]="['branch']" class="list-group-item active">
+         Branch
+      </a>
+      <a href="#" class="list-group-item">Users</a>
+      <a href="#" class="list-group-item">Morbi leo risus</a>
+      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+      <a href="#" class="list-group-item">Vestibulum at eros</a>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

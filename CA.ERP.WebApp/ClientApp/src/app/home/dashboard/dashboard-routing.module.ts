@@ -6,7 +6,8 @@ import { DashboardViewComponent } from './dashboard-view/dashboard-view.componen
 const routes: Routes = [{path: '', component: DashboardViewComponent}];
 
 @NgModule({
+  declarations: [],
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}
