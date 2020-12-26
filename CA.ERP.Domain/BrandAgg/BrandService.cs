@@ -67,5 +67,19 @@ namespace CA.ERP.Domain.BrandAgg
             }
             return ret;
         }
+
+        public async Task<List<Brand>> GetBrandsAsync(CancellationToken cancellationToken)
+        {
+            return await _brandRepository.GetManyAsync(cancellationToken: cancellationToken);
+        }
+
+        public async Task<OneOf<Brand, NotFound>> GetBrandByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var brandOption = await _brandRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
+            return brandOption.Match<OneOf<Brand, NotFound>>(
+                f0: brand => brand,
+                f1: none => default(NotFound)
+                );
+        }
     }
 }

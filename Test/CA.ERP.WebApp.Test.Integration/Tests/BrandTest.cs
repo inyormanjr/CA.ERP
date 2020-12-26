@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using CA.ERP.DataAccess.Entities;
 using CA.ERP.WebApp.Dto;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
@@ -150,6 +149,45 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var id = Guid.Empty;
 
             var response = await _client.PutAsJsonAsync($"api/Brand/{id}", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        }
+
+        [Fact]
+        public async Task ShouldGetAtleastOneBrand()
+        {
+            var response = await _client.GetAsync("api/Brand/");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<Brand>>();
+
+            
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCount(c => c >= 1);
+        }
+
+        [Fact]
+        public async Task ShouldGetExactlyOneBrand_Success()
+        {
+            var id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c");
+            var response = await _client.GetAsync($"api/Brand/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<Brand>();
+
+            
+            content.Should().NotBeNull();
+            content.Id.Should().Be(id);
+        }
+
+        [Fact]
+        public async Task ShouldGetExactlyOneBrand_NotFound()
+        {
+            var id = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa49");
+            var response = await _client.GetAsync($"api/Brand/{id}");
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
