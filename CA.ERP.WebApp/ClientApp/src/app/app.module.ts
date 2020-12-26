@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -22,6 +22,7 @@ import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function tokenGetter() {
+  console.log('test');
   return localStorage.getItem('token');
 }
 @NgModule({
@@ -37,7 +38,14 @@ export function tokenGetter() {
     BrowserAnimationsModule,
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter,
+        allowedDomains: ['localhost:5001'],
+        disallowedRoutes: ['localhost:5001/api/Authentication'],
+      },
+    }),
     StoreModule.forRoot(
       { 'main-app': fromMainApp.mainAppReducer },
       { runtimeChecks: { strictStateSerializability: true } }
@@ -49,13 +57,7 @@ export function tokenGetter() {
     }),
     EffectsModule.forRoot([]),
     FormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter,
-        whitelistedDomains: [environment.apiURL],
-        blacklistedRoutes: [environment.apiURL + '/api/Authentication'],
-      },
-    }),
+
     RouterModule.forRoot([
       { path: 'login', component: LoginViewComponent },
       {
