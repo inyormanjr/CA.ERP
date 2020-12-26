@@ -10,6 +10,7 @@ namespace CA.ERP.Domain.MasterProductAgg
     {
         public string Model { get; set; }
         public string Description { get; set; }
+        public ProductStatus ProductStatus { get; set; }
         public Guid BrandId { get; set; }
         public Brand Brand { get; set; }
     }
