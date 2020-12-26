@@ -1,14 +1,14 @@
 <div class="h-100 d-flex flex-row ">
-  <div class="menu-section">
+  <div class="menu-section mr-3">
     <div class="list-group">
-      <a routerlinkActive="active" [routerLinkActive]="['branch']" class="list-group-item active">
-         Branch
-      </a>
-      <a href="#" class="list-group-item">Users</a>
-      <a href="#" class="list-group-item">Morbi leo risus</a>
-      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-      <a href="#" class="list-group-item">Vestibulum at eros</a>
+      <button [routerLink]="['branch']" [routerLinkActive]="['active']" type="button" class="list-group-item">Branch</button>
+      <button [routerLink]="['users']" [routerLinkActive]="['active']" type="button" class="list-group-item">Users</button>
+      <button type="button" class="list-group-item">Morbi leo risus</button>
+      <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+      <button type="button" class="list-group-item">Vestibulum at eros</button>
     </div>
   </div>
-  <router-outlet></router-outlet>
+  <div class="router-section flex-fill ">
+    <router-outlet></router-outlet>
+  </div>
 </div>
