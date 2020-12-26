@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { fetchBranches } from '../action/branch-management.actions';
+import { BranchView } from '../model/branch.view';
+import { BranchManagementState } from '../reducers';
+import { branchViewList } from '../reducers/branch-management.selectors';
 
 @Component({
   selector: 'app-branch-management',
@@ -6,10 +12,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./branch-management.component.css']
 })
 export class BranchManagementComponent implements OnInit {
-
-  constructor() { }
+  branchViewList$: Observable<BranchView[]>;
+  constructor(private store: Store<BranchManagementState>) { }
 
   ngOnInit(): void {
+    this.branchViewList$ = this.store.pipe(select(branchViewList));
+
+    this.store.dispatch(fetchBranches());
   }
 
 }

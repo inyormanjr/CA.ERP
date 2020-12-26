@@ -25,22 +25,22 @@ describe('AuthService', () => {
   );
 
   it('should be created', () => {
-    const service: AuthService = TestBed.get(AuthService);
+    const service: AuthService = TestBed.inject(AuthService);
     expect(service).toBeTruthy();
   });
 
 
   it('should login', () => {
-    const service: AuthService = TestBed.get(AuthService);
+    const service: AuthService = TestBed.inject(AuthService);
     const userLogin: UserLogin = { username: 'Admin', password: 'password' };
     expect(service.login(userLogin)).toBeTruthy();
   });
 
   it('should decode token', () => {
-    const service: AuthService = TestBed.get(AuthService);
+    const service: AuthService = TestBed.inject(AuthService);
     localStorage.setItem(
       'token',
-      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI5MTU2NzBlZS03Nzc0LTQ5MTgtOWZjZC01ODY5MjM2NTU4MWQiLCJSb2xlSW50IjoiMSIsIlVzZXJuYW1lIjoiQWRtaW4iLCJGaXJzdE5hbWUiOiJEb21lbmljYSIsIkxhc3ROYW1lIjoiV29sZmYiLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE2MDg4NDE3NjksImV4cCI6MTYxMTQzMzc2OSwiaWF0IjoxNjA4ODQxNzY5fQ.ED0sQWSpF961MbGe9DOqfCPtMKp4t4ucyj12-jt6ApfTc8sMbCxtTkyf3VZngYkqagniVsnBsVsgzy_4zwTqlw'
+      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI5MTU2NzBlZS03Nzc0LTQ5MTgtOWZjZC01ODY5MjM2NTU4MWQiLCJSb2xlSW50IjoiMSIsIlVzZXJuYW1lIjoiQWRtaW4iLCJGaXJzdE5hbWUiOiJEb21lbmljYSIsIkxhc3ROYW1lIjoiV29sZmYiLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE2MDg4NDE3NjksImV4cCI6MTYxMTQzMzc2OSwiaWF0IjoxNjA4ODQxNzY5fQ.ED0sQWSpF961MbGe9D OqfCPtMKp4t4ucyj12-jt6ApfTc8sMbCxtTkyf3VZngYkqagniVsnBsVsgzy_4zwTqlw'
     );
 
     expect(service.decodedToken()).toBeDefined();

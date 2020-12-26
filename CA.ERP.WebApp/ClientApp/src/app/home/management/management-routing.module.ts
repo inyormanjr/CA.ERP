@@ -13,6 +13,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./branch/branch.module').then((x) => x.BranchModule),
       },
+      {
+        path: 'users',
+        loadChildren: () =>
+          import('./user/user.module').then(x => x.UserModule)
+      },
       { path: '', redirectTo: 'branch', pathMatch: 'full' },
     ],
   },
