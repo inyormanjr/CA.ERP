@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import * as from from './reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { Effects } from './effects/effects';
+import { BranchService } from './branch.service';
 
 
 @NgModule({
@@ -16,6 +17,9 @@ import { Effects } from './effects/effects';
     BranchRoutingModule,
     StoreModule.forFeature(from.FeatureKey, from.reducers, { metaReducers: from.metaReducers }),
     EffectsModule.forFeature([Effects]),
-  ]
+  ],
+  providers: [
+     BranchService
+   ]
 })
 export class BranchModule { }

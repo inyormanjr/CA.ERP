@@ -15,8 +15,8 @@ describe('BranchService', () => {
         HttpClientTestingModule,
         JwtModule.forRoot({
           config: {
-            whitelistedDomains: [environment.apiURL],
-            blacklistedRoutes: [environment.apiURL + '/api/Authentication'],
+            allowedDomains: [environment.apiURL],
+            disallowedRoutes: [environment.apiURL + '/api/Authentication'],
           },
         }),
       ],
