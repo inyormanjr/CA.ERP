@@ -192,5 +192,25 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         }
+
+        [Fact]
+        public async Task ShouldDeleteBrand_Success()
+        {
+            var id = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d");
+            var response = await _client.DeleteAsync($"api/Brand/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        }
+
+        [Fact]
+        public async Task ShouldDeleteBrand_Fail_NotFound()
+        {
+            var id = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb22");
+            var response = await _client.DeleteAsync($"api/Brand/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        }
     }
 }

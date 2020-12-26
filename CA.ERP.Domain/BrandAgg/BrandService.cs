@@ -81,5 +81,14 @@ namespace CA.ERP.Domain.BrandAgg
                 f1: none => default(NotFound)
                 );
         }
+
+        public async Task<OneOf<Success, NotFound>> DeleteBrandAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var brandOption = await _brandRepository.DeleteAsync(id, cancellationToken);
+            return brandOption.Match<OneOf<Success, NotFound>>(
+                f0: success => success,
+                f1: none => default(NotFound)
+                );
+        }
     }
 }

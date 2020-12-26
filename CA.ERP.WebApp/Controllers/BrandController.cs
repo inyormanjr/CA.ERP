@@ -108,7 +108,7 @@ namespace CA.ERP.WebApp.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Brand>> Get(Guid id, CancellationToken cancellationToken)
         {
             var brandOption = await _brandService.GetBrandByIdAsync(id, cancellationToken);
@@ -116,6 +116,21 @@ namespace CA.ERP.WebApp.Controllers
                 f0: brand =>
                 {
                     return Ok(_mapper.Map<Dto.Brand>(brand));
+                },
+                f1: notfound => NotFound()
+            );
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dto.Brand>> Delete(Guid id, CancellationToken cancellationToken)
+        {
+            var brandOption = await _brandService.DeleteBrandAsync(id, cancellationToken);
+            return brandOption.Match<ActionResult>(
+                f0: Success =>
+                {
+                    return NoContent();
                 },
                 f1: notfound => NotFound()
             );
