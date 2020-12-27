@@ -88,6 +88,23 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Brands.Add(brand);
                 }
 
+                var fakeMasterProductGenerator = new Faker<MasterProduct>()
+                    .RuleFor(f => f.Model, f => f.Vehicle.Model())
+                    .RuleFor(f => f.Description, f => f.Vehicle.Manufacturer())
+                    .RuleFor(f => f.BrandId, f => Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d"));
+
+
+                for (int i = 0; i < 10; i++)
+                {
+                    var masterProduct = fakeMasterProductGenerator.Generate();
+                    if (i == 0)
+                    {
+                        masterProduct.Id = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3");
+                    }
+
+                    db.MasterProducts.Add(masterProduct);
+                }
+
                 db.SaveChanges();
             }
         }

@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,35 @@ namespace CA.ERP.Domain.MasterProductAgg
             else
             {
                 ret = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Update master product
+        /// </summary>
+        /// <param name="id">The id of the master product</param>
+        /// <param name="masterProduct">The updated master product</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>OneOf<Guid, List<ValidationFailure>, NotFound></returns>
+        public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateBrandAsync(Guid id, MasterProduct masterProduct, CancellationToken cancellationToken)
+        {
+            OneOf<Guid, List<ValidationFailure>, NotFound> ret;
+
+            //validation
+            var validationResult = _masterProductValidator.Validate(masterProduct);
+            if (!validationResult.IsValid)
+            {
+                ret = validationResult.Errors.ToList();
+            }
+            else
+            {
+                var supplierOption = await _masterProductRepository.UpdateAsync(id, masterProduct, cancellationToken: cancellationToken);
+                ret = supplierOption.Match<OneOf<Guid, List<ValidationFailure>, NotFound>>(
+                    f0: masterProductId => masterProductId,
+                    f1: none => default(NotFound)
+                    );
+
             }
             return ret;
         }
