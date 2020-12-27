@@ -10,7 +10,7 @@ namespace CA.ERP.WebApp.Dto
     /// Base class for update request
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class UpdateBaseRequest<T> where T:DtoBase
+    public class UpdateBaseRequest<T> where T:DtoBase
     {
         /// <summary>
         /// The data to update
