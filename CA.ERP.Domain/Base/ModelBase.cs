@@ -9,6 +9,7 @@ namespace CA.ERP.Domain.Base
     {
         public ModelBase()
         {
+
             CreatedBy = Guid.Empty;
             UpdatedBy = Guid.Empty;
             Status = Status.Active;

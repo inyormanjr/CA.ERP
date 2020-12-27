@@ -30,6 +30,7 @@ namespace CA.ERP.DataAccess.Repositories
             entity.ThrowIfNullArgument(nameof(entity));
             var dalEntity = _mapper.Map<T2>(entity);
             await _context.Set<T2>().AddAsync(dalEntity, cancellationToken: cancellationToken);
+            await _context.SaveChangesAsync();
             return dalEntity.Id;
         }
 
