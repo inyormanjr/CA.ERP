@@ -27,6 +27,9 @@
                 <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
                   <a class="nav-link text-dark" [routerLink]="['/']">{{currentUser.Username }}</a>
                 </li>
+                <li class="nav-item" >
+                  <a class="nav-link btn text-dark" >Log-Out</a>
+                </li>
           </ng-container>
           <ng-template #elseTemplate>
                 <li class="nav-item" [routerLinkActive]="['link-active']">

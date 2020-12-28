@@ -13,12 +13,10 @@ import { branchViewList } from '../reducers/branch-management.selectors';
   styleUrls: ['./branch-management.component.css']
 })
 export class BranchManagementComponent implements OnInit {
-  branchViewList$: Observable<BranchView[]>;
-  constructor(private store: Store<BranchManagementState>, private service: BranchService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.branchViewList$ = this.store.pipe(select(branchViewList));
-    this.store.dispatch(fetchBranches());
+
   }
 
 }
