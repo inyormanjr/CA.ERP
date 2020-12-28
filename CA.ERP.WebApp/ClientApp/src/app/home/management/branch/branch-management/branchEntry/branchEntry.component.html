@@ -65,7 +65,9 @@
        <div class="row">
             <div class="col-md-12 d-flex flex-row justify-content-end">
               <button type="button" class="btn btn-outline-danger mr-2">Back</button>
-              <a [ngClass]="{'disabled': branchFormEntry.invalid}" name="" id="" class="btn btn-success" href="#" role="button">Save</a>
+              <a
+              (click)="createBranch()"
+              [ngClass]="{'disabled': branchFormEntry.invalid}" name="" id="" class="btn btn-success"  role="button">Save</a>
             </div>
        </div>
     </form>

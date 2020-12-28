@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { noop } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { fetchBranches, loadBranchViewList } from '../action/branch-management.actions';
 import { BranchService } from '../branch.service';
 import { BranchManagementState } from '../reducers';
+import { BranchManagementActions } from '../reducers/branch.actions';
 
 
 
@@ -13,13 +13,17 @@ import { BranchManagementState } from '../reducers';
 export class Effects {
   loadBranchs$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fetchBranches),
+      ofType(BranchManagementActions.fetchBranches),
       tap((action) => {
+        this.store.dispatch(BranchManagementActions.fetchingBranches());
         this.branchService.get().pipe(map((x) => {
-          this.store.dispatch(loadBranchViewList({ branchViewList: x }));
+          this.store.dispatch(BranchManagementActions.loadBranchViewList ({ branchViewList: x }));
         }, (error) => {
-            console.log(error);
-        })).subscribe(noop, error => { console.log(error);});
+          console.log(error);
+        })).subscribe(noop, error => {
+          this.store.dispatch(BranchManagementActions.loadBranchManagementsFailure({ error }));
+          console.log(error);
+        });
       })
     ), {dispatch: false}
   );

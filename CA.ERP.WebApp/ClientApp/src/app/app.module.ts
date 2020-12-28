@@ -22,7 +22,6 @@ import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function tokenGetter() {
-  console.log('test');
   return localStorage.getItem('token');
 }
 @NgModule({

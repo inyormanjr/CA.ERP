@@ -3,28 +3,51 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../../../../environments/environment';
-import { loadBranchViewList } from '../action/branch-management.actions';
 import { BranchView } from '../model/branch.view';
+import { BranchManagementActions } from './branch.actions';
 
 export const FeatureKey = 'branch-management';
 
 export interface BranchManagementState {
   isLoading: boolean;
   branchesViewList: BranchView[];
+  fetchSuccess: boolean;
 }
 
 export const branchManagamentInitialState: BranchManagementState = {
   isLoading: false,
-  branchesViewList: []
+  branchesViewList: [],
+  fetchSuccess: undefined
 }
 
 export const reducers = createReducer(
   branchManagamentInitialState,
-  on(loadBranchViewList, (state, action) => {
+  on(BranchManagementActions.fetchingBranches, (state, action) => {
     return {
       ...state,
-      branchesViewList: action.branchViewList
+      isLoading: true
+    }
+  }),
+  on(BranchManagementActions.loadBranchViewList, (state, action) => {
+    return {
+      ...state,
+      isLoading: false,
+      branchesViewList: action.branchViewList,
     };
+  }),
+  on(BranchManagementActions.loadBranchManagementsFailure, (state, action) => {
+    return {
+      ...state,
+      isLoading: false,
+      fetchSuccess: false
+    };
+  }),
+  on(BranchManagementActions.loadBranchManagementsSuccess, (state) => {
+    return {
+      ...state,
+      isLoading: false,
+      fetchSuccess: true
+    }
   })
 );
 
