@@ -62,6 +62,15 @@ namespace CA.ERP.Domain.BranchAgg
             return ret;
         }
 
+        public async Task<OneOf<Branch, NotFound>> GetBranchByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var branchOption = await _branchRepository.GetByIdAsync(id, cancellationToken);
+            return branchOption.Match<OneOf<Branch, NotFound>>(
+                f0: branch => branch,
+                f1: none => default(NotFound)
+            );
+        }
+
         public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateAsync(Guid id, Branch domBranch, CancellationToken cancellationToken)
         {
             OneOf<Guid, List<ValidationFailure>, NotFound> ret;

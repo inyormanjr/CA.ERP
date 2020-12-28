@@ -157,5 +157,44 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
+        [Fact]
+        public async Task ShouldGetAtleastOneMasterProduct()
+        {
+            var response = await _client.GetAsync("api/MasterProduct/");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<MasterProduct>>();
+
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCount(c => c >= 1);
+        }
+
+        [Fact]
+        public async Task ShouldGetExactlyOneMasterProductSuccess()
+        {
+            var id = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3");
+            var response = await _client.GetAsync($"api/MasterProduct/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<MasterProduct>();
+
+
+            content.Should().NotBeNull();
+            content.Id.Should().Be(id);
+        }
+
+        [Fact]
+        public async Task ShouldGetExactlyOneMasterProductFail_NotFound()
+        {
+            var id = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df4");
+            var response = await _client.GetAsync($"api/MasterProduct/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        }
+
     }
 }
