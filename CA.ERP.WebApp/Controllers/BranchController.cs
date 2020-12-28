@@ -13,6 +13,7 @@ using Dom = CA.ERP.Domain.BranchAgg;
 using OneOf;
 using OneOf.Types;
 using Microsoft.AspNetCore.Authorization;
+using CA.ERP.WebApp.Dto;
 
 namespace CA.ERP.WebApp.Controllers
 {
@@ -61,18 +62,24 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.CreateBranchRequest request, CancellationToken cancellationToken)
         {
 
-            var createResult = await _branchService.CreateBranchAsync(request.Branch.Name, request.Branch.BranchNo, request.Branch.Code, request.Branch.Address, request.Branch.Contact, cancellationToken);
+            var createResult = await _branchService.CreateBranchAsync(request.Name, request.BranchNo, request.Code, request.Address, request.Contact, cancellationToken);
 
             return createResult.Match<ActionResult>(
-                f0: (brandId) =>
+                f0: (id) =>
                 {
                     var response = new Dto.CreateResponse()
                     {
-                        Id = brandId
+                        Id = id
                     };
                     return Ok(response);
                 },
-                f1: (none) => BadRequest()
+                f1: (validationErrors) => {
+                    var error = new ErrorResponse() { 
+                        GeneralError = "Validation Error", 
+                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors) 
+                    };
+                    return BadRequest(error); 
+                }
              );
         }
 
@@ -90,11 +97,19 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<IActionResult> UpdateBranch(Guid id, Dto.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
             var domBranch = _mapper.Map<Dom.Branch>(request.Data);
-            OneOf<Guid, NotFound> result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
+            var result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
 
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),
-                f1: (error) => NotFound()
+                f1: (validationErrors) => {
+                    var error = new ErrorResponse()
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors)
+                    };
+                    return BadRequest(error);
+                },
+                f2: (error) => NotFound()
             );
         }
 

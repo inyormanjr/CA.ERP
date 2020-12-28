@@ -10,6 +10,12 @@ namespace CA.ERP.WebApp.Dto
     public class CreateBranchRequest
     {
         [Required]
-        public Branch Branch { get; set; }
+        public string Name { get; set; }
+        [Required]
+        public int BranchNo { get; set; }
+        [Required]
+        public string Code { get; set; }
+        public string Address { get; set; }
+        public string Contact { get; set; }
     }
 }
