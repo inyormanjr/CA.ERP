@@ -17,7 +17,7 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasOne(t => t.Brand)
                 .WithMany(t => t.SupplierBrands)
-                .HasForeignKey(t => t.SupplierId);
+                .HasForeignKey(t => t.BrandId);
         }
     }
 }

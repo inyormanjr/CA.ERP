@@ -15,9 +15,10 @@ namespace CA.ERP.Utilities
     {
         static void Main(string[] args)
         {
+            Seed();
             if (args[0] == "/seed")
             {
-                Seed();
+                
             }
         }
 
@@ -163,6 +164,7 @@ namespace CA.ERP.Utilities
         private static IEnumerable<Supplier> generateSupplier(List<Brand> brands, int count = 10)
         {
             var fakeSupplierGenerator = new Faker<Supplier>()
+                .CustomInstantiator( f => new Supplier() { Id = Guid.NewGuid()})
                             .RuleFor(f => f.Name, f => f.Company.CompanyName())
                             .RuleFor(f => f.Name, f => f.Company.CatchPhrase());
 
