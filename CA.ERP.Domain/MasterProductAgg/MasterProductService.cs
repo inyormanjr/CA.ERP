@@ -70,5 +70,20 @@ namespace CA.ERP.Domain.MasterProductAgg
             return ret;
         }
 
+        public async Task<List<MasterProduct>> GetMasterProductsAsync(CancellationToken cancellationToken)
+        {
+            return await _masterProductRepository.GetManyAsync(cancellationToken: cancellationToken);
+
+        }
+
+        public async Task<OneOf<MasterProduct, NotFound>> GetMasterProductByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var option = await _masterProductRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
+            return option.Match<OneOf<MasterProduct, NotFound>>(
+                f0: masterProduct => masterProduct,
+                f1: none => default(NotFound)
+                );
+
+        }
     }
 }
