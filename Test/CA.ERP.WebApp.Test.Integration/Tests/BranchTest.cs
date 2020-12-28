@@ -54,8 +54,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateBranchSuccessfully()
         {
-            var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = Guid.Empty })
+            var fakeBranchGenerator = new Faker<CreateBranchRequest>()
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -63,12 +62,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 .RuleFor(f => f.Contact, f => f.Name.FullName());
 
             //add branch for testing
-            var branch = fakeBranchGenerator.Generate();
 
-            var request = new CreateBranchRequest() {
-                Branch = branch
-            };
-            
+            var request = fakeBranchGenerator.Generate();
 
             var response = await _client.PostAsJsonAsync<CreateBranchRequest>("api/Branch/", request);
 
