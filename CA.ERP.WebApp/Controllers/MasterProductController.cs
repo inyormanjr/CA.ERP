@@ -95,5 +95,32 @@ namespace CA.ERP.WebApp.Controllers
                 f2: (notFound) => NotFound()
             );
         }
+
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.MasterProduct>>> Get(CancellationToken cancellationToken)
+        {
+            var masterProducts = await _masterProductService.GetMasterProductsAsync(cancellationToken);
+            var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct>>(masterProducts);
+            var response = new Dto.GetManyResponse<Dto.MasterProduct>()
+            {
+                Data = dtoMasterProducts
+            };
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.MasterProduct>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var masterProductOption = await _masterProductService.GetMasterProductByIdAsync(id ,cancellationToken);
+            
+            return masterProductOption.Match<ActionResult>(
+                f0: masterProduct => Ok(masterProduct),
+                f1: notfound => NotFound()
+                );
+        }
     }
 }

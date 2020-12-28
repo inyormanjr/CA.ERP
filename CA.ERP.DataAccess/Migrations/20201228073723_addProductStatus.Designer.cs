@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CA.ERP.DataAccess.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    [Migration("20201227192805_addProductStatus")]
+    [Migration("20201228073723_addProductStatus")]
     partial class addProductStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

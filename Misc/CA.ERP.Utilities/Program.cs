@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CA.ERP.Utilities
 {
@@ -48,9 +49,24 @@ namespace CA.ERP.Utilities
                 db.Branches.AddRange(branches);
 
                 //add user for login.
-                var users = generateUsers(passwordManagementHelper, branches);
+                var users = generateUsers(db, passwordManagementHelper, branches);
 
                 db.Users.AddRange(users);
+
+
+                var brands = generateBrands().ToList();
+
+                db.Brands.AddRange(brands);
+
+                db.SaveChanges();
+
+                var suppliers = generateSupplier(brands);
+
+                db.Suppliers.AddRange(suppliers);
+
+                var masterProducts = generateMasterProduct(brands);
+
+                db.MasterProducts.AddRange(masterProducts);
 
                 db.SaveChanges();
             }
@@ -61,7 +77,7 @@ namespace CA.ERP.Utilities
 
         }
 
-        private static IEnumerable<User> generateUsers(PasswordManagementHelper passwordManagementHelper, List<Branch> branches, int count = 5)
+        private static IEnumerable<User> generateUsers(CADataContext dataContext, PasswordManagementHelper passwordManagementHelper, List<Branch> branches, int count = 5)
         {
            
 
@@ -77,13 +93,18 @@ namespace CA.ERP.Utilities
                 var user = fakeUserGenerator.Generate();
                 Random random = new Random();
 
-                user.Username = i == 0 ? "Admin" : user.Username;
-
-
                 const int mask = 127;
                 var roles = (mask & (random.Next(mask) + 1));
+                user.Role = (UserRole)roles;
 
-                user.Role = i == 0 ? UserRole.Admin : (UserRole)roles;
+                if (i == 0)
+                {
+                    if (!dataContext.Users.Any(u => u.Username == "Admin"))
+                    {
+                        user.Username = "Admin";
+                        user.Role = UserRole.Admin;
+                    }
+                }
 
                 string password = "password";
                 passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -122,6 +143,61 @@ namespace CA.ERP.Utilities
                 yield return fakeBranchGenerator.Generate();
             }
 
+        }
+
+        private static IEnumerable<Brand> generateBrands( int count = 10)
+        {
+            var brands = new List<Brand>();
+            var fakeBrandGenerator = new Faker<Brand>()
+                            .RuleFor(f => f.Name, f => f.Vehicle.Manufacturer() + " " + DateTimeOffset.Now.ToUnixTimeMilliseconds())
+                            .RuleFor(f => f.Description, f => f.Commerce.ProductDescription());
+
+
+            for (int i = 0; i < count; i++)
+            {
+                Thread.Sleep(1);
+                yield return fakeBrandGenerator.Generate();
+            }
+        }
+
+        private static IEnumerable<Supplier> generateSupplier(List<Brand> brands, int count = 10)
+        {
+            var fakeSupplierGenerator = new Faker<Supplier>()
+                            .RuleFor(f => f.Name, f => f.Company.CompanyName())
+                            .RuleFor(f => f.Name, f => f.Company.CatchPhrase());
+
+            var random = new Random();
+
+            for (int i = 0; i < count; i++)
+            {
+                var supplier = fakeSupplierGenerator.Generate();
+                var brandIds = brands.OrderBy(b => random.Next()).Take(5).Select(b => b.Id);
+                foreach (var brandId in brandIds)
+                {
+                    supplier.SupllierBrands.Add(new SupplierBrand() { BrandId = brandId, SupplierId = supplier.Id });
+                }
+
+                yield return supplier;
+            }
+
+        }
+
+
+        private static IEnumerable<MasterProduct> generateMasterProduct(List<Brand> brands, int count = 10)
+        {
+            var fakeMasterProductGenerator = new Faker<MasterProduct>()
+                            .RuleFor(f => f.Model, f => f.Vehicle.Model() + " - " + DateTimeOffset.Now.ToUnixTimeMilliseconds())
+                            .RuleFor(f => f.Description, f => f.Vehicle.Manufacturer());
+            foreach (var brand in brands)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    Thread.Sleep(1);
+                    var masterProduct = fakeMasterProductGenerator.Generate();
+                    masterProduct.BrandId = brand.Id;
+                    yield return masterProduct;
+                }
+            }
         }
     }
 }

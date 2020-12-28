@@ -49,6 +49,21 @@ namespace CA.ERP.WebApp.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dto.Branch>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var branchOption = await _branchService.GetBranchByIdAsync(id, cancellationToken);
+            return branchOption.Match<ActionResult>(
+                f0: brand =>
+                {
+                    return Ok(_mapper.Map<Dto.Branch>(brand));
+                },
+                f1: notfound => NotFound()
+            );
+        }
+
         /// <summary>
         /// Create branch
         /// </summary>

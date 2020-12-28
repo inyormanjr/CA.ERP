@@ -52,6 +52,30 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
+        public async Task ShouldGetExactlyOneBranch()
+        {
+            var id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4");
+            var response = await _client.GetAsync($"api/Branch/{id}");
+
+            response.IsSuccessStatusCode.Should().BeTrue();
+
+            var content = await response.Content.ReadAsAsync<Branch>();
+
+            content.Should().NotBeNull();
+            content.Id.Should().Be(id);
+        }
+
+        [Fact]
+        public async Task ShouldGetExactlyOneBranchFail_NotFound()
+        {
+            var id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d1");
+            var response = await _client.GetAsync($"api/Branch/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        }
+
+        [Fact]
         public async Task ShouldCreateBranchSuccessfully()
         {
             var fakeBranchGenerator = new Faker<CreateBranchRequest>()
