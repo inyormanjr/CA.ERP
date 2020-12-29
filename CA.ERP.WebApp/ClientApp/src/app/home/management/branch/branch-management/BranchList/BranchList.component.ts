@@ -5,14 +5,17 @@ import { fetchBranches } from '../../action/branch-management.actions';
 import { BranchService } from '../../branch.service';
 import { BranchView } from '../../model/branch.view';
 import { BranchManagementState } from '../../reducers';
-import { branchViewList } from '../../reducers/branch-management.selectors';
+import { BranchMangementSelectorType } from '../../reducers/branch.management.selectors.type';
 
 @Component({
-  selector: "app-BranchList",
-  templateUrl: "./BranchList.component.html",
-  styleUrls: ["./BranchList.component.scss"],
+  // tslint:disable-next-line: component-selector
+  selector: 'app-BranchList',
+  templateUrl: './BranchList.component.html',
+  styleUrls: ['./BranchList.component.scss'],
 })
 export class BranchListComponent implements OnInit {
+  isLoading$: Observable<boolean>;
+  fetchSuccess$: Observable<boolean>;
   branchViewList$: Observable<BranchView[]>;
   constructor(
     private store: Store<BranchManagementState>,
@@ -20,7 +23,12 @@ export class BranchListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.branchViewList$ = this.store.pipe(select(branchViewList));
+    this.branchViewList$ = this.store.pipe(select(BranchMangementSelectorType.branchViewList));
+    this.isLoading$ = this.store.pipe(
+      select(BranchMangementSelectorType.isLoading)
+    );
+    this.fetchSuccess$ = this.store.pipe(select(BranchMangementSelectorType.fetchSuccess));
     this.store.dispatch(fetchBranches());
+
   }
 }

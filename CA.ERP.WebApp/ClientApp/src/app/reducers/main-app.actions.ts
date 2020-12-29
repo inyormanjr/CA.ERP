@@ -5,6 +5,11 @@ export const loadingMainApp = createAction(
   '[MainApp] App is loading',
 );
 
+export const updateLoadingValue = createAction(
+  '[MainApp] Loading value update',
+  props<{ value: any }>()
+);
+
 export const loadMainApps = createAction(
   '[MainApp] Load MainApps'
 );
