@@ -1,6 +1,6 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
   >
     <div class="container-fluid">
       <a class="navbar-brand" [routerLink]="['/']">CA ERP</a>
@@ -40,4 +40,8 @@
       </div>
     </div>
   </nav>
+  <div *ngIf="loadinValue$ | async as loadingVlaue" class="progress" style="height: 2px;">
+    <div class="progress-bar" role="progressbar" style="width: 25%;"  [attr.aria-value]="loadingVlaue"  aria-valuemin="0"
+      aria-valuemax="100"></div>
+  </div>
 </header>

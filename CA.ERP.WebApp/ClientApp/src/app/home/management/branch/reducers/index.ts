@@ -33,6 +33,7 @@ export const reducers = createReducer(
       ...state,
       isLoading: false,
       branchesViewList: action.branchViewList,
+      fetchSuccess: true
     };
   }),
   on(BranchManagementActions.loadBranchManagementsFailure, (state, action) => {

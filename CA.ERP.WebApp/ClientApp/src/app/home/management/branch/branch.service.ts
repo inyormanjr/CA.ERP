@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BranchView } from './model/branch.view';
 import { NewBranchRequest } from './model/new.branch';
+import { UpdateBranchRequest } from './model/update.branch';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,12 @@ export class BranchService {
     );
   }
 
+  getById(id: any): Observable<BranchView> {
+    return this.http.get<BranchView>(this.baseUrl + id).pipe(map((response: any) => {
+      return response;
+    }, (error: any) => console.log(error)));
+  }
+
   create(newBranch: NewBranchRequest): Observable<string> {
     return this.http.post(this.baseUrl, newBranch).pipe(
       map((response: any) => {
@@ -29,10 +36,11 @@ export class BranchService {
     );
   }
 
-  update(id: string, data: any) {
-    return this.http.put(this.baseUrl + id, data).pipe(map((response: any) => {
+  update(id: string, updateBranchRequest: any) {
+    console.log(updateBranchRequest);
+    return this.http.put(this.baseUrl + id, updateBranchRequest).pipe(map((response: any) => {
       return true;
-    }, error => console.log(error)));
+    }, (error: any) => console.log(error)));
   }
 
   delete(id: string) {

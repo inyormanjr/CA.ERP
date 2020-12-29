@@ -32,7 +32,7 @@
               <td>{{branchView.address}}</td>
               <td>{{branchView.code}}</td>
               <td scope="row" class="text-right">
-                <a name="" id="" class="mr-1">
+                <a [routerLink]="['../update/', branchView.id]" name="" id="" class="mr-1">
                   <i class="fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                 </a>
               </td>

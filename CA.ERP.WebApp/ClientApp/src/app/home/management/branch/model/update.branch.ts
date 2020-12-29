@@ -1,5 +1,6 @@
-export interface NewBranchRequest {
-  branch: {
+export interface UpdateBranchRequest {
+  data: {
+    id: string;
     name: String;
     address: String;
     contact: String;
