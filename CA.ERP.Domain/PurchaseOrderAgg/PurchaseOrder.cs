@@ -10,13 +10,18 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public class PurchaseOrder: ModelBase
     {
-
+        public PurchaseOrder()
+        {
+            PurchaseOrderItems = new List<PurchaseOrderItem>();
+        }
         public string Barcode { get; set; }
         public DateTime DeliveryDate { get; set; }
         public decimal TotalCostPrice { get; set; }
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }
         public Guid BranchId { get; set; }
+
+        public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
         public User ApprovedBy { get; set; }
         public Supplier Supplier { get; set; }
