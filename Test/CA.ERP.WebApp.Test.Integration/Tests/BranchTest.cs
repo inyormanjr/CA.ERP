@@ -160,7 +160,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
 
             //id is static from utilities
-            var branchId = "56e5e4fc-c583-4186-a288-55392a6946d4";
+            var branchId = "f853efb7-9aec-4750-bbcc-dbfd1ae47063";
 
 
             var response = await _client.DeleteAsync($"api/Branch/{branchId}");

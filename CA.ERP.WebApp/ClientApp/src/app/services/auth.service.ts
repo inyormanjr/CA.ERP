@@ -9,11 +9,11 @@ providedIn: 'root',
 })
 export class AuthService {
   baseUrl = environment.apiURL + 'api/Authentication/';
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
 
   login(model: UserLogin) {
-    return this.http.post(this.baseUrl + 'login', model)
+    return this.http.post(this.baseUrl + 'login', model, {reportProgress: true})
       .pipe(map((response: any) => {
         if (response) {
           localStorage.setItem('token', response.token);

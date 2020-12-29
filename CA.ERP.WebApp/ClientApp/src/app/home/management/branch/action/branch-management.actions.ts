@@ -11,6 +11,10 @@ export const loadBranchViewList = createAction(
   props<{branchViewList: BranchView[]}>()
 );
 
+export const fetchingBranches = createAction(
+  '[BranchManagement] Fetching branches from api'
+);
+
 export const loadBranchManagementsSuccess = createAction(
   '[BranchManagement] Load BranchManagements Success',
   props<{ data: any }>()

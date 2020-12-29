@@ -1,14 +1,15 @@
-<div class="h-100 d-flex flex-row ">
+
+<div class="h-100  d-flex flex-row">
   <div class="menu-section mr-3">
-    <div class="list-group">
-      <button [routerLink]="['branch']" [routerLinkActive]="['active']" type="button" class="list-group-item">Branch</button>
-      <button [routerLink]="['users']" [routerLinkActive]="['active']" type="button" class="list-group-item">Users</button>
-      <button type="button" class="list-group-item">Morbi leo risus</button>
-      <button type="button" class="list-group-item">Porta ac consectetur ac</button>
-      <button type="button" class="list-group-item">Vestibulum at eros</button>
+    <div class="list-group ">
+      <button [routerLink]="['branch']" [routerLinkActive]="['active']" type="button" class="list-group-item bg-light">Branch</button>
+      <button [routerLink]="['users']" [routerLinkActive]="['active']" type="button" class="list-group-item bg-light">Users</button>
+      <button type="button" class="list-group-item bg-light">Morbi leo risus</button>
+      <button type="button" class="list-group-item bg-light">Porta ac consectetur ac</button>
+      <button type="button" class="list-group-item bg-light">Vestibulum at eros</button>
     </div>
   </div>
-  <div class="router-section flex-fill ">
+  <div class="router-section d-flex flex-column  flex-fill">
     <router-outlet></router-outlet>
   </div>
 </div>

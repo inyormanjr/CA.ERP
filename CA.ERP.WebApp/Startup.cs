@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using CA.ERP.WebApp.CustomAuthentication;
+using CA.ERP.WebApp.Middlewares;
 
 namespace CA.ERP.WebApp
 {
@@ -229,7 +230,7 @@ namespace CA.ERP.WebApp
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
-
+            app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

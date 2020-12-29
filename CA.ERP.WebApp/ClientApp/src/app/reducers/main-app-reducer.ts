@@ -14,10 +14,12 @@ export const mainAppFeatureKey = 'mainApp';
 
 export interface MainAppState {
   isLoading: Boolean;
+  loadingValue: number;
 }
 
 export const initialStateMainAppState = {
-  isLoading: false
+  isLoading: false,
+  loadingValue: undefined
 };
 
 export const mainAppReducer = createReducer(
@@ -28,10 +30,17 @@ export const mainAppReducer = createReducer(
       isLoading: true
     };
   }),
+  on(ERP_Main_Actions.updateLoadingValue, (state, action) => {
+    return {
+      ...state,
+      loadingValue: action.value
+    }
+  }),
   on(ERP_Main_Actions.loadMainAppsSuccess, (state, action) => {
     return {
       ...state,
-      isLoading: false
+      isLoading: false,
+      loadingValue: undefined
     };
   })
 );

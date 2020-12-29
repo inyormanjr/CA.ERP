@@ -4,6 +4,7 @@ using CA.ERP.Domain.UserAgg;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace CA.ERP.WebApp.Controllers
         private readonly UserService _userService;
         private readonly EnumFlagsHelper _enumFlagsHelper;
 
-        public AuthenticationController(IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper)
+        public AuthenticationController(ILogger<AuthenticationController> logger ,IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper) 
         {
             _mapper = mapper;
             _config = config;
@@ -31,29 +32,7 @@ namespace CA.ERP.WebApp.Controllers
             _enumFlagsHelper = enumFlagsHelper;
         }
 
-        public IUserRepository AthenticationRepository { get; }
 
-        /// <summary>
-        /// Register user
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Dto.ErrorResponse),StatusCodes.Status400BadRequest)]
-        [HttpPost("Register")]
-        public async Task<ActionResult<Dto.RegisterResponse>> Register(Dto.RegisterRequest request, CancellationToken cancellationToken)
-        {
-
-            var result = await _userService.CreateUserAsync(request.UserName, request.Password, (UserRole)(int)request.Role, request.FirstName, request.LastName, request.Branches, cancellationToken: cancellationToken);
-
-            //change to proper dto 
-            return result.Match<ActionResult>(
-                f0: userId => Ok(new Dto.RegisterResponse() { UserId = userId }),
-                f1: validationFailures => BadRequest(new Dto.ErrorResponse() { GeneralError = "Validation Error", ValidationErrors =_mapper.Map<List<Dto.ValidationError>>(validationFailures) }),
-                f2 : error => BadRequest(new Dto.ErrorResponse() { GeneralError = error.Value})
-                );
-        }
 
         /// <summary>
         /// Login using username and password
