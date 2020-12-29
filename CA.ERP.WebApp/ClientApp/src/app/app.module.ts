@@ -22,6 +22,8 @@ import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorInterceptorProvider } from './error.interceptor';
 
+import { AuthGuardService as AuthGuard } from './services/auth-guard.service';
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -31,6 +33,7 @@ const routes : Routes = [
   {
     path: 'home',
     component: HomeViewComponent,
+    canActivate : [AuthGuard],
     loadChildren: () =>
       import('../app/home/home.module').then((x) => x.HomeModule),
   },
