@@ -137,7 +137,7 @@ namespace CA.ERP.WebApp
             //register helpers
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<HelperBase>())
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
                 .AsSelf()
                 .WithScopedLifetime()
                 );

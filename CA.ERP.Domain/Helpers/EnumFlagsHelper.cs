@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CA.ERP.Domain.Helpers
 {
-    public class EnumFlagsHelper : HelperBase
+    public class EnumFlagsHelper : IHelper
     {
         public List<String> ConvertToList(Enum @enum)
         {

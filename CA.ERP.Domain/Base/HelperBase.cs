@@ -4,7 +4,4 @@ using System.Text;
 
 namespace CA.ERP.Domain.Base
 {
-    public abstract class HelperBase
-    {
-    }
 }
