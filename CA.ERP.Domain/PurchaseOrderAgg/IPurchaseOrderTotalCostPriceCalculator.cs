@@ -8,7 +8,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     /// <summary>
     /// Business logic interface for calculating Purchase order total amount
     /// </summary>
-    public interface IPurchaseOrderTotalAmountCalculator : IBusinessLogic
+    public interface IPurchaseOrderTotalCostPriceCalculator : IBusinessLogic
     {
         /// <summary>
         /// Do the calculation

@@ -6,11 +6,11 @@ using CA.ERP.Domain.Common.Rounding;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
 {
-    public class PurchaseOrderTotalAmountCalculator : IPurchaseOrderTotalAmountCalculator
+    public class PurchaseOrderTotalCostPriceCalculator : IPurchaseOrderTotalCostPriceCalculator
     {
         private readonly IRoundingCalculator _roundingCalculator;
 
-        public PurchaseOrderTotalAmountCalculator(IRoundingCalculator roundingCalculator)
+        public PurchaseOrderTotalCostPriceCalculator(IRoundingCalculator roundingCalculator)
         {
             _roundingCalculator = roundingCalculator;
         }

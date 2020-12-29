@@ -13,7 +13,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public string Barcode { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public decimal TotalAmount { get; set; }
+        public decimal TotalCostPrice { get; set; }
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }
         public Guid BranchId { get; set; }

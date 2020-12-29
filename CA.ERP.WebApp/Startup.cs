@@ -31,6 +31,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using CA.ERP.WebApp.CustomAuthentication;
 using CA.ERP.WebApp.Middlewares;
+using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Domain.Common.Rounding;
 
 namespace CA.ERP.WebApp
 {
@@ -143,6 +145,20 @@ namespace CA.ERP.WebApp
                 .WithScopedLifetime()
                 );
 
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+                );
+
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(PurchaseOrderBarcodeGenerator))
+                .AddClasses(classes => classes.AssignableTo<IBusinessLogic>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+                );
+
             //register validators
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(SupplierValidator))
@@ -150,6 +166,9 @@ namespace CA.ERP.WebApp
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
                 );
+
+            //manual
+            services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
             services.AddAuthentication(options =>
             {
