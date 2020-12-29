@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class RegisterRequest
+    public class UserUpdate :DtoBase
     {
         [Required]
         public string UserName { get; set; }
@@ -18,6 +18,5 @@ namespace CA.ERP.WebApp.Dto
         public string LastName { get; set; }
         public UserRole Role { get; set; }
         public List<Guid> Branches { get; set; }
-
     }
 }

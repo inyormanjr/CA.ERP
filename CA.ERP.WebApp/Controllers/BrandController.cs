@@ -56,7 +56,7 @@ namespace CA.ERP.WebApp.Controllers
             },
             f1: (validationErrors) =>
             {
-                var response = new Dto.ErrorResponse()
+                var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                 {
                     GeneralError = "Validation Error",
                     ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
@@ -79,7 +79,7 @@ namespace CA.ERP.WebApp.Controllers
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),
                 f1: (validationErrors) => {
-                    var response = new Dto.ErrorResponse()
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                     {
                         GeneralError = "Validation Error",
                         ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)

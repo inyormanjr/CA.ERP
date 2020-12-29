@@ -39,10 +39,17 @@ namespace CA.ERP.Domain.UserAgg
             List<Branch> branches = await _branchRepository.GetBranchsAsync(branchIds, cancellationToken: cancellationToken);
 
             //validate all branch id are present
+            List<ValidationFailure> validationFailures = new List<ValidationFailure>();
             var notFoundBranches = branchIds.Except(branches.Select(b => b.Id));
             if (notFoundBranches.Any())
             {
-                ret = new Error<string>("One or more branch is invalid.");
+                var branchNames = branches.Where(b => notFoundBranches.Contains(b.Id)).Select(b => b.Name);
+                validationFailures.Add(new ValidationFailure("UserBranches", $"Invalid branches : {string.Join(", ", branchNames)}"));
+            }
+
+            if (validationFailures.Any())
+            {
+                ret = validationFailures;
             }
             else
             {
@@ -70,6 +77,113 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
 
             
+        }
+
+        public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateUser(Guid id, User user, List<Guid> branchIds, CancellationToken cancellationToken)
+        {
+            //init result
+            OneOf<Guid, List<ValidationFailure>, NotFound> ret = new List<ValidationFailure>();
+            //get branches
+            List<Branch> branches = await _branchRepository.GetBranchsAsync(branchIds, cancellationToken: cancellationToken);
+
+            //validation failure
+
+            List<ValidationFailure> validationFailures = new List<ValidationFailure>();
+            //validate all branch id are present
+            var notFoundBranches = branchIds.Except(branches.Select(b => b.Id));
+            if (notFoundBranches.Any())
+            {
+                var branchNames = branches.Where(b => notFoundBranches.Contains(b.Id)).Select(b => b.Name);
+                validationFailures.Add(new ValidationFailure("UserBranches", $"Invalid branches : {string.Join(", ", branchNames)}"));
+            }
+
+            if (validationFailures.Any())
+            {
+                ret = validationFailures;
+            }
+            else
+            {
+                //validate user;
+                var validationResult = _userValidator.Validate(user);
+                if (!validationResult.IsValid)
+                {
+                    ret = validationResult.Errors.ToList();
+                }
+                else
+                {
+                    user.UserBranches.Clear();
+
+                    foreach (var branch in branches)
+                    {
+                        user.UserBranches.Add(new UserBranch() { BranchId = branch.Id });
+                    }
+
+                    var userOption = await _userRepository.UpdateAsync(id ,user, cancellationToken: cancellationToken);
+                    ret = userOption.Match<OneOf<Guid, List<ValidationFailure>, NotFound>>(
+                        f0: id => id,
+                        f1: none => default(NotFound)
+                    );
+                }
+            }
+            return ret;
+        }
+
+        public async Task<OneOf<Success, List<ValidationFailure>, NotFound>> UpdateUserPassword(Guid id, string password, string confirmPassword, CancellationToken cancellationToken)
+        {
+            //init result
+            OneOf<Success, List<ValidationFailure>, NotFound> ret = new List<ValidationFailure>();
+            var validationFailures = new List<ValidationFailure>();
+            if (string.IsNullOrEmpty(password))
+            {
+                validationFailures.Add(new ValidationFailure("Password", "Password is required."));
+            }
+            if(string.IsNullOrEmpty(confirmPassword))
+            {
+                validationFailures.Add(new ValidationFailure("ConfirmPassword", "ConfirmPassword is required."));
+            }
+            if (confirmPassword != password)
+            {
+                validationFailures.Add(new ValidationFailure("Password", "Password and ConfirmPassword must match."));
+
+            }
+            if (validationFailures.Any())
+            {
+                ret = validationFailures;
+            }
+            else
+            {
+                _passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                var passwordOption = await _userRepository.UpdatePasswordAsync(id,passwordHash, passwordSalt);
+                ret = passwordOption.Match<OneOf<Success, List<ValidationFailure> , NotFound>>(
+                    f0: success => success,
+                    f1: none => default(NotFound)
+                    ); ;
+            }
+            return ret;
+        }
+
+        public async Task<List<User>> GetUsers(CancellationToken cancellationToken)
+        {
+            return await _userRepository.GetManyAsync(cancellationToken: cancellationToken);
+        }
+
+        public async Task<OneOf<User, NotFound>> GetUser(Guid id, CancellationToken cancellationToken)
+        {
+            var userOption = await _userRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
+            return userOption.Match<OneOf<User, NotFound>>(
+                f0: user => user,
+                f1: none => default(NotFound)
+            );
+        }
+
+        public async Task<OneOf<Success, NotFound>> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var deleteOption = await _userRepository.DeleteAsync(id, cancellationToken);
+            return deleteOption.Match<OneOf<Success, NotFound>>(
+                f0: success => success,
+                f1: none => default(NotFound)
+                );
         }
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)

@@ -4,6 +4,7 @@ using CA.ERP.Domain.UserAgg;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace CA.ERP.WebApp.Controllers
         private readonly UserService _userService;
         private readonly EnumFlagsHelper _enumFlagsHelper;
 
-        public AuthenticationController(IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper)
+        public AuthenticationController(ILogger<AuthenticationController> logger ,IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper) 
         {
             _mapper = mapper;
             _config = config;
