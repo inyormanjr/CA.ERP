@@ -1,6 +1,7 @@
 ﻿using CA.ERP.WebApp.Dto;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -18,6 +19,10 @@ namespace CA.ERP.WebApp.Test.Integration.Helpers
             {
                 var loginResponse = await response.Content.ReadAsAsync<LoginResponse>();
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.token}");
+            }
+            else
+            {
+                Debugger.Log(0, "", "Login failed");
             }
         }
     }

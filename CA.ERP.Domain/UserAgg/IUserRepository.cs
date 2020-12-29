@@ -13,6 +13,6 @@ namespace CA.ERP.Domain.UserAgg
     {
 
         Task<OneOf<User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken);
-        
+        Task<OneOf<Success, None>> UpdatePasswordAsync(Guid userId, byte[] passwordHash, byte[] passwordSalt);
     }
 }

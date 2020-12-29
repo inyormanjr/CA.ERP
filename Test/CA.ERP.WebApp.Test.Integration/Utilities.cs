@@ -28,7 +28,7 @@ namespace CA.ERP.WebApp.Test.Integration
                 }
 
                 var fakeBranchGenerator = new Faker<Branch>()
-                    .CustomInstantiator(f => new Branch() { Id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") })
+                    .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid() })
                     .RuleFor(f => f.Name, f => f.Address.City())
                     .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                     .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -37,18 +37,38 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 //add branch for testing
                 Branch branch = fakeBranchGenerator.Generate();
-                db.Branches.Add(branch);
+                for (int i = 0; i < 10; i++)
+                {
+                    branch = fakeBranchGenerator.Generate();
+                    if (i == 0)
+                    {
+                        branch.Id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4");
+                    }
+                    else if (i == 1)
+                    {
+                        branch.Id = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02");
+                    }
+                    db.Branches.Add(branch);
+                }
+                
                 db.SaveChanges();
                 //add user for login.
                 string password = "password";
                 passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                var user = new User() { Id = Guid.NewGuid(), Username = "ExistingUser", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
+                var user = new User() { Id = Guid.Parse("9e3205dc-f63d-49b3-bbc3-67ccf15e3ffa"), Username = "ExistingUser", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
                 user.SetHashAndSalt(passwordHash, passwordSalt);
 
                 user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
 
                 db.Users.Add(user);
+
+                var user2 = new User() { Id = Guid.Parse("14a2497c-f85d-40cb-9361-92a580b1b6c5"), Username = "ExistingUser2", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
+                user2.SetHashAndSalt(passwordHash, passwordSalt);
+
+                user2.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user2.Id, Branch = branch, User = user2 });
+
+                db.Users.Add(user2);
 
                 //add suppliers
                 var fakeSupplierGenerator = new Faker<Supplier>()

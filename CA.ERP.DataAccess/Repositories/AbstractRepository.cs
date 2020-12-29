@@ -64,7 +64,7 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task<OneOf<Guid, None>> UpdateAsync(Guid id, T1 entity, CancellationToken cancellationToken = default)
+        public virtual async Task<OneOf<Guid, None>> UpdateAsync(Guid id, T1 entity, CancellationToken cancellationToken = default)
         {
             OneOf<Guid, None> result = default(None);
             var dalEntity = await _context.Set<T2>().FirstOrDefaultAsync<T2>(b => b.Id == id, cancellationToken: cancellationToken);

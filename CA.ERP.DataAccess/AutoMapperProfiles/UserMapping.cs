@@ -11,8 +11,7 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public UserMapping()
         {
-            CreateMap<Dal.User, Dom.UserAgg.User>()
-                .ReverseMap();
+            CreateMap<Dal.User, Dom.UserAgg.User>().ReverseMap();
         }
     }
 }
