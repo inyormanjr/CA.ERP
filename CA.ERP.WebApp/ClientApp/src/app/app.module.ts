@@ -21,6 +21,7 @@ import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorInterceptorProvider } from './error.interceptor';
+import { HttpRequestInterceptor } from './intercepter/http-intercepter.service';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -69,7 +70,7 @@ export function tokenGetter() {
       { path: 'fetch-data', component: FetchDataComponent },
     ]),
   ],
-  providers: [AlertifyService, ErrorInterceptorProvider],
+  providers: [AlertifyService, HttpRequestInterceptor, ErrorInterceptorProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
