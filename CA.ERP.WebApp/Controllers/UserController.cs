@@ -50,8 +50,8 @@ namespace CA.ERP.WebApp.Controllers
             //change to proper dto 
             return result.Match<ActionResult>(
                 f0: userId => Ok(new Dto.RegisterResponse() { UserId = userId }),
-                f1: validationFailures => BadRequest(new Dto.ErrorResponse() { GeneralError = "Validation Error", ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationFailures) }),
-                f2: error => BadRequest(new Dto.ErrorResponse() { GeneralError = error.Value })
+                f1: validationFailures => BadRequest(new Dto.ErrorResponse(HttpContext.TraceIdentifier) { GeneralError = "Validation Error", ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationFailures) }),
+                f2: error => BadRequest(new Dto.ErrorResponse(HttpContext.TraceIdentifier) { GeneralError = error.Value })
                 );
         }
 
@@ -73,7 +73,7 @@ namespace CA.ERP.WebApp.Controllers
                 },
                 f1: (validationErrors) =>
                 {
-                    var response = new Dto.ErrorResponse()
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                     {
                         GeneralError = "Validation Error",
                         ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
@@ -105,7 +105,7 @@ namespace CA.ERP.WebApp.Controllers
                 },
                 f1: (validationErrors) =>
                 {
-                    var response = new Dto.ErrorResponse()
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                     {
                         GeneralError = "Validation Error",
                         ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
@@ -134,6 +134,33 @@ namespace CA.ERP.WebApp.Controllers
                 },
                 f1: notfound => NotFound()
             );
+        }
+
+
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.User>>> Get(CancellationToken cancellationToken)
+        {
+            var users = await _userService.GetUsers(cancellationToken: cancellationToken);
+            var dtoUsers = _mapper.Map<List<Dto.User>>(users);
+            var response = new Dto.GetManyResponse<Dto.User>()
+            {
+                Data = dtoUsers
+            };
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.User>>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var userOption = await _userService.GetUser(id, cancellationToken: cancellationToken);
+            return userOption.Match<ActionResult>(
+                f0: user => Ok(_mapper.Map<Dto.User>(user)),
+                f1: notFound => NotFound()
+                ); 
         }
     }
 }

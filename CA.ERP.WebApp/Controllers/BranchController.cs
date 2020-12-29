@@ -20,7 +20,7 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class BranchController:BaseApiController
     {
-        private readonly ILogger<BranchController> _logger;
+        private ILogger<BranchController> _logger;
         private readonly BranchService _branchService;
         private readonly IMapper _mapper;
 
@@ -89,7 +89,7 @@ namespace CA.ERP.WebApp.Controllers
                     return Ok(response);
                 },
                 f1: (validationErrors) => {
-                    var error = new ErrorResponse() { 
+                    var error = new ErrorResponse(HttpContext.TraceIdentifier) { 
                         GeneralError = "Validation Error", 
                         ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors) 
                     };
@@ -117,7 +117,7 @@ namespace CA.ERP.WebApp.Controllers
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),
                 f1: (validationErrors) => {
-                    var error = new ErrorResponse()
+                    var error = new ErrorResponse(HttpContext.TraceIdentifier)
                     {
                         GeneralError = "Validation Error",
                         ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors)

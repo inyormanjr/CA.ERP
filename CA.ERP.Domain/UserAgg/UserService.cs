@@ -163,6 +163,20 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
+        public async Task<List<User>> GetUsers(CancellationToken cancellationToken)
+        {
+            return await _userRepository.GetManyAsync(cancellationToken: cancellationToken);
+        }
+
+        public async Task<OneOf<User, NotFound>> GetUser(Guid id, CancellationToken cancellationToken)
+        {
+            var userOption = await _userRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
+            return userOption.Match<OneOf<User, NotFound>>(
+                f0: user => user,
+                f1: none => default(NotFound)
+            );
+        }
+
         public async Task<OneOf<Success, NotFound>> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
         {
             var deleteOption = await _userRepository.DeleteAsync(id, cancellationToken);

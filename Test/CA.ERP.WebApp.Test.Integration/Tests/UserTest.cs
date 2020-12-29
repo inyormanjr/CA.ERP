@@ -194,5 +194,36 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         }
+
+        [Fact]
+        public async Task ShouldGetOneUserSuccess_Ok()
+        {
+            var id = Guid.Parse("9e3205dc-f63d-49b3-bbc3-67ccf15e3ffa");
+            var response = await _client.GetAsync($"api/User/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task ShouldGetOneUserFail_NotFound()
+        {
+            var id = Guid.Parse("9e3205dc-f63d-49b3-bbc3-67ccf15e3ffa");
+            var response = await _client.GetAsync($"api/User/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+
+        [Fact]
+        public async Task ShouldGetAtLeastOneUserSuccess_Ok()
+        {
+            var response = await _client.GetAsync($"api/User/");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<Dto.GetManyResponse<Dto.User>>();
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterOrEqualTo(1);
+        }
     }
 }

@@ -13,6 +13,9 @@ namespace CA.ERP.WebApp.Mapping
         {
             CreateMap<Dto.UserUpdate, User>()
                 .ReverseMap();
+
+            CreateMap<Dto.User, User>()
+                .ReverseMap();
         }
     }
 }

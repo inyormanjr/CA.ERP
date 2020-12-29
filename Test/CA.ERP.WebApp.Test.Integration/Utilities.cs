@@ -48,6 +48,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         branch.Id = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02");
                     }
+                    else if (i == 2)
+                    {
+                        branch.Id = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063");
+                    }
                     db.Branches.Add(branch);
                 }
                 

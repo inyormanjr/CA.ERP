@@ -22,15 +22,17 @@ namespace CA.ERP.WebApp.Controllers
         [Route("error")]
         public ActionResult<ErrorResponse> Error()
         {
+            
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
             var exception = context.Error;
-            Guid errorId = Guid.NewGuid();
-            var response = new Dto.ErrorResponse()
+
+            var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
             {
-                GeneralError = $"Internal Server Error with Error Id: {errorId}"
+                GeneralError = $"Internal Server Error"
+                
             };
 
-            _logger.LogError(exception, "ErrorId: {0}", errorId);
+            _logger.LogError(exception, "TraceId: {0}", HttpContext.TraceIdentifier);
             return StatusCode(500, response);
         }
     }
