@@ -163,6 +163,15 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
+        public async Task<OneOf<Success, NotFound>> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var deleteOption = await _userRepository.DeleteAsync(id, cancellationToken);
+            return deleteOption.Match<OneOf<Success, NotFound>>(
+                f0: success => success,
+                f1: none => default(NotFound)
+                );
+        }
+
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {
             OneOf<User, None> ret = default(None);

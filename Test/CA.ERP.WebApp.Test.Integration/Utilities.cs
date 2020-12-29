@@ -52,23 +52,35 @@ namespace CA.ERP.WebApp.Test.Integration
                 }
                 
                 db.SaveChanges();
-                //add user for login.
-                string password = "password";
-                passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                var user = new User() { Id = Guid.Parse("9e3205dc-f63d-49b3-bbc3-67ccf15e3ffa"), Username = "ExistingUser", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
-                user.SetHashAndSalt(passwordHash, passwordSalt);
+                for (int i = 0; i < 10; i++)
+                {
+                    //add user for login.
+                    string password = "password";
+                    passwordManagementHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
+                    var suffix = i == 0 ? string.Empty : i.ToString();
 
-                db.Users.Add(user);
+                    var user = new User() { Id = Guid.NewGuid() , Username = "ExistingUser" + suffix, Role = UserRole.Admin, FirstName = "Existing" , LastName = "User" };
+                    user.SetHashAndSalt(passwordHash, passwordSalt);
 
-                var user2 = new User() { Id = Guid.Parse("14a2497c-f85d-40cb-9361-92a580b1b6c5"), Username = "ExistingUser2", Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
-                user2.SetHashAndSalt(passwordHash, passwordSalt);
+                    if (i == 0)
+                    {
+                        user.Id = Guid.Parse("9e3205dc-f63d-49b3-bbc3-67ccf15e3ffa");
+                    }
+                    else if (i == 1)
+                    {
+                        user.Id = Guid.Parse("14a2497c-f85d-40cb-9361-92a580b1b6c5");
+                    }
+                    else if (i == 2)
+                    {
+                        user.Id = Guid.Parse("e02fbc42-a8dc-4359-bfa1-7f0774bd1fd4");
+                    }
 
-                user2.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user2.Id, Branch = branch, User = user2 });
+                    user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
 
-                db.Users.Add(user2);
+                    db.Users.Add(user);
+                }
 
                 //add suppliers
                 var fakeSupplierGenerator = new Faker<Supplier>()

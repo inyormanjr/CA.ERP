@@ -120,5 +120,20 @@ namespace CA.ERP.WebApp.Controllers
                 }
              );
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dto.Brand>> Delete(Guid id, CancellationToken cancellationToken)
+        {
+            var userOption = await _userService.DeleteUserAsync(id, cancellationToken);
+            return userOption.Match<ActionResult>(
+                f0: Success =>
+                {
+                    return NoContent();
+                },
+                f1: notfound => NotFound()
+            );
+        }
     }
 }

@@ -174,5 +174,25 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         }
+
+        [Fact]
+        public async Task ShouldDeleteSuccessful()
+        {
+            var id = Guid.Parse("e02fbc42-a8dc-4359-bfa1-7f0774bd1fd4");
+            var response = await _client.DeleteAsync($"api/User/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        }
+
+        [Fact]
+        public async Task ShouldDeleteFail_NotFound()
+        {
+            var id = Guid.Parse("e02fbc42-a8dc-4359-bfa1-7f0774bd1fd5");
+            var response = await _client.DeleteAsync($"api/User/{id}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        }
     }
 }
