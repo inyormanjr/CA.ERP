@@ -65,7 +65,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderCreate},System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
             <summary>
             Update purchase order
             </summary>

@@ -17,15 +17,13 @@ namespace CA.ERP.Domain.SupplierAgg
     {
         private readonly ISupplierRepository _supplierRepository;
         private readonly ISupplierFactory _supplierFactory;
-        private readonly IUserHelper _userHelper;
         private readonly IValidator<Supplier> _supplerValidator;
 
         public SupplierService(ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper, IValidator<Supplier> supplerValidator)
-            :base(supplierRepository, supplerValidator)
+            :base(supplierRepository, supplerValidator, userHelper)
         {
             _supplierRepository = supplierRepository;
             _supplierFactory = supplierFactory;
-            _userHelper = userHelper;
             _supplerValidator = supplerValidator;
         }
 

@@ -9,7 +9,6 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     {
         public PurchaseOrderValidator()
         {
-            RuleFor(p => p.Barcode).NotEmpty();
             RuleFor(p => p.DeliveryDate).NotEmpty();
             RuleFor(p => p.TotalCostPrice).NotEmpty();
             RuleFor(p => p.ApprovedById).NotEmpty();

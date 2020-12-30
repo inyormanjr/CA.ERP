@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
@@ -18,8 +19,8 @@ namespace CA.ERP.Domain.MasterProductAgg
         private readonly IMasterProductFactory _masterProductFactory;
         private readonly IValidator<MasterProduct> _masterProductValidator;
 
-        public MasterProductService(IMasterProductRepository masterProductRepository, IMasterProductFactory masterProductFactory, IValidator<MasterProduct> masterProductValidator)
-            : base(masterProductRepository, masterProductValidator)
+        public MasterProductService(IMasterProductRepository masterProductRepository, IMasterProductFactory masterProductFactory, IValidator<MasterProduct> masterProductValidator, IUserHelper userHelper)
+            : base(masterProductRepository, masterProductValidator, userHelper)
         {
             _masterProductRepository = masterProductRepository;
             _masterProductFactory = masterProductFactory;
@@ -37,6 +38,8 @@ namespace CA.ERP.Domain.MasterProductAgg
             }
             else
             {
+                masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
+                masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
             }
             return ret;

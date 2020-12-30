@@ -18,15 +18,13 @@ namespace CA.ERP.Domain.BrandAgg
         private readonly IBrandFactory _brandFactory;
         private readonly IValidator<Brand> _brandValidator;
         private readonly IBrandRepository _brandRepository;
-        private readonly IUserHelper _userHelper;
 
         public BrandService(IBrandFactory brandFactory, IValidator<Brand> brandValidator, IBrandRepository brandRepository, IUserHelper userHelper)
-            : base(brandRepository, brandValidator)
+            : base(brandRepository, brandValidator, userHelper)
         {
             _brandFactory = brandFactory;
             _brandValidator = brandValidator;
             _brandRepository = brandRepository;
-            _userHelper = userHelper;
         }
 
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreateBrandAsync(string name, string description, CancellationToken cancellationToken)

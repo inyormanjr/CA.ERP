@@ -83,8 +83,10 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.PurchaseOrder.PurchaseOrderCreate> request, CancellationToken cancellationToken)
+        [Obsolete]
+        public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.PurchaseOrder.PurchaseOrderUpdate> request, CancellationToken cancellationToken)
         {
+            throw new NotImplementedException();
             var domData = _mapper.Map<PurchaseOrder>(request.Data);
             OneOf<Guid, List<ValidationFailure>, NotFound> result = await _purchaseOrderService.UpdateAsync(id, domData, cancellationToken);
 
@@ -110,8 +112,8 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(CancellationToken cancellationToken)
         {
             var list = await _purchaseOrderService.GetManyAsync(cancellationToken);
-            var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderItemView>>(list);
-            var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderItemView>()
+            var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(list);
+            var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>()
             {
                 Data = dtoList
             };
@@ -121,12 +123,12 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.PurchaseOrder.PurchaseOrderItemView>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PurchaseOrder.PurchaseOrderView>> Get(Guid id, CancellationToken cancellationToken)
         {
             var option = await _purchaseOrderService.GetOneAsync(id, cancellationToken);
 
             return option.Match<ActionResult>(
-                f0: data => Ok(_mapper.Map<Dto.PurchaseOrder.PurchaseOrderItemView>(data)),
+                f0: data => Ok(_mapper.Map<Dto.PurchaseOrder.PurchaseOrderView>(data)),
                 f1: notfound => NotFound()
                 );
         }

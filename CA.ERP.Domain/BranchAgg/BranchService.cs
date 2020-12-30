@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
@@ -20,8 +21,8 @@ namespace CA.ERP.Domain.BranchAgg
         private readonly IBranchFactory _branchFactory;
         private readonly IValidator<Branch> _branchValidator;
 
-        public BranchService(ILogger<BranchService> logger, IBranchRepository branchRepository, IBranchFactory branchFactory, IValidator<Branch> branchValidator)
-            :base(branchRepository, branchValidator)
+        public BranchService(ILogger<BranchService> logger, IBranchRepository branchRepository, IBranchFactory branchFactory, IValidator<Branch> branchValidator, IUserHelper userHelper)
+            :base(branchRepository, branchValidator, userHelper)
         {
             _logger = logger;
             _branchRepository = branchRepository;
@@ -48,6 +49,8 @@ namespace CA.ERP.Domain.BranchAgg
             }
             else
             {
+                branch.CreatedBy = _userHelper.GetCurrentUserId();
+                branch.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _branchRepository.AddAsync(branch, cancellationToken);
             }
             return ret;

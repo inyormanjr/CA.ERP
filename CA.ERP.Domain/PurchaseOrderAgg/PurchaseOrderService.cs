@@ -15,27 +15,27 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public class PurchaseOrderService : ServiceBase<PurchaseOrder>
     {
-        private readonly IPurchaseOrderBarcodeGenerator _purchaseOrderBarcodeGenerator;
         private readonly IPurchaseOrderTotalCostPriceCalculator _purchaseOrderTotalCostPriceCalculator;
-        private readonly IPurchaseOrderItemTotalCostPriceCalculator _purchaseOrderItemTotalCalculator;
+        private readonly IPurchaseOrderItemTotalCostPriceCalculator _purchaseOrderItemTotalCostPriceCalculator;
+        private readonly IPurchaseOrderItemTotalQuantityCalculator _purchaseOrderItemTotalQuantityCalculator;
         private readonly IUserHelper _userHelper;
         private readonly IPurchaseOrderFactory _purchaseOrderFactory;
         private readonly IValidator<PurchaseOrder> _purchaseOrderValidator;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
 
         public PurchaseOrderService(
-            IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator,
             IPurchaseOrderTotalCostPriceCalculator purchaseOrderTotalCostPriceCalculator,
-            IPurchaseOrderItemTotalCostPriceCalculator purchaseOrderItemTotalCalculator,
+            IPurchaseOrderItemTotalCostPriceCalculator purchaseOrderItemTotalCostPriceCalculator,
+            IPurchaseOrderItemTotalQuantityCalculator purchaseOrderItemTotalQuantityCalculator,
             IUserHelper userHelper,
             IPurchaseOrderFactory purchaseOrderFactory,
             IValidator<PurchaseOrder> purchaseOrderValidator,
             IPurchaseOrderRepository purchaseOrderRepository)
-            :base(purchaseOrderRepository, purchaseOrderValidator)
+            :base(purchaseOrderRepository, purchaseOrderValidator, userHelper)
         {
-            _purchaseOrderBarcodeGenerator = purchaseOrderBarcodeGenerator;
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
-            _purchaseOrderItemTotalCalculator = purchaseOrderItemTotalCalculator;
+            _purchaseOrderItemTotalCostPriceCalculator = purchaseOrderItemTotalCostPriceCalculator;
+            _purchaseOrderItemTotalQuantityCalculator = purchaseOrderItemTotalQuantityCalculator;
             _userHelper = userHelper;
             _purchaseOrderFactory = purchaseOrderFactory;
             _purchaseOrderValidator = purchaseOrderValidator;
@@ -53,9 +53,26 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             }
             else
             {
+                purchaseOrder.CreatedBy = _userHelper.GetCurrentUserId();
+                purchaseOrder.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _purchaseOrderRepository.AddAsync(purchaseOrder, cancellationToken: cancellationToken);
             }
             return ret;
+        }
+
+        public override Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateAsync(Guid id, PurchaseOrder purchaseOrder, CancellationToken cancellationToken = default)
+        {
+            //fill in for validation
+            purchaseOrder.Barcode = "NotEmtpy";
+            foreach (var purchaseOrderItem in purchaseOrder.PurchaseOrderItems)
+            {
+                purchaseOrderItem.TotalCostPrice = _purchaseOrderItemTotalCostPriceCalculator.Calculate(purchaseOrderItem);
+                purchaseOrderItem.TotalQuantity = _purchaseOrderItemTotalQuantityCalculator.Calculate(purchaseOrderItem);
+            }
+
+            purchaseOrder.TotalCostPrice = _purchaseOrderTotalCostPriceCalculator.Calculate(purchaseOrder, purchaseOrder.PurchaseOrderItems);
+
+            return base.UpdateAsync(id, purchaseOrder, cancellationToken);
         }
 
     }

@@ -22,8 +22,8 @@ namespace CA.ERP.Domain.UserAgg
         private readonly PasswordManagementHelper _passwordManagementHelper;
         private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator )
-            : base(userRepository, userValidator)
+        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper)
+            : base(userRepository, userValidator, userHelper)
         {
             _userRepository = userRepository;
             _branchRepository = branchRepository;
@@ -72,6 +72,8 @@ namespace CA.ERP.Domain.UserAgg
                 }
                 else
                 {
+                    user.CreatedBy = _userHelper.GetCurrentUserId();
+                    user.UpdatedBy = _userHelper.GetCurrentUserId();
                     ret = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
                 }
             }

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CA.ERP.Domain.UserAgg;
+using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;
@@ -18,11 +19,13 @@ namespace CA.ERP.Domain.Base
     {
         private readonly IRepository<T> _repository;
         private readonly IValidator<T> _validator;
+        protected readonly IUserHelper _userHelper;
 
-        public ServiceBase(IRepository<T> repository, IValidator<T> validator)
+        public ServiceBase(IRepository<T> repository, IValidator<T> validator, IUserHelper userHelper)
         {
             _repository = repository;
             _validator = validator;
+            _userHelper = userHelper;
         }
         public virtual async Task<OneOf<Success, NotFound>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
@@ -48,6 +51,7 @@ namespace CA.ERP.Domain.Base
             }
             else
             {
+                model.UpdatedBy = _userHelper.GetCurrentUserId();
                 var supplierOption = await _repository.UpdateAsync(id, model, cancellationToken: cancellationToken);
                 ret = supplierOption.Match<OneOf<Guid, List<ValidationFailure>, NotFound>>(
                     f0: supplierId => supplierId,
@@ -60,8 +64,7 @@ namespace CA.ERP.Domain.Base
 
         public virtual async Task<List<T>> GetManyAsync(CancellationToken cancellationToken = default)
         {
-            List<T> suppliers = await _repository.GetManyAsync(cancellationToken: cancellationToken);
-            return suppliers;
+            return await _repository.GetManyAsync(cancellationToken: cancellationToken);
         }
 
         public virtual async Task<OneOf<T, NotFound>> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
