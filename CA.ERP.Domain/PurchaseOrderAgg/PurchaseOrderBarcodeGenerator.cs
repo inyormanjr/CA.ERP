@@ -9,7 +9,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     {
         public string GenerateBarcode()
         {
-            throw new NotImplementedException();
+            return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
         }
     }
 }

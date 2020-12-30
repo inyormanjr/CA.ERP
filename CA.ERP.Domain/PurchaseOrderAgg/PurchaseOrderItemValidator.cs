@@ -9,8 +9,9 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     {
         public PurchaseOrderItemValidator()
         {
-            RuleFor(poi => poi.PurchaseOrderId).NotEmpty();
             RuleFor(poi => poi.MasterProductId).NotEmpty();
+            RuleFor(poi => poi.TotalQuantity).NotEmpty();
+            RuleFor(poi => poi.TotalCostPrice).NotEmpty();
         }
     }
 }

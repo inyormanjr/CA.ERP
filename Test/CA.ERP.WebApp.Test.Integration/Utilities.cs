@@ -137,6 +137,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         masterProduct.Id = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3");
                     }
+                    else if (i == 1)
+                    {
+                        masterProduct.Id = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef");
+                    }
 
                     db.MasterProducts.Add(masterProduct);
                 }

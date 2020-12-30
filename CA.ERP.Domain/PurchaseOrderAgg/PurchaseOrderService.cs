@@ -42,14 +42,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreatePurchaseOrder(DateTime deliveryDate, Guid supplierId, Guid branchId, List<PurchaseOrderItem> purchaseOrderItems, CancellationToken cancellationToken)
         {
             OneOf<Guid, List<ValidationFailure>> ret = Guid.Empty;
-            var purchaseOrder = _purchaseOrderFactory.Create(_purchaseOrderBarcodeGenerator.GenerateBarcode(), deliveryDate, _userHelper.GetCurrentUserId(), supplierId, branchId);
-            //do computations here
-            foreach (var purchaseOrderItem in purchaseOrderItems)
-            {
-                purchaseOrderItem.TotalCostPrice = _purchaseOrderItemTotalCalculator.Calculate(purchaseOrderItem);
-            }
-            purchaseOrder.PurchaseOrderItems = purchaseOrderItems;
-            purchaseOrder.TotalCostPrice = _purchaseOrderTotalCostPriceCalculator.Calculate(purchaseOrder, purchaseOrderItems);
+            var purchaseOrder = _purchaseOrderFactory.Create(deliveryDate, supplierId, branchId, purchaseOrderItems);
+            
 
 
             var validationResult = _purchaseOrderValidator.Validate(purchaseOrder);

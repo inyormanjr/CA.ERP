@@ -24,18 +24,18 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                        typeof(DbContextOptions<CADataContext>));
+                //var descriptor = services.SingleOrDefault(
+                //    d => d.ServiceType ==
+                //        typeof(DbContextOptions<CADataContext>));
 
-                services.Remove(descriptor);
+                //services.Remove(descriptor);
 
-                string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-                services.AddDbContext<CADataContext>(options =>
-                {
-                    
-                    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
-                });
+                //string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                //services.AddDbContext<CADataContext>(options =>
+                //{
+
+                //    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
+                //});
 
                 var sp = services.BuildServiceProvider();
 
@@ -46,10 +46,11 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
-                    db.Database.EnsureCreated();
+                    
 
                     try
                     {
+                        db.Database.EnsureCreated();
                         Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
                     }
                     catch (Exception ex)

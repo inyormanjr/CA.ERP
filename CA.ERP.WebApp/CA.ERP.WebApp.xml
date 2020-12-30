@@ -57,6 +57,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.CreateSupplier(CA.ERP.WebApp.Dto.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
+            <summary>
+            Create master products
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.Controllers.SupplierController">
             <summary>
             Contains supplier and supllier brands related endpoints

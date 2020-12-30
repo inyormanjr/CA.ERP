@@ -32,6 +32,8 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new SupplierBrandMapping());
             builder.ApplyConfiguration(new BrandMapping());
             builder.ApplyConfiguration(new MasterProductMapping());
+            builder.ApplyConfiguration(new PurchaseOrderMapping());
+            builder.ApplyConfiguration(new PurchaseOrderItemMapping());
             base.OnModelCreating(builder);
         }
 

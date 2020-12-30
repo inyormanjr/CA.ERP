@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto
+namespace CA.ERP.DataAccess.Entities
 {
-    public class PurchaseOrderItemWrite
+    public class PurchaseOrderItem : EntityBase
     {
-        [Required]
+        public Guid PurchaseOrderId { get; set; }
         public Guid MasterProductId { get; set; }
         public decimal OrderedQuantity { get; set; }
         public decimal FreeQuantity { get; set; }
@@ -17,5 +17,9 @@ namespace CA.ERP.WebApp.Dto
         public decimal Discount { get; set; }
         public decimal TotalCostPrice { get; set; }
         public decimal DeliveredQuantity { get; set; }
+        public PurchaseOrderItemStatus PurchaseOrderItemStatus { get; set; }
+
+        public PurchaseOrder PurchaseOrder { get; set; }
+        public MasterProduct MasterProduct { get; set; }
     }
 }
