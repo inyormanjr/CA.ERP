@@ -15,10 +15,10 @@ namespace CA.ERP.Utilities
     {
         static void Main(string[] args)
         {
-            Seed();
+            
             if (args[0] == "/seed")
             {
-                
+                Seed();
             }
         }
 

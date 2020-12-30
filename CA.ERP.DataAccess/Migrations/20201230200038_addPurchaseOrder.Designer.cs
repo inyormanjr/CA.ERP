@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CA.ERP.DataAccess.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    [Migration("20201230074954_addPurchaseOrder")]
+    [Migration("20201230200038_addPurchaseOrder")]
     partial class addPurchaseOrder
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -205,7 +205,7 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("PurchaseOrder");
+                    b.ToTable("PurchaseOrders");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
@@ -273,7 +273,7 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseOrderItem");
+                    b.ToTable("PurchaseOrderItems");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
