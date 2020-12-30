@@ -24,18 +24,18 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
             builder.ConfigureServices(services =>
             {
-                //var descriptor = services.SingleOrDefault(
-                //    d => d.ServiceType ==
-                //        typeof(DbContextOptions<CADataContext>));
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                        typeof(DbContextOptions<CADataContext>));
 
-                //services.Remove(descriptor);
+                services.Remove(descriptor);
 
-                //string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-                //services.AddDbContext<CADataContext>(options =>
-                //{
+                string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                services.AddDbContext<CADataContext>(options =>
+                {
 
-                //    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
-                //});
+                    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
+                });
 
                 var sp = services.BuildServiceProvider();
 

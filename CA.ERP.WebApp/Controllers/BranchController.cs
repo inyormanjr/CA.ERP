@@ -41,7 +41,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch>>> Get()
         {
-            var branches = await _branchService.GetAsync();
+            var branches = await _branchService.GetManyAsync();
             var dtoBranches = _mapper.Map<List<Dto.Branch>>(branches);
             var response = new Dto.GetManyResponse<Dto.Branch>() {
                 Data = dtoBranches
@@ -54,7 +54,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Branch>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var branchOption = await _branchService.GetBranchByIdAsync(id, cancellationToken);
+            var branchOption = await _branchService.GetOneAsync(id, cancellationToken);
             return branchOption.Match<ActionResult>(
                 f0: brand =>
                 {

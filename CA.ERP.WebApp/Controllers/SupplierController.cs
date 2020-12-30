@@ -85,7 +85,7 @@ namespace CA.ERP.WebApp.Controllers
         {
             _logger.LogInformation("User {0} updating supplier.", _userHelper.GetCurrentUserId());
             var domSupplier = _mapper.Map<Supplier>(request.Data);
-            var createResult = await _supplierService.UpdateSupplierAsync(id, domSupplier, cancellationToken: cancellationToken);
+            var createResult = await _supplierService.UpdateAsync(id, domSupplier, cancellationToken: cancellationToken);
             return createResult.Match<IActionResult>(
                 f0: (supplierId) =>
                 {
@@ -118,7 +118,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier>>> Get(CancellationToken cancellationToken)
         {
-            var suppliers = await _supplierService.GetSuppliersAsync(cancellationToken: cancellationToken);
+            var suppliers = await _supplierService.GetManyAsync(cancellationToken: cancellationToken);
             var dtoSuppliers = _mapper.Map<List<Dto.Supplier>>(suppliers);
             var response = new Dto.GetManyResponse<Dto.Supplier>()
             {
@@ -139,7 +139,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.Supplier>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var supplierOption = await _supplierService.GetSupplierAsync(id, cancellationToken: cancellationToken);
+            var supplierOption = await _supplierService.GetOneAsync(id, cancellationToken: cancellationToken);
             return supplierOption.Match<ActionResult>(
                 f0: (supplier) =>
                 {
@@ -148,6 +148,8 @@ namespace CA.ERP.WebApp.Controllers
                 f1: (notFound) => NotFound()
                 );
         }
+
+
 
 
     }

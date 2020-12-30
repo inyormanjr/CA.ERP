@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class Branch: DtoBase
+    public class Branch: DtoViewBase
     {
         public Guid Id { get; set; }
         [Required]

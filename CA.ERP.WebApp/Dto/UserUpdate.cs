@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class UserUpdate :DtoBase
+    public class UserUpdate :DtoViewBase
     {
         [Required]
         public string UserName { get; set; }

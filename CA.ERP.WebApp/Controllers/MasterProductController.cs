@@ -78,7 +78,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.MasterProduct> request, CancellationToken cancellationToken)
         {
             var domData = _mapper.Map<MasterProduct>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _masterProductService.UpdateBrandAsync(id, domData, cancellationToken);
+            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _masterProductService.UpdateAsync(id, domData, cancellationToken);
 
             return result.Match<IActionResult>(
                 f0: (masterProduct) => NoContent(),
@@ -101,7 +101,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.MasterProduct>>> Get(CancellationToken cancellationToken)
         {
-            var masterProducts = await _masterProductService.GetMasterProductsAsync(cancellationToken);
+            var masterProducts = await _masterProductService.GetManyAsync(cancellationToken);
             var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct>>(masterProducts);
             var response = new Dto.GetManyResponse<Dto.MasterProduct>()
             {
@@ -115,7 +115,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.MasterProduct>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var masterProductOption = await _masterProductService.GetMasterProductByIdAsync(id ,cancellationToken);
+            var masterProductOption = await _masterProductService.GetOneAsync(id ,cancellationToken);
             
             return masterProductOption.Match<ActionResult>(
                 f0: masterProduct => Ok(masterProduct),

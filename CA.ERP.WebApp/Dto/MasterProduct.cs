@@ -5,7 +5,7 @@ namespace CA.ERP.WebApp.Dto
     /// <summary>
     /// The main reference for the product
     /// </summary>
-    public class MasterProduct : DtoBase
+    public class MasterProduct : DtoViewBase
     {
         public string Model { get; set; }
         public string Description { get; set; }

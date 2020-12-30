@@ -3,6 +3,7 @@ using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
 {
-    public class PurchaseOrderService : ServiceBase
+    public class PurchaseOrderService : ServiceBase<PurchaseOrder>
     {
         private readonly IPurchaseOrderBarcodeGenerator _purchaseOrderBarcodeGenerator;
         private readonly IPurchaseOrderTotalCostPriceCalculator _purchaseOrderTotalCostPriceCalculator;
@@ -30,6 +31,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             IPurchaseOrderFactory purchaseOrderFactory,
             IValidator<PurchaseOrder> purchaseOrderValidator,
             IPurchaseOrderRepository purchaseOrderRepository)
+            :base(purchaseOrderRepository, purchaseOrderValidator)
         {
             _purchaseOrderBarcodeGenerator = purchaseOrderBarcodeGenerator;
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
@@ -41,10 +43,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         }
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreatePurchaseOrder(DateTime deliveryDate, Guid supplierId, Guid branchId, List<PurchaseOrderItem> purchaseOrderItems, CancellationToken cancellationToken)
         {
-            OneOf<Guid, List<ValidationFailure>> ret = Guid.Empty;
+            OneOf<Guid, List<ValidationFailure>> ret;
             var purchaseOrder = _purchaseOrderFactory.Create(deliveryDate, supplierId, branchId, purchaseOrderItems);
-            
-
 
             var validationResult = _purchaseOrderValidator.Validate(purchaseOrder);
             if (!validationResult.IsValid)
@@ -57,6 +57,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             }
             return ret;
         }
+
     }
 
 }

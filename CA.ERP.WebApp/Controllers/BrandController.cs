@@ -74,7 +74,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBrandRequest request, CancellationToken cancellationToken)
         {
             var domBrand = _mapper.Map<Brand>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _brandService.UpdateBrandAsync(id, domBrand, cancellationToken);
+            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _brandService.UpdateAsync(id, domBrand, cancellationToken);
 
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),
@@ -97,7 +97,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand>>> Get(CancellationToken cancellationToken)
         {
-            var brands = await _brandService.GetBrandsAsync(cancellationToken);
+            var brands = await _brandService.GetManyAsync(cancellationToken);
             var dtoBrands = _mapper.Map<List<Dto.Brand>>(brands);
             var response = new Dto.GetManyResponse<Dto.Brand>()
             {
@@ -111,7 +111,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Brand>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var brandOption = await _brandService.GetBrandByIdAsync(id, cancellationToken);
+            var brandOption = await _brandService.GetOneAsync(id, cancellationToken);
             return brandOption.Match<ActionResult>(
                 f0: brand =>
                 {
@@ -126,7 +126,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Brand>> Delete(Guid id, CancellationToken cancellationToken)
         {
-            var brandOption = await _brandService.DeleteBrandAsync(id, cancellationToken);
+            var brandOption = await _brandService.DeleteAsync(id, cancellationToken);
             return brandOption.Match<ActionResult>(
                 f0: Success =>
                 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto
 {
-    public class User : DtoBase
+    public class User : DtoViewBase
     {
         public string UserName { get; set; }
         public string FirstName { get; set; }

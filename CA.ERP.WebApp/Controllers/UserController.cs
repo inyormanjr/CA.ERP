@@ -126,7 +126,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Brand>> Delete(Guid id, CancellationToken cancellationToken)
         {
-            var userOption = await _userService.DeleteUserAsync(id, cancellationToken);
+            var userOption = await _userService.DeleteAsync(id, cancellationToken);
             return userOption.Match<ActionResult>(
                 f0: Success =>
                 {
@@ -142,7 +142,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.User>>> Get(CancellationToken cancellationToken)
         {
-            var users = await _userService.GetUsers(cancellationToken: cancellationToken);
+            var users = await _userService.GetManyAsync(cancellationToken: cancellationToken);
             var dtoUsers = _mapper.Map<List<Dto.User>>(users);
             var response = new Dto.GetManyResponse<Dto.User>()
             {
@@ -156,7 +156,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.User>>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var userOption = await _userService.GetUser(id, cancellationToken: cancellationToken);
+            var userOption = await _userService.GetOneAsync(id, cancellationToken: cancellationToken);
             return userOption.Match<ActionResult>(
                 f0: user => Ok(_mapper.Map<Dto.User>(user)),
                 f1: notFound => NotFound()

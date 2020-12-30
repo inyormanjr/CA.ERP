@@ -8,12 +8,12 @@ namespace CA.ERP.WebApp.Dto
     /// <summary>
     /// Base class for dto poco classes
     /// </summary>
-    public abstract class DtoBase
+    public abstract class DtoViewBase
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DtoBase()
+        public DtoViewBase()
         {
             CreatedBy = Guid.Empty;
             UpdatedBy = Guid.Empty;

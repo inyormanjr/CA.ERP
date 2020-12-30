@@ -9,7 +9,7 @@ namespace CA.ERP.WebApp.Dto
     /// Default response for getting list of data.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class GetManyResponse<T> where T:DtoBase
+    public class GetManyResponse<T> where T:DtoViewBase
     {
         /// <summary>
         /// A list of data
