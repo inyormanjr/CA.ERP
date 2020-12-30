@@ -11,8 +11,9 @@ namespace CA.ERP.WebApp.Mapping
     {
         public BrandMapping()
         {
-            CreateMap<Dto.Brand, Brand>()
-                .ReverseMap();
+            CreateMap<Dto.Brand.BrandCreate, Brand>();
+            CreateMap<Dto.Brand.BrandUpdate, Brand>();
+            CreateMap<Brand, Dto.Brand.BrandView>();
         }
 
     }

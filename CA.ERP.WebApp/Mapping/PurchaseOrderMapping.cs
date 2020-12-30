@@ -11,8 +11,14 @@ namespace CA.ERP.WebApp.Mapping
     {
         public PurchaseOrderMapping()
         {
-            CreateMap<Dto.CreatePurchaseOrderRequest, PurchaseOrder>();
-            CreateMap<Dto.PurchaseOrderItemWrite, PurchaseOrderItem>();
+            CreateMap<Dto.PurchaseOrder.PurchaseOrderCreate, PurchaseOrder>();
+            CreateMap<Dto.PurchaseOrder.PurchaseOrderItemCreate, PurchaseOrderItem>();
+
+            CreateMap<Dto.PurchaseOrder.PurchaseOrderUpdate, PurchaseOrder>();
+            CreateMap<Dto.PurchaseOrder.PurchaseOrderItemUpdate, PurchaseOrderItem>();
+
+            CreateMap<PurchaseOrder, Dto.PurchaseOrder.PurchaseOrderView>();
+            CreateMap<PurchaseOrderItem, Dto.PurchaseOrder.PurchaseOrderItemView> ();
         }
     }
 }

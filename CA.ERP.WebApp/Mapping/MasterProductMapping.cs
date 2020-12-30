@@ -11,7 +11,9 @@ namespace CA.ERP.WebApp.Mapping
     {
         public MasterProductMapping()
         {
-            CreateMap<MasterProduct, Dto.MasterProduct>().ReverseMap();
+            CreateMap<Dto.MasterProduct.MasterProductCreate, MasterProduct>().ReverseMap();
+            CreateMap<Dto.MasterProduct.MasterProductUpdate, MasterProduct>().ReverseMap();
+            CreateMap<MasterProduct, Dto.MasterProduct.MasterProductView>().ReverseMap();
         }
     }
 }

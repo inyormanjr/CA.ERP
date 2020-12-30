@@ -1,4 +1,5 @@
 ﻿using CA.ERP.WebApp.Dto;
+using CA.ERP.WebApp.Dto.Supplier;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
@@ -42,7 +43,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateSupplierSuccess()
         {
-            var response = await _client.PostAsJsonAsync<CreateSupplierRequest>("api/Supplier", new CreateSupplierRequest() { Name = "Supplier1" });
+            CreateSupplierRequest request = new CreateSupplierRequest() { Data = new SupplierCreate() { Name = "Supplier1" } };
+            var response = await _client.PostAsJsonAsync("api/Supplier", request);
 
             response.IsSuccessStatusCode.Should().BeTrue();
 
@@ -55,7 +57,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateSupplierFail_BadRequest()
         {
-            var response = await _client.PostAsJsonAsync<CreateSupplierRequest>("api/Supplier", new CreateSupplierRequest() { Name = "" });
+            CreateSupplierRequest request = new CreateSupplierRequest() { Data = new SupplierCreate() { Name = "" } };
+            var response = await _client.PostAsJsonAsync<CreateSupplierRequest>("api/Supplier", request);
 
             response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -70,7 +73,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierSuccess_NoContent()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "Supplier Updated" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new SupplierUpdate() { Name = "Supplier Updated" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -80,7 +83,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierFail_NotFound()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f2");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "Supplier Updated" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new SupplierUpdate() { Name = "Supplier Updated" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.IsSuccessStatusCode.Should().BeFalse();
@@ -91,7 +94,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         public async Task ShouldUpdateSupplierFail_BadRequest()
         {
             var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
-            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new Supplier() { Name = "" } };
+            UpdateSupplierRequest request = new UpdateSupplierRequest() { Data = new SupplierUpdate() { Name = "" } };
             var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}", request);
 
             response.IsSuccessStatusCode.Should().BeFalse();
@@ -106,7 +109,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.IsSuccessStatusCode.Should().BeTrue();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var getSuppliersResponse = await response.Content.ReadAsAsync<GetManyResponse<Supplier>>();
+            var getSuppliersResponse = await response.Content.ReadAsAsync<GetManyResponse<SupplierView>>();
             getSuppliersResponse.Should().NotBeNull();
             getSuppliersResponse.Data.Should().HaveCountGreaterThan(0);
             getSuppliersResponse.Data.FirstOrDefault().Name.Should().NotBeNullOrEmpty();

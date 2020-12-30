@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using CA.ERP.WebApp.Dto;
+using CA.ERP.WebApp.Dto.MasterProduct;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
@@ -44,12 +45,15 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var fake = new Faker();
 
-
-            var request = new CreateMasterProductRequest()
-            {
+            var data = new MasterProductCreate() {
                 Model = fake.Vehicle.Model(),
                 Description = fake.Vehicle.Manufacturer(),
                 BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
+            };
+
+            var request = new CreateMasterProductRequest()
+            {
+                Data = data
             };
 
 
@@ -68,12 +72,15 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var fake = new Faker();
 
+            var data = new MasterProductCreate()
+            {
+                Description = fake.Vehicle.Manufacturer(),
+                BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
+            };
 
             var request = new CreateMasterProductRequest()
             {
-
-                Description = fake.Vehicle.Manufacturer(),
-                BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
+                Data = data
             };
 
 
@@ -84,7 +91,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var content = await response.Content.ReadAsAsync<ErrorResponse>();
 
             content.Should().NotBeNull();
-            content.ValidationErrors.Should().Contain(error => error.PropertyName == nameof(CreateMasterProductRequest.Model));
+            content.ValidationErrors.Should().Contain(error => error.PropertyName == nameof(MasterProductCreate.Model));
         }
 
         [Fact]
@@ -93,9 +100,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var fake = new Faker();
 
 
-            var request = new UpdateBaseRequest<MasterProduct>()
+            var request = new UpdateBaseRequest<MasterProductView>()
             {
-                Data = new MasterProduct() {
+                Data = new MasterProductView() {
                     Model = fake.Vehicle.Model(),
                     Description = fake.Vehicle.Manufacturer(),
                     BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
@@ -115,9 +122,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var fake = new Faker();
 
 
-            var request = new UpdateBaseRequest<MasterProduct>()
+            var request = new UpdateBaseRequest<MasterProductView>()
             {
-                Data = new MasterProduct()
+                Data = new MasterProductView()
                 {
                     Model = fake.Vehicle.Model(),
                     Description = fake.Vehicle.Manufacturer(),
@@ -131,7 +138,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var content = await response.Content.ReadAsAsync<ErrorResponse>();
             content.Should().NotBeNull();
-            content.ValidationErrors.Should().Contain(error => error.PropertyName == nameof(CreateMasterProductRequest.BrandId));
+            content.ValidationErrors.Should().Contain(error => error.PropertyName == nameof(MasterProductCreate.BrandId));
         }
 
         [Fact]
@@ -140,9 +147,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var fake = new Faker();
 
 
-            var request = new UpdateBaseRequest<MasterProduct>()
+            var request = new UpdateBaseRequest<MasterProductView>()
             {
-                Data = new MasterProduct()
+                Data = new MasterProductView()
                 {
                     Model = fake.Vehicle.Model(),
                     Description = fake.Vehicle.Manufacturer(),
@@ -164,7 +171,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var content = await response.Content.ReadAsAsync<GetManyResponse<MasterProduct>>();
+            var content = await response.Content.ReadAsAsync<GetManyResponse<MasterProductView>>();
 
 
             content.Should().NotBeNull();
@@ -179,7 +186,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var content = await response.Content.ReadAsAsync<MasterProduct>();
+            var content = await response.Content.ReadAsAsync<MasterProductView>();
 
 
             content.Should().NotBeNull();

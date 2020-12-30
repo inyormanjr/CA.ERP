@@ -1,4 +1,5 @@
 ﻿using CA.ERP.WebApp.Dto;
+using CA.ERP.WebApp.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
@@ -42,14 +43,19 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreatePurchaseOrderSuccess()
         {
-            CreatePurchaseOrderRequest request = new CreatePurchaseOrderRequest() {
+            PurchaseOrderCreate data = new PurchaseOrderCreate() {
                 BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4"),
                 DeliveryDate = DateTime.Now.AddDays(1),
                 SupplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1"),
-                PurchaseOrderItems = new List<PurchaseOrderItemWrite>() { 
-                    new PurchaseOrderItemWrite() { MasterProductId = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3"), OrderedQuantity  = 10, FreeQuantity = 1, CostPrice = 1000, Discount = 50 },
-                    new PurchaseOrderItemWrite() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef"), OrderedQuantity  = 5, FreeQuantity = 2, CostPrice = 950, Discount = 100 }
+                PurchaseOrderItems = new List<PurchaseOrderItemCreate>() { 
+                    new PurchaseOrderItemCreate() { MasterProductId = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3"), OrderedQuantity  = 10, FreeQuantity = 1, CostPrice = 1000, Discount = 50 },
+                    new PurchaseOrderItemCreate() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef"), OrderedQuantity  = 5, FreeQuantity = 2, CostPrice = 950, Discount = 100 }
                 }
+            };
+
+            var request = new CreatePurchaseOrderRequest()
+            {
+                Data = data
             };
             var response = await _client.PostAsJsonAsync("api/PurchaseOrder", request);
 

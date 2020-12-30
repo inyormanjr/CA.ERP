@@ -18,7 +18,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.CreateBranch(CA.ERP.WebApp.Dto.CreateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.CreateBranch(CA.ERP.WebApp.Dto.Branch.CreateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Create branch
             </summary>
@@ -26,7 +26,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.UpdateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Update branch base on Id
             </summary>
@@ -49,7 +49,7 @@
             Handles brand related operations.
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Create(CA.ERP.WebApp.Dto.CreateMasterProductRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Create(CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest,System.Threading.CancellationToken)">
             <summary>
             Create master product
             </summary>
@@ -57,11 +57,28 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.CreateSupplier(CA.ERP.WebApp.Dto.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
             <summary>
             Create master products
             </summary>
             <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderCreate},System.Threading.CancellationToken)">
+            <summary>
+            Update purchase order
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Delete(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Delete purchase order by id
+            </summary>
+            <param name="id"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -70,7 +87,7 @@
             Contains supplier and supllier brands related endpoints
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.CreateSupplierRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.Supplier.CreateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Creates new supplier
             </summary>
@@ -78,7 +95,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.UpdateSupplierRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Updates supplier
             </summary>
@@ -101,7 +118,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.UserController.Register(CA.ERP.WebApp.Dto.RegisterRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.UserController.Register(CA.ERP.WebApp.Dto.User.UserCreateRequest,System.Threading.CancellationToken)">
             <summary>
             Register user
             </summary>
@@ -120,10 +137,16 @@
         <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.IsInRole(System.String)">
             <inheritdoc/>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.CreateMasterProductRequest">
+        <member name="T:CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest">
             <summary>
-            Request body for creating master product
+            Hold update data for updating the branch
             </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.CreateBaseRequest`1.Data">
+            <summary>
+            The data to create
+            </summary>
+            
         </member>
         <member name="T:CA.ERP.WebApp.Dto.CreateResponse">
             <summary>
@@ -135,57 +158,42 @@
             Id of the created data.
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Name">
-            <summary>
-            Name of the supplier.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.Address">
-            <summary>
-            Adress of the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.CreateSupplierRequest.ContactPerson">
-            <summary>
-            The name of the contact person for the supplier
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.DtoBase">
+        <member name="T:CA.ERP.WebApp.Dto.DtoViewBase">
             <summary>
             Base class for dto poco classes
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Dto.DtoBase.#ctor">
+        <member name="M:CA.ERP.WebApp.Dto.DtoViewBase.#ctor">
             <summary>
             Default constructor
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.Id">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.Id">
             <summary>
             The unique identifier for the data
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.Status">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.Status">
             <summary>
             Active or Inactive consider the data deleted if inactive.
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.CreatedAt">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.CreatedAt">
             <summary>
             Date the data was created
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.CreatedBy">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.CreatedBy">
             <summary>
             The unique identifier for the user who created the data.
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.UpdatedAt">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.UpdatedAt">
             <summary>
             The date the data was last updated.
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoBase.UpdatedBy">
+        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.UpdatedBy">
             <summary>
             The unique identifier for the user who last updated the data.
             </summary>
@@ -201,22 +209,27 @@
             A list of data
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.MasterProduct">
+        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest">
+            <summary>
+            Request body for creating master product
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.MasterProductView">
             <summary>
             The main reference for the product
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.ProductStatus">
+        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus">
             <summary>
             Flags if product can be deleted
             </summary>
         </member>
-        <member name="F:CA.ERP.WebApp.Dto.ProductStatus.Provisional">
+        <member name="F:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus.Provisional">
             <summary>
             Product has no other data that reference it and can be deleted.
             </summary>
         </member>
-        <member name="F:CA.ERP.WebApp.Dto.ProductStatus.Permanent">
+        <member name="F:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus.Permanent">
             <summary>
             Product has no other data that reference it and should not be deleted
             </summary>
@@ -236,29 +249,64 @@
             Should be the default status
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.Supplier">
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.Name">
             <summary>
-            Supplier Dto
+            Name of the supplier.
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.Name">
-            <summary>
-            The name of the supplier.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.Address">
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.Address">
             <summary>
             Adress of the supplier
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.ContactPerson">
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.ContactPerson">
             <summary>
             The name of the contact person for the supplier
             </summary>
         </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupllierBrands">
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.Name">
+            <summary>
+            Name of the supplier.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.Address">
+            <summary>
+            Adress of the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.ContactPerson">
+            <summary>
+            The name of the contact person for the supplier
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.Supplier.SupplierView">
+            <summary>
+            Supplier Dto
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.Name">
+            <summary>
+            The name of the supplier.
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.Address">
+            <summary>
+            Adress of the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.ContactPerson">
+            <summary>
+            The name of the contact person for the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.SupllierBrands">
             <summary>
             Brands available to the supplier
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:CA.ERP.WebApp.Dto.UpdateBaseRequest`1">
@@ -273,17 +321,7 @@
             </summary>
             
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.UpdateBranchRequest">
-            <summary>
-            Hold update data for updating the branch
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.UpdateSupplierRequest">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.UserRole">
+        <member name="T:CA.ERP.WebApp.Dto.User.UserRole">
             <summary>
             User roles. Can have multiple values using enum flags
              Admin = 1,

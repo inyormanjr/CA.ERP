@@ -43,11 +43,11 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.PurchaseOrder.CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating purchase order.", _userHelper.GetCurrentUserId());
-            var purchaseOrderItems = _mapper.Map<List<PurchaseOrderItem>>(request.PurchaseOrderItems);
-            var createResult = await _purchaseOrderService.CreatePurchaseOrder(request.DeliveryDate, request.SupplierId, request.BranchId, purchaseOrderItems, cancellationToken: cancellationToken);
+            var purchaseOrderItems = _mapper.Map<List<PurchaseOrderItem>>(request.Data.PurchaseOrderItems);
+            var createResult = await _purchaseOrderService.CreatePurchaseOrder(request.Data.DeliveryDate, request.Data.SupplierId, request.Data.BranchId, purchaseOrderItems, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (purchaseOrderId) =>
             {
@@ -83,7 +83,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.PurchaseOrderWrite> request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.PurchaseOrder.PurchaseOrderCreate> request, CancellationToken cancellationToken)
         {
             var domData = _mapper.Map<PurchaseOrder>(request.Data);
             OneOf<Guid, List<ValidationFailure>, NotFound> result = await _purchaseOrderService.UpdateAsync(id, domData, cancellationToken);
@@ -107,11 +107,11 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrderView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(CancellationToken cancellationToken)
         {
             var list = await _purchaseOrderService.GetManyAsync(cancellationToken);
-            var dtoList = _mapper.Map<List<Dto.MasterProduct>>(list);
-            var response = new Dto.GetManyResponse<Dto.MasterProduct>()
+            var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderItemView>>(list);
+            var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderItemView>()
             {
                 Data = dtoList
             };
@@ -121,12 +121,12 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.MasterProduct>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PurchaseOrder.PurchaseOrderItemView>> Get(Guid id, CancellationToken cancellationToken)
         {
             var option = await _purchaseOrderService.GetOneAsync(id, cancellationToken);
 
             return option.Match<ActionResult>(
-                f0: data => Ok(data),
+                f0: data => Ok(_mapper.Map<Dto.PurchaseOrder.PurchaseOrderItemView>(data)),
                 f1: notfound => NotFound()
                 );
         }
