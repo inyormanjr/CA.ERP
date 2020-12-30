@@ -11,11 +11,10 @@ namespace CA.ERP.WebApp.Mapping
     {
         public UserMapping()
         {
-            CreateMap<Dto.UserUpdate, User>()
-                .ReverseMap();
+            CreateMap<Dto.User.UserUpdate, User>();
+            CreateMap<Dto.User.UserCreate, User>();
 
-            CreateMap<Dto.User, User>()
-                .ReverseMap();
+            CreateMap<User, Dto.User.UserView>();
         }
     }
 }

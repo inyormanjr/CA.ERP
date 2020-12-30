@@ -40,10 +40,10 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> CreateBrand(Dto.CreateBrandRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> CreateBrand(Dto.Brand.CreateBrandRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating brand.", _userHelper.GetCurrentUserId());
-            var createResult = await _brandService.CreateBrandAsync(request.Name, request.Description, cancellationToken: cancellationToken);
+            var createResult = await _brandService.CreateBrandAsync(request.Data.Name, request.Data.Description, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (supplierId) =>
             {
@@ -71,10 +71,10 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(Guid id, Dto.UpdateBrandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, Dto.Brand.UpdateBrandRequest request, CancellationToken cancellationToken)
         {
             var domBrand = _mapper.Map<Brand>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _brandService.UpdateBrandAsync(id, domBrand, cancellationToken);
+            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _brandService.UpdateAsync(id, domBrand, cancellationToken);
 
             return result.Match<IActionResult>(
                 f0: (branch) => NoContent(),
@@ -95,11 +95,11 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand.BrandView>>> Get(CancellationToken cancellationToken)
         {
-            var brands = await _brandService.GetBrandsAsync(cancellationToken);
-            var dtoBrands = _mapper.Map<List<Dto.Brand>>(brands);
-            var response = new Dto.GetManyResponse<Dto.Brand>()
+            var brands = await _brandService.GetManyAsync(cancellationToken);
+            var dtoBrands = _mapper.Map<List<Dto.Brand.BrandView>>(brands);
+            var response = new Dto.GetManyResponse<Dto.Brand.BrandView>()
             {
                 Data = dtoBrands
             };
@@ -109,13 +109,13 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Dto.Brand>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Brand.BrandView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var brandOption = await _brandService.GetBrandByIdAsync(id, cancellationToken);
+            var brandOption = await _brandService.GetOneAsync(id, cancellationToken);
             return brandOption.Match<ActionResult>(
                 f0: brand =>
                 {
-                    return Ok(_mapper.Map<Dto.Brand>(brand));
+                    return Ok(_mapper.Map<Dto.Brand.BrandView>(brand));
                 },
                 f1: notfound => NotFound()
             );
@@ -124,9 +124,9 @@ namespace CA.ERP.WebApp.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Dto.Brand>> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            var brandOption = await _brandService.DeleteBrandAsync(id, cancellationToken);
+            var brandOption = await _brandService.DeleteAsync(id, cancellationToken);
             return brandOption.Match<ActionResult>(
                 f0: Success =>
                 {

@@ -22,6 +22,8 @@ namespace CA.ERP.DataAccess
        public  DbSet<SupplierBrand> SupplierBrands { get; set; }
        public  DbSet<Brand> Brands { get; set; }
        public  DbSet<MasterProduct> MasterProducts { get; set; }
+       public  DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+       public  DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,6 +34,8 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new SupplierBrandMapping());
             builder.ApplyConfiguration(new BrandMapping());
             builder.ApplyConfiguration(new MasterProductMapping());
+            builder.ApplyConfiguration(new PurchaseOrderMapping());
+            builder.ApplyConfiguration(new PurchaseOrderItemMapping());
             base.OnModelCreating(builder);
         }
 

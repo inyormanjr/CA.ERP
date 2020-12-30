@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.UserAgg
 {
-    public class UserService : ServiceBase
+    public class UserService : ServiceBase<User>
     {
         private readonly IUserRepository _userRepository;
         private readonly IBranchRepository _branchRepository;
@@ -22,7 +22,8 @@ namespace CA.ERP.Domain.UserAgg
         private readonly PasswordManagementHelper _passwordManagementHelper;
         private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator )
+        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper)
+            : base(userRepository, userValidator, userHelper)
         {
             _userRepository = userRepository;
             _branchRepository = branchRepository;
@@ -71,6 +72,8 @@ namespace CA.ERP.Domain.UserAgg
                 }
                 else
                 {
+                    user.CreatedBy = _userHelper.GetCurrentUserId();
+                    user.UpdatedBy = _userHelper.GetCurrentUserId();
                     ret = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
                 }
             }
@@ -163,28 +166,6 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
-        public async Task<List<User>> GetUsers(CancellationToken cancellationToken)
-        {
-            return await _userRepository.GetManyAsync(cancellationToken: cancellationToken);
-        }
-
-        public async Task<OneOf<User, NotFound>> GetUser(Guid id, CancellationToken cancellationToken)
-        {
-            var userOption = await _userRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
-            return userOption.Match<OneOf<User, NotFound>>(
-                f0: user => user,
-                f1: none => default(NotFound)
-            );
-        }
-
-        public async Task<OneOf<Success, NotFound>> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var deleteOption = await _userRepository.DeleteAsync(id, cancellationToken);
-            return deleteOption.Match<OneOf<Success, NotFound>>(
-                f0: success => success,
-                f1: none => default(NotFound)
-                );
-        }
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {

@@ -42,10 +42,10 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.CreateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.Supplier.CreateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating supplier.", _userHelper.GetCurrentUserId());
-            var createResult = await _supplierService.CreateSupplierAsync(request.Name, request.Address, request.ContactPerson, cancellationToken: cancellationToken);
+            var createResult = await _supplierService.CreateSupplierAsync(request.Data.Name, request.Data.Address, request.Data.ContactPerson, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (supplierId) =>
             {
@@ -81,11 +81,11 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize]
-        public async Task<IActionResult> UpdateSupplier(Guid id, Dto.UpdateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSupplier(Guid id, Dto.Supplier.UpdateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} updating supplier.", _userHelper.GetCurrentUserId());
             var domSupplier = _mapper.Map<Supplier>(request.Data);
-            var createResult = await _supplierService.UpdateSupplierAsync(id, domSupplier, cancellationToken: cancellationToken);
+            var createResult = await _supplierService.UpdateAsync(id, domSupplier, cancellationToken: cancellationToken);
             return createResult.Match<IActionResult>(
                 f0: (supplierId) =>
                 {
@@ -116,11 +116,11 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier.SupplierView>>> Get(CancellationToken cancellationToken)
         {
-            var suppliers = await _supplierService.GetSuppliersAsync(cancellationToken: cancellationToken);
-            var dtoSuppliers = _mapper.Map<List<Dto.Supplier>>(suppliers);
-            var response = new Dto.GetManyResponse<Dto.Supplier>()
+            var suppliers = await _supplierService.GetManyAsync(cancellationToken: cancellationToken);
+            var dtoSuppliers = _mapper.Map<List<Dto.Supplier.SupplierView>>(suppliers);
+            var response = new Dto.GetManyResponse<Dto.Supplier.SupplierView>()
             {
                 Data = dtoSuppliers
             };
@@ -137,17 +137,19 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.Supplier>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Supplier.SupplierView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var supplierOption = await _supplierService.GetSupplierAsync(id, cancellationToken: cancellationToken);
+            var supplierOption = await _supplierService.GetOneAsync(id, cancellationToken: cancellationToken);
             return supplierOption.Match<ActionResult>(
                 f0: (supplier) =>
                 {
-                    return Ok(_mapper.Map<Dto.Supplier>(supplier));
+                    return Ok(_mapper.Map<Dto.Supplier.SupplierView>(supplier));
                 },
                 f1: (notFound) => NotFound()
                 );
         }
+
+
 
 
     }

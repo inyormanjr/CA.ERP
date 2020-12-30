@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CA.ERP.Domain.Helpers
 {
-    public class PasswordManagementHelper : HelperBase
+    public class PasswordManagementHelper : IHelper
     {
 
 

@@ -2,6 +2,7 @@
 using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Helpers;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace CA.ERP.WebApp.Test.Integration
                 {
                     return;
                 }
+
+                var random = new Random();
 
                 var fakeBranchGenerator = new Faker<Branch>()
                     .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid() })
@@ -86,23 +89,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Users.Add(user);
                 }
 
-                //add suppliers
-                var fakeSupplierGenerator = new Faker<Supplier>()
-                    .CustomInstantiator(f => new Supplier())
-                    .RuleFor(f => f.Name, f => f.Company.CompanyName())
-                    .RuleFor(f => f.Address, f => f.Address.StreetAddress())
-                    .RuleFor(f => f.ContactPerson, f => f.Name.FullName());
-
-                var supplier = fakeSupplierGenerator.Generate();
-                supplier.Id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
-
-                db.Suppliers.Add(supplier);
-
-                //more supplier
-                for (int i = 0; i < 10; i++)
-                {
-                    db.Suppliers.Add(fakeSupplierGenerator.Generate());
-                }
+                
 
 
                 //add brands
@@ -124,12 +111,13 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Brands.Add(brand);
                 }
 
+                db.SaveChanges();
+
                 var fakeMasterProductGenerator = new Faker<MasterProduct>()
                     .RuleFor(f => f.Model, f => f.Vehicle.Model())
-                    .RuleFor(f => f.Description, f => f.Vehicle.Manufacturer())
-                    .RuleFor(f => f.BrandId, f => Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d"));
+                    .RuleFor(f => f.Description, f => f.Vehicle.Manufacturer());
 
-
+                var brands = db.Brands.ToList();
                 for (int i = 0; i < 10; i++)
                 {
                     var masterProduct = fakeMasterProductGenerator.Generate();
@@ -137,8 +125,74 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         masterProduct.Id = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3");
                     }
+                    else if (i == 1)
+                    {
+                        masterProduct.Id = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef");
+                    }
+
+                    masterProduct.Brand = brands.OrderBy(b => random.Next()).FirstOrDefault();
 
                     db.MasterProducts.Add(masterProduct);
+                }
+
+                //add suppliers
+                var fakeSupplierGenerator = new Faker<Supplier>()
+                    .CustomInstantiator(f => new Supplier())
+                    .RuleFor(f => f.Name, f => f.Company.CompanyName())
+                    .RuleFor(f => f.Address, f => f.Address.StreetAddress())
+                    .RuleFor(f => f.ContactPerson, f => f.Name.FullName());
+
+
+                //more supplier
+                for (int i = 0; i < 10; i++)
+                {
+                    var supplier = fakeSupplierGenerator.Generate();
+                    if (i == 0)
+                    {
+                        supplier.Id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+                    }
+
+                    var brands2 = db.Brands.OrderBy(b => random.Next()).Take(random.Next(5));
+
+                    foreach (var brand in brands2)
+                    {
+                        supplier.SupllierBrands.Add(new SupplierBrand() { Brand = brand, Supplier = supplier });
+                    }
+                    db.Suppliers.Add(supplier);
+                }
+
+                db.SaveChanges();
+
+                
+
+                var branches = db.Branches.ToList();
+                var suppliers = db.SupplierBrands.ToList();
+                for (int i = 0; i < 10; i++)
+                {
+                    var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
+                    var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
+                    var poProducts = db.MasterProducts.Where(m=>m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
+                    PurchaseOrder purchaseOrder = new PurchaseOrder()
+                    {
+                        BranchId = poBranch.Id,
+                        DeliveryDate = DateTime.Now.AddDays(1),
+                        SupplierId = poSupplier.SupplierId
+                    };
+
+                    foreach (var poProduct in poProducts)
+                    {
+                        purchaseOrder.PurchaseOrderItems.Add(new PurchaseOrderItem() { MasterProductId = poProduct.Id, OrderedQuantity = random.Next(10), FreeQuantity = random.Next(10), CostPrice = random.Next(500), Discount = random.Next(100) });
+                    }
+                    if (i == 0)
+                    {
+                        purchaseOrder.Id = Guid.Parse("afe14401-14c6-4e3d-a39a-fcfa6dabdab4");
+                    }
+                    else if (i == 1)
+                    {
+                        purchaseOrder.Id = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+                    }
+
+                    db.PurchaseOrders.Add(purchaseOrder);
                 }
 
                 db.SaveChanges();
