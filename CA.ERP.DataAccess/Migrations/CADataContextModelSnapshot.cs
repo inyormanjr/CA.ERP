@@ -203,7 +203,7 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("PurchaseOrder");
+                    b.ToTable("PurchaseOrders");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
@@ -271,7 +271,7 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseOrderItem");
+                    b.ToTable("PurchaseOrderItems");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
