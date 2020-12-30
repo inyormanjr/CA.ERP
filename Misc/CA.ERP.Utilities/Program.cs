@@ -15,8 +15,7 @@ namespace CA.ERP.Utilities
     {
         static void Main(string[] args)
         {
-            
-            if (args[0] == "/seed")
+            if (args.Any() && args[0] == "/seed")
             {
                 Seed();
             }
@@ -69,13 +68,46 @@ namespace CA.ERP.Utilities
 
                 db.MasterProducts.AddRange(masterProducts);
 
+                generatePurchaseOrders(db);
+
                 db.SaveChanges();
+
             }
 
             Console.WriteLine("Seeding done");
             Console.WriteLine("Press enter to contine");
             Console.ReadLine();
 
+        }
+
+        private static void generatePurchaseOrders(CADataContext db)
+        {
+            int barcode = 1;
+            var random = new Random();
+            var branches = db.Branches.ToList();
+            var suppliers = db.SupplierBrands.ToList();
+            var users = db.Users.ToList();
+            for (int i = 0; i < 10; i++)
+            {
+                var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
+                var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
+                var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).ToList().OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
+                PurchaseOrder purchaseOrder = new PurchaseOrder()
+                {
+                    Barcode = barcode++.ToString("00000000000000000000"),
+                    BranchId = poBranch.Id,
+                    DeliveryDate = DateTime.Now.AddDays(1),
+                    SupplierId = poSupplier.SupplierId,
+                    ApprovedById = users.OrderBy(u => random.Next()).FirstOrDefault().Id
+            };
+
+                foreach (var poProduct in poProducts)
+                {
+                    purchaseOrder.PurchaseOrderItems.Add(new PurchaseOrderItem() { MasterProductId = poProduct.Id, OrderedQuantity = random.Next(10), FreeQuantity = random.Next(10), CostPrice = random.Next(500), Discount = random.Next(100) });
+                }
+
+                db.PurchaseOrders.Add(purchaseOrder);
+            }
         }
 
         private static IEnumerable<User> generateUsers(CADataContext dataContext, PasswordManagementHelper passwordManagementHelper, List<Branch> branches, int count = 5)
