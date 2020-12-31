@@ -15,6 +15,10 @@ namespace CA.ERP.Utilities
     {
         static void Main(string[] args)
         {
+            if (!args.Any())
+            {
+                args = args.Append("/seed").ToArray();
+            }
             if (args.Any() && args[0] == "/seed")
             {
                 Seed();
@@ -67,6 +71,8 @@ namespace CA.ERP.Utilities
                 var masterProducts = generateMasterProduct(brands);
 
                 db.MasterProducts.AddRange(masterProducts);
+
+                db.SaveChanges();
 
                 generatePurchaseOrders(db);
 
