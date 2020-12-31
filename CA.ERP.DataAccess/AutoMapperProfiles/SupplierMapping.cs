@@ -20,7 +20,7 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
                             .ReverseMap();
 
             CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>()
-                            .ReverseMap();
+                            .ReverseMap().ForMember(dalSmp => dalSmp.Id, option => option.Ignore());
         }
     }
 }

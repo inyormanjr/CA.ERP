@@ -152,7 +152,7 @@ namespace CA.ERP.WebApp.Controllers
 
 
         [HttpPut("{id}/SupplierMasterProduct")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateSupplierMasterProduct(Guid id, Dto.UpdateBaseRequest<SupplierMasterProductUpdate> request, CancellationToken cancellationToken)
