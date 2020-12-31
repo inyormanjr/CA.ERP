@@ -4,14 +4,16 @@ using CA.ERP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CA.ERP.DataAccess.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    partial class CADataContextModelSnapshot : ModelSnapshot
+    [Migration("20201231051537_addSupplierMasterProduct")]
+    partial class addSupplierMasterProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,11 +197,13 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasIndex("ApprovedById");
 
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("BranchId", "Barcode")
+                    b.HasIndex("Barcode")
                         .IsUnique()
                         .HasFilter("[Barcode] IS NOT NULL");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("PurchaseOrders");
                 });

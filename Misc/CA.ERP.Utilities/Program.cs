@@ -76,6 +76,8 @@ namespace CA.ERP.Utilities
 
                 generatePurchaseOrders(db);
 
+                generateSupplierMasterProducts(db);
+
                 db.SaveChanges();
 
             }
@@ -86,9 +88,28 @@ namespace CA.ERP.Utilities
 
         }
 
+        private static void generateSupplierMasterProducts(CADataContext db)
+        {
+               var random = new Random();
+            var suppliers = db.Suppliers.Include(s=>s.SupllierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            foreach (var supplier in suppliers)
+            {
+                var masterProducts = supplier.SupllierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                foreach (var masterProduct in masterProducts)
+                {
+                    var supplierMasterProduct = new SupplierMasterProduct() {
+                        MasterProduct = masterProduct,
+                        Supplier = supplier,
+                        CostPrice = random.Next(100000),
+                    };
+                    db.SupplierMasterProducts.Add(supplierMasterProduct);
+                }
+            }
+        }
+
         private static void generatePurchaseOrders(CADataContext db)
         {
-            int barcode = 1;
+            long barcode = DateTimeOffset.Now.ToUnixTimeSeconds();
             var random = new Random();
             var branches = db.Branches.ToList();
             var suppliers = db.SupplierBrands.ToList();

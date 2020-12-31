@@ -15,7 +15,7 @@ namespace CA.ERP.DataAccess.EFMapping
         {
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
-            builder.HasIndex(t => t.Barcode).IsUnique(true);
+            builder.HasIndex(t => new { t.BranchId, t.Barcode }).IsUnique(true);
 
             builder.Property(t => t.Barcode).HasMaxLength(20);
             builder.Property(t => t.TotalCostPrice).HasPrecision(10,2);

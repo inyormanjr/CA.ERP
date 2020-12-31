@@ -9,7 +9,9 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     {
         public string GenerateBarcode()
         {
-            return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+            var epoch = new DateTimeOffset(2020, 12, 1, 0, 0, 0, TimeSpan.FromSeconds(0)).ToUnixTimeSeconds();
+            var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+            return (now - epoch).ToString("00000000000");
         }
     }
 }
