@@ -108,6 +108,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         brand.Id = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d");
                     }
+                    else if (i == 2)
+                    {
+                        brand.Id = Guid.Parse("9e1b807c-ddd6-43ec-b5f3-f986863f1762");
+                    }
                     db.Brands.Add(brand);
                 }
 
@@ -156,7 +160,7 @@ namespace CA.ERP.WebApp.Test.Integration
 
                     foreach (var brand in brands2)
                     {
-                        supplier.SupllierBrands.Add(new SupplierBrand() { Brand = brand, Supplier = supplier });
+                        supplier.SupplierBrands.Add(new SupplierBrand() { Brand = brand, Supplier = supplier });
                     }
                     db.Suppliers.Add(supplier);
                 }
@@ -205,10 +209,10 @@ namespace CA.ERP.WebApp.Test.Integration
         private static void generateSupplierMasterProducts(CADataContext db)
         {
             var random = new Random();
-            var suppliers = db.Suppliers.Include(s => s.SupllierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            var suppliers = db.Suppliers.Include(s => s.SupplierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
             foreach (var supplier in suppliers)
             {
-                var masterProducts = supplier.SupllierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                var masterProducts = supplier.SupplierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
                 foreach (var masterProduct in masterProducts)
                 {
                     var supplierMasterProduct = new SupplierMasterProduct()

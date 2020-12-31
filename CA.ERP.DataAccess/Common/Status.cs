@@ -9,6 +9,7 @@ namespace CA.ERP.DataAccess.Common
     public enum Status: int
     {
         Inactive = 0,
-        Active = 1
+        Active = 1,
+        All = ~0
     }
 }

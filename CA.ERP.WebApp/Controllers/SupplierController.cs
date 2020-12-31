@@ -151,7 +151,8 @@ namespace CA.ERP.WebApp.Controllers
         }
 
 
-        [HttpPut("{id}/SupplierMasterProduct")]
+        [HttpPut("{id}/MasterProduct")]
+        [HttpPost("{id}/MasterProduct")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
@@ -175,6 +176,34 @@ namespace CA.ERP.WebApp.Controllers
                 }
             );
             
+        }
+
+        [HttpPut("{id}/Brand")]
+        [HttpPost("{id}/Brand")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateSupplierBrand(Guid id, Dto.UpdateBaseRequest<SupplierBrandUpdate> request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} updating supplier master product.", _userHelper.GetCurrentUserId());
+
+            var option = await _supplierService.AddSupplierBrand(id, request.Data.BrandId, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: (validationErrors) =>
+                {
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+
+                    _logger.LogInformation("User {0} supplier master product update failed.", _userHelper.GetCurrentUserId());
+                    return BadRequest(response);
+                },
+                f2: notfound => NotFound()
+            );
+
         }
 
     }

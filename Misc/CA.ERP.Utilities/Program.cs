@@ -91,10 +91,10 @@ namespace CA.ERP.Utilities
         private static void generateSupplierMasterProducts(CADataContext db)
         {
                var random = new Random();
-            var suppliers = db.Suppliers.Include(s=>s.SupllierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            var suppliers = db.Suppliers.Include(s=>s.SupplierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
             foreach (var supplier in suppliers)
             {
-                var masterProducts = supplier.SupllierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                var masterProducts = supplier.SupplierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
                 foreach (var masterProduct in masterProducts)
                 {
                     var supplierMasterProduct = new SupplierMasterProduct() {
@@ -235,7 +235,7 @@ namespace CA.ERP.Utilities
                 var brandIds = brands.OrderBy(b => random.Next()).Take(5).Select(b => b.Id);
                 foreach (var brandId in brandIds)
                 {
-                    supplier.SupllierBrands.Add(new SupplierBrand() { BrandId = brandId, SupplierId = supplier.Id });
+                    supplier.SupplierBrands.Add(new SupplierBrand() { BrandId = brandId, SupplierId = supplier.Id });
                 }
 
                 yield return supplier;

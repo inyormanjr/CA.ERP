@@ -22,5 +22,30 @@ namespace CA.ERP.DataAccess.Repositories
         {
 
         }
+
+        public async Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken)
+        {
+            OneOf<Success, None> ret = default(None);
+            var supplierExist = await _context.Suppliers.AnyAsync(s => s.Id == supplierId, cancellationToken);
+            if (supplierExist)
+            {
+                var supplierBrandExist = _context.SupplierBrands.Any(sb =>sb.SupplierId == supplierId && sb.BrandId == supplierBrand.BrandId);
+
+                //if not exist add else do nothing and return success
+                if (!supplierBrandExist)
+                {
+                    var dalSupplierBrand = new Dal.SupplierBrand()
+                    {
+                        BrandId = supplierBrand.BrandId,
+                        SupplierId = supplierId
+                    };
+                    await _context.SupplierBrands.AddAsync(dalSupplierBrand);
+                    await _context.SaveChangesAsync();
+                }
+                
+                ret = default(Success);
+            }
+            return ret;
+        }
     }
 }

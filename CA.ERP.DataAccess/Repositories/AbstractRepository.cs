@@ -12,6 +12,8 @@ using CA.ERP.Common.Extensions;
 using AutoMapper;
 using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
+using Dal = CA.ERP.DataAccess.Entities;
+using System.Linq.Expressions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -50,14 +52,29 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
-            var entities = await _context.Set<TDal>().ToListAsync(cancellationToken: cancellationToken);
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+
+            var entities = await queryable.ToListAsync(cancellationToken: cancellationToken);
             return _mapper.Map<List<TDomain>>(entities);
         }
 
-        public async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             OneOf<TDomain, None> ret = default(None);
-            var entity = await _context.Set<TDal>().FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+
+            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
             if (entity != null) {
                 ret = _mapper.Map<TDomain>(entity);
             }
@@ -78,6 +95,18 @@ namespace CA.ERP.DataAccess.Repositories
             }
 
             return result;
+        }
+
+        public async Task<bool> ExistAsync(Guid id, Status status = Status.Active)
+        {
+
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+            return await queryable.AnyAsync(e => e.Id == id);
         }
     }
 }

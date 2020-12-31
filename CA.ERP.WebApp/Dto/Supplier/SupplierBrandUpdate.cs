@@ -7,7 +7,6 @@ namespace CA.ERP.WebApp.Dto.Supplier
 {
     public class SupplierBrandUpdate
     {
-        public Guid SupplierId { get; set; }
         public Guid BrandId { get; set; }
     }
 }

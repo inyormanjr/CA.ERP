@@ -134,5 +134,69 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
+        [Fact]
+        public async Task ShouldUpdateSupplierMasterProductSuccess_NoContent()
+        {
+            var random = new Random();
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+            UpdateBaseRequest<SupplierMasterProductUpdate> request = new UpdateBaseRequest<SupplierMasterProductUpdate>() { Data = new SupplierMasterProductUpdate() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef"), CostPrice = random.Next(0, 50000) } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/MasterProduct", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateSupplierMasterProductFail_NotFound()
+        {
+            var random = new Random();
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f0");
+            UpdateBaseRequest<SupplierMasterProductUpdate> request = new UpdateBaseRequest<SupplierMasterProductUpdate>() { Data = new SupplierMasterProductUpdate() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef"), CostPrice = random.Next(0, 50000) } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/MasterProduct", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateSupplierMasterProductFail_BadRequest()
+        {
+            var random = new Random();
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+            UpdateBaseRequest<SupplierMasterProductUpdate> request = new UpdateBaseRequest<SupplierMasterProductUpdate>() { Data = new SupplierMasterProductUpdate() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d19530eeee"), CostPrice = random.Next(0, 50000) } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/MasterProduct", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateSupplierBrandSuccess_NoContent()
+        {
+            var random = new Random();
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("9e1b807c-ddd6-43ec-b5f3-f986863f1762") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateSupplierBrandFail_NotFound()
+        {
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba333");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("9e1b807c-ddd6-43ec-b5f3-f986863f1762") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldUpdateSupplierBrandFail_BadRequest()
+        {
+            var supplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefceeeeee") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
     }
 }

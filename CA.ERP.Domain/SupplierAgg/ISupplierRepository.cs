@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.SupplierAgg
 {
-    public interface ISupplierRepository: IRepository<Supplier>
+    public interface ISupplierRepository : IRepository<Supplier>
     {
+        Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken);
     }
 }
