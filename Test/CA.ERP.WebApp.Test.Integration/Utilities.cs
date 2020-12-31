@@ -57,7 +57,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     }
                     db.Branches.Add(branch);
                 }
-                
+
                 db.SaveChanges();
 
                 for (int i = 0; i < 10; i++)
@@ -68,7 +68,7 @@ namespace CA.ERP.WebApp.Test.Integration
 
                     var suffix = i == 0 ? string.Empty : i.ToString();
 
-                    var user = new User() { Id = Guid.NewGuid() , Username = "ExistingUser" + suffix, Role = UserRole.Admin, FirstName = "Existing" , LastName = "User" };
+                    var user = new User() { Id = Guid.NewGuid(), Username = "ExistingUser" + suffix, Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
                     user.SetHashAndSalt(passwordHash, passwordSalt);
 
                     if (i == 0)
@@ -89,7 +89,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Users.Add(user);
                 }
 
-                
+
 
 
                 //add brands
@@ -107,6 +107,14 @@ namespace CA.ERP.WebApp.Test.Integration
                     else if (i == 1)
                     {
                         brand.Id = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d");
+                    }
+                    else if (i == 2)
+                    {
+                        brand.Id = Guid.Parse("9e1b807c-ddd6-43ec-b5f3-f986863f1762");
+                    }
+                    else if (i == 3)
+                    {
+                        brand.Id = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318");
                     }
                     db.Brands.Add(brand);
                 }
@@ -151,19 +159,23 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         supplier.Id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
                     }
+                    else if (i == 1)
+                    {
+                        supplier.Id = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
+                    }
 
                     var brands2 = db.Brands.OrderBy(b => random.Next()).Take(random.Next(5));
 
                     foreach (var brand in brands2)
                     {
-                        supplier.SupllierBrands.Add(new SupplierBrand() { Brand = brand, Supplier = supplier });
+                        supplier.SupplierBrands.Add(new SupplierBrand() { Brand = brand, Supplier = supplier });
                     }
                     db.Suppliers.Add(supplier);
                 }
 
                 db.SaveChanges();
 
-                
+
 
                 var branches = db.Branches.ToList();
                 var suppliers = db.SupplierBrands.ToList();
@@ -171,7 +183,7 @@ namespace CA.ERP.WebApp.Test.Integration
                 {
                     var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
                     var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
-                    var poProducts = db.MasterProducts.Where(m=>m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
+                    var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
                     PurchaseOrder purchaseOrder = new PurchaseOrder()
                     {
                         BranchId = poBranch.Id,
@@ -196,6 +208,35 @@ namespace CA.ERP.WebApp.Test.Integration
                 }
 
                 db.SaveChanges();
+
+                generateSupplierMasterProducts(db);
+                db.SaveChanges();
+
+                var supplierBrand = new SupplierBrand() {
+                    BrandId = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318"),
+                    SupplierId = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229")
+                };
+            }
+        }
+
+        private static void generateSupplierMasterProducts(CADataContext db)
+        {
+            var random = new Random();
+            var suppliers = db.Suppliers.Include(s => s.SupplierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            foreach (var supplier in suppliers)
+            {
+                var masterProducts = supplier.SupplierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                foreach (var masterProduct in masterProducts)
+                {
+                    var supplierMasterProduct = new SupplierMasterProduct()
+                    {
+                        MasterProduct = masterProduct,
+                        Supplier = supplier,
+                        CostPrice = random.Next(100000),
+                    };
+                    db.SupplierMasterProducts.Add(supplierMasterProduct);
+                }
+
             }
         }
     }

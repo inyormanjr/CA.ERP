@@ -19,7 +19,7 @@ namespace CA.ERP.DataAccess.EFMapping
             builder.Property(t => t.Address).HasMaxLength(200);
             builder.Property(t => t.ContactPerson).HasMaxLength(100);
 
-            builder.HasMany(t => t.SupllierBrands)
+            builder.HasMany(t => t.SupplierBrands)
                 .WithOne(t => t.Supplier)
                 .HasForeignKey(t => t.SupplierId);
 

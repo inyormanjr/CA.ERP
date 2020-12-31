@@ -8,6 +8,7 @@ namespace CA.ERP.WebApp.Dto
     /// <summary>
     /// Enum status for dto
     /// </summary>
+    [Flags]
     public enum Status:int
     {
         /// <summary>

@@ -13,11 +13,13 @@ namespace CA.ERP.DataAccess.EFMapping
     {
         public void Configure(EntityTypeBuilder<SupplierBrand> builder)
         {
-            builder.HasKey(t => t.Id);
+            builder.HasKey(t => new { t.SupplierId, t.BrandId });
 
             builder.HasOne(t => t.Brand)
                 .WithMany(t => t.SupplierBrands)
                 .HasForeignKey(t => t.BrandId);
+
+            builder.Ignore(t => t.Id);
         }
     }
 }

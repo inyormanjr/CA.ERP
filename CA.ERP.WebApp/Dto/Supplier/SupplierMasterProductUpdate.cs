@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Dto.Supplier
 {
-    public class SupplierBrandUpdate
+    public class SupplierMasterProductUpdate
     {
-        public Guid BrandId { get; set; }
+        public Guid MasterProductId { get; set; }
+        public decimal CostPrice { get; set; }
     }
 }

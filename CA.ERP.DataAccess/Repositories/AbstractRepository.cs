@@ -12,10 +12,12 @@ using CA.ERP.Common.Extensions;
 using AutoMapper;
 using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
+using Dal = CA.ERP.DataAccess.Entities;
+using System.Linq.Expressions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
-    public abstract class AbstractRepository<T1, T2> : IRepository<T1> where T1 : class where T2 : EntityBase
+    public abstract class AbstractRepository<TDomain, TDal> : IRepository<TDomain> where TDomain : class where TDal : EntityBase
     {
         protected readonly CADataContext _context;
         protected readonly IMapper _mapper;
@@ -25,11 +27,11 @@ namespace CA.ERP.DataAccess.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<Guid> AddAsync(T1 entity, CancellationToken cancellationToken = default)
+        public async Task<Guid> AddAsync(TDomain entity, CancellationToken cancellationToken = default)
         {
             entity.ThrowIfNullArgument(nameof(entity));
-            var dalEntity = _mapper.Map<T2>(entity);
-            await _context.Set<T2>().AddAsync(dalEntity, cancellationToken: cancellationToken);
+            var dalEntity = _mapper.Map<TDal>(entity);
+            await _context.Set<TDal>().AddAsync(dalEntity, cancellationToken: cancellationToken);
             await _context.SaveChangesAsync();
             return dalEntity.Id;
         }
@@ -37,7 +39,7 @@ namespace CA.ERP.DataAccess.Repositories
         public async Task<OneOf<Success, None>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             OneOf<Success, None> ret = default(None);
-            var toDelete = _context.Set<T2>().FirstOrDefault(b => b.Id == id);
+            var toDelete = _context.Set<TDal>().FirstOrDefault(b => b.Id == id);
             if (toDelete != null)
             {
                 toDelete.Status = DataAccess.Common.Status.Inactive;
@@ -48,26 +50,41 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task<List<T1>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
-            var entities = await _context.Set<T2>().ToListAsync(cancellationToken: cancellationToken);
-            return _mapper.Map<List<T1>>(entities);
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+
+            var entities = await queryable.ToListAsync(cancellationToken: cancellationToken);
+            return _mapper.Map<List<TDomain>>(entities);
         }
 
-        public async Task<OneOf<T1, None>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
-            OneOf<T1, None> ret = default(None);
-            var entity = await _context.Set<T2>().FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+            OneOf<TDomain, None> ret = default(None);
+
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+
+            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
             if (entity != null) {
-                ret = _mapper.Map<T1>(entity);
+                ret = _mapper.Map<TDomain>(entity);
             }
             return ret;
         }
 
-        public virtual async Task<OneOf<Guid, None>> UpdateAsync(Guid id, T1 entity, CancellationToken cancellationToken = default)
+        public virtual async Task<OneOf<Guid, None>> UpdateAsync(Guid id, TDomain entity, CancellationToken cancellationToken = default)
         {
             OneOf<Guid, None> result = default(None);
-            var dalEntity = await _context.Set<T2>().FirstOrDefaultAsync<T2>(b => b.Id == id, cancellationToken: cancellationToken);
+            var dalEntity = await _context.Set<TDal>().FirstOrDefaultAsync<TDal>(b => b.Id == id, cancellationToken: cancellationToken);
             if (dalEntity != null)
             {
                 _mapper.Map(entity, dalEntity);
@@ -78,6 +95,18 @@ namespace CA.ERP.DataAccess.Repositories
             }
 
             return result;
+        }
+
+        public async Task<bool> ExistAsync(Guid id, Status status = Status.Active)
+        {
+
+            var queryable = _context.Set<TDal>().AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+            return await queryable.AnyAsync(e => e.Id == id);
         }
     }
 }

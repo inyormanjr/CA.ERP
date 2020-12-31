@@ -4,14 +4,16 @@ using CA.ERP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CA.ERP.DataAccess.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    partial class CADataContextModelSnapshot : ModelSnapshot
+    [Migration("20201231060346_changeBarcodeUniqueByBranch")]
+    partial class changeBarcodeUniqueByBranch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -316,7 +318,8 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
                 {
-                    b.Property<Guid>("SupplierId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BrandId")
@@ -331,26 +334,30 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("SupplierId", "BrandId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("SupplierBrands");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierMasterProduct", b =>
                 {
-                    b.Property<Guid>("SupplierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MasterProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<decimal>("CostPrice")
                         .HasPrecision(18, 2)
@@ -362,8 +369,14 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -371,9 +384,11 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("SupplierId", "MasterProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MasterProductId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("SupplierMasterProducts");
                 });
@@ -508,7 +523,7 @@ namespace CA.ERP.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
-                        .WithMany("SupplierBrands")
+                        .WithMany("SupllierBrands")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -580,7 +595,7 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
-                    b.Navigation("SupplierBrands");
+                    b.Navigation("SupllierBrands");
 
                     b.Navigation("SupplierMasterProducts");
                 });
