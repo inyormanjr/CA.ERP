@@ -18,6 +18,9 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
 
             CreateMap<Dal.SupplierBrand, SupplierBrand>()
                             .ReverseMap();
+
+            CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>()
+                            .ReverseMap();
         }
     }
 }

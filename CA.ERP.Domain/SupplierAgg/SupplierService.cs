@@ -18,13 +18,17 @@ namespace CA.ERP.Domain.SupplierAgg
         private readonly ISupplierRepository _supplierRepository;
         private readonly ISupplierFactory _supplierFactory;
         private readonly IValidator<Supplier> _supplerValidator;
+        private readonly ISupplierMasterProductRepository _supplierMasterProductRepository;
+        private readonly IValidator<SupplierMasterProduct> _supplierMasterProductValidator;
 
-        public SupplierService(ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper, IValidator<Supplier> supplerValidator)
+        public SupplierService(ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper, IValidator<Supplier> supplerValidator, ISupplierMasterProductRepository supplierMasterProductRepository, IValidator<SupplierMasterProduct> supplierMasterProductValidator)
             :base(supplierRepository, supplerValidator, userHelper)
         {
             _supplierRepository = supplierRepository;
             _supplierFactory = supplierFactory;
             _supplerValidator = supplerValidator;
+            _supplierMasterProductRepository = supplierMasterProductRepository;
+            _supplierMasterProductValidator = supplierMasterProductValidator;
         }
 
         
@@ -47,6 +51,25 @@ namespace CA.ERP.Domain.SupplierAgg
             {
                 ret = await _supplierRepository.AddAsync(supplier, cancellationToken: cancellationToken);
                 
+            }
+            return ret;
+        }
+
+        public async Task<OneOf<Success, List<ValidationFailure>>> AddOrUpdateSupplierMasterProductAsync(Guid supplierId, Guid masterProductId, decimal costPrice, CancellationToken cancellationToken)
+        {
+            OneOf<Success, List<ValidationFailure>> ret;
+            SupplierMasterProduct supplierMasterProduct = new SupplierMasterProduct() { SupplierId = supplierId, MasterProductId = masterProductId, CostPrice = costPrice };
+            var validationResult = _supplierMasterProductValidator.Validate(supplierMasterProduct);
+            if (!validationResult.IsValid)
+            {
+                ret = validationResult.Errors.ToList();
+            }
+            else
+            {
+                supplierMasterProduct.CreatedBy = _userHelper.GetCurrentUserId();
+                supplierMasterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
+                await _supplierMasterProductRepository.AddOrUpdateAsync(supplierMasterProduct, cancellationToken);
+                ret = default(Success);
             }
             return ret;
         }

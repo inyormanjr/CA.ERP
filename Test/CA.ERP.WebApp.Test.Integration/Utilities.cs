@@ -57,7 +57,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     }
                     db.Branches.Add(branch);
                 }
-                
+
                 db.SaveChanges();
 
                 for (int i = 0; i < 10; i++)
@@ -68,7 +68,7 @@ namespace CA.ERP.WebApp.Test.Integration
 
                     var suffix = i == 0 ? string.Empty : i.ToString();
 
-                    var user = new User() { Id = Guid.NewGuid() , Username = "ExistingUser" + suffix, Role = UserRole.Admin, FirstName = "Existing" , LastName = "User" };
+                    var user = new User() { Id = Guid.NewGuid(), Username = "ExistingUser" + suffix, Role = UserRole.Admin, FirstName = "Existing", LastName = "User" };
                     user.SetHashAndSalt(passwordHash, passwordSalt);
 
                     if (i == 0)
@@ -89,7 +89,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     db.Users.Add(user);
                 }
 
-                
+
 
 
                 //add brands
@@ -163,7 +163,7 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 db.SaveChanges();
 
-                
+
 
                 var branches = db.Branches.ToList();
                 var suppliers = db.SupplierBrands.ToList();
@@ -171,7 +171,7 @@ namespace CA.ERP.WebApp.Test.Integration
                 {
                     var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
                     var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
-                    var poProducts = db.MasterProducts.Where(m=>m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
+                    var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
                     PurchaseOrder purchaseOrder = new PurchaseOrder()
                     {
                         BranchId = poBranch.Id,
@@ -196,6 +196,30 @@ namespace CA.ERP.WebApp.Test.Integration
                 }
 
                 db.SaveChanges();
+
+                generateSupplierMasterProducts(db);
+                db.SaveChanges();
+            }
+        }
+
+        private static void generateSupplierMasterProducts(CADataContext db)
+        {
+            var random = new Random();
+            var suppliers = db.Suppliers.Include(s => s.SupllierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            foreach (var supplier in suppliers)
+            {
+                var masterProducts = supplier.SupllierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                foreach (var masterProduct in masterProducts)
+                {
+                    var supplierMasterProduct = new SupplierMasterProduct()
+                    {
+                        MasterProduct = masterProduct,
+                        Supplier = supplier,
+                        CostPrice = random.Next(100000),
+                    };
+                    db.SupplierMasterProducts.Add(supplierMasterProduct);
+                }
+
             }
         }
     }

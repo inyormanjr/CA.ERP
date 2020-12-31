@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Domain.UserAgg;
+using CA.ERP.WebApp.Dto.Supplier;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -150,7 +151,31 @@ namespace CA.ERP.WebApp.Controllers
         }
 
 
+        [HttpPut("{id}/SupplierMasterProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateSupplierMasterProduct(Guid id, Dto.UpdateBaseRequest<SupplierMasterProductUpdate> request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} updating supplier master product.", _userHelper.GetCurrentUserId());
 
+            var option = await _supplierService.AddOrUpdateSupplierMasterProductAsync(id, request.Data.MasterProductId, request.Data.CostPrice, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: (validationErrors) =>
+                {
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+
+                    _logger.LogInformation("User {0} supplier master product update failed.", _userHelper.GetCurrentUserId());
+                    return BadRequest(response);
+                }
+            );
+            
+        }
 
     }
 }
