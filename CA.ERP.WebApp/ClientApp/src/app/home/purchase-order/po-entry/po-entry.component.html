@@ -1,0 +1,129 @@
+<div class="container-fluid pt-3 pb-3 bg-light">
+  <section class="d-flex flex-row justify-content-between">
+    <h3 class="text-dark">New Purchase Order (<strong class="text-success"> 20-00124 </strong>)</h3>
+  <div class="btn-group" dropdown>
+    <a id="button-basic" class="btn" dropdownToggle >
+      <i class="fa fa-cog fa-2x" aria-hidden="true"></i>
+    </a>
+    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+      <li role="menuitem"><a class="dropdown-item" href="#">Add Supplier</a></li>
+      <li role="menuitem"><a class="dropdown-item" href="#">Update Price </a></li>
+    </ul>
+  </div>
+  </section>
+  <section class="entry-section mt-4">
+        <form [formControlName]="poForm" class="container-fluid">
+          <div class="row ">
+            <div class="select-supplier form-inline  col-md-4">
+              <div class="form-group ">
+                <label for=""class="mr-2">Supplier Name:</label>
+                <input [value]="" type="text" class="form-control mr-1" name="" id="" readonly aria-describedby="helpId" placeholder="Select Supplier">
+                <button type="submit" class="btn btn-primary ">Select Supplier </button>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+              <div class="form-inline  col-md-8">
+                <div class="form-group w-100">
+                  <label for="" class="mr-3">Branch Name:</label>
+                  <select class="form-control d-flex flex-fill"  name="" id="">
+                    <option  [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-inline col-md-4 justify-content-end">
+                <div class="form-group ">
+                  <label for="" class="mr-2">P.O Date:</label>
+                      <label for=""></label>
+                      <input type="date"
+                        class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+                </div>
+              </div>
+          </div>
+          <div class="row mt-3">
+              <div class=" col-md-4">
+                <div class="form-group w-100">
+                  <label for="" class="mr-3">Brand:</label>
+                  <select class="form-control d-flex flex-fill"  name="" id="">
+                    <option [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col-md-4">
+                <div class="form-group w-100">
+                  <label for="" class="mr-3">Model:</label>
+                  <select class="form-control d-flex flex-fill"  name="" id="">
+                    <option [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
+                  </select>
+                </div>
+              </div>
+                <div class="form-inline col-md-4 justify-content-end">
+                  <div class="form-group ">
+                    <label for="" class="mr-2">Delivery Date:</label>
+                    <label for=""></label>
+                    <input type="date" class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+                  </div>
+                </div>
+          </div>
+          <div class="row">
+            <div class="table-section table-responsive-md col-md-12">
+              <table class="table table-sm  table-hover bg-white">
+                <thead>
+                  <tr>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>OrderedQty</th>
+                    <th>FreeQty</th>
+                    <th>Cost</th>
+                    <th>Discount</th>
+                    <th>Sub-Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td scope="row">fsdf</td>
+                    <td>fasfas</td>
+                    <td>
+                      <input class="border-0 bg-white " value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">fsdf</td>
+                    <td>fasfas</td>
+                    <td>
+                      <input class="border-0 bg-white " value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>
+                      <input class="border-0 bg-white" value="2" type="number">
+                    </td>
+                    <td>10</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-12 d-flex justify-content-between">
+                <a name="" id="" class="btn btn-danger" href="#" role="button">Back</a>
+              <a name="" id="" class="btn btn-success" href="#" role="button">Save & Print</a>
+            </div>
+          </div>
+        </form>
+  </section>
+</div>

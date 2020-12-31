@@ -30,6 +30,7 @@
     "@ngrx/store-devtools": "^10.1.2",
     "@nguniversal/module-map-ngfactory-loader": "8.1.1",
     "@swimlane/ngx-charts": "^11.2.0",
+    "@swimlane/ngx-datatable": "^18.0.0",
     "alertifyjs": "^1.13.1",
     "aspnet-prerendering": "^3.0.1",
     "bootstrap": "^4.5.3",
