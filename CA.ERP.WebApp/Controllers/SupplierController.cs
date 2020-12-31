@@ -185,7 +185,7 @@ namespace CA.ERP.WebApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateSupplierBrand(Guid id, Dto.UpdateBaseRequest<SupplierBrandUpdate> request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {0} updating supplier master product.", _userHelper.GetCurrentUserId());
+            _logger.LogInformation("User {0} updating supplier brand product.", _userHelper.GetCurrentUserId());
 
             var option = await _supplierService.AddSupplierBrand(id, request.Data.BrandId, cancellationToken);
             return option.Match<IActionResult>(
@@ -198,10 +198,26 @@ namespace CA.ERP.WebApp.Controllers
                         ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
                     };
 
-                    _logger.LogInformation("User {0} supplier master product update failed.", _userHelper.GetCurrentUserId());
+                    _logger.LogInformation("User {0} supplier supplier brand update failed.", _userHelper.GetCurrentUserId());
                     return BadRequest(response);
                 },
                 f2: notfound => NotFound()
+            );
+
+        }
+
+        [HttpDelete("{id}/Brand/{brandId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteSupplierBrand(Guid id, Guid brandId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} deleting supplier brand.", _userHelper.GetCurrentUserId());
+
+            var option = await _supplierService.DeleteSupplierBrandAsync(id, brandId, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: notfound => NotFound()
             );
 
         }

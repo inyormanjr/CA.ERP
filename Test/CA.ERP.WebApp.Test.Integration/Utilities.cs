@@ -112,6 +112,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     {
                         brand.Id = Guid.Parse("9e1b807c-ddd6-43ec-b5f3-f986863f1762");
                     }
+                    else if (i == 3)
+                    {
+                        brand.Id = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318");
+                    }
                     db.Brands.Add(brand);
                 }
 
@@ -154,6 +158,10 @@ namespace CA.ERP.WebApp.Test.Integration
                     if (i == 0)
                     {
                         supplier.Id = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1");
+                    }
+                    else if (i == 1)
+                    {
+                        supplier.Id = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
                     }
 
                     var brands2 = db.Brands.OrderBy(b => random.Next()).Take(random.Next(5));
@@ -203,6 +211,11 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 generateSupplierMasterProducts(db);
                 db.SaveChanges();
+
+                var supplierBrand = new SupplierBrand() {
+                    BrandId = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318"),
+                    SupplierId = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229")
+                };
             }
         }
 

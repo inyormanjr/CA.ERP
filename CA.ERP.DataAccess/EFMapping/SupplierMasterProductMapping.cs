@@ -13,8 +13,9 @@ namespace CA.ERP.DataAccess.EFMapping
     {
         public void Configure(EntityTypeBuilder<SupplierMasterProduct> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
+            
+            builder.HasKey(x => new { x.SupplierId, x.MasterProductId});
+
             builder.Property(x => x.CostPrice).HasPrecision(18, 2);
 
             builder.HasOne(t => t.MasterProduct)
@@ -24,6 +25,8 @@ namespace CA.ERP.DataAccess.EFMapping
             builder.HasOne(t => t.Supplier)
                 .WithMany(t => t.SupplierMasterProducts)
                 .HasForeignKey(t => t.SupplierId);
+
+            builder.Ignore(t => t.Id);
 
         }
     }

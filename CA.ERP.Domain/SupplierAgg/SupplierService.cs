@@ -108,5 +108,15 @@ namespace CA.ERP.Domain.SupplierAgg
             }
             return ret;
         }
+
+        public async Task<OneOf<Success, NotFound>> DeleteSupplierBrandAsync(Guid id, Guid brandId, CancellationToken cancellationToken)
+        {
+            var option = await _supplierRepository.DeleteSupplierBrandAsync(id, brandId, cancellationToken);
+            return option.Match<OneOf<Success, NotFound>>(
+                f0: success => success,
+                f1: none => default(NotFound)
+            );
+        }
+
     }
 }

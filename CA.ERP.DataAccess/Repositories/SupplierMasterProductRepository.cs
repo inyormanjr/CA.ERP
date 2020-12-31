@@ -24,9 +24,6 @@ namespace CA.ERP.DataAccess.Repositories
             {
                 _mapper.Map(supplierMasterProduct, dalSupplierMasterProduct);
 
-                //id should never be modified
-                _context.Entry(dalSupplierMasterProduct).Property(t => t.Id).IsModified = false;
-
             }
             else
             {

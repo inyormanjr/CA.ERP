@@ -198,5 +198,35 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
+        [Fact]
+        public async Task ShouldDeleteSupplierBrandSuccess_NoContent()
+        {
+            var supplierId = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task ShouldDeleteSupplierBrandFail_NoFound()
+        {
+            var supplierId = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b333");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c318") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldDeleteSupplierBrandFail_BadRequest()
+        {
+            var supplierId = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
+            UpdateBaseRequest<SupplierBrandCreate> request = new UpdateBaseRequest<SupplierBrandCreate>() { Data = new SupplierBrandCreate() { BrandId = Guid.Parse("92f6f00c-d830-4770-aebd-0e7de960c333") } };
+            var response = await _client.PutAsJsonAsync($"api/Supplier/{supplierId}/Brand", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
     }
 }

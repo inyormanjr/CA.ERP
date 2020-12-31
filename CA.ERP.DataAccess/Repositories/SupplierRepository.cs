@@ -47,5 +47,18 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return ret;
         }
+
+        public async Task<OneOf<Success, None>> DeleteSupplierBrandAsync(Guid supplierId, Guid brandId, CancellationToken cancellationToken)
+        {
+            OneOf<Success, None> ret = default(None);
+            var supplierBrand = await _context.SupplierBrands.FirstOrDefaultAsync(sb => sb.SupplierId == supplierId && sb.BrandId == brandId);
+            if (supplierBrand != null)
+            {
+                _context.Entry(supplierBrand).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+                ret = default(Success);
+            }
+            return ret;
+        }
     }
 }
