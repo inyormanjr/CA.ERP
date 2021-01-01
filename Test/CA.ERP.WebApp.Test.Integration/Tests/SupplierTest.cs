@@ -228,5 +228,33 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
+        [Fact]
+        public async Task ShouldGetAtLeastOneSupplierBrandsSuccess_Ok()
+        {
+            var id = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
+            var response = await _client.GetAsync($"api/Supplier/{id}/Brands");
+
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<SupplierView>>();
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterThan(0);
+        }
+
+
+        [Fact]
+        public async Task ShouldGetEmptySupplierBrandsSuccess_Ok()
+        {
+            var id = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b2ee");
+            var response = await _client.GetAsync($"api/Supplier/{id}/Brands");
+
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<SupplierView>>();
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCount(0);
+        }
     }
 }

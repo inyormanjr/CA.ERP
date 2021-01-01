@@ -60,5 +60,31 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return ret;
         }
+
+        public Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            var queryable = _context.SupplierBrands.AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+            var supplierBrands = queryable.Where(sb => sb.SupplierId == supplierId)
+                .Select(sb => 
+                    new SupplierBrandLite() { 
+                        SupplierId = sb.SupplierId,
+                        BrandId = sb.BrandId, 
+                        BrandName = sb.Brand.Name, 
+                        MasterProducts = sb.Brand.MasterProducts.Select(
+                            mp => new SupplierMasterProductLite() { 
+                                SupplierId = sb.SupplierId,
+                                MasterProductId = mp.Id, 
+                                Model = mp.Model, 
+                                CostPrice = mp.SupplierMasterProducts.Where(smp=>smp.SupplierId == sb.SupplierId).Select(smp=>smp.CostPrice).FirstOrDefault() 
+                            })  
+                    }).ToListAsync();
+
+            return supplierBrands;
+        }
     }
 }
