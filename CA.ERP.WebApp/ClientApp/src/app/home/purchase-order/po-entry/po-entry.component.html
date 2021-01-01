@@ -12,13 +12,14 @@
   </div>
   </section>
   <section class="entry-section mt-4">
-        <form [formControlName]="poForm" class="container-fluid">
+        <form [formGroup]="poForm" class="container-fluid">
           <div class="row ">
             <div class="select-supplier form-inline  col-md-4">
               <div class="form-group ">
                 <label for=""class="mr-2">Supplier Name:</label>
-                <input [value]="" type="text" class="form-control mr-1" name="" id="" readonly aria-describedby="helpId" placeholder="Select Supplier">
-                <button type="submit" class="btn btn-primary ">Select Supplier </button>
+                <input [value]="(selectedSupplier$ | async) != undefined ? (selectedSupplier$ | async).name: 'Select Supplier'"
+                type="text" class="form-control mr-1" name="" id="" readonly aria-describedby="helpId" placeholder="Select Supplier">
+                <button (click)="selectSupplierModal()" class="btn btn-primary">Select Supplier </button>
               </div>
             </div>
           </div>
@@ -26,7 +27,7 @@
               <div class="form-inline  col-md-8">
                 <div class="form-group w-100">
                   <label for="" class="mr-3">Branch Name:</label>
-                  <select class="form-control d-flex flex-fill"  name="" id="">
+                  <select  class="form-control d-flex flex-fill"  name="" id="">
                     <option  [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
                   </select>
                 </div>
@@ -50,11 +51,15 @@
                 </div>
               </div>
               <div class=" col-md-4">
-                <div class="form-group w-100">
-                  <label for="" class="mr-3">Model:</label>
-                  <select class="form-control d-flex flex-fill"  name="" id="">
-                    <option [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
-                  </select>
+                <div class="form-group">
+                  <label for="" >Model:</label>
+                  <div class="form-inline">
+                      <select class="form-control mr-1 d-flex flex-fill" name="" id="">
+                        <option [value]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
+                      </select>
+                      <a name="" id="" class="btn btn-success" (click)="addPurchaseItem()" role="button">Add</a>
+                  </div>
+
                 </div>
               </div>
                 <div class="form-inline col-md-4 justify-content-end">

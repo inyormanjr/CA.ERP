@@ -3,11 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { PoEntryComponent } from './po-entry/po-entry.component';
 import { PoListComponent } from './po-list/po-list.component';
 import { PurchaseOrderViewComponent } from './purchase-order-view/purchase-order-view.component';
+import { PoListResolverService } from './resolvers/po.list.resolver.service';
 
 
 const routes: Routes = [{
   path: '', component: PurchaseOrderViewComponent, children: [
-    { path: 'list', component: PoListComponent},
+    { path: 'list', component: PoListComponent, resolve: {data: PoListResolverService}},
     { path: 'entry', component: PoEntryComponent },
      {path: '', redirectTo: 'list', pathMatch: 'full'}
   ]}];
