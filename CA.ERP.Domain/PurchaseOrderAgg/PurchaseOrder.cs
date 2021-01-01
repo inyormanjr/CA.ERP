@@ -23,6 +23,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public string SupplierName { get; set; }
         public string BranchName { get; set; }
+        public string BranchAddress { get; set; }
 
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 

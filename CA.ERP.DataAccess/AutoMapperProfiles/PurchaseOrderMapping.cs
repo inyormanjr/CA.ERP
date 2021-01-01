@@ -16,9 +16,13 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
             CreateMap<Dal.PurchaseOrder, PurchaseOrder>()
                 .ForMember(po => po.SupplierName, opt => opt.MapFrom(po => po.Supplier.Name))
                 .ForMember(po => po.BranchName, opt => opt.MapFrom(po => po.Branch.Name))
+                .ForMember(po => po.BranchAddress, opt => opt.MapFrom(po => po.Branch.Address))
                 .ReverseMap();
                 
-            CreateMap<Dal.PurchaseOrderItem, PurchaseOrderItem>().ReverseMap();
+            CreateMap<Dal.PurchaseOrderItem, PurchaseOrderItem>()
+                .ForMember(poi => poi.BrandName, opt => opt.MapFrom(poi => poi.MasterProduct.Brand.Name))
+                .ForMember(poi => poi.Model, opt => opt.MapFrom(poi => poi.MasterProduct.Model))
+                .ReverseMap();
         }
     }
 }
