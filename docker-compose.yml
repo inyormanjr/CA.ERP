@@ -19,4 +19,4 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=DbPassword123@
-      - MSSQL_PID=Express
+      - MSSQL_PID=HMWJ3-KY3J2-NMVD7-KG4JR-X2G8G

@@ -222,5 +222,21 @@ namespace CA.ERP.WebApp.Controllers
 
         }
 
+        /// <summary>
+        /// Get a lite version of supplier brands with master products and cost
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/Brands")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<SupplierBrandLite>>> GetSupplierBrands(Guid id, CancellationToken cancellationToken)
+        {
+            var supplierBrands = await _supplierService.GetSupplierBrandsAsync(id, cancellationToken: cancellationToken);
+            return Ok(new Dto.GetManyResponse<SupplierBrandLite>() {Data = supplierBrands });
+            
+        }
+
     }
 }

@@ -118,5 +118,10 @@ namespace CA.ERP.Domain.SupplierAgg
             );
         }
 
+        public async Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, CancellationToken cancellationToken)
+        {
+            return await _supplierRepository.GetSupplierBrandsAsync(supplierId, cancellationToken:cancellationToken);
+        }
+
     }
 }
