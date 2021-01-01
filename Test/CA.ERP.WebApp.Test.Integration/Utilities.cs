@@ -168,7 +168,7 @@ namespace CA.ERP.WebApp.Test.Integration
                         supplier.Id = Guid.Parse("b61753af-a4bf-45c4-b507-6ab661b063ad");
                     }
 
-                    var brands2 = db.Brands.OrderBy(b => random.Next()).Take(random.Next(5));
+                    var brands2 = db.Brands.OrderBy(b => random.Next()).Take(random.Next(5,10));
 
                     foreach (var brand in brands2)
                     {
