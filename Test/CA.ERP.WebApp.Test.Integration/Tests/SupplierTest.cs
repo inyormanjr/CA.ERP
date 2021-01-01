@@ -231,7 +231,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldGetAtLeastOneSupplierBrandsSuccess_Ok()
         {
-            var id = Guid.Parse("9b7b6268-dce4-4620-a5e4-f6ae95a4b229");
+            var id = Guid.Parse("b61753af-a4bf-45c4-b507-6ab661b063ad");
             var response = await _client.GetAsync($"api/Supplier/{id}/Brands");
 
 
