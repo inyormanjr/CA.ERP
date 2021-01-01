@@ -13,7 +13,11 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public PurchaseOrderMapping()
         {
-            CreateMap<Dal.PurchaseOrder, PurchaseOrder>().ReverseMap();
+            CreateMap<Dal.PurchaseOrder, PurchaseOrder>()
+                .ForMember(po => po.SupplierName, opt => opt.MapFrom(po => po.Supplier.Name))
+                .ForMember(po => po.BranchName, opt => opt.MapFrom(po => po.Branch.Name))
+                .ReverseMap();
+                
             CreateMap<Dal.PurchaseOrderItem, PurchaseOrderItem>().ReverseMap();
         }
     }

@@ -21,6 +21,9 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public Guid SupplierId { get; set; }
         public Guid BranchId { get; set; }
 
+        public string SupplierName { get; set; }
+        public string BranchName { get; set; }
+
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
         public User ApprovedBy { get; set; }

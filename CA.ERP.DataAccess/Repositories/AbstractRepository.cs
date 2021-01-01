@@ -50,7 +50,7 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public virtual async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             var queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
@@ -59,8 +59,8 @@ namespace CA.ERP.DataAccess.Repositories
                 queryable = queryable.Where(e => e.Status == dalStatus);
             }
 
-            var entities = await queryable.ToListAsync(cancellationToken: cancellationToken);
-            return _mapper.Map<List<TDomain>>(entities);
+
+            return await queryable.Select(e=>_mapper.Map<TDal, TDomain>(e)).ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)

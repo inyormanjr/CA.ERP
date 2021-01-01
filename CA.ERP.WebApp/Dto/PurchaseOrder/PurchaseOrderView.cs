@@ -13,6 +13,9 @@ namespace CA.ERP.WebApp.Dto.PurchaseOrder
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }
         public Guid BranchId { get; set; }
+        public string SupplierName { get; set; }
+        public string BranchName { get; set; }
+
 
         public List<PurchaseOrderItemView> PurchaseOrderItems { get; set; }
     }

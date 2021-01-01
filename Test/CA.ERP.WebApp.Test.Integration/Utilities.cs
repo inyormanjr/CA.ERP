@@ -179,6 +179,7 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 var branches = db.Branches.ToList();
                 var suppliers = db.SupplierBrands.ToList();
+                int barcode = 1;
                 for (int i = 0; i < 10; i++)
                 {
                     var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
@@ -186,6 +187,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
                     PurchaseOrder purchaseOrder = new PurchaseOrder()
                     {
+                        Barcode = $"20-{barcode++.ToString("00000000")}",
                         BranchId = poBranch.Id,
                         DeliveryDate = DateTime.Now.AddDays(1),
                         SupplierId = poSupplier.SupplierId
