@@ -20,16 +20,18 @@
       <thead>
         <tr>
           <th>P.O #</th>
-          <th>Date</th>
-          <th>Status</th>
+          <th>Delivery Date</th>
+          <th>Supplier Name</th>
+          <th>Branch Name</th>
           <th class="text-right">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td scope="row">FD-4240-16</td>
-          <td>20-20-21</td>
-          <td>Recieved</td>
+        <tr *ngFor="let item of this.purchaseOrdersList$ | async">
+          <td scope="row">{{item.branchId}}</td>
+          <td>{{item.deliveryDate | date}}</td>
+          <td>{{item.supplierName}}</td>
+          <td>{{item.branchName}}</td>
           <td scope="row" class="text-right">
             <a name="" id="" class="btn btn-primary mr-1" href="#" role="button">View</a>
             <a name="" id="" class="btn btn-warning" href="#" role="button">

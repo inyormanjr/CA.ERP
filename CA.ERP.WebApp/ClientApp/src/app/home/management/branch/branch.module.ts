@@ -11,6 +11,7 @@ import { BranchService } from './branch.service';
 import { BranchListComponent } from './branch-management/BranchList/BranchList.component';
 import { BranchEntryComponent } from './branch-management/branchEntry/branchEntry.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-bootstrap-modules.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ReactiveFormsModule,
     BranchRoutingModule,
+    NgxBootstrapModulesModule,
     StoreModule.forFeature(from.FeatureKey, from.reducers, { metaReducers: from.metaReducers }),
     EffectsModule.forFeature([Effects]),
   ],

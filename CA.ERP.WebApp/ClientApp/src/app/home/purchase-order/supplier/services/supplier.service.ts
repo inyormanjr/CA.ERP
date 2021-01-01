@@ -4,16 +4,19 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
-import { PurchaseOrder } from './models/new-purchase-order';
+import { SupplierView } from '../models/supplier-view';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
-  baseUrl = environment.apiURL + 'api/PurchaseOrder/';
+export class SupplierService implements ServiceBase<SupplierView> {
+  baseUrl = environment.apiURL + 'api/supplier';
   constructor(private http: HttpClient) { }
-  get(): Observable<PurchaseOrder[]> {
-    return this.http.get<PurchaseOrder[]>(this.baseUrl).pipe(map((result: any) =>   result.data ));
+  get(): Observable<SupplierView[]> {
+    return this.http.get<SupplierView[]>(this.baseUrl).pipe(map((response: any) => {
+      console.log(response);
+      return response.data;
+    }));
   }
   create(createRequest: any): Observable<any> {
     throw new Error('Method not implemented.');
