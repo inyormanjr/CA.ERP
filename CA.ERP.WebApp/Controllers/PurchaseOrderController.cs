@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using AspNetCore.Reporting;
+using AutoMapper;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,13 +26,17 @@ namespace CA.ERP.WebApp.Controllers
         private readonly IUserHelper _userHelper;
         private readonly PurchaseOrderService _purchaseOrderService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper )
+        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment )
         {
             _logger = logger;
             _userHelper = userHelper;
             _purchaseOrderService = purchaseOrderService;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
         /// <summary>
@@ -153,5 +159,31 @@ namespace CA.ERP.WebApp.Controllers
                 f1: notfound => NotFound()
             );
         }
+
+
+        [HttpGet("{id}/Report")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Report(Guid id, CancellationToken cancellationToken)
+        {
+            var getOption = await _purchaseOrderService.GetOneAsync(id);
+
+            return getOption.Match<IActionResult>(
+                f0: purchaseOrder =>
+                {
+                    var path = $"{_webHostEnvironment.WebRootPath}\\Reports\\PurchaseOrderReport.rdlc";
+
+
+                    Dictionary<string, object> dataSources = new Dictionary<string, object>();
+                    dataSources.Add("PurchaseOrderDataSet", new List<PurchaseOrder>() { purchaseOrder });
+                    dataSources.Add("PurchaseOrderItemDataSet", purchaseOrder.PurchaseOrderItems);
+                    var result = base.GenerateReport(path, dataSources: dataSources);
+                    return File(result.MainStream, MimeTypes["pdf"]);
+                },
+                f1: notFound => NotFound()
+                );
+        }
+
+
     }
 }

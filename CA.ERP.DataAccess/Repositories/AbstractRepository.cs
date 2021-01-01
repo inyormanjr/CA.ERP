@@ -63,7 +63,7 @@ namespace CA.ERP.DataAccess.Repositories
             return await queryable.Select(e=>_mapper.Map<TDal, TDomain>(e)).ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public virtual async Task<OneOf<TDomain, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             OneOf<TDomain, None> ret = default(None);
 
