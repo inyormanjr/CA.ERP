@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CA.ERP.Domain.Common;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
@@ -33,6 +34,19 @@ namespace CA.ERP.DataAccess.Repositories
             }
 
             return result;
+        }
+
+        public async override Task<List<PurchaseOrder>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            var queryable = _context.PurchaseOrders.Include(po=>po.Supplier).Include(po=>po.Branch).AsQueryable();
+            if (status != Status.All)
+            {
+                var dalStatus = (DataAccess.Common.Status)status;
+                queryable = queryable.Where(e => e.Status == dalStatus);
+            }
+
+
+            return await queryable.Select(e => _mapper.Map<PurchaseOrder>(e)).ToListAsync(cancellationToken: cancellationToken);
         }
     }
 }

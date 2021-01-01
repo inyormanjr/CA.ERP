@@ -121,7 +121,7 @@ namespace CA.ERP.Utilities
                 var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).ToList().OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
                 PurchaseOrder purchaseOrder = new PurchaseOrder()
                 {
-                    Barcode = barcode++.ToString("00000000000000000000"),
+                    Barcode = $"20-{barcode++.ToString("00000000")}",
                     BranchId = poBranch.Id,
                     DeliveryDate = DateTime.Now.AddDays(1),
                     SupplierId = poSupplier.SupplierId,
