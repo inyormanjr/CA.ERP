@@ -72,6 +72,7 @@ namespace CA.ERP.DataAccess.Repositories
             var supplierBrands = queryable.Where(sb => sb.SupplierId == supplierId)
                 .Select(sb => 
                     new SupplierBrandLite() { 
+                        SupplierId = sb.SupplierId,
                         BrandId = sb.BrandId, 
                         BrandName = sb.Brand.Name, 
                         MasterProducts = sb.Brand.MasterProducts.Select(
