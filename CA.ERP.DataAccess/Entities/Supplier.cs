@@ -14,5 +14,6 @@ namespace CA.ERP.DataAccess.Entities
 
         public List<SupplierBrand> SupplierBrands { get; set; } = new List<SupplierBrand>();
         public List<SupplierMasterProduct> SupplierMasterProducts { get; set; } = new List<SupplierMasterProduct>();
+        public List<PurchaseOrder> PurchaseOrders { get;  set; }
     }
 }

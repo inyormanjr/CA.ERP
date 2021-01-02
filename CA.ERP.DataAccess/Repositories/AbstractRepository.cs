@@ -27,10 +27,10 @@ namespace CA.ERP.DataAccess.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<Guid> AddAsync(TDomain entity, CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> AddAsync(TDomain entity, CancellationToken cancellationToken = default)
         {
             entity.ThrowIfNullArgument(nameof(entity));
-            var dalEntity = _mapper.Map<TDal>(entity);
+            var dalEntity = _mapper.Map<TDomain, TDal>(entity);
             await _context.Set<TDal>().AddAsync(dalEntity, cancellationToken: cancellationToken);
             await _context.SaveChangesAsync();
             return dalEntity.Id;
@@ -97,7 +97,7 @@ namespace CA.ERP.DataAccess.Repositories
             return result;
         }
 
-        public async Task<bool> ExistAsync(Guid id, Status status = Status.Active)
+        public async Task<bool> ExistAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
 
             var queryable = _context.Set<TDal>().AsQueryable();
@@ -106,7 +106,7 @@ namespace CA.ERP.DataAccess.Repositories
                 var dalStatus = (DataAccess.Common.Status)status;
                 queryable = queryable.Where(e => e.Status == dalStatus);
             }
-            return await queryable.AnyAsync(e => e.Id == id);
+            return await queryable.AnyAsync(e => e.Id == id, cancellationToken);
         }
     }
 }
