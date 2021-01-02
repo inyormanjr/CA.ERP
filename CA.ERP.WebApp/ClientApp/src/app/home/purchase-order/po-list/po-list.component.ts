@@ -12,7 +12,6 @@ import { PurchaseOrder } from '../models/new-purchase-order';
 export class PoListComponent implements OnInit {
   purchaseOrdersList$: Observable<PurchaseOrder[]>;
   constructor(private activatedRoute: ActivatedRoute) {
-    console.log(this.activatedRoute.data);
     this.purchaseOrdersList$ = this.activatedRoute.data.pipe(map((x: any) => x.data));
   }
 

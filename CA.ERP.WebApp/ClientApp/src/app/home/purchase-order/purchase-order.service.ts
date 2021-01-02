@@ -12,11 +12,14 @@ import { PurchaseOrder } from './models/new-purchase-order';
 export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
   baseUrl = environment.apiURL + 'api/PurchaseOrder/';
   constructor(private http: HttpClient) { }
+  getById(id: any): Observable<PurchaseOrder> {
+    throw new Error('Method not implemented.');
+  }
   get(): Observable<PurchaseOrder[]> {
     return this.http.get<PurchaseOrder[]>(this.baseUrl).pipe(map((result: any) =>   result.data ));
   }
   create(createRequest: any): Observable<any> {
-    throw new Error('Method not implemented.');
+    return this.http.post<string>(this.baseUrl, createRequest).pipe((map((result: any) => result.id)));
   }
   update(id: any, updateRequest: any): Observable<any> {
     throw new Error('Method not implemented.');

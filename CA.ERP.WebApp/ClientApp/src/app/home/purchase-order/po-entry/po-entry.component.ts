@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BranchService } from '../../management/branch/branch.service';
 import { BranchView } from '../../management/branch/model/branch.view';
@@ -11,15 +11,25 @@ import { SupplierView } from '../supplier/models/supplier-view';
 import { PurchaseOrderState } from '../reducers';
 import { Store } from '@ngrx/store';
 import { PurchaseOrderSelectorType } from '../reducers/purchase-order.selector.type';
+import { BrandWithMasterProducts } from '../supplier/models/brandWithMasterProducts';
+import { MasterProduct } from '../supplier/models/masterProduct';
+import { AlertifyService } from 'src/app/services/alertify/alertify.service';
+import { PurchaseOrderService } from '../purchase-order.service';
+import { map } from 'rxjs/operators';
+import { NewRequest } from 'src/app/models/NewRequest';
 @Component({
   selector: 'app-po-entry',
   templateUrl: './po-entry.component.html',
-  styleUrls: ['./po-entry.component.scss'],
+  styleUrls: ['./po-entry.component.css'],
 })
 export class PoEntryComponent implements OnInit {
   branches$: Observable<BranchView[]>;
   selectedSupplier$: Observable<SupplierView>;
+  brands$: Observable<BrandWithMasterProducts[]>;
   poForm: FormGroup;
+  selectedSupplier: SupplierView;
+  selectedBrand: BrandWithMasterProducts;
+  selectedModel: MasterProduct;
   bsModalRef: BsModalRef;
   modalConfig = {
     backdrop: true,
@@ -28,21 +38,33 @@ export class PoEntryComponent implements OnInit {
   constructor(
     private branchService: BranchService,
     private fb: FormBuilder,
-    private supplierService: SupplierService,
     private modalSerivce: BsModalService,
-    private purchaseOrderStore: Store<PurchaseOrderState>
+    private purchaseOrderStore: Store<PurchaseOrderState>,
+    private ref: ChangeDetectorRef,
+    private alertifyService: AlertifyService,
+    private poservice: PurchaseOrderService
   ) {
-    this.selectedSupplier$ = this.purchaseOrderStore.select(PurchaseOrderSelectorType.selectedSupplier);
+    this.selectedSupplier$ = this.purchaseOrderStore.select(
+      PurchaseOrderSelectorType.selectedSupplier
+    );
+    this.brands$ = this.purchaseOrderStore.select(
+      PurchaseOrderSelectorType.selectBrandsWithModels
+    );
     this.branches$ = this.branchService.get();
-    this.poForm = this.fb.group({
-      supplierId: ['', [Validators.required]],
-      supplierName: [],
-      branchId: ['', [Validators.required]],
-      branchName: [],
-      poDate: [Date.now, [Validators.required]],
-      deliveryDate: [Date.now, [Validators.required]],
-      purchaseOrderItems: [],
-    });
+    this.initializePOFormGroup();
+  }
+
+  initializePOFormGroup() {
+     this.poForm = this.fb.group({
+       supplierId: [this.selectedSupplier, [Validators.required]],
+       branchId: [0, [Validators.required]],
+       deliveryDate: [Date.now(), [Validators.required]],
+       purchaseOrderItems: this.fb.array([]),
+     });
+  }
+
+  trackByFn(index: any, item: any) {
+    return index;
   }
 
   selectSupplierModal() {
@@ -52,23 +74,56 @@ export class PoEntryComponent implements OnInit {
     );
   }
 
+  onSelectBrand(event: BrandWithMasterProducts) {
+    this.selectedBrand = event;
+  }
   get createDetails(): FormGroup {
     return this.fb.group({
-      masterProductId: ['', Validators.required],
-      masterProductName: ['', Validators.required],
-      orderedQuantity: [0],
-      freeQuantity: [0],
-      totalQuantity: [0],
-      costPrice: [0],
-      discount: [0],
-      totalCostPrice: [0],
-      deliveryQuantity: [0],
+      masterProductId: [
+        this.selectedModel.masterProductId,
+        Validators.required,
+      ],
+      brandName: [this.selectedBrand.brandName],
+      masterProductName: [this.selectedModel.model, Validators.required],
+      orderedQuantity: [0, Validators.required],
+      freeQuantity: [0, Validators.required],
+      totalQuantity: [0, Validators.required],
+      costPrice: [this.selectedModel.costPrice, Validators.required],
+      discount: [0, Validators.required],
+      totalCostPrice: [0, Validators.required],
+      deliveryQuantity: [0, Validators.required],
     });
   }
 
-  addPurchaseItem() {
-    console.log('test');
+   selectedPoDetals(index): FormGroup {
+    return (this.poForm.controls.purchaseOrderItems as FormArray)[index];
   }
 
+  get purchaseOrderItemsFormArray(): FormArray {
+    return this.poForm.controls.purchaseOrderItems as FormArray;
+  }
+  addPurchaseItem() {
+    this.purchaseOrderItemsFormArray.push(
+      this.createDetails
+    );
+  }
+
+  updateTotalQuantityOnChange(index, value) {
+    this.purchaseOrderItemsFormArray[index].totalQuantity = value;
+  }
+
+  removePurchaseItem(index) {
+    this.alertifyService.confirm('Remove selected Details?', () => {
+    this.purchaseOrderItemsFormArray.removeAt(index);
+    });
+
+  }
+
+  saveAndPrintPo() {
+    const newPoValue = this.poForm.value;
+   this.selectedSupplier$.subscribe(x => newPoValue.supplierId = x.id);
+    const newPORequest: NewRequest = { data: newPoValue};
+    this.poservice.create(newPORequest).subscribe(result => console.log(result));
+  }
   ngOnInit(): void {}
 }

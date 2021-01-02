@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { NewRequest } from 'src/app/models/NewRequest';
 import { AlertifyService } from 'src/app/services/alertify/alertify.service';
 import { BranchService } from '../../branch.service';
 import { BranchView } from '../../model/branch.view';
@@ -50,13 +51,17 @@ export class BranchEntryComponent implements OnInit {
   }
 
   createBranch(): void {
-    this.branchService.create(this.branchFormEntry.value).subscribe(response => {
-      this.alertify.message('Branch Created');
-      this.store.dispatch(BranchManagementActions.fetchBranches());
-      this.branchFormEntry.reset();
-    }, error => {
+    const newBranch: NewRequest = { data: this.branchFormEntry.value };
+    this.branchService.create(newBranch).subscribe(
+      (response) => {
+        this.alertify.message('Branch Created');
+        this.store.dispatch(BranchManagementActions.fetchBranches());
+        this.branchFormEntry.reset();
+      },
+      (error) => {
         this.alertify.error(error.error);
-    });
+      }
+    );
   }
 
   backPage() {

@@ -28,7 +28,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of this.purchaseOrdersList$ | async">
-          <td scope="row">{{item.branchId}}</td>
+          <td scope="row">{{item.barcode}}</td>
           <td>{{item.deliveryDate | date}}</td>
           <td>{{item.supplierName}}</td>
           <td>{{item.branchName}}</td>

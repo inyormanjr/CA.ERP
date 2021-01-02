@@ -4,6 +4,7 @@ export interface PurchaseOrder {
   supplierName: string;
   branchId: string;
   branchName: string;
+  barcode: string;
   purchaseOrderItems: PurchaseOrderItem[];
 }
 
