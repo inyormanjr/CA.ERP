@@ -21,6 +21,7 @@ namespace CA.ERP.WebApp.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BrandController : BaseApiController
     {
         private readonly ILogger<BrandController> _logger;
