@@ -213,10 +213,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>PODate</rd:DefaultName>
-            <Top>1.69235in</Top>
-            <Left>6.02431in</Left>
+            <Top>1.50624in</Top>
+            <Left>6.57431in</Left>
             <Height>0.1875in</Height>
-            <Width>2.00695in</Width>
+            <Width>1.45695in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -247,9 +247,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox4</rd:DefaultName>
             <Top>1.27879cm</Top>
-            <Left>6.02431in</Left>
+            <Left>6.57431in</Left>
             <Height>0.25in</Height>
-            <Width>2in</Width>
+            <Width>1.45in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -281,7 +281,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>PODate1</rd:DefaultName>
-            <Top>2.09721in</Top>
+            <Top>1.9111in</Top>
             <Left>6.7014in</Left>
             <Height>0.25in</Height>
             <Width>1.32292in</Width>
@@ -316,7 +316,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>DeliveryDate</rd:DefaultName>
-            <Top>2.41665in</Top>
+            <Top>2.23054in</Top>
             <Left>6.7014in</Left>
             <Height>0.25in</Height>
             <Width>1.32292in</Width>
@@ -351,7 +351,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>TotalCostPrice</rd:DefaultName>
-            <Top>2.72221in</Top>
+            <Top>2.5361in</Top>
             <Left>6.7014in</Left>
             <Height>0.25in</Height>
             <Width>1.32292in</Width>
@@ -383,7 +383,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>2.09721in</Top>
+            <Top>1.9111in</Top>
             <Left>4.98265in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -415,7 +415,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>2.41665in</Top>
+            <Top>2.23054in</Top>
             <Left>4.98265in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -447,7 +447,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>2.7361in</Top>
+            <Top>2.54999in</Top>
             <Left>4.98265in</Left>
             <Height>0.25in</Height>
             <Width>1.29167in</Width>
@@ -480,7 +480,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>1.89234in</Top>
+            <Top>1.70623in</Top>
             <Left>1.35819cm</Left>
             <Height>0.27083in</Height>
             <Width>2.48958in</Width>
@@ -513,7 +513,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>SupplierName</rd:DefaultName>
-            <Top>2.41665in</Top>
+            <Top>2.23054in</Top>
             <Left>1.21874in</Left>
             <Height>0.6875in</Height>
             <Width>3.53472in</Width>
@@ -543,7 +543,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
-            <Top>2.41665in</Top>
+            <Top>2.23054in</Top>
             <Left>1.35819cm</Left>
             <Height>0.25in</Height>
             <Width>0.61458in</Width>
@@ -576,7 +576,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>BranchAddress</rd:DefaultName>
-            <Top>3.56942in</Top>
+            <Top>3.38331in</Top>
             <Left>1.61805in</Left>
             <Height>0.30208in</Height>
             <Width>6.40626in</Width>
@@ -606,7 +606,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox6</rd:DefaultName>
-            <Top>3.17359in</Top>
+            <Top>2.98748in</Top>
             <Left>1.35819cm</Left>
             <Height>0.25in</Height>
             <Width>1.625in</Width>
@@ -651,7 +651,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox24</rd:DefaultName>
-            <Top>5.68401in</Top>
+            <Top>5.4979in</Top>
             <Left>1.88194in</Left>
             <Height>0.83333in</Height>
             <Width>4.8403in</Width>
@@ -681,7 +681,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox25</rd:DefaultName>
-            <Top>6.77775in</Top>
+            <Top>6.59164in</Top>
             <Left>3.75346in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -697,7 +697,7 @@
             </Style>
           </Textbox>
           <Line Name="Line1">
-            <Top>7.26734in</Top>
+            <Top>7.08123in</Top>
             <Left>2.28471in</Left>
             <Height>0in</Height>
             <Width>3.98961in</Width>
@@ -1415,7 +1415,7 @@
             <RepeatColumnHeaders>true</RepeatColumnHeaders>
             <KeepTogether>true</KeepTogether>
             <DataSetName>PurchaseOrderItemDataSet</DataSetName>
-            <Top>4.33679in</Top>
+            <Top>4.15068in</Top>
             <Left>0.54167in</Left>
             <Height>1.20834in</Height>
             <Width>7.48959in</Width>
@@ -1431,10 +1431,10 @@
             <Value>=First(Fields!BarcodeImage.Value, "BarcodeDataSet")</Value>
             <MIMEType>image/jpeg</MIMEType>
             <Sizing>FitProportional</Sizing>
-            <Top>0.8368in</Top>
-            <Left>6.02431in</Left>
-            <Height>0.8in</Height>
-            <Width>2in</Width>
+            <Top>0.82291in</Top>
+            <Left>6.57431in</Left>
+            <Height>0.6in</Height>
+            <Width>1.45in</Width>
             <ZIndex>17</ZIndex>
             <Style>
               <Border>
