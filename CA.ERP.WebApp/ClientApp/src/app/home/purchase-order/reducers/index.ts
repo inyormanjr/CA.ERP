@@ -10,6 +10,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { PoActionTypes } from '../actions/po.actions.selector';
 import { PurchaseOrder } from '../models/new-purchase-order';
+import { BrandWithMasterProducts } from '../supplier/models/brandWithMasterProducts';
 import { SupplierView } from '../supplier/models/supplier-view';
 
 export const FeatureKey = 'PurchaseOrder';
@@ -18,13 +19,15 @@ export interface PurchaseOrderState {
   isLoading: boolean;
   selectedSupplier: SupplierView;
   purchaseOrderList: PurchaseOrder[];
+  brandsWithModels: BrandWithMasterProducts[];
 
 }
 
 export const purchaseOrderInitialState: PurchaseOrderState = {
   isLoading: false,
   selectedSupplier: undefined,
-  purchaseOrderList: undefined
+  purchaseOrderList: undefined,
+  brandsWithModels: undefined
 }
 
 export const reducers = createReducer(
@@ -46,6 +49,13 @@ export const reducers = createReducer(
       ...state,
       isLoading: false,
       purchaseOrderList: action.data
+    };
+  }),
+  on(PoActionTypes.populateBrandsWithModel, (state, action) => {
+    return {
+      ...state,
+      brandsWithModels: action.brandsWithModels,
+      isLoading: false
     };
   })
 );

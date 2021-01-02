@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { PurchaseOrder } from '../models/new-purchase-order';
+import { BrandWithMasterProducts } from '../supplier/models/brandWithMasterProducts';
 import { SupplierView } from '../supplier/models/supplier-view';
 
 export const loadPurchaseOrders = createAction(
@@ -17,6 +18,10 @@ export const populateSupplierReferences = createAction(
   '[Purchase Order] Populate references of selected supplier',
   props < {data: any}>()
 );
+
+export const populateBrandsWithModel = createAction(
+  '[Purchase Order Entry] Populate array of populateBrandsWithModels',
+  props<{ brandsWithModels: BrandWithMasterProducts[] }>());
 
 export const fetchPurchaseOrders = createAction('[Purchase Order] Purchase Order Object List');
 
