@@ -1,4 +1,5 @@
 export interface PurchaseOrder {
+  id: string;
   deliveryDate: Date;
   supplierId: string;
   supplierName: string;

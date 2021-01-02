@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,6 +26,10 @@ export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
   }
   delete(id: any) {
     throw new Error('Method not implemented.');
+  }
+
+  getPdfReportingById(id) {
+    return this.baseUrl + id + '/Print';
   }
 
 

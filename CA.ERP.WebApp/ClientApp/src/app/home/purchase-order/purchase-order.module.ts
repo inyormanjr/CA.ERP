@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SupplierModule } from './supplier/supplier.module';
 import { SupplierSelectionModalComponent } from './supplier/supplier-selection-modal/supplier-selection-modal.component';
 import { FilterPipeModule } from 'ngx-filter-pipe';
+import { PurchaseOrderPdfViewerComponent } from './purchase-order-pdf-viewer/purchase-order-pdf-viewer.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 
 @NgModule({
@@ -22,12 +24,14 @@ import { FilterPipeModule } from 'ngx-filter-pipe';
     PoEntryComponent,
     PoListComponent,
     SupplierSelectionModalComponent,
+    PurchaseOrderPdfViewerComponent,
   ],
   imports: [
     CommonModule,
     PurchaseOrderRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    PdfViewerModule,
     NgxBootstrapModulesModule,
     FilterPipeModule,
     StoreModule.forFeature(from.FeatureKey, from.reducers, {

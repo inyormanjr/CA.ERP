@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BranchService } from '../../management/branch/branch.service';
 import { BranchView } from '../../management/branch/model/branch.view';
 import { SupplierService } from '../supplier/services/supplier.service';
-
+import { Location } from '@angular/common';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { SupplierSelectionModalComponent } from '../supplier/supplier-selection-modal/supplier-selection-modal.component';
 import { SupplierView } from '../supplier/models/supplier-view';
@@ -17,6 +17,8 @@ import { AlertifyService } from 'src/app/services/alertify/alertify.service';
 import { PurchaseOrderService } from '../purchase-order.service';
 import { map } from 'rxjs/operators';
 import { NewRequest } from 'src/app/models/NewRequest';
+import { Router } from '@angular/router';
+import { identifierModuleUrl } from '@angular/compiler';
 @Component({
   selector: 'app-po-entry',
   templateUrl: './po-entry.component.html',
@@ -42,7 +44,8 @@ export class PoEntryComponent implements OnInit {
     private purchaseOrderStore: Store<PurchaseOrderState>,
     private ref: ChangeDetectorRef,
     private alertifyService: AlertifyService,
-    private poservice: PurchaseOrderService
+    private poservice: PurchaseOrderService,
+    private route: Router
   ) {
     this.selectedSupplier$ = this.purchaseOrderStore.select(
       PurchaseOrderSelectorType.selectedSupplier
@@ -123,7 +126,16 @@ export class PoEntryComponent implements OnInit {
     const newPoValue = this.poForm.value;
    this.selectedSupplier$.subscribe(x => newPoValue.supplierId = x.id);
     const newPORequest: NewRequest = { data: newPoValue};
-    this.poservice.create(newPORequest).subscribe(result => console.log(result));
+    this.poservice.create(newPORequest).subscribe(result => {
+      this.alertifyService.message('Purchase Order Created.');
+      window.open(this.poservice.getPdfReportingById(result)).print();
+    });
+
+  }
+
+  redirectReporting(id) {
+    const url = 'home/po/reporting/' + id;
+    this.route.navigateByUrl(url);
   }
   ngOnInit(): void {}
 }
