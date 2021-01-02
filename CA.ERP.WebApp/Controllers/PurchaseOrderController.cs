@@ -25,6 +25,7 @@ namespace CA.ERP.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PurchaseOrderController : BaseApiController
     {
         private readonly ILogger<PurchaseOrderController> _logger;
