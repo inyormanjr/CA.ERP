@@ -161,10 +161,10 @@ namespace CA.ERP.WebApp.Controllers
         }
 
 
-        [HttpGet("{id}/Report")]
+        [HttpGet("{id}/Print")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Report(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Print(Guid id, CancellationToken cancellationToken)
         {
             var getOption = await _purchaseOrderService.GetOneAsync(id);
 
