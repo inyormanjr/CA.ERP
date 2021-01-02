@@ -1,17 +1,38 @@
-﻿using FluentValidation;
+﻿using CA.ERP.Domain.MasterProductAgg;
+using FluentValidation;
+using FluentValidation.Validators;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public class PurchaseOrderItemValidator : AbstractValidator<PurchaseOrderItem>
     {
-        public PurchaseOrderItemValidator()
+        private readonly IMasterProductRepository _masterProductRepository;
+
+        public PurchaseOrderItemValidator(IMasterProductRepository masterProductRepository)
         {
-            RuleFor(poi => poi.MasterProductId).NotEmpty();
+            _masterProductRepository = masterProductRepository;
+
+
+            
             RuleFor(poi => poi.TotalQuantity).NotEmpty();
             RuleFor(poi => poi.TotalCostPrice).NotEmpty();
+            RuleFor(poi => poi.MasterProductId).NotEmpty()
+                .CustomAsync(MasterProductExist);
+
+        }
+
+        private async Task MasterProductExist(Guid id, CustomContext context, CancellationToken cancellationToken)
+        {
+            var exist = await _masterProductRepository.ExistAsync(id);
+            if (!exist)
+            {
+                context.AddFailure("Master product should exist.");
+            }
         }
     }
 }

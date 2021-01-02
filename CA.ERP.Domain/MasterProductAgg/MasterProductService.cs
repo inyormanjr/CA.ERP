@@ -31,7 +31,7 @@ namespace CA.ERP.Domain.MasterProductAgg
         {
             OneOf<Guid, List<ValidationFailure>> ret = Guid.Empty;
             MasterProduct masterProduct = _masterProductFactory.CreateMasterProduct(model, description, productStatus, brandId);
-            var validationResult = _masterProductValidator.Validate(masterProduct);
+            var validationResult = await _masterProductValidator.ValidateAsync(masterProduct, cancellationToken);
             if (!validationResult.IsValid)
             {
                 ret = validationResult.Errors.ToList();

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dal = CA.ERP.DataAccess.Entities;
+using CA.ERP.Common.Extensions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -19,6 +20,7 @@ namespace CA.ERP.DataAccess.Repositories
         public PurchaseOrderRepository(CADataContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
         public async override Task<OneOf<Guid, None>> UpdateAsync(Guid id, PurchaseOrder entity, CancellationToken cancellationToken = default)
         {
             OneOf<Guid, None> result = default(None);

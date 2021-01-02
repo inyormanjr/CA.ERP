@@ -13,7 +13,8 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public BrandMapping()
         {
-            CreateMap<Brand, Dal.Brand>().ReverseMap();
+            CreateMap<Brand, Dal.Brand>();
+            CreateMap<Dal.Brand, Brand>();
         }
     }
 }

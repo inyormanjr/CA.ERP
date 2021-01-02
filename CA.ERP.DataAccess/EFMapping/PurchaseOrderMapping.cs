@@ -22,12 +22,14 @@ namespace CA.ERP.DataAccess.EFMapping
             
 
             builder.HasOne(t => t.Supplier)
-                .WithMany()
-                .HasForeignKey(t => t.SupplierId);
+                .WithMany(t => t.PurchaseOrders)
+                .HasForeignKey(t => t.SupplierId)
+                .IsRequired();
 
             builder.HasOne(t => t.Branch)
-                .WithMany()
-                .HasForeignKey(t => t.BranchId);
+                .WithMany(t => t.PurchaseOrders)
+                .HasForeignKey(t => t.BranchId)
+                .IsRequired();
 
             builder.HasOne(t => t.ApprovedBy)
                 .WithMany()

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CA.ERP.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public UserBranchMapping()
         {
-            CreateMap<Dal.UserBranch, Dom.UserAgg.UserBranch>()
-                .ReverseMap();
+            CreateMap<Dal.UserBranch, UserBranch>();
+            CreateMap<UserBranch, Dal.UserBranch>();
         }
     }
 }

@@ -13,14 +13,15 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public SupplierMapping()
         {
-            CreateMap<Dal.Supplier, Supplier>()
-                            .ReverseMap();
+            CreateMap<Dal.Supplier, Supplier>();
+            CreateMap<Supplier, Dal.Supplier>();
 
-            CreateMap<Dal.SupplierBrand, SupplierBrand>()
-                            .ReverseMap();
+            CreateMap<Dal.SupplierBrand, SupplierBrand>();
+            CreateMap<SupplierBrand, Dal.SupplierBrand>();
 
-            CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>()
-                            .ReverseMap().ForMember(dalSmp => dalSmp.Id, option => option.Ignore());
+            CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>();
+            CreateMap<SupplierMasterProduct, Dal.SupplierMasterProduct>()
+                .ForMember(dalSmp => dalSmp.Id, option => option.Ignore());
         }
     }
 }
