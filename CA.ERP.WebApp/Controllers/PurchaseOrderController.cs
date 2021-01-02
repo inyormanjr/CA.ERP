@@ -1,6 +1,7 @@
 ﻿using AspNetCore.Reporting;
 using AutoMapper;
 using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Domain.ReportAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,11 @@ using OneOf;
 using OneOf.Types;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,15 +32,18 @@ namespace CA.ERP.WebApp.Controllers
         private readonly PurchaseOrderService _purchaseOrderService;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IReportGenerator _reportGenerator;
+        private readonly IBarcodeGenerator _barcodeGenerator;
 
-        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment )
+        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator )
         {
             _logger = logger;
             _userHelper = userHelper;
             _purchaseOrderService = purchaseOrderService;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
-
+            _reportGenerator = reportGenerator;
+            _barcodeGenerator = barcodeGenerator;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
@@ -160,28 +168,46 @@ namespace CA.ERP.WebApp.Controllers
             );
         }
 
-
+        /// <summary>
+        /// Print the given Purchase order
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="renderType"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("{id}/Print")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Print(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Print(Guid id, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return StatusCode(501);
+            }
             var getOption = await _purchaseOrderService.GetOneAsync(id);
 
-            return getOption.Match<IActionResult>(
-                f0: purchaseOrder =>
+            return await Task.Run(() => {
+                return getOption.Match<IActionResult>(
+                f0: (purchaseOrder) =>
                 {
-                    var path = $"{_webHostEnvironment.WebRootPath}\\Reports\\PurchaseOrderReport.rdlc";
-
+                    //var path = $"{_webHostEnvironment.WebRootPath}\\Reports\\PurchaseOrderReport.rdlc";
+                    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "PurchaseOrderReport.rdlc");
 
                     Dictionary<string, object> dataSources = new Dictionary<string, object>();
                     dataSources.Add("PurchaseOrderDataSet", new List<PurchaseOrder>() { purchaseOrder });
                     dataSources.Add("PurchaseOrderItemDataSet", purchaseOrder.PurchaseOrderItems);
-                    var result = base.GenerateReport(path, dataSources: dataSources);
-                    return File(result.MainStream, MimeTypes["pdf"]);
+
+
+                    byte[] barcodeImage = _barcodeGenerator.GenerateBarcode(purchaseOrder.Barcode);
+                    dataSources.Add("BarcodeDataSet", new List<object>() { new { BarcodeImage = barcodeImage } });
+                    
+
+                    var result = _reportGenerator.GenerateReport(path, renderType, dataSources: dataSources);
+                    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
                 },
                 f1: notFound => NotFound()
                 );
+            }, cancellationToken: cancellationToken);
         }
 
 
