@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BranchService } from '../../management/branch/branch.service';
 import { BranchView } from '../../management/branch/model/branch.view';
@@ -19,14 +19,14 @@ import { map } from 'rxjs/operators';
 import { NewRequest } from 'src/app/models/NewRequest';
 import { Router } from '@angular/router';
 import { identifierModuleUrl } from '@angular/compiler';
+import { PoActionTypes } from '../actions/po.actions.selector';
 @Component({
   selector: 'app-po-entry',
   templateUrl: './po-entry.component.html',
   styleUrls: ['./po-entry.component.css'],
 })
-export class PoEntryComponent implements OnInit {
+export class PoEntryComponent implements OnInit, OnDestroy {
   branches$: Observable<BranchView[]>;
-  selectedSupplier$: Observable<SupplierView>;
   brands$: Observable<BrandWithMasterProducts[]>;
   poForm: FormGroup;
   selectedSupplier: SupplierView;
@@ -47,23 +47,43 @@ export class PoEntryComponent implements OnInit {
     private poservice: PurchaseOrderService,
     private route: Router
   ) {
-    this.selectedSupplier$ = this.purchaseOrderStore.select(
+
+    this.initializePOFormGroup();
+
+    this.poForm.get('purchaseOrderItems').valueChanges.subscribe((x) => {
+       x.forEach(element => {
+         element.totalQuantity = element.orderedQuantity + element.freeQuantity;
+         element.totalCostPrice =
+           element.orderedQuantity * (element.costPrice - element.discount);
+       });
+    });
+
+    this.purchaseOrderStore.select(
       PurchaseOrderSelectorType.selectedSupplier
-    );
+    ).subscribe((x: SupplierView) => {
+      if (x !== undefined) {
+        this.poForm.controls.supplierId.patchValue(x.id);
+        this.poForm.controls.supplierName.patchValue(x.name);
+      }
+    });
+
+
     this.brands$ = this.purchaseOrderStore.select(
       PurchaseOrderSelectorType.selectBrandsWithModels
     );
     this.branches$ = this.branchService.get();
-    this.initializePOFormGroup();
+  }
+  ngOnDestroy(): void {
   }
 
   initializePOFormGroup() {
-     this.poForm = this.fb.group({
-       supplierId: [this.selectedSupplier, [Validators.required]],
-       branchId: [0, [Validators.required]],
-       deliveryDate: [Date.now(), [Validators.required]],
-       purchaseOrderItems: this.fb.array([]),
-     });
+    this.poForm = this.fb.group({
+      supplierId: [undefined, [Validators.required]],
+      supplierName: [undefined],
+      branchId: [0, [Validators.required, Validators.minLength(2)]],
+      deliveryDate: [undefined, [Validators.required]],
+      purchaseOrderItems: this.fb.array([], Validators.required),
+    });
   }
 
   trackByFn(index: any, item: any) {
@@ -88,7 +108,7 @@ export class PoEntryComponent implements OnInit {
       ],
       brandName: [this.selectedBrand.brandName],
       masterProductName: [this.selectedModel.model, Validators.required],
-      orderedQuantity: [0, Validators.required],
+      orderedQuantity: [0, [Validators.required, Validators.min(1)]],
       freeQuantity: [0, Validators.required],
       totalQuantity: [0, Validators.required],
       costPrice: [this.selectedModel.costPrice, Validators.required],
@@ -98,17 +118,24 @@ export class PoEntryComponent implements OnInit {
     });
   }
 
-   selectedPoDetals(index): FormGroup {
+  selectedPoDetals(index): FormGroup {
     return (this.poForm.controls.purchaseOrderItems as FormArray)[index];
   }
 
   get purchaseOrderItemsFormArray(): FormArray {
     return this.poForm.controls.purchaseOrderItems as FormArray;
   }
+
+
   addPurchaseItem() {
-    this.purchaseOrderItemsFormArray.push(
-      this.createDetails
-    );
+    for (let index = 0; index < this.purchaseOrderItemsFormArray.controls.length; index++) {
+      const element = this.purchaseOrderItemsFormArray.controls[index];
+      if (element.value.masterProductId === this.createDetails.controls.masterProductId.value) {
+        this.alertifyService.warning('Selected model already exist');
+        return;
+      }
+    }
+    this.purchaseOrderItemsFormArray.push(this.createDetails);
   }
 
   updateTotalQuantityOnChange(index, value) {
@@ -117,25 +144,35 @@ export class PoEntryComponent implements OnInit {
 
   removePurchaseItem(index) {
     this.alertifyService.confirm('Remove selected Details?', () => {
-    this.purchaseOrderItemsFormArray.removeAt(index);
+      this.purchaseOrderItemsFormArray.removeAt(index);
     });
-
   }
 
+  resetInputs() {
+     this.poForm.reset();
+     this.selectedSupplier = null;
+     this.selectedBrand = null;
+    this.selectedModel = null;
+    this.purchaseOrderStore.dispatch(PoActionTypes.clearSelectedSupplierForPurchaseOrder()); 
+     this.purchaseOrderItemsFormArray.clear();
+  }
   saveAndPrintPo() {
-    const newPoValue = this.poForm.value;
-   this.selectedSupplier$.subscribe(x => newPoValue.supplierId = x.id);
-    const newPORequest: NewRequest = { data: newPoValue};
-    this.poservice.create(newPORequest).subscribe(result => {
-      this.alertifyService.message('Purchase Order Created.');
-      window.open(this.poservice.getPdfReportingById(result)).print();
+    this.alertifyService.confirm('Save new Purchase Order?', () => {
+      const newPoValue = this.poForm.value;
+      const newPORequest: NewRequest = { data: newPoValue };
+      this.poservice.create(newPORequest).subscribe(
+        (result) => {
+          this.alertifyService.message('Purchase Order Created. Redirecting to printing.');
+          this.resetInputs();
+          setTimeout(() => {
+          window.open(this.poservice.getPdfReportingById(result)).print();
+          }, 3000);
+        },
+        (error) => {
+          this.alertifyService.error(error);
+        }
+      );
     });
-
-  }
-
-  redirectReporting(id) {
-    const url = 'home/po/reporting/' + id;
-    this.route.navigateByUrl(url);
   }
   ngOnInit(): void {}
 }

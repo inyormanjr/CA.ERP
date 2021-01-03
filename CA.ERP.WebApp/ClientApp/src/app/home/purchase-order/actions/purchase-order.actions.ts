@@ -10,6 +10,9 @@ export const loadPurchaseOrders = createAction(
 export const selectSupplierForPurchaseOrder = createAction(
   '[New Purchase Order] Select a specific supplier to P.O', props<{ selectedSupplier: SupplierView }>());
 
+export const clearSelectedSupplierForPurchaseOrder = createAction(
+  '[New Purchase Order] remove selected supplier');
+
 export const fetchSelectedSupplierReferences = createAction(
   '[Purchase Order (Effects)] Fetch reference of selected supplier'
 );
