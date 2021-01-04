@@ -26,6 +26,7 @@ namespace CA.ERP.Utilities
             }
             else if (args[0] == "/migrate")
             {
+                Console.WriteLine("Starting migration");
                 await Migrator.Migrate();
                 Console.WriteLine("Migration done");
                 Console.WriteLine("Press any key to continue");

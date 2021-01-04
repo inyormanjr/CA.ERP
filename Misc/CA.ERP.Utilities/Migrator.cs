@@ -28,6 +28,9 @@ namespace CA.ERP.Utilities
         {
             CitiAppDatabaseContext citiAppDatabaseContext = GetOldDbContext();
 
+
+            Console.WriteLine("Migrating suppliers");
+
             //migrate supplier
             var oldSuppliers = await citiAppDatabaseContext.Suppliers.ToListAsync();
 
@@ -56,6 +59,8 @@ namespace CA.ERP.Utilities
                 await newDbContext.SaveChangesAsync();
             }
 
+
+            Console.WriteLine("Migrating branch");
             //migrate brands
 
             var oldBrands = await citiAppDatabaseContext.Brands.ToListAsync();
@@ -94,6 +99,8 @@ namespace CA.ERP.Utilities
                 await newDbContext.SaveChangesAsync();
             }
 
+
+            Console.WriteLine("Migrating master products");
             //migrate model to masterproducts 
             var oldModels = await citiAppDatabaseContext.Models.ToListAsync();
             //var productLists = await citiAppDatabaseContext.ProductLists.ToListAsync();
@@ -138,6 +145,8 @@ namespace CA.ERP.Utilities
                 await newDbContext.SaveChangesAsync();
             }
 
+
+            Console.WriteLine("Migrating supplier products");
             //migrate productList to supplierMasterProduct
             var productLists = await citiAppDatabaseContext.ProductLists.ToListAsync();
             var newSupplierMasterProducts = new List<New.SupplierMasterProduct>();
@@ -191,6 +200,8 @@ namespace CA.ERP.Utilities
             }
 
 
+            Console.WriteLine("Migrating branches");
+
             var oldBranches = await citiAppDatabaseContext.Branches.ToListAsync();
             var newBranches = new List<New.Branch>();
             foreach (var oldBranchG in oldBranches.GroupBy(b => b.BranchName))
@@ -219,6 +230,8 @@ namespace CA.ERP.Utilities
                 await newDbContext.SaveChangesAsync();
             }
 
+
+            Console.WriteLine("Migrating users");
             //generate users
             var oldUsers = citiAppDatabaseContext.Users.ToList();
             var newUsers = new List<New.User>();
@@ -252,6 +265,8 @@ namespace CA.ERP.Utilities
                 await newDbContext.SaveChangesAsync();
             }
 
+
+            Console.WriteLine("Migrating purchase orders");
             var oldPurchaseOrders = citiAppDatabaseContext.PurchaseOrders.Include(po => po.PoDetails).ToList();
             var newPurchaseOrders = new List<New.PurchaseOrder>();
             var rgmUser = newUsers.FirstOrDefault(u => u.Username == "rgm");
@@ -261,6 +276,7 @@ namespace CA.ERP.Utilities
                 New.PurchaseOrder newPurchaseOrder = new New.PurchaseOrder();
                 newPurchaseOrder.Barcode = oldPurchaseOder.PoId;
                 newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
+                newPurchaseOrder.CreatedAt = newPurchaseOrder.DeliveryDate;
                 newPurchaseOrder.TotalCostPrice = decimal.Parse( oldPurchaseOder.TotalAmount);
                 newPurchaseOrder.Status = DataAccess.Common.Status.Active;
                 newPurchaseOrder.ApprovedById = rgmUser.Id;
@@ -327,6 +343,8 @@ namespace CA.ERP.Utilities
                 newDbContext.PurchaseOrders.AddRange(newPurchaseOrders);
                 await newDbContext.SaveChangesAsync();
             }
+
+
         }
 
         private static string GetBranchForPO(string branchAddress)
