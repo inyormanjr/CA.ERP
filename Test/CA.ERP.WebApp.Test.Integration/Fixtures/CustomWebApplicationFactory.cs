@@ -13,6 +13,8 @@ using CA.ERP.Domain.Helpers;
 using System.Net.Http;
 using CA.ERP.WebApp.Dto;
 using System.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CA.ERP.WebApp.Test.Integration.Fixtures
 {
@@ -33,7 +35,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                 string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
                 services.AddDbContext<CADataContext>(options =>
                 {
-                    
+
                     options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
                 });
 
@@ -46,11 +48,14 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
-                    db.Database.EnsureCreated();
+                    
 
                     try
                     {
+                        db.Database.EnsureCreated();
                         Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
+
+
                     }
                     catch (Exception ex)
                     {

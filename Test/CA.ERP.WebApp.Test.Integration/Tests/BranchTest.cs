@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using CA.ERP.WebApp.Dto;
+using CA.ERP.WebApp.Dto.Branch;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
@@ -44,7 +45,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var response = await _client.GetAsync("api/Branch/");
 
-            var getBranchResponse = await response.Content.ReadAsAsync<GetManyResponse<Branch>>();
+            var getBranchResponse = await response.Content.ReadAsAsync<GetManyResponse<BranchView>>();
 
             response.IsSuccessStatusCode.Should().BeTrue();
             getBranchResponse.Should().NotBeNull();
@@ -59,7 +60,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var content = await response.Content.ReadAsAsync<Branch>();
+            var content = await response.Content.ReadAsAsync<BranchView>();
 
             content.Should().NotBeNull();
             content.Id.Should().Be(id);
@@ -78,7 +79,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateBranchSuccessfully()
         {
-            var fakeBranchGenerator = new Faker<CreateBranchRequest>()
+            var fakeBranchGenerator = new Faker<BranchCreate>()
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -87,9 +88,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             //add branch for testing
 
-            var request = fakeBranchGenerator.Generate();
+            var request = new CreateBranchRequest() { Data = fakeBranchGenerator.Generate() };
 
-            var response = await _client.PostAsJsonAsync<CreateBranchRequest>("api/Branch/", request);
+            var response = await _client.PostAsJsonAsync("api/Branch/", request);
 
             response.IsSuccessStatusCode.Should().BeTrue($"Status code was {response.StatusCode}");
 
@@ -102,8 +103,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldUpdateBranch_NoContent()
         {
-            var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = Guid.Empty })
+            var fakeBranchGenerator = new Faker<BranchView>()
+                .CustomInstantiator(f => new BranchView() { Id = Guid.Empty })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -130,8 +131,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldUpdateBranch_NotFound()
         {
-            var fakeBranchGenerator = new Faker<Branch>()
-                .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid() })
+            var fakeBranchGenerator = new Faker<BranchView>()
+                .CustomInstantiator(f => new BranchView() { Id = Guid.NewGuid() })
                 .RuleFor(f => f.Name, f => f.Address.City())
                 .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
                 .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
@@ -160,7 +161,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
 
             //id is static from utilities
-            var branchId = "56e5e4fc-c583-4186-a288-55392a6946d4";
+            var branchId = "f853efb7-9aec-4750-bbcc-dbfd1ae47063";
 
 
             var response = await _client.DeleteAsync($"api/Branch/{branchId}");

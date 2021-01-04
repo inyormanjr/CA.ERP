@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.BrandAgg
 {
-    public interface IBrandRepository: IRepository<Brand>
+    public interface IBrandRepository : IRepository<Brand>
     {
     }
 }

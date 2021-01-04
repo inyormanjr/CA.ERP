@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Domain.UserAgg;
+using CA.ERP.WebApp.Dto.Supplier;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,10 +43,10 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.CreateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.Supplier.CreateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating supplier.", _userHelper.GetCurrentUserId());
-            var createResult = await _supplierService.CreateSupplierAsync(request.Name, request.Address, request.ContactPerson, cancellationToken: cancellationToken);
+            var createResult = await _supplierService.CreateSupplierAsync(request.Data.Name, request.Data.Address, request.Data.ContactPerson, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (supplierId) =>
             {
@@ -58,7 +59,7 @@ namespace CA.ERP.WebApp.Controllers
             },
             f1: (validationErrors) =>
             {
-                var response = new Dto.ErrorResponse()
+                var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                 {
                     GeneralError = "Validation Error",
                     ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
@@ -81,11 +82,11 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize]
-        public async Task<IActionResult> UpdateSupplier(Guid id, Dto.UpdateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSupplier(Guid id, Dto.Supplier.UpdateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} updating supplier.", _userHelper.GetCurrentUserId());
             var domSupplier = _mapper.Map<Supplier>(request.Data);
-            var createResult = await _supplierService.UpdateSupplierAsync(id, domSupplier, cancellationToken: cancellationToken);
+            var createResult = await _supplierService.UpdateAsync(id, domSupplier, cancellationToken: cancellationToken);
             return createResult.Match<IActionResult>(
                 f0: (supplierId) =>
                 {
@@ -94,7 +95,7 @@ namespace CA.ERP.WebApp.Controllers
                 },
                 f1: (validationErrors) =>
                 {
-                    var response = new Dto.ErrorResponse()
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
                     {
                         GeneralError = "Validation Error",
                         ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
@@ -116,11 +117,11 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Supplier.SupplierView>>> Get(CancellationToken cancellationToken)
         {
-            var suppliers = await _supplierService.GetSuppliersAsync(cancellationToken: cancellationToken);
-            var dtoSuppliers = _mapper.Map<List<Dto.Supplier>>(suppliers);
-            var response = new Dto.GetManyResponse<Dto.Supplier>()
+            var suppliers = await _supplierService.GetManyAsync(cancellationToken: cancellationToken);
+            var dtoSuppliers = _mapper.Map<List<Dto.Supplier.SupplierView>>(suppliers);
+            var response = new Dto.GetManyResponse<Dto.Supplier.SupplierView>()
             {
                 Data = dtoSuppliers
             };
@@ -137,18 +138,105 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.Supplier>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Supplier.SupplierView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var supplierOption = await _supplierService.GetSupplierAsync(id, cancellationToken: cancellationToken);
+            var supplierOption = await _supplierService.GetOneAsync(id, cancellationToken: cancellationToken);
             return supplierOption.Match<ActionResult>(
                 f0: (supplier) =>
                 {
-                    return Ok(_mapper.Map<Dto.Supplier>(supplier));
+                    return Ok(_mapper.Map<Dto.Supplier.SupplierView>(supplier));
                 },
                 f1: (notFound) => NotFound()
                 );
         }
 
+
+        [HttpPut("{id}/MasterProduct")]
+        [HttpPost("{id}/MasterProduct")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateSupplierMasterProduct(Guid id, Dto.UpdateBaseRequest<SupplierMasterProductUpdate> request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} updating supplier master product.", _userHelper.GetCurrentUserId());
+
+            var option = await _supplierService.AddOrUpdateSupplierMasterProductAsync(id, request.Data.MasterProductId, request.Data.CostPrice, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: (validationErrors) =>
+                {
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+
+                    _logger.LogInformation("User {0} supplier master product update failed.", _userHelper.GetCurrentUserId());
+                    return BadRequest(response);
+                }
+            );
+            
+        }
+
+        [HttpPut("{id}/Brand")]
+        [HttpPost("{id}/Brand")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateSupplierBrand(Guid id, Dto.UpdateBaseRequest<SupplierBrandUpdate> request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} updating supplier brand product.", _userHelper.GetCurrentUserId());
+
+            var option = await _supplierService.AddSupplierBrand(id, request.Data.BrandId, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: (validationErrors) =>
+                {
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+
+                    _logger.LogInformation("User {0} supplier supplier brand update failed.", _userHelper.GetCurrentUserId());
+                    return BadRequest(response);
+                },
+                f2: notfound => NotFound()
+            );
+
+        }
+
+        [HttpDelete("{id}/Brand/{brandId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteSupplierBrand(Guid id, Guid brandId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("User {0} deleting supplier brand.", _userHelper.GetCurrentUserId());
+
+            var option = await _supplierService.DeleteSupplierBrandAsync(id, brandId, cancellationToken);
+            return option.Match<IActionResult>(
+                f0: success => NoContent(),
+                f1: notfound => NotFound()
+            );
+
+        }
+
+        /// <summary>
+        /// Get a lite version of supplier brands with master products and cost
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/Brands")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<SupplierBrandLite>>> GetSupplierBrands(Guid id, CancellationToken cancellationToken)
+        {
+            var supplierBrands = await _supplierService.GetSupplierBrandsAsync(id, cancellationToken: cancellationToken);
+            return Ok(new Dto.GetManyResponse<SupplierBrandLite>() {Data = supplierBrands });
+            
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using CA.ERP.WebApp.Dto;
+using CA.ERP.WebApp.Dto.Brand;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
@@ -44,14 +45,19 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var fake = new Faker();
 
 
-            var request = new CreateBrandRequest()
+            var brandCreate = new BrandCreate()
             {
                 Name = fake.Company.CompanyName(),
                 Description = fake.Company.CompanyName()
             };
 
+            var request = new CreateBrandRequest()
+            {
+                Data = brandCreate
+            };
 
-            var response = await _client.PostAsJsonAsync<CreateBrandRequest>("api/Brand/", request);
+
+            var response = await _client.PostAsJsonAsync("api/Brand/", request);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -66,10 +72,14 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         {
             var fake = new Faker();
 
+            var data = new BrandCreate()
+            {
+                Description = fake.Company.CatchPhrase()
+            };
 
             var request = new CreateBrandRequest()
             {
-                Description = fake.Company.CatchPhrase()
+                Data = data
             };
 
 
@@ -91,7 +101,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             var request = new UpdateBrandRequest()
             {
-                Data = new Dto.Brand()
+                Data = new Dto.Brand.BrandUpdate()
                 {
                     Name = fake.Company.CompanyName(),
                     Description = fake.Company.CompanyName()
@@ -113,7 +123,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             var request = new UpdateBrandRequest()
             {
-                Data = new Dto.Brand()
+                Data = new Dto.Brand.BrandUpdate()
                 {
                     Description = fake.Company.CompanyName()
                 }
@@ -139,7 +149,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             var request = new UpdateBrandRequest()
             {
-                Data = new Dto.Brand()
+                Data = new Dto.Brand.BrandUpdate()
                 {
                     Name = fake.Company.CompanyName(),
                     Description = fake.Company.CompanyName()
@@ -161,7 +171,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var content = await response.Content.ReadAsAsync<GetManyResponse<Brand>>();
+            var content = await response.Content.ReadAsAsync<GetManyResponse<BrandView>>();
 
             
             content.Should().NotBeNull();
@@ -176,7 +186,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var content = await response.Content.ReadAsAsync<Brand>();
+            var content = await response.Content.ReadAsAsync<BrandView>();
 
             
             content.Should().NotBeNull();

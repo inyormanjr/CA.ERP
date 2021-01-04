@@ -12,6 +12,8 @@ namespace CA.ERP.DataAccess.Entities
         public string Address { get; set; }
         public string ContactPerson { get; set; }
 
-        public List<SupplierBrand> SupllierBrands { get; set; } = new List<SupplierBrand>();
+        public List<SupplierBrand> SupplierBrands { get; set; } = new List<SupplierBrand>();
+        public List<SupplierMasterProduct> SupplierMasterProducts { get; set; } = new List<SupplierMasterProduct>();
+        public List<PurchaseOrder> PurchaseOrders { get;  set; }
     }
 }

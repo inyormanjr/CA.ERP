@@ -16,7 +16,8 @@ export class BranchViewListResolver implements Resolve<BranchView[]> {
 
   constructor(
     private store: Store<BranchManagementState>,
-    private branchService: BranchService, private route: Router) { }
+    private branchService: BranchService,
+    private route: Router) { }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):  Observable<BranchView[]>  {
     return this.branchService.get().pipe(
       catchError(() => {

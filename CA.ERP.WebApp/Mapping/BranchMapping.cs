@@ -12,7 +12,7 @@ namespace CA.ERP.WebApp.Mapping
     {
         public BranchMapping()
         {
-            CreateMap<Branch, Dto.Branch>().ReverseMap();
+            CreateMap<Branch, Dto.Branch.BranchView>().ReverseMap();
         }
     }
 }

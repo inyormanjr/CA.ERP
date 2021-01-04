@@ -21,6 +21,8 @@ import { HomeNavComponent } from './home-view/home-nav/home-nav.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorInterceptorProvider } from './error.interceptor';
+import { HttpRequestInterceptor } from './intercepter/http-intercepter.service';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { AuthGuardService as AuthGuard } from './services/auth-guard.service';
 
@@ -80,7 +82,7 @@ const routes : Routes = [
 
     RouterModule.forRoot(routes),
   ],
-  providers: [AlertifyService, ErrorInterceptorProvider],
+  providers: [AlertifyService, HttpRequestInterceptor, ErrorInterceptorProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

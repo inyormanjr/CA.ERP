@@ -30,6 +30,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using CA.ERP.WebApp.CustomAuthentication;
+using CA.ERP.WebApp.Middlewares;
+using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Domain.Common.Rounding;
 
 namespace CA.ERP.WebApp
 {
@@ -137,8 +140,22 @@ namespace CA.ERP.WebApp
             //register helpers
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<HelperBase>())
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
                 .AsSelf()
+                .WithScopedLifetime()
+                );
+
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+                );
+
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(PurchaseOrderBarcodeGenerator))
+                .AddClasses(classes => classes.AssignableTo<IBusinessLogic>())
+                .AsImplementedInterfaces()
                 .WithScopedLifetime()
                 );
 
@@ -149,6 +166,9 @@ namespace CA.ERP.WebApp
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
                 );
+
+            //manual
+            services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
             services.AddAuthentication(options =>
             {
@@ -229,7 +249,7 @@ namespace CA.ERP.WebApp
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
-
+            app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

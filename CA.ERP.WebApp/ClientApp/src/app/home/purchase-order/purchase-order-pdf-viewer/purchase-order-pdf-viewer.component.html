@@ -1,0 +1,21 @@
+
+<ng-container *ngIf="pdfSrc  as pdfSource; else elseTemplate">
+ <div class="container mb-2 pb-2 border-bottom">
+    <nav class="nav d-flex flex-row justify-content-between">
+      <h2>Purchase Order Report</h2>
+      <a name="" id="" class="btn btn-primary" (click)="printPDF()" role="button">
+        <i class="fa fa-print mr-1" aria-hidden="true"></i>PRINT</a>
+    </nav>
+ </div>
+  <pdf-viewer class="fill-flex"
+  [src]="pdfSource"
+   [render-text]="true"
+   style="display: block;"
+   [show-borders]="true"
+   [autoresize]="true"
+  ></pdf-viewer>
+</ng-container>
+<ng-template #elseTemplate>
+  <h4>Loading PDF</h4>
+</ng-template>
+

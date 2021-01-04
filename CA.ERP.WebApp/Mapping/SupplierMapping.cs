@@ -11,8 +11,17 @@ namespace CA.ERP.WebApp.Mapping
     {
         public SupplierMapping()
         {
-            CreateMap<Supplier, Dto.Supplier>().ReverseMap();
-            CreateMap<SupplierBrand, Dto.SupplierBrand>().ReverseMap();
+            CreateMap<Supplier, Dto.Supplier.SupplierView>().ReverseMap();
+            CreateMap<SupplierBrand, Dto.Supplier.SupplierBrandView>().ReverseMap();
+
+            CreateMap<Dto.Supplier.SupplierCreate, Supplier>();
+            CreateMap<Dto.Supplier.SupplierBrandCreate, SupplierBrand>();
+
+            CreateMap<Dto.Supplier.SupplierUpdate, Supplier>();
+            CreateMap<Dto.Supplier.SupplierBrandUpdate, SupplierBrand>();
+
+            CreateMap<Dto.Supplier.SupplierMasterProductUpdate, SupplierMasterProduct>();
+
         }
     }
 }

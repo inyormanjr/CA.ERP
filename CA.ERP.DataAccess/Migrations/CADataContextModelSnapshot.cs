@@ -149,6 +149,129 @@ namespace CA.ERP.DataAccess.Migrations
                     b.ToTable("MasterProducts");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("ApprovedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Barcode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("TotalCostPrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("BranchId", "Barcode")
+                        .IsUnique()
+                        .HasFilter("[Barcode] IS NOT NULL");
+
+                    b.ToTable("PurchaseOrders");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<decimal>("CostPrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("DeliveredQuantity")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)");
+
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("FreeQuantity")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("OrderedQuantity")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)");
+
+                    b.Property<Guid>("PurchaseOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PurchaseOrderItemStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalCostPrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("TotalQuantity")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MasterProductId");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.ToTable("PurchaseOrderItems");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
                     b.Property<Guid>("Id")
@@ -193,8 +316,7 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("SupplierId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BrandId")
@@ -209,8 +331,39 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("SupplierId", "BrandId");
+
+                    b.HasIndex("BrandId");
+
+                    b.ToTable("SupplierBrands");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierMasterProduct", b =>
+                {
                     b.Property<Guid>("SupplierId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("CostPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -218,13 +371,11 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("SupplierId", "MasterProductId");
 
-                    b.HasIndex("BrandId");
+                    b.HasIndex("MasterProductId");
 
-                    b.HasIndex("SupplierId");
-
-                    b.ToTable("SupplierBrands");
+                    b.ToTable("SupplierMasterProducts");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>
@@ -302,6 +453,52 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("Brand");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.User", "ApprovedBy")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApprovedBy");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
+                        .WithMany()
+                        .HasForeignKey("MasterProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrder", "PurchaseOrder")
+                        .WithMany("PurchaseOrderItems")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MasterProduct");
+
+                    b.Navigation("PurchaseOrder");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
                 {
                     b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
@@ -311,12 +508,31 @@ namespace CA.ERP.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
-                        .WithMany("SupllierBrands")
+                        .WithMany("SupplierBrands")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Brand");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierMasterProduct", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
+                        .WithMany("SupplierMasterProducts")
+                        .HasForeignKey("MasterProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("SupplierMasterProducts")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MasterProduct");
 
                     b.Navigation("Supplier");
                 });
@@ -342,6 +558,8 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Branch", b =>
                 {
+                    b.Navigation("PurchaseOrders");
+
                     b.Navigation("UserBranches");
                 });
 
@@ -352,9 +570,23 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("SupplierBrands");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
+                {
+                    b.Navigation("SupplierMasterProducts");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
+                {
+                    b.Navigation("PurchaseOrderItems");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
-                    b.Navigation("SupllierBrands");
+                    b.Navigation("PurchaseOrders");
+
+                    b.Navigation("SupplierBrands");
+
+                    b.Navigation("SupplierMasterProducts");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>

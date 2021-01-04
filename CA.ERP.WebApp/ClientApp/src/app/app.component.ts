@@ -15,9 +15,7 @@ export class AppComponent implements OnInit {
     private authService: AuthService, private router: Router) {
     this.router.events.subscribe((event: Event) => {
       switch (true) {
-        case event instanceof NavigationStart: {
-          console.log(event);
-        }
+        case event instanceof NavigationStart: {}
         }
     });
      }

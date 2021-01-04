@@ -5,7 +5,7 @@ import {
   HttpErrorResponse,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MainAppState } from './reducers/main-app-reducer';
@@ -18,6 +18,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     req: import('@angular/common/http').HttpRequest<any>,
     next: import('@angular/common/http').HttpHandler
   ): import('rxjs').Observable<import('@angular/common/http').HttpEvent<any>> {
+    this.store.dispatch(ERP_Main_Actions.updateLoadingValue({ value: 25 }));
 
     return next.handle(req).pipe(
       catchError((error) => {

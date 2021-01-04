@@ -15,10 +15,13 @@ namespace CA.ERP.Utilities
     {
         static void Main(string[] args)
         {
-            Seed();
-            if (args[0] == "/seed")
+            if (!args.Any())
             {
-                
+                args = args.Append("/seed").ToArray();
+            }
+            if (args.Any() && args[0] == "/seed")
+            {
+                Seed();
             }
         }
 
@@ -70,12 +73,68 @@ namespace CA.ERP.Utilities
                 db.MasterProducts.AddRange(masterProducts);
 
                 db.SaveChanges();
+
+                generatePurchaseOrders(db);
+
+                generateSupplierMasterProducts(db);
+
+                db.SaveChanges();
+
             }
 
             Console.WriteLine("Seeding done");
             Console.WriteLine("Press enter to contine");
             Console.ReadLine();
 
+        }
+
+        private static void generateSupplierMasterProducts(CADataContext db)
+        {
+               var random = new Random();
+            var suppliers = db.Suppliers.Include(s=>s.SupplierBrands).ThenInclude(sb => sb.Brand).ThenInclude(b => b.MasterProducts).ToList();
+            foreach (var supplier in suppliers)
+            {
+                var masterProducts = supplier.SupplierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                foreach (var masterProduct in masterProducts)
+                {
+                    var supplierMasterProduct = new SupplierMasterProduct() {
+                        MasterProduct = masterProduct,
+                        Supplier = supplier,
+                        CostPrice = random.Next(100000),
+                    };
+                    db.SupplierMasterProducts.Add(supplierMasterProduct);
+                }
+            }
+        }
+
+        private static void generatePurchaseOrders(CADataContext db)
+        {
+            long barcode = DateTimeOffset.Now.ToUnixTimeSeconds();
+            var random = new Random();
+            var branches = db.Branches.ToList();
+            var suppliers = db.SupplierBrands.ToList();
+            var users = db.Users.ToList();
+            for (int i = 0; i < 10; i++)
+            {
+                var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
+                var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
+                var poProducts = db.MasterProducts.Where(m => m.BrandId == poSupplier.BrandId).ToList().OrderBy(m => random.Next()).Take(random.Next(5)).ToList();
+                PurchaseOrder purchaseOrder = new PurchaseOrder()
+                {
+                    Barcode = $"20-{barcode++.ToString("00000000")}",
+                    BranchId = poBranch.Id,
+                    DeliveryDate = DateTime.Now.AddDays(1),
+                    SupplierId = poSupplier.SupplierId,
+                    ApprovedById = users.OrderBy(u => random.Next()).FirstOrDefault().Id
+            };
+
+                foreach (var poProduct in poProducts)
+                {
+                    purchaseOrder.PurchaseOrderItems.Add(new PurchaseOrderItem() { MasterProductId = poProduct.Id, OrderedQuantity = random.Next(10), FreeQuantity = random.Next(10), CostPrice = random.Next(500), Discount = random.Next(100) });
+                }
+
+                db.PurchaseOrders.Add(purchaseOrder);
+            }
         }
 
         private static IEnumerable<User> generateUsers(CADataContext dataContext, PasswordManagementHelper passwordManagementHelper, List<Branch> branches, int count = 5)
@@ -176,7 +235,7 @@ namespace CA.ERP.Utilities
                 var brandIds = brands.OrderBy(b => random.Next()).Take(5).Select(b => b.Id);
                 foreach (var brandId in brandIds)
                 {
-                    supplier.SupllierBrands.Add(new SupplierBrand() { BrandId = brandId, SupplierId = supplier.Id });
+                    supplier.SupplierBrands.Add(new SupplierBrand() { BrandId = brandId, SupplierId = supplier.Id });
                 }
 
                 yield return supplier;
