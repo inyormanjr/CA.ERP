@@ -8,20 +8,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CA.ERP.Utilities
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             if (!args.Any())
             {
-                args = args.Append("/seed").ToArray();
+                args = args.Append("/migrate").ToArray();
             }
-            if (args.Any() && args[0] == "/seed")
+            if (args[0] == "/seed")
             {
                 Seed();
+            }
+            else if (args[0] == "/migrate")
+            {
+                await Migrator.Migrate();
             }
         }
 
