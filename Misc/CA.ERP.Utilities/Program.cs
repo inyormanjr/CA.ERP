@@ -18,7 +18,7 @@ namespace CA.ERP.Utilities
         {
             if (!args.Any())
             {
-                args = args.Append("/migrate").ToArray();
+                Console.WriteLine("Availiable commands: /seed and /migrate");
             }
             if (args[0] == "/seed")
             {
@@ -26,7 +26,11 @@ namespace CA.ERP.Utilities
             }
             else if (args[0] == "/migrate")
             {
+                Console.WriteLine("Starting migration");
                 await Migrator.Migrate();
+                Console.WriteLine("Migration done");
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
             }
         }
 
