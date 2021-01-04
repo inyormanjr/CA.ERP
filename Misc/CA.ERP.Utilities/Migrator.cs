@@ -1,6 +1,7 @@
 ﻿using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Helpers;
+using CA.ERP.Utilities.MoneyConvertionStrategies;
 using CA.ERP.Utilities.PrevDataModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,6 +32,14 @@ namespace CA.ERP.Utilities
             var oldSuppliers = await citiAppDatabaseContext.Suppliers.ToListAsync();
 
             var newSuppliers = new List<New.Supplier>();
+            //add deleted suplier holder
+            New.Supplier newDeletedSupplier = new New.Supplier()
+            {
+                Name = "Deleted",
+                Address = "Deleted",
+                ContactPerson = "Deleted"
+            };
+            newSuppliers.Add(newDeletedSupplier);
             foreach (var supplier in oldSuppliers)
             {
                 New.Supplier newSupplier = new New.Supplier();
@@ -51,6 +60,11 @@ namespace CA.ERP.Utilities
 
             var oldBrands = await citiAppDatabaseContext.Brands.ToListAsync();
             var newBrands = new List<New.Brand>();
+            var newDeletedBrand = new New.Brand() { 
+                Name = "Deleted",
+                Description = "Deleted",
+            };
+            newBrands.Add(newDeletedBrand);
             foreach (var gbrand in oldBrands.GroupBy(b => b.BrandName))
             {
                 New.Brand newBrand = new New.Brand();
@@ -85,6 +99,16 @@ namespace CA.ERP.Utilities
             //var productLists = await citiAppDatabaseContext.ProductLists.ToListAsync();
 
             var newMasterProducts = new List<New.MasterProduct>();
+
+            //delete products placeholder
+            var newDeletedMasterProduct = new MasterProduct()
+            {
+                Model = "Deleted",
+                Description = "Deleted",
+                ProductStatus = 0,
+                BrandId = newDeletedBrand.Id,
+            };
+            newMasterProducts.Add(newDeletedMasterProduct);
 
             foreach (var gModel in oldModels.GroupBy(m => m.ModelName))
             {
@@ -229,6 +253,9 @@ namespace CA.ERP.Utilities
             }
 
             var oldPurchaseOrders = citiAppDatabaseContext.PurchaseOrders.Include(po => po.PoDetails).ToList();
+            var newPurchaseOrders = new List<New.PurchaseOrder>();
+            var rgmUser = newUsers.FirstOrDefault(u => u.Username == "rgm");
+
             foreach (var oldPurchaseOder in oldPurchaseOrders)
             {
                 New.PurchaseOrder newPurchaseOrder = new New.PurchaseOrder();
@@ -236,6 +263,7 @@ namespace CA.ERP.Utilities
                 newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
                 newPurchaseOrder.TotalCostPrice = decimal.Parse( oldPurchaseOder.TotalAmount);
                 newPurchaseOrder.Status = DataAccess.Common.Status.Active;
+                newPurchaseOrder.ApprovedById = rgmUser.Id;
 
                 var oldSupplier = oldSuppliers.FirstOrDefault(s => s.SupIdno == oldPurchaseOder.SupIdno);
                 if (oldSupplier != null)
@@ -246,10 +274,120 @@ namespace CA.ERP.Utilities
                         newPurchaseOrder.SupplierId = newSupplier.Id;
                     }
                 }
-                
+                if (newPurchaseOrder.SupplierId == Guid.Empty)
+                {
+                    newPurchaseOrder.SupplierId = newDeletedSupplier.Id;
+                }
+                var newBranch = newBranches.FirstOrDefault(c => c.Address.Contains(oldPurchaseOder.BranchNo));
+                if (newBranch == null)
+                {
+                    string branchNo = GetBranchForPO(oldPurchaseOder.BranchNo);
+                    newBranch = newBranches.FirstOrDefault(c => c.BranchNo == BranchNumberComverter(branchNo));
+                    
+                    
+                }
+                if (newBranch != null)
+                {
+                    newPurchaseOrder.BranchId = newBranch.Id;
+                }
+                else
+                {
+                    throw new Exception("No branch found");
+                }
+                foreach (var oldPurchaseOrderItem in oldPurchaseOder.PoDetails)    
+                {
+                    New.PurchaseOrderItem newPurchaseOrderItem = new PurchaseOrderItem();
+                    newPurchaseOrderItem.OrderedQuantity = decimal.Parse( oldPurchaseOrderItem.OrderedQty);
+                    newPurchaseOrderItem.FreeQuantity = decimal.Parse(oldPurchaseOrderItem.FreeQty);
+                    newPurchaseOrderItem.TotalQuantity = decimal.Parse(oldPurchaseOrderItem.TotalQty);
+                    newPurchaseOrderItem.CostPrice = StringToMoneyConverter(oldPurchaseOrderItem.Cost);
+                    newPurchaseOrderItem.Discount = StringToMoneyConverter(oldPurchaseOrderItem.Discount);
+                    newPurchaseOrderItem.TotalCostPrice = StringToMoneyConverter(oldPurchaseOrderItem.TotalCost);
+                    newPurchaseOrderItem.DeliveredQuantity = newPurchaseOrderItem.OrderedQuantity - decimal.Parse(oldPurchaseOrderItem.RemainingQty ?? "0");
+                    newPurchaseOrderItem.PurchaseOrderItemStatus = PurchaseOrderItemStatus.Completed;
 
+                    var newMasterProduct = newMasterProducts.FirstOrDefault(m => m.Model == oldPurchaseOrderItem.Model);
+                    if (newMasterProduct != null)
+                    {
+                        newPurchaseOrderItem.MasterProductId = newMasterProduct.Id;
+                    }
+                    else
+                    {
+                        newPurchaseOrderItem.MasterProductId = newDeletedMasterProduct.Id;
+                    }
+
+                    newPurchaseOrder.PurchaseOrderItems.Add(newPurchaseOrderItem);
+                }
+
+                newPurchaseOrders.Add(newPurchaseOrder);
+            }
+
+            using (var newDbContext = GetCADataContext())
+            {
+                newDbContext.PurchaseOrders.AddRange(newPurchaseOrders);
+                await newDbContext.SaveChangesAsync();
             }
         }
+
+        private static string GetBranchForPO(string branchAddress)
+        {
+            Dictionary<string, string> poBranchMapping = new Dictionary<string, string>();
+            poBranchMapping.Add("SAN JOSE ANTIQUE", "06");
+            poBranchMapping.Add("Aldeguer St. Iloilo City", "02");
+            poBranchMapping.Add("Magsaysay St. Roxa Oriental Mindoro", "16");
+            poBranchMapping.Add("TAYTAY, PALAWAN", "26");
+            poBranchMapping.Add("SJOM", "12");
+            poBranchMapping.Add("SABLAYAN, MINDORO", "13");
+            poBranchMapping.Add("RXOM", "16");
+            poBranchMapping.Add("Rizal St. Kalibo, Aklan", "05");
+            poBranchMapping.Add("RIO TUBA, PALAWAN", "07");
+            poBranchMapping.Add("PUERTO PRINCESA, PALAWAN", "07");
+            poBranchMapping.Add("Preciado St. San Jose Antique", "06");
+            poBranchMapping.Add("Plaridel St. Roxas City", "04");
+            poBranchMapping.Add("NARRA, PALAWAN", "09");
+            poBranchMapping.Add("Manuel Quezon St. Liwanag Odiongan, Romblon", "14");
+            poBranchMapping.Add("MAMBURAO, MINDORO", "18");
+            poBranchMapping.Add("KALIBO, AKLAN", "05");
+            poBranchMapping.Add("Junction 2 National Hi-Way San Pedro, Puerto Princesa, Palawan", "07");
+            poBranchMapping.Add("CUYO, PALAWAN", "15");
+            poBranchMapping.Add("CORON, PALAWAN", "17");
+            poBranchMapping.Add("CATICLAN, AKLAN", "28");
+            poBranchMapping.Add("ALDEGUER ILOILO CITY", "02");
+            poBranchMapping.Add("#1 Sta. Fe Bldg. Liboro St. San Jose Mindoro", "12");
+
+
+            if (!poBranchMapping.TryGetValue(branchAddress, out string nBranchNo))
+            {
+                Console.WriteLine(branchAddress);
+            }
+
+            return nBranchNo;
+        }
+
+        private static decimal StringToMoneyConverter(string sMoney)
+        {
+            var moneyStringCleaners = new List<IMoneyStringCleaner>() {
+                new RemoveTrailingDot(),
+                new ZeroIfAllAlphaCharacters()
+            };
+            if (!decimal.TryParse(sMoney, out decimal dMoney))
+            {
+                foreach (var moneyStringCleaner in moneyStringCleaners)
+                {
+                    sMoney = moneyStringCleaner.CleanMoneyString(sMoney);
+                    if (decimal.TryParse(sMoney, out dMoney))
+                    {
+                        break;
+                    }
+                    else if(moneyStringCleaner == moneyStringCleaners.LastOrDefault())
+                    {
+                        throw new Exception("Convertion failed");
+                    }
+                }
+            }
+            return dMoney;
+        }
+
 
         private static void PasswordGenerator(New.User newUser, string password)
         {
