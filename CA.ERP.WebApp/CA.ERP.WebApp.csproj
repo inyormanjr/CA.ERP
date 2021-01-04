@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Projects\CitiAppErp\CA.ERP\CA.ERP.WebApp\CA.ERP.WebApp.xml</DocumentationFile>
+    <DocumentationFile>.\CA.ERP.WebApp.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
