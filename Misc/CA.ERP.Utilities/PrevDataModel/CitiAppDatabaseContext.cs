@@ -932,6 +932,10 @@ namespace CA.ERP.Utilities.PrevDataModel
                 entity.Property(e => e.TotalAmount)
                     .HasMaxLength(50)
                     .HasColumnName("totalAmount");
+
+                entity.HasMany(e => e.PoDetails)
+                .WithOne()
+                .HasForeignKey(e => e.PoId);
             });
 
             modelBuilder.Entity<StRequisitionTable>(entity =>

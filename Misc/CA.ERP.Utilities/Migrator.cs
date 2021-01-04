@@ -227,6 +227,28 @@ namespace CA.ERP.Utilities
                 newDbContext.Users.AddRange(newUsers);
                 await newDbContext.SaveChangesAsync();
             }
+
+            var oldPurchaseOrders = citiAppDatabaseContext.PurchaseOrders.Include(po => po.PoDetails).ToList();
+            foreach (var oldPurchaseOder in oldPurchaseOrders)
+            {
+                New.PurchaseOrder newPurchaseOrder = new New.PurchaseOrder();
+                newPurchaseOrder.Barcode = oldPurchaseOder.PoId;
+                newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
+                newPurchaseOrder.TotalCostPrice = decimal.Parse( oldPurchaseOder.TotalAmount);
+                newPurchaseOrder.Status = DataAccess.Common.Status.Active;
+
+                var oldSupplier = oldSuppliers.FirstOrDefault(s => s.SupIdno == oldPurchaseOder.SupIdno);
+                if (oldSupplier != null)
+                {
+                    var newSupplier = newSuppliers.FirstOrDefault(s => s.Name == oldSupplier.SName);
+                    if (newSupplier != null)
+                    {
+                        newPurchaseOrder.SupplierId = newSupplier.Id;
+                    }
+                }
+                
+
+            }
         }
 
         private static void PasswordGenerator(New.User newUser, string password)

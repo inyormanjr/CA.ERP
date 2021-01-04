@@ -15,5 +15,6 @@ namespace CA.ERP.Utilities.PrevDataModel
         public string BranchNo { get; set; }
         public string ApprovedBy { get; set; }
         public string TotalAmount { get; set; }
+        public List<PoDetail> PoDetails { get; set; } = new List<PoDetail>();
     }
 }
