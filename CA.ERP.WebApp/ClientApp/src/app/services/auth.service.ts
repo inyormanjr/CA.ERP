@@ -21,8 +21,12 @@ export class AuthService {
     }));
   }
 
+  getToken(): any{
+    return localStorage.getItem('token');
+  }
+
   decodedToken(): any {
-    const token = localStorage.getItem('token');
+    const token = this.getToken();
     const decoded = this.jwtHelper.decodeToken(token);
     return decoded;
   }

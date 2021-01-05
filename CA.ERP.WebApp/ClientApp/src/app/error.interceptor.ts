@@ -10,10 +10,12 @@ import { throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MainAppState } from './reducers/main-app-reducer';
 import { ERP_Main_Actions } from './reducers/main.action.types';
+import { Route, Router } from '@angular/router';
+import { AlertifyService } from './services/alertify/alertify.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private store: Store<MainAppState>){}
+  constructor(private store: Store<MainAppState>, private route: Router, private alertify: AlertifyService){}
   intercept(
     req: import('@angular/common/http').HttpRequest<any>,
     next: import('@angular/common/http').HttpHandler
@@ -23,7 +25,9 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error) => {
         if (error.status === 401) {
-          return throwError(error.error.title);
+          this.alertify.error('Un-Authorize access');
+          this.route.navigateByUrl('login');
+          return throwError(error.error);
         }
 
         if (error instanceof HttpErrorResponse) {

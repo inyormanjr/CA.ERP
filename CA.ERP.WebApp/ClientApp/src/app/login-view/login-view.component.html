@@ -19,8 +19,8 @@
         </label>
       </div>
       <ng-container *ngIf="!isLoading; else elseTemplate">
-          <button [disabled]="!userLoginForm.valid
-                " class="btn btn-lg btn-primary btn-block" (click)="login()">Sign In</button>
+          <button [disabled]="userLoginForm.valid
+                " class="btn btn-lg btn-primary btn-block" (click)="testToken() ">Sign In</button>
       </ng-container>
       <ng-template #elseTemplate>
           <div class="d-flex h-100 flex-column justify-content-center  text-center align-items-center">

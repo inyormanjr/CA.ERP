@@ -1,13 +1,13 @@
-<div class="container-fluid pt-3 pb-3 bg-light">
+<div class="container-fluid pt-3 pb-3 bg-light mb-2">
+  <pre>{{poForm.value | json}}</pre>
   <section class="d-flex border-bottom pb-2 flex-row justify-content-between">
     <h3 class="text-danger">New Purchase Order</h3>
-
     <div class="btn-group" dropdown>
       <a id="button-basic" class="btn" dropdownToggle>
         <i class="fa fa-cog fa-2x" aria-hidden="true"></i>
       </a>
       <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-        <li role="menuitem"><a class="dropdown-item" href="#">Add Supplier</a></li>
+        <li role="menuitem"><a class="dropdown-item" (click)="updateCostPrice()">Add Supplier</a></li>
         <li role="menuitem"><a class="dropdown-item" href="#">Update Price </a></li>
       </ul>
     </div>
@@ -15,14 +15,15 @@
   <section class="entry-section mt-4">
     <form [formGroup]="poForm" class="container-fluid">
       <div class="row ">
-        <div class="select-supplier form-inline  col-md-4">
+        <div class="select-supplier form-inline   col-md-4">
           <div class="form-group ">
             <label for="" class="mr-2">Supplier Name:</label>
             <input
-              [value]="(selectedSupplier$ | async) != undefined ? (selectedSupplier$ | async).name: 'Select Supplier'"
-              type="text" class="form-control mr-1" name="" id="selectedSupplier" readonly aria-describedby="helpId"
+             [ngClass]="poForm.get('supplierId').invalid ? 'is-invalid': 'is-valid'"
+              formControlName="supplierName"
+              type="text" class="form-control mr-1 bg-light" name="" id="selectedSupplier" readonly aria-describedby="helpId"
               placeholder="Select Supplier">
-            <button (click)="selectSupplierModal()" class="btn btn-primary">Select Supplier </button>
+            <button (click)="selectSupplierModal()" class="btn btn-danger ">Select Supplier </button>
           </div>
         </div>
       </div>
@@ -31,7 +32,9 @@
           <div class="form-group w-100">
             <label for="" class="mr-3">Branch Name:</label>
 
-            <select formControlName="branchId" class="form-control d-flex flex-fill" name="" id="branchSelection">
+            <select
+              [ngClass]="poForm.get('branchId').invalid ? 'is-invalid': 'is-valid'"
+            formControlName="branchId" class="form-control d-flex flex-fill" name="" id="branchSelection">
               <option [value]="0">---Select Branch---</option>
               <option  [ngValue]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
             </select>
@@ -41,7 +44,9 @@
           <div class="form-group ">
             <label for="" class="mr-2">P.O Date:</label>
             <label for=""></label>
-            <input type="date" class="form-control" name="" id="poDatePicker" aria-describedby="helpId" placeholder="">
+            <input
+            [ngClass]="poForm.get('poDate').invalid ? 'is-invalid': 'is-valid'"
+            type="date" formControlName="poDate" class="form-control" name="" id="poDatePicker" aria-describedby="helpId" placeholder="">
           </div>
         </div>
       </div>
@@ -52,6 +57,7 @@
 
             <select (ngModelChange)="onSelectBrand(selectedBrand)" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBrand" class="form-control d-flex flex-fill" name="" id="brandSelection">
               <ng-container *ngIf="brands$ | async as brands; else elseTemplate">
+                <option [value]="0">--Select Brand First--</option>
                 <option    [ngValue]="brand"
                   *ngFor="let brand of brands; let indext = index">{{brand.brandName}}</option>
               </ng-container>
@@ -69,6 +75,7 @@
                [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedModel"
               name="" id="modelSelection">
                 <ng-container *ngIf="selectedBrand; else elseTemplateBrand">
+                  <option [value]="0">--Select model First--</option>
                   <option  [ngValue]="products" *ngFor="let products of selectedBrand.masterProducts">
                     {{products.model}}</option>
                 </ng-container>
@@ -76,7 +83,9 @@
                   <option>--Select Supplier First--</option>
                 </ng-template>
               </select>
-              <a name="" id="" class="btn btn-success" (click)="addPurchaseItem()" role="button">Add</a>
+              <a [ngClass]="{'disabled': (selectedBrand === undefined || selectedModel === undefined)}" name="" id="" class="btn btn-success" (click)="addPurchaseItem()" role="button">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </a>
             </div>
 
           </div>
@@ -85,12 +94,14 @@
           <div class="form-group ">
             <label for="" class="mr-2">Delivery Date:</label>
             <label for=""></label>
-            <input formControlName="deliveryDate" type="date" class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+            <input
+            [ngClass]="poForm.get('deliveryDate').invalid ? 'is-invalid': 'is-valid'"
+            formControlName="deliveryDate" type="date" class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
           </div>
         </div>
       </div>
       <div class="row">
-        <div formArrayName="purchaseOrderItems" class="table-section table-responsive-md col-md-12">
+        <div style="min-height: 33vh; max-height:33vh; overflow-y: auto;" formArrayName="purchaseOrderItems" class="table-section table-responsive-md col-md-12">
           <table class="table table-md  table-hover bg-white">
             <thead>
               <tr>
@@ -105,7 +116,7 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white">
               <tr *ngFor="let poDetails of this.poForm.controls.purchaseOrderItems.value;
                let podetailIndex = index; trackBy: trackByFn"
                [formGroupName]="podetailIndex">
@@ -113,24 +124,43 @@
                 <td>{{this.poForm.controls.purchaseOrderItems.value[podetailIndex].masterProductName}}</td>
                 <td>
                   <input
+                  [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex].orderedQuantity <= 0 ? 'is-invalid': 'is-valid'"
                   formControlName="orderedQuantity" class="border-0 bg-white" value="2" type="number">
                 </td>
                 <td>
-                  <input formControlName="freeQuantity" class="border-0 bg-white" value="2" type="number">
+                  <input
+                    [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex].freeQuantity < 0 ? 'is-invalid': 'is-valid'"
+                  formControlName="freeQuantity" class="border-0 bg-white" value="2" type="number">
                 </td>
                 <td>
                   {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalQuantity | number}}
                 </td>
                 <td>
-                {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].costPrice | currency}}
+                     <div
+                    [hidden]="!this.poForm.controls.purchaseOrderItems.value[podetailIndex].isNotEditMode"
+                     >{{this.poForm.controls.purchaseOrderItems.value[podetailIndex].costPrice | currency}}</div>
+                    <input
+                    [hidden]="this.poForm.controls.purchaseOrderItems.value[podetailIndex]
+                                        .isNotEditMode"
+                      [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex].costPrice <= 0 ? 'is-invalid': 'is-valid'"
+                      formControlName="costPrice" class="border-0 bg-white" value="2" type="number">
                 </td>
                 <td>
-                  <input formControlName="discount" class="border-0 bg-white" value="2" type="number">
+                  <input
+                    [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex].discount < 0 ? 'is-invalid': 'is-valid'"
+                  formControlName="discount" class="border-0 bg-white" value="2" type="number">
                 </td>
                 <td>
-                    {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalCostPrice | currency}}
+                  {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalCostPrice | currency}}
                 <td>
-                  <a name="" id="" class="btn text-danger"
+                  <a (click)="updateCostPrice(podetailIndex)" name="" id="" class="btn p-0 text-success"  role="button">
+                    <i
+                    [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex]
+
+                      .isNotEditMode ? ' fa-pencil fa-1x' : 'fa-save fa-1x'"
+                    style="font-size: 20px;" class="fa" aria-hidden="true"></i>
+                  </a>
+                  <a name="" id="" class="btn p-0 text-danger"
                     (click)="removePurchaseItem(podetailIndex)"
                   role="button">
                     <i style="font-size: 20px;" class="fa fa-trash-o fa-1x" aria-hidden="true"></i>
@@ -141,10 +171,10 @@
           </table>
         </div>
       </div>
-      <div class="row mt-2">
+      <div class="row mt-2 border-top  pt-2">
         <div class="col-md-12 d-flex justify-content-between">
           <a name="" id="" class="btn btn-danger" href="#" role="button">Back</a>
-          <a name="" id="" class="btn btn-success"
+          <a [ngClass]="{'disabled': (poForm.invalid || poForm.get('purchaseOrderItems').invalid)}" name="" id="" class="btn btn-success"
           (click)="saveAndPrintPo()"
           role="button">Save & Print</a>
         </div>
