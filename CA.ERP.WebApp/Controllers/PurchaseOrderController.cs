@@ -28,24 +28,19 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class PurchaseOrderController : BaseApiController
     {
-        private readonly ILogger<PurchaseOrderController> _logger;
-        private readonly IUserHelper _userHelper;
         private readonly PurchaseOrderService _purchaseOrderService;
-        private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IReportGenerator _reportGenerator;
         private readonly IBarcodeGenerator _barcodeGenerator;
 
-        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator )
+        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator )
+            :base(serviceProvider)
         {
-            _logger = logger;
-            _userHelper = userHelper;
             _purchaseOrderService = purchaseOrderService;
-            _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _reportGenerator = reportGenerator;
             _barcodeGenerator = barcodeGenerator;
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            
         }
 
         /// <summary>

@@ -15,14 +15,23 @@ using CA.ERP.WebApp.Dto;
 using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
+using Xunit;
+using System.IO;
 
 namespace CA.ERP.WebApp.Test.Integration.Fixtures
 {
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup:class
     {
+
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+
             Environment.SetEnvironmentVariable("DISABLE_SPA", "true");
+
+            var configRoot = GetConfiguration();
 
             builder.ConfigureServices(services =>
             {
@@ -31,13 +40,24 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                         typeof(DbContextOptions<CADataContext>));
 
                 services.Remove(descriptor);
+                var dbtype = configRoot.GetValue<string>("DbType");
 
-                string dbName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-                services.AddDbContext<CADataContext>(options =>
+                if (dbtype == "SqlServer")
                 {
-
-                    options.UseInMemoryDatabase("InMemoryDbForTesting" + dbName);
-                });
+                    services.AddDbContext<CADataContext>(options =>
+                    {
+                        options.UseSqlServer(configRoot.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess"));
+                    });
+                }
+                else
+                {
+                    services.AddDbContext<CADataContext>(options =>
+                    {
+                        options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    });
+                }
+                
+                
 
                 var sp = services.BuildServiceProvider();
 
@@ -64,6 +84,17 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                     }
                 }
             });
+        }
+
+        public static IConfigurationRoot GetConfiguration()
+        {
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("testsettings.json");
+            if (File.Exists("testsettings.local.json"))
+            {
+                configurationBuilder.AddJsonFile("testsettings.local.json");
+            }
+            return configurationBuilder.Build();
         }
 
 

@@ -24,5 +24,6 @@ namespace CA.ERP.DataAccess.Entities
         public User ApprovedBy { get; set; }
         public Supplier? Supplier { get; set; }
         public Branch? Branch { get; set; }
+        public List<StockReceive> StockReceives { get;  set; }
     }
 }

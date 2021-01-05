@@ -66,8 +66,7 @@ namespace CA.ERP.DataAccess.Repositories
             var queryable = _context.SupplierBrands.AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
             var supplierBrands = queryable.Where(sb => sb.SupplierId == supplierId)
                 .Select(sb => 

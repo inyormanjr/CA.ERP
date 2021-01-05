@@ -19,14 +19,13 @@ namespace CA.ERP.WebApp.Controllers
 {
     public class AuthenticationController:BaseApiController
     {
-        private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly UserService _userService;
         private readonly EnumFlagsHelper _enumFlagsHelper;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger ,IMapper mapper,  IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper) 
+        public AuthenticationController(IServiceProvider serviceProvider,IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper)
+            : base(serviceProvider)
         {
-            _mapper = mapper;
             _config = config;
             _userService = userService;
             _enumFlagsHelper = enumFlagsHelper;
@@ -70,7 +69,7 @@ namespace CA.ERP.WebApp.Controllers
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
-                    Expires = DateTime.UtcNow.AddDays(1),
+                    Expires = DateTime.UtcNow.AddHours(12),
                     SigningCredentials = creds
                 };
 

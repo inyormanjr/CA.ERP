@@ -21,17 +21,12 @@ namespace CA.ERP.WebApp.Controllers
     [ApiController]
     public class MasterProductController : BaseApiController
     {
-        private readonly ILogger<MasterProductController> _logger;
         private readonly MasterProductService _masterProductService;
-        private readonly IMapper _mapper;
-        private readonly IUserHelper _userHelper;
 
-        public MasterProductController(ILogger<MasterProductController> logger, MasterProductService masterProductService, IMapper mapper, IUserHelper userHelper)
+        public MasterProductController(IServiceProvider serviceProvider, MasterProductService masterProductService)
+            :base(serviceProvider)
         {
-            _logger = logger;
             _masterProductService = masterProductService;
-            _mapper = mapper;
-            _userHelper = userHelper;
         }
 
         /// <summary>

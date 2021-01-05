@@ -20,15 +20,12 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class BranchController:BaseApiController
     {
-        private ILogger<BranchController> _logger;
         private readonly BranchService _branchService;
-        private readonly IMapper _mapper;
 
-        public BranchController(ILogger<BranchController> logger, BranchService branchService,IBranchRepository branchRepository, IMapper mapper)
+        public BranchController(IServiceProvider serviceProvider, BranchService branchService)
+            : base(serviceProvider)
         {
-            _logger = logger;
             _branchService = branchService;
-            _mapper = mapper;
         }
 
 

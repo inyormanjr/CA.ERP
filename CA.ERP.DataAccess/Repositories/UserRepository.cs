@@ -30,7 +30,7 @@ namespace CA.ERP.DataAccess.Repositories
         public async Task<OneOf<Dom.User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default)
         {
             OneOf<Dom.User, None> result = default(None);
-            var user = await this._context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Status == Common.Status.Active);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Status == Status.Active);
             if (user != null) {
                 result = _mapper.Map<Dom.User>(user);
             };

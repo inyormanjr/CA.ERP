@@ -28,7 +28,7 @@ namespace CA.ERP.Lib.DAL.Repositories
 
         public async Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken = default)
         {
-            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == DataAccess.Common.Status.Active).ToListAsync();
+            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == Status.Active).ToListAsync();
             return _mapper.Map<List<Branch>>(branches);
         }
 

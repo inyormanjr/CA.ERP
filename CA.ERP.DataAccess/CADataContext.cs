@@ -25,6 +25,8 @@ namespace CA.ERP.DataAccess
        public  DbSet<PurchaseOrder> PurchaseOrders { get; set; }
        public  DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
        public  DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
+        public DbSet<StockReceive> StockReceives { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -38,6 +40,8 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new PurchaseOrderMapping());
             builder.ApplyConfiguration(new PurchaseOrderItemMapping());
             builder.ApplyConfiguration(new SupplierMasterProductMapping());
+            builder.ApplyConfiguration(new StockReceiveMapping());
+            builder.ApplyConfiguration(new StockMapping());
             base.OnModelCreating(builder);
         }
 

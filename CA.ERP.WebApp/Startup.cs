@@ -212,6 +212,9 @@ namespace CA.ERP.WebApp
             //add principal/user tranformer
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
+            //register textr encoding
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
 
         }
 
