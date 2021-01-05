@@ -42,31 +42,27 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private modalSerivce: BsModalService,
     private purchaseOrderStore: Store<PurchaseOrderState>,
-    private ref: ChangeDetectorRef,
     private alertifyService: AlertifyService,
-    private poservice: PurchaseOrderService,
-    private route: Router
+    private poservice: PurchaseOrderService
   ) {
-
     this.initializePOFormGroup();
 
     this.poForm.get('purchaseOrderItems').valueChanges.subscribe((x) => {
-       x.forEach(element => {
-         element.totalQuantity = element.orderedQuantity + element.freeQuantity;
-         element.totalCostPrice =
-           element.orderedQuantity * (element.costPrice - element.discount);
-       });
+      x.forEach((element) => {
+        element.totalQuantity = element.orderedQuantity + element.freeQuantity;
+        element.totalCostPrice =
+          element.orderedQuantity * (element.costPrice - element.discount);
+      });
     });
 
-    this.purchaseOrderStore.select(
-      PurchaseOrderSelectorType.selectedSupplier
-    ).subscribe((x: SupplierView) => {
-      if (x !== undefined) {
-        this.poForm.controls.supplierId.patchValue(x.id);
-        this.poForm.controls.supplierName.patchValue(x.name);
-      }
-    });
-
+    this.purchaseOrderStore
+      .select(PurchaseOrderSelectorType.selectedSupplier)
+      .subscribe((x: SupplierView) => {
+        if (x !== undefined) {
+          this.poForm.controls.supplierId.patchValue(x.id);
+          this.poForm.controls.supplierName.patchValue(x.name);
+        }
+      });
 
     this.brands$ = this.purchaseOrderStore.select(
       PurchaseOrderSelectorType.selectBrandsWithModels
@@ -74,6 +70,9 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     this.branches$ = this.branchService.get();
   }
   ngOnDestroy(): void {
+    this.purchaseOrderStore.dispatch(
+      PoActionTypes.clearSelectedSupplierForPurchaseOrder()
+    );
   }
 
   initializePOFormGroup() {
@@ -81,6 +80,7 @@ export class PoEntryComponent implements OnInit, OnDestroy {
       supplierId: [undefined, [Validators.required]],
       supplierName: [undefined],
       branchId: [0, [Validators.required, Validators.minLength(2)]],
+      poDate: [undefined, [Validators.required]],
       deliveryDate: [undefined, [Validators.required]],
       purchaseOrderItems: this.fb.array([], Validators.required),
     });
@@ -115,6 +115,7 @@ export class PoEntryComponent implements OnInit, OnDestroy {
       discount: [0, Validators.required],
       totalCostPrice: [0, Validators.required],
       deliveryQuantity: [0, Validators.required],
+      isNotEditMode: [true, [Validators.required]],
     });
   }
 
@@ -126,20 +127,31 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     return this.poForm.controls.purchaseOrderItems as FormArray;
   }
 
+  updateCostPrice() {
+      this.poForm.controls.purchaseOrderItems.value[
+        0
+      ].isNotEditMode = !this.poForm.controls.purchaseOrderItems.value[
+        0
+      ].isNotEditMode;
+    this.poForm.controls.purhcaseOrderitems.markAsUntouched();
 
+  }
   addPurchaseItem() {
-    for (let index = 0; index < this.purchaseOrderItemsFormArray.controls.length; index++) {
+    for (
+      let index = 0;
+      index < this.purchaseOrderItemsFormArray.controls.length;
+      index++
+    ) {
       const element = this.purchaseOrderItemsFormArray.controls[index];
-      if (element.value.masterProductId === this.createDetails.controls.masterProductId.value) {
-        this.alertifyService.warning('Selected model already exist');
+      if (
+        element.value.masterProductId ===
+        this.createDetails.controls.masterProductId.value
+      ) {
+        this.alertifyService.error('Selected model already exist');
         return;
       }
     }
     this.purchaseOrderItemsFormArray.push(this.createDetails);
-  }
-
-  updateTotalQuantityOnChange(index, value) {
-    this.purchaseOrderItemsFormArray[index].totalQuantity = value;
   }
 
   removePurchaseItem(index) {
@@ -149,12 +161,14 @@ export class PoEntryComponent implements OnInit, OnDestroy {
   }
 
   resetInputs() {
-     this.poForm.reset();
-     this.selectedSupplier = null;
-     this.selectedBrand = null;
+    this.poForm.reset();
+    this.selectedSupplier = null;
+    this.selectedBrand = null;
     this.selectedModel = null;
-    this.purchaseOrderStore.dispatch(PoActionTypes.clearSelectedSupplierForPurchaseOrder()); 
-     this.purchaseOrderItemsFormArray.clear();
+    this.purchaseOrderStore.dispatch(
+      PoActionTypes.clearSelectedSupplierForPurchaseOrder()
+    );
+    this.purchaseOrderItemsFormArray.clear();
   }
   saveAndPrintPo() {
     this.alertifyService.confirm('Save new Purchase Order?', () => {
@@ -162,10 +176,12 @@ export class PoEntryComponent implements OnInit, OnDestroy {
       const newPORequest: NewRequest = { data: newPoValue };
       this.poservice.create(newPORequest).subscribe(
         (result) => {
-          this.alertifyService.message('Purchase Order Created. Redirecting to printing.');
+          this.alertifyService.message(
+            'Purchase Order Created. Redirecting to printing.'
+          );
           this.resetInputs();
           setTimeout(() => {
-          window.open(this.poservice.getPdfReportingById(result)).print();
+            window.open(this.poservice.getPdfReportingById(result)).print();
           }, 3000);
         },
         (error) => {
