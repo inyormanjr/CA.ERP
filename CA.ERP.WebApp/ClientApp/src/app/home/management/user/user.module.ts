@@ -16,7 +16,8 @@ import { UserService } from './user.service';
   imports: [
     CommonModule,
     UserRoutingModule,
-    StoreModule.forFeature(from.userManagementFeatureKey,from.reducers,{metaReducers : from.metaReducers}),
+    StoreModule.forFeature(from.userManagementFeatureKey,
+                        from.reducers,{metaReducers : from.metaReducers}),
     EffectsModule.forFeature([UserEffects])
   ],
   providers : [

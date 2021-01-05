@@ -1,8 +1,20 @@
 import { createAction, props } from '@ngrx/store';
+import { UserView } from '../model/user.view';
 
-export const loadUserManagements = createAction(
-  '[UserManagement] Load UserManagements'
+export const fetchUsers = createAction(
+  '[UserManagement] Fetch users'
 );
+
+export const fetchingUsers = createAction(
+  '[UserManagement] Fetching users'
+);
+
+export const loadUserViewList = createAction(
+  '[UserManagement] Load users list',
+  props<{usersViewList : UserView[]}>()
+);
+
+
 
 
 
