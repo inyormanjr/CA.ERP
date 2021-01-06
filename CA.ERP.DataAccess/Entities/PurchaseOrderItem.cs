@@ -21,5 +21,6 @@ namespace CA.ERP.DataAccess.Entities
 
         public PurchaseOrder PurchaseOrder { get; set; }
         public MasterProduct MasterProduct { get; set; }
+        public List<Stock> Stocks { get;  set; }
     }
 }

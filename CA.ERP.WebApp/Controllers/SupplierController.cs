@@ -20,17 +20,12 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class SupplierController : BaseApiController
     {
-        private readonly ILogger<SupplierController> _logger;
         private readonly SupplierService _supplierService;
-        private readonly IUserHelper _userHelper;
-        private readonly IMapper _mapper;
 
-        public SupplierController(ILogger<SupplierController> logger, SupplierService supplierService, IUserHelper userHelper, IMapper mapper)
+        public SupplierController(IServiceProvider serviceProvider, SupplierService supplierService, IUserHelper userHelper, IMapper mapper)
+            : base(serviceProvider)
         {
-            _logger = logger;
             _supplierService = supplierService;
-            _userHelper = userHelper;
-            _mapper = mapper;
         }
 
         /// <summary>

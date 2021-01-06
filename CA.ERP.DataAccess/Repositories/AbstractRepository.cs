@@ -42,7 +42,7 @@ namespace CA.ERP.DataAccess.Repositories
             var toDelete = _context.Set<TDal>().FirstOrDefault(b => b.Id == id);
             if (toDelete != null)
             {
-                toDelete.Status = DataAccess.Common.Status.Inactive;
+                toDelete.Status = Status.Inactive;
                 await _context.SaveChangesAsync(cancellationToken: cancellationToken);
                 ret = default(Success);
             }
@@ -55,8 +55,7 @@ namespace CA.ERP.DataAccess.Repositories
             var queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (DataAccess.Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
 
 
@@ -70,8 +69,7 @@ namespace CA.ERP.DataAccess.Repositories
             var queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (DataAccess.Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
 
             var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
@@ -103,8 +101,7 @@ namespace CA.ERP.DataAccess.Repositories
             var queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (DataAccess.Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
             return await queryable.AnyAsync(e => e.Id == id, cancellationToken);
         }

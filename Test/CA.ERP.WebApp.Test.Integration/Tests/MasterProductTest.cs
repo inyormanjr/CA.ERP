@@ -48,7 +48,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var data = new MasterProductCreate() {
                 Model = fake.Vehicle.Model(),
                 Description = fake.Vehicle.Manufacturer(),
-                BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
+                BrandId = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c")
             };
 
             var request = new CreateMasterProductRequest()
@@ -153,7 +153,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 {
                     Model = fake.Vehicle.Model(),
                     Description = fake.Vehicle.Manufacturer(),
-                    BrandId = Guid.Parse("4d2cfc04-ed36-433f-8053-a5eefce5bb2d")
+                    BrandId = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c")
                 }
             };
 

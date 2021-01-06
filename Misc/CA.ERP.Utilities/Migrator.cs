@@ -241,7 +241,7 @@ namespace CA.ERP.Utilities
                 newUser.Username = oldUser.Username;
                 PasswordGenerator(newUser, oldUser.Password);
 
-                newUser.Role = (UserRole)Enum.Parse(typeof(UserRole), oldUser.Role.Replace("&", ""), true);
+                newUser.Role = (Domain.UserAgg.UserRole)Enum.Parse(typeof(Domain.UserAgg.UserRole), oldUser.Role.Replace("&", ""), true);
                 newUser.FirstName = oldUser.FName;
                 newUser.LastName = oldUser.LName;
 
@@ -278,7 +278,7 @@ namespace CA.ERP.Utilities
                 newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
                 newPurchaseOrder.CreatedAt = newPurchaseOrder.DeliveryDate;
                 newPurchaseOrder.TotalCostPrice = decimal.Parse( oldPurchaseOder.TotalAmount);
-                newPurchaseOrder.Status = DataAccess.Common.Status.Active;
+                newPurchaseOrder.Status = Domain.Common.Status.Active;
                 newPurchaseOrder.ApprovedById = rgmUser.Id;
 
                 var oldSupplier = oldSuppliers.FirstOrDefault(s => s.SupIdno == oldPurchaseOder.SupIdno);

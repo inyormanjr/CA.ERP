@@ -14,5 +14,6 @@ namespace CA.ERP.DataAccess.Entities
         public string Contact { get; set; }
         public List<UserBranch> UserBranches { get;  set; }
         public List<PurchaseOrder> PurchaseOrders { get; set; }
+        public List<StockReceive> StockReceives { get; set; }
     }
 }
