@@ -23,12 +23,14 @@ namespace CA.ERP.WebApp
                     var localJsonPath = Path.Combine(System.AppContext.BaseDirectory, $"appsettings.{host.HostingEnvironment.EnvironmentName}.local.json");
                     if (File.Exists(localJsonPath))
                     {
+
                         builder.AddJsonFile(localJsonPath);
                     }
                 })
                 .ConfigureLogging((hostingContext, builder) =>
                 {
                     builder.AddFile("logs/ca-erp-{Date}.log");
+                    builder.AddEventSourceLogger();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
