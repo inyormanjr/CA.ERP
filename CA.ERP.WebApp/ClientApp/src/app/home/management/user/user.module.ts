@@ -9,13 +9,19 @@ import * as from from './reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './effects/user.effects';
 import { UserService } from './user.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-bootstrap-modules.module';
+import { UserListComponent } from './users-management-view/UserList/user-list.component';
+
 
 
 @NgModule({
-  declarations: [UsersManagementViewComponent],
+  declarations: [UsersManagementViewComponent, UserListComponent],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     UserRoutingModule,
+    NgxBootstrapModulesModule,
     StoreModule.forFeature(from.userManagementFeatureKey,
                         from.reducers,{metaReducers : from.metaReducers}),
     EffectsModule.forFeature([UserEffects])

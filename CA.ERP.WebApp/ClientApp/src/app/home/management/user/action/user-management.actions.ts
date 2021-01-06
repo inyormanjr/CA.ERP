@@ -14,7 +14,15 @@ export const loadUserViewList = createAction(
   props<{usersViewList : UserView[]}>()
 );
 
+export const loadUserManagementsSuccess = createAction(
+  '[UserManagement] Load UserManagement Success',
+  props<{ data: any }>()
+);
 
+export const loadUserManagementsFailure = createAction(
+  '[UserManagement] Load UserManagement Failure',
+  props<{ error: any }>()
+);
 
 
 
