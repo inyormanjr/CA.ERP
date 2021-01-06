@@ -32,7 +32,11 @@ export class LoginViewComponent implements OnInit {
     });
   }
   userLoginForm: FormGroup;
-  ngOnInit() {}
+  ngOnInit() { }
+
+  testToken() {
+    this.authService.decodedToken();
+  }
 
   login() {
     const userCredentials = this.userLoginForm.value;

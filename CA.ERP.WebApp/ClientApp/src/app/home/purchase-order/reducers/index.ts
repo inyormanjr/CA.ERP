@@ -44,6 +44,12 @@ export const reducers = createReducer(
       selectedSupplier: action.selectedSupplier
     };
   }),
+  on(PoActionTypes.clearSelectedSupplierForPurchaseOrder, (state, action) => {
+    return {
+      ...state,
+      selectedSupplier: undefined
+    };
+  }),
   on(PoActionTypes.populatePurchaseOrderListView, (state, action) => {
     return {
       ...state,

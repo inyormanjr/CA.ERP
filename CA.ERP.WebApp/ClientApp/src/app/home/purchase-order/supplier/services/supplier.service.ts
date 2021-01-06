@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NewRequest } from 'src/app/models/NewRequest';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
 import { BrandWithMasterProducts } from '../models/brandWithMasterProducts';
@@ -39,6 +40,12 @@ export class SupplierService implements ServiceBase<SupplierView> {
   }
   update(id: any, updateRequest: any): Observable<any> {
     return this.http.put(this.baseUrl + id, updateRequest);
+  }
+
+  updateMasterProductCostPriceById(supplierId, updateRequest: NewRequest) {
+    this.http.put(this.baseUrl + supplierId + '/MasterProduct', updateRequest).pipe(
+      map((response: any) => response)
+    );
   }
   delete(id: any) {
     this.http.delete(this.baseUrl + id);

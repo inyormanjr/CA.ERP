@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
 import { PurchaseOrder } from './models/new-purchase-order';
@@ -11,7 +12,7 @@ import { PurchaseOrder } from './models/new-purchase-order';
 })
 export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
   baseUrl = environment.apiURL + 'api/PurchaseOrder/';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
   getById(id: any): Observable<PurchaseOrder> {
     throw new Error('Method not implemented.');
   }
@@ -29,7 +30,7 @@ export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
   }
 
   getPdfReportingById(id) {
-    return this.baseUrl + id + '/Print';
+    return this.baseUrl + id + '/Print?access_token=' + this.authService.getToken();
   }
 
 
