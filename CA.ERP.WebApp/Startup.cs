@@ -33,6 +33,7 @@ using CA.ERP.WebApp.CustomAuthentication;
 using CA.ERP.WebApp.Middlewares;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Common.Rounding;
+using CA.ERP.WebApp.ActionFilters;
 
 namespace CA.ERP.WebApp
 {
@@ -90,7 +91,9 @@ namespace CA.ERP.WebApp
 
             });
 
-            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllersWithViews(option => option.Filters.Add<RequestProcessingTimeFilter>())
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            
             services.AddCors(option => {
                 option.AddDefaultPolicy(builder => {
                     builder
@@ -260,7 +263,6 @@ namespace CA.ERP.WebApp
                     pattern: "{controller}/{action=Index}/{id?}");
 
                 endpoints.MapHealthChecks("/health");
-
             });
 
             
