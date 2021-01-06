@@ -104,6 +104,7 @@ namespace CA.ERP.Utilities
             foreach (var supplier in suppliers)
             {
                 var masterProducts = supplier.SupplierBrands.SelectMany(sb => sb.Brand.MasterProducts).ToList();
+                
                 foreach (var masterProduct in masterProducts)
                 {
                     var supplierMasterProduct = new SupplierMasterProduct() {
@@ -164,14 +165,14 @@ namespace CA.ERP.Utilities
 
                 const int mask = 127;
                 var roles = (mask & (random.Next(mask) + 1));
-                user.Role = (UserRole)roles;
+                user.Role = (Domain.UserAgg.UserRole)roles;
 
                 if (i == 0)
                 {
                     if (!dataContext.Users.Any(u => u.Username == "Admin"))
                     {
                         user.Username = "Admin";
-                        user.Role = UserRole.Admin;
+                        user.Role = Domain.UserAgg.UserRole.Admin;
                     }
                 }
 

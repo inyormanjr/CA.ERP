@@ -19,8 +19,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
 
             
-            RuleFor(poi => poi.TotalQuantity).NotEmpty();
-            RuleFor(poi => poi.TotalCostPrice).NotEmpty();
+            RuleFor(poi => poi.TotalQuantity).GreaterThanOrEqualTo(0);
+            RuleFor(poi => poi.TotalCostPrice).GreaterThanOrEqualTo(0);
             RuleFor(poi => poi.MasterProductId).NotEmpty()
                 .CustomAsync(MasterProductExist);
 

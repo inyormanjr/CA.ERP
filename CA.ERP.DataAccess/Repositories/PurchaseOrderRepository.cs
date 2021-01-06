@@ -43,8 +43,7 @@ namespace CA.ERP.DataAccess.Repositories
             var queryable = _context.PurchaseOrders.Include(po=>po.Supplier).Include(po=>po.Branch).AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (DataAccess.Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
 
 
@@ -62,8 +61,7 @@ namespace CA.ERP.DataAccess.Repositories
                 .AsQueryable();
             if (status != Status.All)
             {
-                var dalStatus = (DataAccess.Common.Status)status;
-                queryable = queryable.Where(e => e.Status == dalStatus);
+                queryable = queryable.Where(e => e.Status == status);
             }
 
             var entity = await queryable.Where(po => po.Id == id).Select(po => _mapper.Map<PurchaseOrder>(po)).FirstOrDefaultAsync(cancellationToken: cancellationToken);

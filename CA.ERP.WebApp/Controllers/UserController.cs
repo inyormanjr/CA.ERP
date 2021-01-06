@@ -20,17 +20,12 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class UserController : BaseApiController
     {
-        private readonly ILogger<UserController> _logger;
         private readonly UserService _userService;
-        private readonly IMapper _mapper;
-        private readonly IUserHelper _userHelper;
 
-        public UserController(ILogger<UserController> logger, UserService userService, IMapper mapper, IUserHelper userHelper)
+        public UserController(IServiceProvider serviceProvider, UserService userService)
+            :base(serviceProvider)
         {
-            _logger = logger;
             _userService = userService;
-            _mapper = mapper;
-            _userHelper = userHelper;
         }
         /// <summary>
         /// Register user

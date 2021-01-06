@@ -17,8 +17,8 @@ namespace CA.ERP.Domain.Base
     }
     public abstract class ServiceBase<T> : ServiceBase where T: ModelBase 
     {
-        private readonly IRepository<T> _repository;
-        private readonly IValidator<T> _validator;
+        protected readonly IRepository<T> _repository;
+        protected readonly IValidator<T> _validator;
         protected readonly IUserHelper _userHelper;
 
         public ServiceBase(IRepository<T> repository, IValidator<T> validator, IUserHelper userHelper)

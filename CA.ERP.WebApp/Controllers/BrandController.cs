@@ -24,17 +24,12 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class BrandController : BaseApiController
     {
-        private readonly ILogger<BrandController> _logger;
-        private readonly IUserHelper _userHelper;
         private readonly BrandService _brandService;
-        private readonly IMapper _mapper;
 
-        public BrandController(ILogger<BrandController> logger, IUserHelper userHelper, BrandService brandService, IMapper mapper)
+        public BrandController(IServiceProvider serviceProvider, IUserHelper userHelper, BrandService brandService, IMapper mapper)
+            : base(serviceProvider)
         {
-            _logger = logger;
-            _userHelper = userHelper;
             _brandService = brandService;
-            _mapper = mapper;
         }
 
         [HttpPost]

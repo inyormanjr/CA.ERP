@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CA.ERP.Domain.UserAgg;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
