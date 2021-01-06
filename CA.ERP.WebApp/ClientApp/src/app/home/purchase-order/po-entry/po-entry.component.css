@@ -2,3 +2,13 @@ tbody tr td input
 {
   width: 100px;
 }
+
+tbody tr td input.is-invalid {
+  color: red !important;
+  border: 1px solid red !important;
+}
+
+tbody tr td input.is-valid{
+ color: green !important;
+ font-weight: bold;
+}
