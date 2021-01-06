@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
@@ -19,8 +20,8 @@ namespace CA.ERP.Domain.BrandAgg
         private readonly IValidator<Brand> _brandValidator;
         private readonly IBrandRepository _brandRepository;
 
-        public BrandService(IBrandFactory brandFactory, IValidator<Brand> brandValidator, IBrandRepository brandRepository, IUserHelper userHelper)
-            : base(brandRepository, brandValidator, userHelper)
+        public BrandService(IUnitOfWork unitOfWork,IBrandFactory brandFactory, IValidator<Brand> brandValidator, IBrandRepository brandRepository, IUserHelper userHelper)
+            : base(unitOfWork, brandRepository, brandValidator, userHelper)
         {
             _brandFactory = brandFactory;
             _brandValidator = brandValidator;
@@ -42,6 +43,7 @@ namespace CA.ERP.Domain.BrandAgg
                 brand.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _brandRepository.AddAsync(brand, cancellationToken: cancellationToken);
             }
+            await _unitOfWork.CommitAsync();
             return ret;
         }
     }

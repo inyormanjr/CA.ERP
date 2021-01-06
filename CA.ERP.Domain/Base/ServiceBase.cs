@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.UserAgg;
+﻿using CA.ERP.Domain.UnitOfWorkAgg;
+using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
@@ -17,12 +18,14 @@ namespace CA.ERP.Domain.Base
     }
     public abstract class ServiceBase<T> : ServiceBase where T: ModelBase 
     {
+        protected readonly IUnitOfWork _unitOfWork;
         protected readonly IRepository<T> _repository;
         protected readonly IValidator<T> _validator;
         protected readonly IUserHelper _userHelper;
 
-        public ServiceBase(IRepository<T> repository, IValidator<T> validator, IUserHelper userHelper)
+        public ServiceBase(IUnitOfWork unitOfWork, IRepository<T> repository, IValidator<T> validator, IUserHelper userHelper)
         {
+            _unitOfWork = unitOfWork;
             _repository = repository;
             _validator = validator;
             _userHelper = userHelper;
@@ -36,6 +39,8 @@ namespace CA.ERP.Domain.Base
                 f0: success => success,
                 f1: none => default(NotFound)
                 );
+
+            await _unitOfWork.CommitAsync();
             return ret;
         }
 
@@ -59,6 +64,7 @@ namespace CA.ERP.Domain.Base
                     );
 
             }
+            await _unitOfWork.CommitAsync();
             return ret;
         }
 
@@ -78,4 +84,5 @@ namespace CA.ERP.Domain.Base
                 );
         }
     }
+
 }

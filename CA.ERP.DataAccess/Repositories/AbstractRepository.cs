@@ -32,18 +32,16 @@ namespace CA.ERP.DataAccess.Repositories
             entity.ThrowIfNullArgument(nameof(entity));
             var dalEntity = _mapper.Map<TDomain, TDal>(entity);
             await _context.Set<TDal>().AddAsync(dalEntity, cancellationToken: cancellationToken);
-            await _context.SaveChangesAsync();
             return dalEntity.Id;
         }
 
         public async Task<OneOf<Success, None>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             OneOf<Success, None> ret = default(None);
-            var toDelete = _context.Set<TDal>().FirstOrDefault(b => b.Id == id);
+            var toDelete = await  _context.Set<TDal>().FirstOrDefaultAsync(b => b.Id == id);
             if (toDelete != null)
             {
                 toDelete.Status = Status.Inactive;
-                await _context.SaveChangesAsync(cancellationToken: cancellationToken);
                 ret = default(Success);
             }
 
@@ -88,7 +86,6 @@ namespace CA.ERP.DataAccess.Repositories
                 _mapper.Map(entity, dalEntity);
                 dalEntity.Id = id;
                 _context.Entry(dalEntity).State = EntityState.Modified;
-                await _context.SaveChangesAsync(cancellationToken: cancellationToken);
                 result = dalEntity.Id;
             }
 
