@@ -14,7 +14,9 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public StockMapping()
         {
             CreateMap<Stock, Dal.Stock>();
-            CreateMap<Dal.Stock, Stock>();
+            CreateMap<Dal.Stock, Stock>()
+                .ForMember(s=>s.BrandName, opt => opt.MapFrom(s=>s.MasterProduct.Brand.Name))
+                .ForMember(s=>s.Model, opt => opt.MapFrom(s=>s.MasterProduct.Model));
         }
     }
 }

@@ -68,7 +68,6 @@ namespace CA.ERP.DataAccess.Repositories
                 _context.Entry(dalUser).State = EntityState.Modified;
                 _context.Entry(dalUser).Property(u => u.PasswordHash).IsModified = false;
                 _context.Entry(dalUser).Property(u => u.PasswordSalt).IsModified = false;
-                await _context.SaveChangesAsync(cancellationToken: cancellationToken);
                 result = dalUser.Id;
             }
 
@@ -84,7 +83,6 @@ namespace CA.ERP.DataAccess.Repositories
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
                 _context.Entry(user).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
                 ret = default(Success);
             }
             return ret;

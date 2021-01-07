@@ -40,7 +40,6 @@ namespace CA.ERP.DataAccess.Repositories
                         SupplierId = supplierId
                     };
                     await _context.SupplierBrands.AddAsync(dalSupplierBrand);
-                    await _context.SaveChangesAsync();
                 }
                 
                 ret = default(Success);
@@ -55,7 +54,6 @@ namespace CA.ERP.DataAccess.Repositories
             if (supplierBrand != null)
             {
                 _context.Entry(supplierBrand).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
                 ret = default(Success);
             }
             return ret;

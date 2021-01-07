@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
@@ -24,6 +25,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
 
         public PurchaseOrderService(
+            IUnitOfWork unitOfWork,
             IPurchaseOrderTotalCostPriceCalculator purchaseOrderTotalCostPriceCalculator,
             IPurchaseOrderItemTotalCostPriceCalculator purchaseOrderItemTotalCostPriceCalculator,
             IPurchaseOrderItemTotalQuantityCalculator purchaseOrderItemTotalQuantityCalculator,
@@ -31,7 +33,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             IPurchaseOrderFactory purchaseOrderFactory,
             IValidator<PurchaseOrder> purchaseOrderValidator,
             IPurchaseOrderRepository purchaseOrderRepository)
-            :base(purchaseOrderRepository, purchaseOrderValidator, userHelper)
+            :base(unitOfWork, purchaseOrderRepository, purchaseOrderValidator, userHelper)
         {
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
             _purchaseOrderItemTotalCostPriceCalculator = purchaseOrderItemTotalCostPriceCalculator;
@@ -56,11 +58,12 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
                 purchaseOrder.CreatedBy = _userHelper.GetCurrentUserId();
                 purchaseOrder.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _purchaseOrderRepository.AddAsync(purchaseOrder, cancellationToken: cancellationToken);
+                await _unitOfWork.CommitAsync();
             }
             return ret;
         }
 
-        public override Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateAsync(Guid id, PurchaseOrder purchaseOrder, CancellationToken cancellationToken = default)
+        public async override Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateAsync(Guid id, PurchaseOrder purchaseOrder, CancellationToken cancellationToken = default)
         {
             //fill in for validation
             purchaseOrder.Barcode = "NotEmtpy";
@@ -72,7 +75,9 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
             purchaseOrder.TotalCostPrice = _purchaseOrderTotalCostPriceCalculator.Calculate(purchaseOrder, purchaseOrder.PurchaseOrderItems);
 
-            return base.UpdateAsync(id, purchaseOrder, cancellationToken);
+            var ret = await base.UpdateAsync(id, purchaseOrder, cancellationToken);
+            await _unitOfWork.CommitAsync();
+            return ret;
         }
 
     }

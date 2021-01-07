@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
@@ -19,8 +20,8 @@ namespace CA.ERP.Domain.MasterProductAgg
         private readonly IMasterProductFactory _masterProductFactory;
         private readonly IValidator<MasterProduct> _masterProductValidator;
 
-        public MasterProductService(IMasterProductRepository masterProductRepository, IMasterProductFactory masterProductFactory, IValidator<MasterProduct> masterProductValidator, IUserHelper userHelper)
-            : base(masterProductRepository, masterProductValidator, userHelper)
+        public MasterProductService(IUnitOfWork unitOfWork,IMasterProductRepository masterProductRepository, IMasterProductFactory masterProductFactory, IValidator<MasterProduct> masterProductValidator, IUserHelper userHelper)
+            : base(unitOfWork, masterProductRepository, masterProductValidator, userHelper)
         {
             _masterProductRepository = masterProductRepository;
             _masterProductFactory = masterProductFactory;
@@ -29,7 +30,7 @@ namespace CA.ERP.Domain.MasterProductAgg
 
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreateMasterProduct(string model,string description,ProductStatus productStatus, Guid brandId, CancellationToken cancellationToken = default)
         {
-            OneOf<Guid, List<ValidationFailure>> ret = Guid.Empty;
+            OneOf<Guid, List<ValidationFailure>> ret;
             MasterProduct masterProduct = _masterProductFactory.CreateMasterProduct(model, description, productStatus, brandId);
             var validationResult = await _masterProductValidator.ValidateAsync(masterProduct, cancellationToken);
             if (!validationResult.IsValid)
@@ -42,6 +43,7 @@ namespace CA.ERP.Domain.MasterProductAgg
                 masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
                 ret = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
             }
+            await _unitOfWork.CommitAsync();
             return ret;
         }
 

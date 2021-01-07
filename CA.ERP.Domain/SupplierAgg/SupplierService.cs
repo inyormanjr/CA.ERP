@@ -1,5 +1,6 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BrandAgg;
+using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
 using FluentValidation.Results;
@@ -25,11 +26,12 @@ namespace CA.ERP.Domain.SupplierAgg
         private readonly IValidator<SupplierBrand> _supplierBrandValidator;
 
         public SupplierService(
+            IUnitOfWork unitOfWork,
             ISupplierRepository supplierRepository, ISupplierFactory supplierFactory, IUserHelper userHelper,
             IValidator<Supplier> supplerValidator, ISupplierMasterProductRepository supplierMasterProductRepository,
             IValidator<SupplierMasterProduct> supplierMasterProductValidator, IBrandRepository brandRepository,
             IValidator<SupplierBrand> supplierBrandValidator)
-            :base(supplierRepository, supplerValidator, userHelper)
+            :base(unitOfWork, supplierRepository, supplerValidator, userHelper)
         {
             _supplierRepository = supplierRepository;
             _supplierFactory = supplierFactory;
@@ -59,7 +61,7 @@ namespace CA.ERP.Domain.SupplierAgg
             else
             {
                 ret = await _supplierRepository.AddAsync(supplier, cancellationToken: cancellationToken);
-                
+                await _unitOfWork.CommitAsync();
             }
             return ret;
         }
@@ -78,6 +80,7 @@ namespace CA.ERP.Domain.SupplierAgg
                 supplierMasterProduct.CreatedBy = _userHelper.GetCurrentUserId();
                 supplierMasterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
                 await _supplierMasterProductRepository.AddOrUpdateAsync(supplierMasterProduct, cancellationToken);
+                await _unitOfWork.CommitAsync();
                 ret = default(Success);
             }
             return ret;

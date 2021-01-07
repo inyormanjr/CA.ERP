@@ -31,7 +31,6 @@ namespace CA.ERP.DataAccess.Repositories
                 dalEntity.Id = id;
                 _context.Entry(dalEntity).State = EntityState.Modified;
                 _context.Entry(dalEntity).Property(t => t.Barcode).IsModified = false;
-                await _context.SaveChangesAsync(cancellationToken: cancellationToken);
                 result = dalEntity.Id;
             }
 

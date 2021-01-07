@@ -23,6 +23,9 @@ namespace CA.ERP.Domain.StockAgg
         public StockStatus StockStatus { get; set; }
         public decimal CostPrice { get; set; }
 
+        public string BrandName { get; set; }
+        public string Model { get; set; }
+
         public MasterProduct MasterProduct { get; set; }
         public StockReceive StockReceive { get; set; }
         public PurchaseOrderItem PurchaseOrderItem { get; set; }

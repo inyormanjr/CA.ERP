@@ -34,6 +34,7 @@ using CA.ERP.WebApp.Middlewares;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Common.Rounding;
 using CA.ERP.WebApp.ActionFilters;
+using CA.ERP.Domain.UnitOfWorkAgg;
 
 namespace CA.ERP.WebApp
 {
@@ -57,6 +58,8 @@ namespace CA.ERP.WebApp
             services.AddDbContext<CADataContext>(dbc =>
 
                 dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddSwaggerGen(setup => {
                 //add xml for endpoint description.

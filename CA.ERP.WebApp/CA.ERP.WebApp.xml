@@ -57,6 +57,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Get(System.Threading.CancellationToken)">
+            <summary>
+            Get a list of master products
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
             <summary>
             Create master products
@@ -88,6 +95,15 @@
             </summary>
             <param name="id"></param>
             <param name="renderType"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.StockController.Get(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Generate stock numbers
+            </summary>
+            <param name="branchId">The branch id to generate the stock number for</param>
+            <param name="count">The number of stuck number to generate</param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -264,6 +280,11 @@
         <member name="F:CA.ERP.WebApp.Dto.Status.Active">
             <summary>
             Should be the default status
+            </summary>
+        </member>
+        <member name="T:CA.ERP.WebApp.Dto.Stock.StockUpdate">
+            <summary>
+            Contract to update stock
             </summary>
         </member>
         <member name="P:CA.ERP.WebApp.Dto.Supplier.MasterProductLiteView.Id">

@@ -1,6 +1,7 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.UnitOfWorkAgg;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
@@ -22,8 +23,8 @@ namespace CA.ERP.Domain.UserAgg
         private readonly PasswordManagementHelper _passwordManagementHelper;
         private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper)
-            : base(userRepository, userValidator, userHelper)
+        public UserService(IUnitOfWork unitOfWork,IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper)
+            : base(unitOfWork, userRepository, userValidator, userHelper)
         {
             _userRepository = userRepository;
             _branchRepository = branchRepository;
@@ -77,6 +78,7 @@ namespace CA.ERP.Domain.UserAgg
                     ret = await _userRepository.AddAsync(user, cancellationToken: cancellationToken);
                 }
             }
+            await _unitOfWork.CommitAsync();
             return ret;
 
             
@@ -126,6 +128,7 @@ namespace CA.ERP.Domain.UserAgg
                         f0: id => id,
                         f1: none => default(NotFound)
                     );
+                    await _unitOfWork.CommitAsync();
                 }
             }
             return ret;
@@ -162,6 +165,8 @@ namespace CA.ERP.Domain.UserAgg
                     f0: success => success,
                     f1: none => default(NotFound)
                     ); ;
+
+                await _unitOfWork.CommitAsync();
             }
             return ret;
         }

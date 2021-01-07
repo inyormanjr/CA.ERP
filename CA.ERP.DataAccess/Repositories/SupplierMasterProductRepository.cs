@@ -30,7 +30,6 @@ namespace CA.ERP.DataAccess.Repositories
                 dalSupplierMasterProduct = _mapper.Map<Dal.SupplierMasterProduct>(supplierMasterProduct);
                 _context.SupplierMasterProducts.Add(dalSupplierMasterProduct);
             }
-            await _context.SaveChangesAsync();
         }
     }
 }
