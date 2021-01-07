@@ -57,6 +57,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Get(System.Threading.CancellationToken)">
+            <summary>
+            Get a list of master products
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
             <summary>
             Create master products

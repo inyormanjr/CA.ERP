@@ -17,10 +17,12 @@ namespace CA.ERP.Domain.StockAgg
     public class StockService : ServiceBase<Stock>
     {
         private readonly IStockNumberGenerator _stockNumberGenerator;
+        private readonly IStockRepository _stockRepository;
 
         public StockService(IUnitOfWork unitOfWork, IStockRepository repository, IValidator<Stock> validator, IUserHelper userHelper, IStockNumberGenerator stockNumberGenerator) : base(unitOfWork, repository, validator, userHelper)
         {
             _stockNumberGenerator = stockNumberGenerator;
+            _stockRepository = repository;
         }
 
         public async Task<IEnumerable<string>> GenerateStockNumbersAsync(string prefix, string starting, int count)
@@ -64,6 +66,21 @@ namespace CA.ERP.Domain.StockAgg
                     return  await Task.FromResult( default(NotFound));
                 }
              );
+        }
+
+        public async Task<PaginationBase<Stock>> GetStocksAsync(string brand = null, string model = null, string stockNumber = null, string serial = null, int itemPerPage = 10, int page = 1, CancellationToken cancellationToken = default)
+        {
+            int skip = (page - 1) * itemPerPage;
+            int take = itemPerPage;
+
+            int count = await _stockRepository.CountAsync(brand , model, stockNumber, serial);
+            IEnumerable<Stock> stocks = await _stockRepository.GetManyAsync(brand, model, stockNumber, serial, skip, take);
+
+            return new PaginatedStocks() { 
+                Data = stocks.ToList(),
+                CurrentPage = page,
+                TotalPage = (int)Math.Ceiling((double)(count/itemPerPage))
+            };
         }
     }
 }

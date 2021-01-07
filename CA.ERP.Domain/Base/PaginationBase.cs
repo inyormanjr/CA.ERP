@@ -10,6 +10,8 @@ namespace CA.ERP.Domain.Base
     /// <typeparam name="TData"></typeparam>
     public abstract class PaginationBase<TData> where TData: class
     {
+        public int CurrentPage { get; set; }
+        public int TotalPage { get; set; }
         public ICollection<TData> Data;
     }
 }
