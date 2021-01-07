@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace CA.ERP.Domain.StockReceiveAgg
+namespace CA.ERP.Domain.StockAgg
 {
     public interface IStockNumberGenerator: IHelper
     {
@@ -13,6 +14,6 @@ namespace CA.ERP.Domain.StockReceiveAgg
         /// <param name="brancId"></param>
         /// <param name="count">number of stock number to generate</param>
         /// <returns></returns>
-        List<string> GenerateStockNumber(Guid brancId, int count);
+        Task<IEnumerable<string>> GenerateStockNumberAsync(string prefix, string starting, int count);
     }
 }

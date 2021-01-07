@@ -91,6 +91,15 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.StockController.Get(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Generate stock numbers
+            </summary>
+            <param name="branchId">The branch id to generate the stock number for</param>
+            <param name="count">The number of stuck number to generate</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.Controllers.SupplierController">
             <summary>
             Contains supplier and supllier brands related endpoints
