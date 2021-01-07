@@ -275,6 +275,11 @@
             Should be the default status
             </summary>
         </member>
+        <member name="T:CA.ERP.WebApp.Dto.Stock.StockUpdate">
+            <summary>
+            Contract to update stock
+            </summary>
+        </member>
         <member name="P:CA.ERP.WebApp.Dto.Supplier.MasterProductLiteView.Id">
             <summary>
             Master Product Id

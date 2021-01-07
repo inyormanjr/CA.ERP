@@ -16,14 +16,14 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
-        public async Task<bool> SerialNumberExist(string serialNumber)
+        public async Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default)
         {
-            return await _context.Stocks.AnyAsync(s => s.SerialNumber == serialNumber);
+            return await _context.Stocks.AnyAsync(s => s.SerialNumber == serialNumber && s.Id != exludeId);
         }
 
-        public async Task<bool> StockNumberExist(string stockNumber)
+        public async Task<bool> StockNumberExist(string stockNumber, Guid exludeId = default)
         {
-            return await _context.Stocks.AnyAsync(s => s.StockNumber == stockNumber);
+            return await _context.Stocks.AnyAsync(s => s.StockNumber == stockNumber && s.Id != exludeId);
         }
     }
 }

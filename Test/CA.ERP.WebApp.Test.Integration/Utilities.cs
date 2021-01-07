@@ -233,7 +233,40 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 db.SaveChanges();
 
-                generateSupplierMasterProducts(db);
+
+
+                var masterProducts = db.MasterProducts.ToList();
+                for (int i = 0; i < 10; i++)
+                {
+                    var stockReceive = new StockReceive();
+                    stockReceive.BranchId = branches.OrderBy(b => random.Next()).FirstOrDefault().Id;
+                    stockReceive.StockSouce = Domain.StockReceiveAgg.StockSource.Direct;
+
+                    for (int x = 0; x < 10; x++)
+                    {
+                        var stock = new Stock()
+                        {
+                            MasterProductId = masterProducts.OrderBy(m => random.Next()).FirstOrDefault().Id,
+                            StockNumber = $"{i.ToString("000")}{x.ToString("000000")}",
+                            SerialNumber = $"{i.ToString("000")}{x.ToString("000000")}",
+                            StockStatus = Domain.StockAgg.StockStatus.Available,
+                            CostPrice = random.Next(5000, 10000),
+                        };
+                        if (i == 0)
+                        {
+                            if (x == 0)
+                            {
+                                stock.Id = Guid.Parse("75068c88-af89-4f78-90ad-0212b6fc379d");
+                            }
+                        }
+
+                        stockReceive.Stocks.Add(stock);
+                    }
+
+
+                    db.StockReceives.Add(stockReceive);
+                }
+
                 db.SaveChanges();
 
             }
@@ -254,7 +287,11 @@ namespace CA.ERP.WebApp.Test.Integration
                         Supplier = supplier,
                         CostPrice = random.Next(100000),
                     };
-                    db.SupplierMasterProducts.Add(supplierMasterProduct);
+                    if (!db.SupplierMasterProducts.Any(smp => smp.MasterProductId == masterProduct.Id && smp.SupplierId == supplier.Id))
+                    {
+                        db.SupplierMasterProducts.Add(supplierMasterProduct);
+                    }
+                    
                 }
 
             }

@@ -1,7 +1,11 @@
 ﻿using CA.ERP.Domain.StockAgg;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using OneOf;
+using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +40,28 @@ namespace CA.ERP.WebApp.Controllers
         {
             var stockNumbers = await _stockService.GenerateStockNumbersAsync(prefix, starting, count);
             return Ok(stockNumbers);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.Stock.StockUpdate> request, CancellationToken cancellationToken)
+        {
+            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _stockService.UpdateStockAsync(id, request.Data.MasterProductId, request.Data.SerialNumber, request.Data.CostPrice, cancellationToken);
+
+            return result.Match<IActionResult>(
+                f0: (guid) => NoContent(),
+                f1: (validationErrors) => {
+                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    };
+                    return BadRequest(response);
+                },
+                f2: (notFound) => NotFound()
+            );
         }
     }
 }

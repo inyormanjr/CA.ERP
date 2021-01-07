@@ -30,14 +30,14 @@ namespace CA.ERP.Domain.StockAgg
 
         }
 
-        private async Task<bool> StockNumberNotExist(string stockNumber,  CancellationToken cancellationToken)
+        private async Task<bool> StockNumberNotExist(Stock stock ,string stockNumber,  CancellationToken cancellationToken)
         {
-            return !(await _stockRepository.StockNumberExist(stockNumber));
+            return !(await _stockRepository.StockNumberExist(stockNumber, stock.Id));
         }
 
-        private async Task<bool> SerialNumberNotExist(string serialNumber, CancellationToken cancellationToken)
+        private async Task<bool> SerialNumberNotExist(Stock stock, string serialNumber, CancellationToken cancellationToken)
         {
-            return !(await _stockRepository.SerialNumberExist(serialNumber));
+            return !(await _stockRepository.SerialNumberExist(serialNumber, stock.Id));
         }
 
         private async Task<bool> MasterProductExist(Guid masterProductId, CancellationToken cancellationToken)

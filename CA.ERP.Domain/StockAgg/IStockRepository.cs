@@ -8,7 +8,7 @@ namespace CA.ERP.Domain.StockAgg
 {
     public interface IStockRepository : IRepository<Stock>
     {
-        Task<bool> StockNumberExist(string stockNumber);
-        Task<bool> SerialNumberExist(string serialNumber);
+        Task<bool> StockNumberExist(string stockNumber, Guid exludeId = default);
+        Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default);
     }
 }
