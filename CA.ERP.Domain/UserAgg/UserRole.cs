@@ -12,6 +12,8 @@ namespace CA.ERP.Domain.UserAgg
         Cashier = 8, 
         Stocks = 16,
         CC = 32,
-        Encoder = 64
+        Encoder = 64,
+        Accounting = 128,
+        Manager = 256
     }
 }

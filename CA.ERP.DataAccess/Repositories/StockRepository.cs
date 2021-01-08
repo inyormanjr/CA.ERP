@@ -42,7 +42,7 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<IEnumerable<Stock>> GetManyAsync(string brand, string model, string stockNumber, string serial, int skip, int take, CancellationToken cancellationToken = default)
         {
-            var query = _context.Stocks.AsQueryable();
+            var query = _context.Stocks.Include(s=>s.MasterProduct).ThenInclude(m=>m.Brand).AsQueryable();
 
             if (!string.IsNullOrEmpty(brand))
             {

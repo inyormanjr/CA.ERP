@@ -17,6 +17,8 @@ namespace CA.ERP.DataAccess.EFMapping
         {
             builder.HasKey(t => t.Id);
 
+            builder.Property(t => t.DeliveryReference).HasMaxLength(50);
+
             builder.HasOne(t => t.PurchaseOrder)
                 .WithMany(t => t.StockReceives)
                 .HasForeignKey(t => t.PurchaseOrderId);

@@ -76,10 +76,11 @@ namespace CA.ERP.Domain.StockAgg
             int count = await _stockRepository.CountAsync(brand , model, stockNumber, serial);
             IEnumerable<Stock> stocks = await _stockRepository.GetManyAsync(brand, model, stockNumber, serial, skip, take);
 
+            double totalPages = (double)count / (double)itemPerPage;
             return new PaginatedStocks() { 
                 Data = stocks.ToList(),
                 CurrentPage = page,
-                TotalPage = (int)Math.Ceiling((double)(count/itemPerPage))
+                TotalPage = (int)Math.Ceiling(totalPages)
             };
         }
     }
