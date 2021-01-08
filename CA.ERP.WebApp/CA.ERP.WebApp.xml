@@ -4,6 +4,11 @@
         <name>CA.ERP.WebApp</name>
     </assembly>
     <members>
+        <member name="T:CA.ERP.WebApp.ActionFilters.RequestTimestampSetter">
+            <summary>
+            Copy's the header startTimestamp from request to response if it exist 
+            </summary>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
             <summary>
             Login using username and password

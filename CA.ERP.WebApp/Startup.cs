@@ -57,7 +57,7 @@ namespace CA.ERP.WebApp
 
             services.AddDbContext<CADataContext>(dbc =>
 
-                dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x=> x.MigrationsAssembly("CA.ERP.DataAccess")));
+                dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -94,7 +94,12 @@ namespace CA.ERP.WebApp
 
             });
 
-            services.AddControllersWithViews(option => option.Filters.Add<RequestProcessingTimeFilter>())
+            services.AddControllersWithViews(
+                option => {
+                    option.Filters.Add<RequestProcessingTimeFilter>();
+                    option.Filters.Add<RequestTimestampSetter>();
+                }
+                )
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             
             services.AddCors(option => {
