@@ -1,6 +1,10 @@
-﻿using CA.ERP.Domain.StockAgg;
+﻿using AspNetCore.Reporting;
+using CA.ERP.Domain.BranchAgg;
+using CA.ERP.Domain.ReportAgg;
+using CA.ERP.Domain.StockAgg;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,7 +12,9 @@ using OneOf;
 using OneOf.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,11 +25,17 @@ namespace CA.ERP.WebApp.Controllers
     [Authorize]
     public class StockController : BaseApiController
     {
+        private readonly BranchService _branchService;
         private readonly StockService _stockService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IReportGenerator _reportGenerator;
 
-        public StockController(IServiceProvider serviceProvider, StockService stockService) : base(serviceProvider)
+        public StockController(IServiceProvider serviceProvider, BranchService branchService , StockService stockService, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator) : base(serviceProvider)
         {
+            _branchService = branchService;
             _stockService = stockService;
+            _webHostEnvironment = webHostEnvironment;
+            _reportGenerator = reportGenerator;
         }
 
         [HttpGet()]
@@ -79,5 +91,28 @@ namespace CA.ERP.WebApp.Controllers
                 f2: (notFound) => NotFound()
             );
         }
+
+
+        //[HttpGet("/PrintStockList")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> Print(List<Guid> ids, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
+        //{
+        //    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        //    {
+        //        return StatusCode(501);
+        //    }
+        //    List<Stock> stocks = await _stockService.GetManyAsync(ids);
+
+        //    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "PurchaseOrderReport.rdlc");
+
+        //    Dictionary<string, object> dataSources = new Dictionary<string, object>();
+        //    dataSources.Add("StockDataSet", stocks);
+
+
+
+        //    var result = _reportGenerator.GenerateReport(path, renderType, dataSources: dataSources);
+        //    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
+        //}
     }
 }

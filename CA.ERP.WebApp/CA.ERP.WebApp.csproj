@@ -52,6 +52,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Reports\StockListReport.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\Reports\StockListReport.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
   </ItemGroup>
