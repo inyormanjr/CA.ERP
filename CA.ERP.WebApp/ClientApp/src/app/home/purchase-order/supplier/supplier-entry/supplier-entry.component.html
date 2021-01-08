@@ -5,16 +5,16 @@
   </button>
 </div>
 <div class="modal-body">
-  <form class="form">
+  <form [formGroup]="supplierForm" class="form">
     <div class="form-group">
       <label for="">Supplier Name</label>
-      <input type="text" name="" id="" class="form-control" placeholder="Supplier Name" aria-describedby="helpId">
+      <input formControlName="name" type="text" name="" id="" class="form-control" placeholder="Supplier Name" aria-describedby="helpId">
        </div>
 
     <div class="form-group d-flex flex-row justify-content-between align-items-center w-100">
-        <select class=" form-control">
-          <option>--Select Brand--</option>
-          <option *ngFor="let brand of brands$ | async">{{brand.name}}</option>
+        <select  [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBrand"  class=" form-control">
+          <option value="0">--Select Brand--</option>
+          <option [ngValue]="brand" *ngFor="let brand of brands$ | async">{{brand.name}}</option>
         </select>
       <a name="" id="" class=" ml-2  btn btn-primary" role="button" (click)="addBrand()"  >
         <i class="fa fa-plus" aria-hidden="true"></i>
@@ -25,24 +25,26 @@
       <h4>Brands</h4>
       <table class="table">
         <thead>
-          <tr align="center">
+          <tr>
             <th>Brand Name</th>
-            <th>Description</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let brand of this.supplierForm.controls.supplierBrands.value">
+          <tr   *ngFor="let brand of this.supplierForm.controls.supplierBrands.value; let brandIndex = index;">
             <td scope="row">{{brand.name}}</td>
-            <td></td>
-            <td></td>
+            <td align="end">
+             <a name="" id="" class="btn" (click)="removeBrand(brandIndex)" role="button">
+                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+             </a>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="actions-section d-flex flex-row justify-content-end border-top pt-2">
         <a name="" id="" class="btn btn-danger mr-1" (click)="bsModaRef.hide()" role="button">Cancel</a>
-        <a name="" id="" class="btn btn-success" href="#" role="button">Save</a>
+        <a name="" id="" class="btn btn-success" (click)="saveNewSupplier()" role="button">Save</a>
     </div>
   </form>
 </div>
