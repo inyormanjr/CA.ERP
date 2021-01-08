@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { Routes,RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -24,9 +24,29 @@ import { ErrorInterceptorProvider } from './error.interceptor';
 import { HttpRequestInterceptor } from './intercepter/http-intercepter.service';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
+import { AuthGuardService as AuthGuard } from './services/auth-guard.service';
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
+
+const routes : Routes = [
+  { path: 'login', component: LoginViewComponent },
+  {
+    path: 'home',
+    component: HomeViewComponent,
+    canActivate : [AuthGuard],
+    loadChildren: () =>
+      import('../app/home/home.module').then((x) => x.HomeModule),
+  },
+  { path: 'fetch-data', component: FetchDataComponent },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  }
+];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,18 +80,9 @@ export function tokenGetter() {
     EffectsModule.forRoot([]),
     FormsModule,
 
-    RouterModule.forRoot([
-      { path: 'login', component: LoginViewComponent },
-      {
-        path: 'home',
-        component: HomeViewComponent,
-        loadChildren: () =>
-          import('../app/home/home.module').then((x) => x.HomeModule),
-      },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ]),
+    RouterModule.forRoot(routes),
   ],
   providers: [AlertifyService, HttpRequestInterceptor, ErrorInterceptorProvider],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

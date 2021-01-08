@@ -20,6 +20,7 @@ import { NewRequest } from 'src/app/models/NewRequest';
 import { Router } from '@angular/router';
 import { identifierModuleUrl } from '@angular/compiler';
 import { PoActionTypes } from '../actions/po.actions.selector';
+import { SupplierEntryComponent } from '../supplier/supplier-entry/supplier-entry.component';
 @Component({
   selector: 'app-po-entry',
   templateUrl: './po-entry.component.html',
@@ -97,6 +98,12 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     );
   }
 
+  createSupplier() {
+    this.bsModalRef = this.modalSerivce.show(
+      SupplierEntryComponent, Object.assign({}, { class: 'gray modal-lg' })
+    );
+  }
+
   onSelectBrand(event: BrandWithMasterProducts) {
     this.selectedBrand = event;
   }
@@ -127,15 +134,6 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     return this.poForm.controls.purchaseOrderItems as FormArray;
   }
 
-  updateCostPrice() {
-      this.poForm.controls.purchaseOrderItems.value[
-        0
-      ].isNotEditMode = !this.poForm.controls.purchaseOrderItems.value[
-        0
-      ].isNotEditMode;
-    this.poForm.controls.purhcaseOrderitems.markAsUntouched();
-
-  }
   addPurchaseItem() {
     for (
       let index = 0;

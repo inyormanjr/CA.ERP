@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/CA.ERP.WebApp/bin/Debug/netcoreapp3.1/CA.ERP.WebApp.dll",
+            "program": "${workspaceFolder}/CA.ERP.WebApp/bin/Debug/net5.0/CA.ERP.WebApp.dll",
             "args": [],
             "cwd": "${workspaceFolder}/CA.ERP.WebApp",
             "stopAtEntry": false,
