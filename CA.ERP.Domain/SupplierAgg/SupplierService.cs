@@ -44,13 +44,19 @@ namespace CA.ERP.Domain.SupplierAgg
 
         
 
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateSupplierAsync(string name, string address, string contact, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateSupplierAsync(string name, string address, string contact, List<SupplierBrand> supplierBrands, CancellationToken cancellationToken = default)
         {
             OneOf<Guid, List<ValidationFailure>> ret;
             //creation
-            var supplier = _supplierFactory.CreateSupplier(name, address, contact);
+            var supplier = _supplierFactory.CreateSupplier(name, address, contact, supplierBrands);
             supplier.CreatedBy = _userHelper.GetCurrentUserId();
             supplier.UpdatedBy = _userHelper.GetCurrentUserId();
+
+            foreach (var supplierBrand in supplier.SupplierBrands)
+            {
+                supplierBrand.CreatedBy = _userHelper.GetCurrentUserId();
+                supplierBrand.UpdatedBy = _userHelper.GetCurrentUserId();
+            }
 
             //validation
             var validationResult = _supplerValidator.Validate(supplier);

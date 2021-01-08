@@ -6,13 +6,15 @@ namespace CA.ERP.Domain.SupplierAgg
 {
     public class SupplierFactory : ISupplierFactory
     {
-        public Supplier CreateSupplier(string name, string address, string contact)
+        public Supplier CreateSupplier(string name, string address, string contact, List<SupplierBrand> supplierBrands)
         {
             return new Supplier() {
                 Name = name,
                 Address = address,
-                ContactPerson = contact
+                ContactPerson = contact,
+                SupplierBrands = supplierBrands
             };
         }
+
     }
 }

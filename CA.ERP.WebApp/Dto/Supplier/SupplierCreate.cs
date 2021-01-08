@@ -22,6 +22,6 @@ namespace CA.ERP.WebApp.Dto.Supplier
         /// </summary>
         public string ContactPerson { get; set; }
 
-        public List<SupplierBrandCreate> SupllierBrands { get; set; } = new List<SupplierBrandCreate>();
+        public List<SupplierBrandCreate> SupplierBrands { get; set; } = new List<SupplierBrandCreate>();
     }
 }

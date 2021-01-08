@@ -11,6 +11,6 @@ namespace CA.ERP.Domain.SupplierAgg
         public string Address { get; set; }
         public string ContactPerson { get; set; }
 
-        public List<SupplierBrand> SupllierBrands { get; set; } = new List<SupplierBrand>();
+        public List<SupplierBrand> SupplierBrands { get; set; } = new List<SupplierBrand>();
     }
 }
