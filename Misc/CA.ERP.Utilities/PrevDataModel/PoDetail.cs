@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CA.ERP.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -21,5 +23,8 @@ namespace CA.ERP.Utilities.PrevDataModel
         public string Status { get; set; }
         public string RemainingQty { get; set; }
         public string HolderQty { get; set; }
+
+        [NotMapped]
+        public PurchaseOrderItem NewPurchaseOrderItem { get; set; }
     }
 }

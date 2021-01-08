@@ -1,11 +1,15 @@
 ﻿using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.StockAgg;
+using CA.ERP.Domain.StockReceiveAgg;
 using CA.ERP.Utilities.MoneyConvertionStrategies;
 using CA.ERP.Utilities.PrevDataModel;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -204,6 +208,17 @@ namespace CA.ERP.Utilities
 
             var oldBranches = await citiAppDatabaseContext.Branches.ToListAsync();
             var newBranches = new List<New.Branch>();
+
+            //add deleted placeholder
+            var newDeletedBranch = new New.Branch();
+            newDeletedBranch.Name = "Deleted";
+            newDeletedBranch.BranchNo = 0;
+            newDeletedBranch.Code = "D";
+            newDeletedBranch.Address = "Deleted";
+            newDeletedBranch.Contact = "Deleted";
+
+            newBranches.Add(newDeletedBranch);
+
             foreach (var oldBranchG in oldBranches.GroupBy(b => b.BranchName))
             {
                 int i = 1;
@@ -271,13 +286,13 @@ namespace CA.ERP.Utilities
             var newPurchaseOrders = new List<New.PurchaseOrder>();
             var rgmUser = newUsers.FirstOrDefault(u => u.Username == "rgm");
 
-            foreach (var oldPurchaseOder in oldPurchaseOrders)
+            Parallel.ForEach(oldPurchaseOrders, oldPurchaseOder =>
             {
                 New.PurchaseOrder newPurchaseOrder = new New.PurchaseOrder();
                 newPurchaseOrder.Barcode = oldPurchaseOder.PoId;
                 newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
                 newPurchaseOrder.CreatedAt = newPurchaseOrder.DeliveryDate;
-                newPurchaseOrder.TotalCostPrice = decimal.Parse( oldPurchaseOder.TotalAmount);
+                newPurchaseOrder.TotalCostPrice = decimal.Parse(oldPurchaseOder.TotalAmount);
                 newPurchaseOrder.Status = Domain.Common.Status.Active;
                 newPurchaseOrder.ApprovedById = rgmUser.Id;
 
@@ -299,8 +314,8 @@ namespace CA.ERP.Utilities
                 {
                     string branchNo = GetBranchForPO(oldPurchaseOder.BranchNo);
                     newBranch = newBranches.FirstOrDefault(c => c.BranchNo == BranchNumberComverter(branchNo));
-                    
-                    
+
+
                 }
                 if (newBranch != null)
                 {
@@ -310,10 +325,13 @@ namespace CA.ERP.Utilities
                 {
                     throw new Exception("No branch found");
                 }
-                foreach (var oldPurchaseOrderItem in oldPurchaseOder.PoDetails)    
+
+                oldPurchaseOder.NewPurchaseOrder = newPurchaseOrder;
+
+                foreach (var oldPurchaseOrderItem in oldPurchaseOder.PoDetails)
                 {
                     New.PurchaseOrderItem newPurchaseOrderItem = new PurchaseOrderItem();
-                    newPurchaseOrderItem.OrderedQuantity = decimal.Parse( oldPurchaseOrderItem.OrderedQty);
+                    newPurchaseOrderItem.OrderedQuantity = decimal.Parse(oldPurchaseOrderItem.OrderedQty);
                     newPurchaseOrderItem.FreeQuantity = decimal.Parse(oldPurchaseOrderItem.FreeQty);
                     newPurchaseOrderItem.TotalQuantity = decimal.Parse(oldPurchaseOrderItem.TotalQty);
                     newPurchaseOrderItem.CostPrice = StringToMoneyConverter(oldPurchaseOrderItem.Cost);
@@ -332,18 +350,103 @@ namespace CA.ERP.Utilities
                         newPurchaseOrderItem.MasterProductId = newDeletedMasterProduct.Id;
                     }
 
+                    oldPurchaseOrderItem.NewPurchaseOrderItem = newPurchaseOrderItem;
+
                     newPurchaseOrder.PurchaseOrderItems.Add(newPurchaseOrderItem);
                 }
 
                 newPurchaseOrders.Add(newPurchaseOrder);
-            }
+                Console.WriteLine("Added PO");
+            });
 
+            //foreach (var oldPurchaseOder in oldPurchaseOrders)
+            //{
+                
+            //}
+
+            Console.WriteLine("Saving PO");
             using (var newDbContext = GetCADataContext())
             {
                 newDbContext.PurchaseOrders.AddRange(newPurchaseOrders);
                 await newDbContext.SaveChangesAsync();
             }
 
+            //stocks
+            var oldStocks = citiAppDatabaseContext.Products.ToList();
+            var oldStocksGroup = oldStocks.GroupBy(s => s.DeliveryNo);
+            var oldPurchaseOrderItems = citiAppDatabaseContext.PoDetails.ToList();
+            var newStockReceives = new List<New.StockReceive>();
+            var newStocks = new ConcurrentBag<New.Stock>();
+            Parallel.ForEach(oldStocksGroup, oldStockG => {
+                var firstOldStockG = oldStockG.FirstOrDefault();
+
+
+                New.StockReceive newStockReceive = new New.StockReceive();
+                newStockReceive.DateReceived = firstOldStockG.DateReceived ?? DateTime.Now;
+                newStockReceive.DeliveryReference = firstOldStockG.DeliveryNo;
+
+                //purchaseOrder
+                var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
+                if (newPurchaseOrder != null)
+                {
+                    newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
+                    newStockReceive.StockSouce = StockSource.PurchaseOrder;
+                }
+                else
+                {
+                    newStockReceive.StockSouce = StockSource.Direct;
+                }
+
+                //branch
+                var oldBranchNo = oldStockG.FirstOrDefault()?.BranchNo ?? "";
+                New.Branch newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldBranchNo));
+                newStockReceive.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+
+                foreach (var oldStock in oldStockG)
+                {
+                    New.Stock newStock = new New.Stock();
+                    newStock.StockNumber = oldStock.StockNo;
+                    newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
+                    newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
+                    newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
+
+                    newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
+
+                    newStock.PurchaseOrderItemId = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem?.Id;
+
+                    newStockReceive.Stocks.Add(newStock);
+                    newStocks.Add(newStock);
+                }
+
+                Console.WriteLine("Stock receive added");
+                newStockReceives.Add(newStockReceive);
+            });
+            //foreach (var oldStockG in oldStocksGroup)
+            //{
+
+            //}
+            //process duplicate serial
+            Parallel.ForEach(newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1), sg =>
+            {
+                int i = 2;
+                foreach (var stock in sg)
+                {
+                    if (stock != sg.FirstOrDefault())
+                    {
+                        stock.SerialNumber = $"{stock.SerialNumber}-DUPLICATE-{i++}";
+                    }
+                }
+            });
+            //foreach (var sg in newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1))
+            //{
+                
+            //}
+            Console.WriteLine("Saving Stock receives");
+            using (var newDbContext = GetCADataContext())
+            {
+                newDbContext.StockReceives.AddRange(newStockReceives);
+                await newDbContext.SaveChangesAsync();
+            }
 
         }
 
@@ -386,26 +489,56 @@ namespace CA.ERP.Utilities
         {
             var moneyStringCleaners = new List<IMoneyStringCleaner>() {
                 new RemoveTrailingDot(),
-                new ZeroIfAllAlphaCharacters()
+                new ZeroIfAllNotDigitCharacters(),
+                new RemoveTrailingZeroAndAllDot()
             };
-            if (!decimal.TryParse(sMoney, out decimal dMoney))
+            bool formatSuccess;
+            decimal dMoney;
+
+            formatSuccess = decimal.TryParse(sMoney, out dMoney);
+
+            if (!formatSuccess)
             {
                 foreach (var moneyStringCleaner in moneyStringCleaners)
                 {
                     sMoney = moneyStringCleaner.CleanMoneyString(sMoney);
-                    if (decimal.TryParse(sMoney, out dMoney))
+                    formatSuccess = decimal.TryParse(sMoney, out dMoney);
+                    if (formatSuccess)
                     {
                         break;
                     }
-                    else if(moneyStringCleaner == moneyStringCleaners.LastOrDefault())
-                    {
-                        throw new Exception("Convertion failed");
-                    }
                 }
+            }
+            if (!formatSuccess)
+            {
+                var nfi = new CultureInfo("en-US", false).NumberFormat;
+                nfi.NumberGroupSeparator = ".";
+
+                formatSuccess = decimal.TryParse(sMoney, NumberStyles.Any, nfi, out dMoney);
+            }
+            if (!formatSuccess)
+            {
+                throw new Exception("Error parsing money");
             }
             return dMoney;
         }
-
+        private static int serialCounter = 1;
+        private static object _lock = new object();
+        private static List<string> emptySerials = new List<string>() { "-", string.Empty, "-0-" };
+        private static string getSerialNumber(string oldSerialNumber, ConcurrentBag<New.Stock> newStocks)
+        {
+                
+                if (emptySerials.Contains(oldSerialNumber))
+                {
+                    lock (_lock)
+                    {
+                        return "EMPTY-" + serialCounter++;
+                    }
+                    
+                }
+                return oldSerialNumber;
+            
+        }
 
         private static void PasswordGenerator(New.User newUser, string password)
         {

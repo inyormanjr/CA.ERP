@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Utilities.MoneyConvertionStrategies
 {
-    public class ZeroIfAllAlphaCharacters : IMoneyStringCleaner
+    public class RemoveTrailingZeroAndAllDot : IMoneyStringCleaner
     {
         public string CleanMoneyString(string moneyString)
         {
-            return moneyString.All(char.IsLetter) ? "0" : moneyString;
+            if (moneyString.EndsWith(".00"))
+            {
+                moneyString = moneyString.Remove(moneyString.Length - 3);
+            }
+            return moneyString.Replace(".", "");
         }
     }
 }

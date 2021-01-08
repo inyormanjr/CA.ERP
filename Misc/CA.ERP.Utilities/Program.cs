@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +39,10 @@ namespace CA.ERP.Utilities
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json");
-            configurationBuilder.AddJsonFile("appsettings.local.json");
+            if (File.Exists("appsettings.local.json"))
+            {
+                configurationBuilder.AddJsonFile("appsettings.local.json");
+            }
 
             return configurationBuilder.Build();
         }

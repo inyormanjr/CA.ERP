@@ -12,7 +12,8 @@ namespace CA.ERP.DataAccess.Entities
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSouce { get; set; }
-
+        public DateTime DateReceived { get; set; }
+        public string DeliveryReference { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public Branch Branch { get; set; }
 

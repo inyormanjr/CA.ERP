@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CA.ERP.Utilities": {
+      "commandName": "Project",
+      "commandLineArgs": "/migrate"
+    }
+  }
+}
