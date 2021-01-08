@@ -25,6 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error) => {
         if (error.status === 401) {
+          localStorage.clear();
           this.route.navigateByUrl('login');
           return throwError(error.error);
         }

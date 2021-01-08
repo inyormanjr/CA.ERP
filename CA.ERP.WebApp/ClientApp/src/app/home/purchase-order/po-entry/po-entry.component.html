@@ -56,7 +56,11 @@
       <div class="row mt-3">
         <div class=" col-md-4">
           <div class="form-group w-100">
-            <label for="" class="mr-3">Brand:</label>
+            <label for="" class="">Brand:
+              <a name="" id="" class="btn m-0 p-0 text-success" href="#" role="button">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </a>
+            </label>
 
             <select (ngModelChange)="onSelectBrand(selectedBrand)" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBrand" class="form-control d-flex flex-fill" name="" id="brandSelection">
               <ng-container *ngIf="brands$ | async as brands; else elseTemplate">
@@ -72,7 +76,11 @@
         </div>
         <div class=" col-md-4">
           <div class="form-group">
-            <label for="">Model:</label>
+            <label for="">Model:
+              <a name="" id="" class="btn m-0 p-0 text-success" href="#" role="button">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </a>
+            </label>
             <div class="form-inline">
               <select class="form-control mr-1 d-flex flex-fill"
                [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedModel"

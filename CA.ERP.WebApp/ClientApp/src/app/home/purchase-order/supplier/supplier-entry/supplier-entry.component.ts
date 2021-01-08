@@ -64,9 +64,11 @@ export class SupplierEntryComponent implements OnInit {
       const newRequest: NewRequest = { data: this.supplierForm.value};
       this.supplierService.create(newRequest).subscribe(result => {
         console.log(result);
+
         const useSupplier = this.alertify.confirm('New Supplier Created. Do you want to use this supplier?', () => {
-          this.supplierService.getById(result).subscribe(supplier => {
-            this.poStore.dispatch(PoActionTypes.selectSupplierForPurchaseOrder({selectedSupplier: supplier}))
+          this.supplierService.getById(result.id).subscribe(supplier => {
+            console.log(supplier);
+            this.poStore.dispatch(PoActionTypes.selectSupplierForPurchaseOrder({ selectedSupplier: supplier }));
           }, error => { console.log(error); });
         });
         this.bsModaRef.hide();
