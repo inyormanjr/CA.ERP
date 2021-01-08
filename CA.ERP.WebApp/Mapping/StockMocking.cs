@@ -13,6 +13,7 @@ namespace CA.ERP.WebApp.Mapping
         public StockMocking()
         {
             CreateMap<StockCreate, Stock>();
+            CreateMap<Stock, StockView>();
         }
     }
 }

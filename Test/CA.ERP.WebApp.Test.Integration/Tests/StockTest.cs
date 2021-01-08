@@ -71,5 +71,37 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest, "Duplicate serial number");
         }
+
+        [Fact]
+        public async Task ShouldSearchStockSerialSuccess()
+        {
+
+            var startSerial = "000";
+            var response = await _client.GetAsync($"api/Stock?serial={startSerial}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<StockView>>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterOrEqualTo(1);
+            content.Data.Should().OnlyContain(s=>s.SerialNumber.StartsWith(startSerial), $"searching for serial starting with {startSerial}");
+        }
+
+        [Fact]
+        public async Task ShouldSearchStockStockNumberSuccess()
+        {
+
+            var stockNumberStart = "000";
+            var response = await _client.GetAsync($"api/Stock?stockNumber={stockNumberStart}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<StockView>>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterOrEqualTo(1);
+            content.Data.Should().OnlyContain(s => s.StockNumber.StartsWith(stockNumberStart), $"searching for serial starting with {stockNumberStart}");
+        }
     }
 }
