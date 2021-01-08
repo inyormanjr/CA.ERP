@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NewRequest } from 'src/app/models/NewRequest';
+import { ApiResponse } from 'src/app/models/response.data';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
 import { BrandWithMasterProducts } from '../models/brandWithMasterProducts';
