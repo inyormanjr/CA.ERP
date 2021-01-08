@@ -7,6 +7,6 @@ namespace CA.ERP.Domain.SupplierAgg
 {
     public interface ISupplierFactory : IFactory<Supplier>
     {
-        Supplier CreateSupplier(string name, string address, string contact);
+        Supplier CreateSupplier(string name, string address, string contact, List<SupplierBrand> supplierBrands);
     }
 }

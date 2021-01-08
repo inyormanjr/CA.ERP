@@ -41,7 +41,8 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.Supplier.CreateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating supplier.", _userHelper.GetCurrentUserId());
-            var createResult = await _supplierService.CreateSupplierAsync(request.Data.Name, request.Data.Address, request.Data.ContactPerson, cancellationToken: cancellationToken);
+            var supplierBrands = _mapper.Map<List<SupplierBrand>>(request.Data.SupplierBrands);
+            var createResult = await _supplierService.CreateSupplierAsync(request.Data.Name, request.Data.Address, request.Data.ContactPerson, supplierBrands, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (supplierId) =>
             {

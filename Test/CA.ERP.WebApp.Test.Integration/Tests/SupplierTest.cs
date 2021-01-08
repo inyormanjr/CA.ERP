@@ -43,7 +43,14 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateSupplierSuccess()
         {
-            CreateSupplierRequest request = new CreateSupplierRequest() { Data = new SupplierCreate() { Name = "Supplier1" } };
+            CreateSupplierRequest request = new CreateSupplierRequest() { 
+                Data = new SupplierCreate() { 
+                    Name = "SupplierXYX" ,
+                    SupplierBrands = new List<SupplierBrandCreate>() { 
+                        new SupplierBrandCreate() { BrandId = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c")}
+                    }
+                } 
+            };
             var response = await _client.PostAsJsonAsync("api/Supplier", request);
 
             response.IsSuccessStatusCode.Should().BeTrue();

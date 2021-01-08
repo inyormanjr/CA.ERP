@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dal = CA.ERP.DataAccess.Entities;
+using CA.ERP.Common.Extensions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -22,6 +23,7 @@ namespace CA.ERP.DataAccess.Repositories
         {
 
         }
+    
 
         public async Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken)
         {
