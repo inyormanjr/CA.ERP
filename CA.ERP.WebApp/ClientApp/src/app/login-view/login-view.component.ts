@@ -7,6 +7,7 @@ import { ERP_Auth_Actions } from '../auth/reducers/auth.action.types';
 import { UserLogin } from '../models/UserAgg/user.login';
 import { MainAppState } from '../reducers/main-app-reducer';
 import { ERP_Main_Actions } from '../reducers/main.action.types';
+import { AlertifyService } from '../services/alertify/alertify.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -22,7 +23,8 @@ export class LoginViewComponent implements OnInit {
     private fb: FormBuilder,
     private authState: Store<AuthState>,
     private mainAppState: Store<MainAppState>,
-    private router: Router
+    private router: Router,
+    private alertify: AlertifyService
   ) {
     this.userLogin = { username: '', password: '' };
 
@@ -33,10 +35,6 @@ export class LoginViewComponent implements OnInit {
   }
   userLoginForm: FormGroup;
   ngOnInit() { }
-
-  testToken() {
-    this.authService.decodedToken();
-  }
 
   login() {
     const userCredentials = this.userLoginForm.value;
@@ -54,7 +52,7 @@ export class LoginViewComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        console.log(error.error.title);
+        this.alertify.error('Invalid Username/Password');
       }
     );
   }

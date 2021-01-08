@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { NewRequest } from '../models/NewRequest';
 
 export interface ServiceBase<T>
 {
@@ -6,7 +7,7 @@ export interface ServiceBase<T>
 
   getById(id: any): Observable<T>;
 
-  create(createRequest: any): Observable<any>;
+  create(createRequest: NewRequest): Observable<any>;
 
   update(id: any, updateRequest: any): Observable<any>;
 

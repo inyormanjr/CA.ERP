@@ -1,14 +1,17 @@
 <div class="container-fluid pt-3 pb-3 bg-light mb-2">
-  <pre>{{poForm.value | json}}</pre>
   <section class="d-flex border-bottom pb-2 flex-row justify-content-between">
-    <h3 class="text-danger">New Purchase Order</h3>
+    <h3 class="text-success">New Purchase Order</h3>
     <div class="btn-group" dropdown>
       <a id="button-basic" class="btn" dropdownToggle>
         <i class="fa fa-cog fa-2x" aria-hidden="true"></i>
       </a>
       <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-        <li role="menuitem"><a class="dropdown-item" (click)="updateCostPrice()">Add Supplier</a></li>
-        <li role="menuitem"><a class="dropdown-item" href="#">Update Price </a></li>
+        <li role="menuitem"><a class="dropdown-item btn" (click)="createSupplier()" >
+          <i class="fa fa-truck" aria-hidden="true"></i>
+          Add Supplier</a></li>
+        <li role="menuitem"><a class="dropdown-item">
+          <i class="fa fa-money" aria-hidden="true"></i>
+          Update Price </a></li>
       </ul>
     </div>
   </section>
@@ -113,7 +116,8 @@
                 <th>Cost</th>
                 <th>Discount</th>
                 <th>Sub-Total</th>
-                <th></th>
+                <th>
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white">
@@ -136,12 +140,7 @@
                   {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalQuantity | number}}
                 </td>
                 <td>
-                     <div
-                    [hidden]="!this.poForm.controls.purchaseOrderItems.value[podetailIndex].isNotEditMode"
-                     >{{this.poForm.controls.purchaseOrderItems.value[podetailIndex].costPrice | currency}}</div>
                     <input
-                    [hidden]="this.poForm.controls.purchaseOrderItems.value[podetailIndex]
-                                        .isNotEditMode"
                       [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex].costPrice <= 0 ? 'is-invalid': 'is-valid'"
                       formControlName="costPrice" class="border-0 bg-white" value="2" type="number">
                 </td>
@@ -153,13 +152,6 @@
                 <td>
                   {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalCostPrice | currency}}
                 <td>
-                  <a (click)="updateCostPrice(podetailIndex)" name="" id="" class="btn p-0 text-success"  role="button">
-                    <i
-                    [ngClass]="this.poForm.controls.purchaseOrderItems.value[podetailIndex]
-
-                      .isNotEditMode ? ' fa-pencil fa-1x' : 'fa-save fa-1x'"
-                    style="font-size: 20px;" class="fa" aria-hidden="true"></i>
-                  </a>
                   <a name="" id="" class="btn p-0 text-danger"
                     (click)="removePurchaseItem(podetailIndex)"
                   role="button">
