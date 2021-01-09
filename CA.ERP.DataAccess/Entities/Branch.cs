@@ -15,5 +15,6 @@ namespace CA.ERP.DataAccess.Entities
         public List<UserBranch> UserBranches { get;  set; }
         public List<PurchaseOrder> PurchaseOrders { get; set; }
         public List<StockReceive> StockReceives { get; set; }
+        public List<Stock> Stocks { get;  set; }
     }
 }

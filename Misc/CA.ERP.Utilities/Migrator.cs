@@ -410,6 +410,8 @@ namespace CA.ERP.Utilities
                     newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
                     newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
 
+                    newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+
                     newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
 
                     newStock.PurchaseOrderItemId = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem?.Id;

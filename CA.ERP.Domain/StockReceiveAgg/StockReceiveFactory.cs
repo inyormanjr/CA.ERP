@@ -16,6 +16,11 @@ namespace CA.ERP.Domain.StockReceiveAgg
         }
         public StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, List<Stock> stocks)
         {
+            foreach (var stock in stocks)
+            {
+                stock.BranchId = branchId;
+            }
+
             var stockReceive = new StockReceive() { 
                 BranchId = branchId,
                 PurchaseOrderId = purchaseOrderId,

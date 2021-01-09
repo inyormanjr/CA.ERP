@@ -251,6 +251,7 @@ namespace CA.ERP.WebApp.Test.Integration
                             SerialNumber = $"{i.ToString("000")}{x.ToString("000000")}",
                             StockStatus = Domain.StockAgg.StockStatus.Available,
                             CostPrice = random.Next(5000, 10000),
+                            BranchId = stockReceive.BranchId,
                         };
                         if (i == 0)
                         {
