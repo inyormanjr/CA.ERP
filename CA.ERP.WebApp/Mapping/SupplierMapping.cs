@@ -13,14 +13,15 @@ namespace CA.ERP.WebApp.Mapping
         {
             CreateMap<Supplier, Dto.Supplier.SupplierView>().ReverseMap();
             CreateMap<SupplierBrand, Dto.Supplier.SupplierBrandView>().ReverseMap();
+            CreateMap<SupplierMasterProduct, Dto.Supplier.SupplierMasterProductView>();
 
             CreateMap<Dto.Supplier.SupplierCreate, Supplier>();
             CreateMap<Dto.Supplier.SupplierBrandCreate, SupplierBrand>();
 
             CreateMap<Dto.Supplier.SupplierUpdate, Supplier>();
             CreateMap<Dto.Supplier.SupplierBrandUpdate, SupplierBrand>();
-
             CreateMap<Dto.Supplier.SupplierMasterProductUpdate, SupplierMasterProduct>();
+            
 
         }
     }

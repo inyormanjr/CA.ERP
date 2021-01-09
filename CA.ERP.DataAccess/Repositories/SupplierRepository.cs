@@ -27,7 +27,7 @@ namespace CA.ERP.DataAccess.Repositories
         {
             OneOf<Supplier, None> ret = default(None);
 
-            var queryable = _context.Suppliers.Include(s=>s.SupplierBrands).ThenInclude(sb=>sb.Brand).AsQueryable();
+            var queryable = _context.Suppliers.Include(s=>s.SupplierMasterProducts).Include(s=>s.SupplierBrands).ThenInclude(sb=>sb.Brand).AsQueryable();
             if (status != Status.All)
             {
                 queryable = queryable.Where(e => e.Status == status);
