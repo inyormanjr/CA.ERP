@@ -23,7 +23,24 @@ namespace CA.ERP.DataAccess.Repositories
         {
 
         }
-    
+        public async override Task<OneOf<Supplier, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            OneOf<Supplier, None> ret = default(None);
+
+            var queryable = _context.Suppliers.Include(s=>s.SupplierBrands).ThenInclude(sb=>sb.Brand).AsQueryable();
+            if (status != Status.All)
+            {
+                queryable = queryable.Where(e => e.Status == status);
+            }
+
+            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+            if (entity != null)
+            {
+                ret = _mapper.Map<Supplier>(entity);
+            }
+            return ret;
+        }
+
 
         public async Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken)
         {
