@@ -208,9 +208,9 @@ namespace CA.ERP.WebApp.Test.Integration
                     
                     PurchaseOrder purchaseOrder = new PurchaseOrder()
                     {
-                        Barcode = $"20-{barcode++.ToString("00000000")}",
+                        Barcode = $"{i.ToString("00")}-{barcode++.ToString("00000000")}",
                         BranchId = poBranch.Id,
-                        DeliveryDate = DateTime.Now.AddDays(1),
+                        DeliveryDate = DateTime.Now.AddDays(i),
                         SupplierId = poProducts.FirstOrDefault().SupplierMasterProducts.FirstOrDefault().SupplierId,
                         ApprovedById = approvedBy.Id
                     };
