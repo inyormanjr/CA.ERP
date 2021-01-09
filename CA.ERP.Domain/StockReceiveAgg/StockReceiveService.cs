@@ -23,10 +23,10 @@ namespace CA.ERP.Domain.StockReceiveAgg
             _stockReceiveFactory = stockReceiveFactory;
         }
 
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, List<Stock> stocks, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks, CancellationToken cancellationToken)
         {
             OneOf<Guid, List<ValidationFailure>> ret;
-            StockReceive stockReceive = _stockReceiveFactory.CreateStockReceive(purchaseOrderId, branchId, stockSource, stocks);
+            StockReceive stockReceive = _stockReceiveFactory.CreateStockReceive(purchaseOrderId, branchId, stockSource, supplierId, stocks);
             
             var validationResult = await _validator.ValidateAsync(stockReceive);
             if (!validationResult.IsValid)

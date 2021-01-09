@@ -32,7 +32,7 @@ namespace CA.ERP.WebApp.Controllers
         {
             _logger.LogInformation("User {0} creating stock receive.", _userHelper.GetCurrentUserId());
             var stocks = _mapper.Map<List<Stock>>(request.Data.Stocks);
-            var createResult = await _stockReceiveService.CreateStockReceive(request.Data.PurchaseOrderId, request.Data.BranchId, request.Data.StockSource, stocks, cancellationToken: cancellationToken);
+            var createResult = await _stockReceiveService.CreateStockReceive(request.Data.PurchaseOrderId, request.Data.BranchId, request.Data.StockSource, request.Data.SupplierId, stocks, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
             f0: (purchaseOrderId) =>
             {

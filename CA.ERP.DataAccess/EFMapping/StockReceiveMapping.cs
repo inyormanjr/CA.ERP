@@ -34,6 +34,12 @@ namespace CA.ERP.DataAccess.EFMapping
                 .WithOne(t => t.StockReceive)
                 .HasForeignKey(t => t.StockReceiveId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(t => t.Supplier)
+                .WithMany(t => t.StockReceives)
+                .HasForeignKey(t => t.SupplierId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

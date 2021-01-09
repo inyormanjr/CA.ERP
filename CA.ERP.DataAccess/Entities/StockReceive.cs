@@ -14,6 +14,8 @@ namespace CA.ERP.DataAccess.Entities
         public StockSource StockSouce { get; set; }
         public DateTime DateReceived { get; set; }
         public string DeliveryReference { get; set; }
+        public Guid SupplierId { get; set; }
+        public Supplier Supplier { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public Branch Branch { get; set; }
 

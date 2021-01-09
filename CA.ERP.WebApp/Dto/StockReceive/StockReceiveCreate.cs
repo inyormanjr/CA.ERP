@@ -12,6 +12,7 @@ namespace CA.ERP.WebApp.Dto.StockReceive
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSource { get; set; }
+        public Guid SupplierId { get; set; }
 
         public List<StockCreate> Stocks { get; set; } = new List<StockCreate>();
 

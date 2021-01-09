@@ -53,14 +53,20 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
                 int i = 1;
 
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+
+                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+
+                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
+
                 StockReceiveCreate data = new StockReceiveCreate()
                 {
                     BranchId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
                     StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
-                    PurchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227")
+                    PurchaseOrderId = purchaseOrderId,
+                    SupplierId = purchaseOrder.SupplierId
                 };
 
-                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
                 var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
                 foreach (var purchaseOrderItem in purchaseOrderItems)
                 {
@@ -90,6 +96,57 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             }
         }
 
+        [Fact]
+        public async Task ShouldCreateStockReceiveFail_WrongSupplier()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+
+                int i = 1;
+
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+
+                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+                
+                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
+                
+                StockReceiveCreate data = new StockReceiveCreate()
+                {
+                    BranchId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
+                    StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
+                    PurchaseOrderId = purchaseOrderId,
+                    SupplierId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
+                };
+
+
+                var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
+                foreach (var purchaseOrderItem in purchaseOrderItems)
+                {
+                    data.Stocks.Add(new StockCreate()
+                    {
+                        CostPrice = purchaseOrderItem.CostPrice,
+                        MasterProductId = purchaseOrderItem.MasterProductId,
+                        PurchaseOrderItemId = purchaseOrderItem.Id,
+                        SerialNumber = "XMW" + i.ToString("00000"),
+                        StockNumber = "BBG" + i.ToString("00000"),
+                        StockStatus = Domain.StockAgg.StockStatus.Available
+                    });
+                    i++;
+                }
+                var request = new CreateStockReceiveRequest()
+                {
+                    Data = data
+                };
+                var response = await _client.PostAsJsonAsync("api/StockReceive", request);
+
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+                var content = await response.Content.ReadAsAsync<ErrorResponse>();
+                content.ValidationErrors.Should().OnlyContain( e => e.PropertyName == "SupplierId");
+
+            }
+        }
+
 
         [Fact]
         public async Task ShouldCreateStockReceiveFail_BadRequest_Duplicate_Serial_Or_Model()
@@ -97,15 +154,20 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             using (var scope = _factory.Services.CreateScope())
             {
 
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
 
+
+                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
                 StockReceiveCreate data = new StockReceiveCreate()
                 {
                     BranchId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
                     StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
-                    PurchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227")
+                    PurchaseOrderId = purchaseOrderId,
+                    SupplierId = purchaseOrder.SupplierId,
                 };
 
-                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                
                 var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
                 foreach (var purchaseOrderItem in purchaseOrderItems)
                 {
@@ -126,8 +188,12 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 var response = await _client.PostAsJsonAsync("api/StockReceive", request);
 
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+                var content = await response.Content.ReadAsAsync<ErrorResponse>();
+                content.ValidationErrors.Should().OnlyContain(e => e.PropertyName == "Stocks");
             }
         }
+
+
 
         [Fact]
         public async Task ShouldCreateStockReceiveFail_BadRequest_Empty_Serial()
@@ -137,14 +203,19 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
                 int i = 1;
 
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+
+
+                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
                 StockReceiveCreate data = new StockReceiveCreate()
                 {
                     BranchId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
                     StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
-                    PurchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227")
+                    PurchaseOrderId = purchaseOrderId,
+                    SupplierId = purchaseOrder.SupplierId,
                 };
 
-                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
                 var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
                 foreach (var purchaseOrderItem in purchaseOrderItems)
                 {
@@ -166,6 +237,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 var response = await _client.PostAsJsonAsync("api/StockReceive", request);
 
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+                var content = await response.Content.ReadAsAsync<ErrorResponse>();
+                content.ValidationErrors.Should().Contain(e => e.PropertyName == "Stocks");
             }
         }
 
