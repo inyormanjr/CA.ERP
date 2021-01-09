@@ -10,6 +10,6 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     public interface IPurchaseOrderRepository : IRepository<PurchaseOrder>
     {
         Task<int> CountAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
-        Task<IEnumerable<PurchaseOrder>> GetManyAsync(DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken = default);
+        Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode, DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken = default);
     }
 }
