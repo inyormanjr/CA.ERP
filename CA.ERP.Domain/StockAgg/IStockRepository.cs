@@ -13,5 +13,6 @@ namespace CA.ERP.Domain.StockAgg
         Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default);
         Task<int> CountAsync(string brand, string model, string stockNumber, string serial, CancellationToken cancellationToken = default);
         Task<IEnumerable<Stock>> GetManyAsync(string brand, string model, string stockNumber, string serial, int skip, int take, CancellationToken cancellationToken = default);
+        Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken = default);
     }
 }

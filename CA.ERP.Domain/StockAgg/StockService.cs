@@ -83,5 +83,10 @@ namespace CA.ERP.Domain.StockAgg
                 TotalPage = (int)Math.Ceiling(totalPages)
             };
         }
+
+        public async Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken = default)
+        {
+            return await _stockRepository.GetManyAsync(branchId, stockIds, cancellationToken);
+        }
     }
 }

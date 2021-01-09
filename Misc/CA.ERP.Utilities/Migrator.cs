@@ -391,10 +391,12 @@ namespace CA.ERP.Utilities
                 {
                     newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
                     newStockReceive.StockSouce = StockSource.PurchaseOrder;
+                    newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
                 }
                 else
                 {
                     newStockReceive.StockSouce = StockSource.Direct;
+                    newStockReceive.SupplierId = newDeletedSupplier.Id;
                 }
 
                 //branch

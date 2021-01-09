@@ -22,7 +22,6 @@ namespace CA.ERP.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class StockController : BaseApiController
     {
         private readonly BranchService _branchService;
@@ -93,26 +92,39 @@ namespace CA.ERP.WebApp.Controllers
         }
 
 
-        //[HttpGet("/PrintStockList")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> Print(List<Guid> ids, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
-        //{
-        //    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        //    {
-        //        return StatusCode(501);
-        //    }
-        //    List<Stock> stocks = await _stockService.GetManyAsync(ids);
+        [HttpGet("PrintStockList")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Print([FromQuery]Guid branchId, [FromQuery]List<Guid> stockIds, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return StatusCode(501);
+            }
 
-        //    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "PurchaseOrderReport.rdlc");
+            var branchOption = await _branchService.GetOneAsync(branchId);
+            return await branchOption.Match<Task<IActionResult>>(
+                f0: async branch => {
 
-        //    Dictionary<string, object> dataSources = new Dictionary<string, object>();
-        //    dataSources.Add("StockDataSet", stocks);
+                    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "StockListReport.rdlc");
 
+                    List<Stock> stocks = await _stockService.GetManyAsync(branchId, stockIds.ToList());
 
+                    Dictionary<string, object> dataSources = new Dictionary<string, object>();
+                    dataSources.Add("StocksDataSet", stocks);
 
-        //    var result = _reportGenerator.GenerateReport(path, renderType, dataSources: dataSources);
-        //    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
-        //}
+                    Dictionary<string, string> parameters = new Dictionary<string, string>();
+                    parameters.Add("BranchName", branch.Name);
+                    parameters.Add("BranchContact", branch.Contact);
+                    parameters.Add("ReportDate", DateTime.Now.ToShortDateString());
+
+                    var result = _reportGenerator.GenerateReport(path, renderType, parameters: parameters, dataSources: dataSources);
+                    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
+                },
+                f1: async _ => NotFound()
+                );
+
+            
+        }
     }
 }

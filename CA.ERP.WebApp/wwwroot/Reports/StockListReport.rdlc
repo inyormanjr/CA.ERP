@@ -2,20 +2,6 @@
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
-    <DataSource Name="CAERPRdlcDesignModels">
-      <ConnectionProperties>
-        <DataProvider>System.Data.DataSet</DataProvider>
-        <ConnectString>/* Local Connection */</ConnectString>
-      </ConnectionProperties>
-      <rd:DataSourceID>28f07eca-6706-435e-8322-dee9fcc98ff9</rd:DataSourceID>
-    </DataSource>
-    <DataSource Name="CAERPDomainPurchaseOrderAgg">
-      <ConnectionProperties>
-        <DataProvider>System.Data.DataSet</DataProvider>
-        <ConnectString>/* Local Connection */</ConnectString>
-      </ConnectionProperties>
-      <rd:DataSourceID>0c40e0e5-2859-4a85-9522-f87196358eda</rd:DataSourceID>
-    </DataSource>
     <DataSource Name="CAERPDomainStockAgg">
       <ConnectionProperties>
         <DataProvider>System.Data.DataSet</DataProvider>
@@ -25,176 +11,6 @@
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="PurchaseOrderDataSet">
-      <Query>
-        <DataSourceName>CAERPRdlcDesignModels</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="ApprovedById">
-          <DataField>ApprovedById</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="Barcode">
-          <DataField>Barcode</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="BranchAddress">
-          <DataField>BranchAddress</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="BranchId">
-          <DataField>BranchId</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="BranchName">
-          <DataField>BranchName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="CreatedAt">
-          <DataField>CreatedAt</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="CreatedBy">
-          <DataField>CreatedBy</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="DeliveryDate">
-          <DataField>DeliveryDate</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="Id">
-          <DataField>Id</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="Status">
-          <DataField>Status</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="SupplierId">
-          <DataField>SupplierId</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="SupplierName">
-          <DataField>SupplierName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="TotalCostPrice">
-          <DataField>TotalCostPrice</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="UpdatedAt">
-          <DataField>UpdatedAt</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="UpdatedBy">
-          <DataField>UpdatedBy</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-      </Fields>
-      <rd:DataSetInfo>
-        <rd:DataSetName>CA.ERP.RdlcDesign.Models</rd:DataSetName>
-        <rd:TableName>PurchaseOrder</rd:TableName>
-        <rd:ObjectDataSourceType>CA.ERP.RdlcDesign.Models.PurchaseOrder, CA.ERP.RdlcDesign, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
-      </rd:DataSetInfo>
-    </DataSet>
-    <DataSet Name="BarcodeDataSet">
-      <Query>
-        <DataSourceName>CAERPRdlcDesignModels</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="BarcodeImage">
-          <DataField>BarcodeImage</DataField>
-          <rd:TypeName>System.Byte[]</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="PurchaseOrderItemDataSet">
-      <Query>
-        <DataSourceName>CAERPDomainPurchaseOrderAgg</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="BrandName">
-          <DataField>BrandName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="CostPrice">
-          <DataField>CostPrice</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="CreatedAt">
-          <DataField>CreatedAt</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="CreatedBy">
-          <DataField>CreatedBy</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="DeliveredQuantity">
-          <DataField>DeliveredQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="Discount">
-          <DataField>Discount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="FreeQuantity">
-          <DataField>FreeQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="Id">
-          <DataField>Id</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="MasterProductId">
-          <DataField>MasterProductId</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="Model">
-          <DataField>Model</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="OrderedQuantity">
-          <DataField>OrderedQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="PurchaseOrderId">
-          <DataField>PurchaseOrderId</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-        <Field Name="PurchaseOrderItemStatus">
-          <DataField>PurchaseOrderItemStatus</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Status">
-          <DataField>Status</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="TotalCostPrice">
-          <DataField>TotalCostPrice</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="TotalQuantity">
-          <DataField>TotalQuantity</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="UpdatedAt">
-          <DataField>UpdatedAt</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="UpdatedBy">
-          <DataField>UpdatedBy</DataField>
-          <rd:TypeName>System.Guid</rd:TypeName>
-        </Field>
-      </Fields>
-      <rd:DataSetInfo>
-        <rd:DataSetName>CA.ERP.Domain.PurchaseOrderAgg</rd:DataSetName>
-        <rd:TableName>PurchaseOrderItem</rd:TableName>
-        <rd:ObjectDataSourceType>CA.ERP.Domain.PurchaseOrderAgg.PurchaseOrderItem, CA.ERP.RdlcDesign, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
-      </rd:DataSetInfo>
-    </DataSet>
     <DataSet Name="StocksDataSet">
       <Query>
         <DataSourceName>CAERPDomainStockAgg</DataSourceName>
@@ -580,7 +396,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Status.Value</Value>
+                                  <Value>=System.Enum.GetName(First(Fields!Status.Value).GetType(),Fields!Status.Value)</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -599,6 +415,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -628,7 +445,7 @@
             <Top>2.32167in</Top>
             <Left>0.49875in</Left>
             <Height>0.5in</Height>
-            <Width>7.52083in</Width>
+            <Width>7.52082in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -787,6 +604,7 @@
                     <Value>=Parameters!ReportDate.Value</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
+                      <Format>dd/MM/yyyy</Format>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -829,10 +647,11 @@
     </ReportParameter>
     <ReportParameter Name="BranchContact">
       <DataType>String</DataType>
+      <AllowBlank>true</AllowBlank>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
     <ReportParameter Name="ReportDate">
-      <DataType>String</DataType>
+      <DataType>DateTime</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
   </ReportParameters>
