@@ -20,5 +20,6 @@ namespace CA.ERP.DataAccess.Entities
         public Branch Branch { get; set; }
 
         public List<Stock> Stocks { get; set; } = new List<Stock>();
+        public List<StockMove> StockMoves { get; set; }
     }
 }

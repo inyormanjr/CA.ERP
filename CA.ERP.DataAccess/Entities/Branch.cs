@@ -16,5 +16,6 @@ namespace CA.ERP.DataAccess.Entities
         public List<PurchaseOrder> PurchaseOrders { get; set; }
         public List<StockReceive> StockReceives { get; set; }
         public List<Stock> Stocks { get;  set; }
+        public List<StockInventory> StockInventories { get; set; }
     }
 }
