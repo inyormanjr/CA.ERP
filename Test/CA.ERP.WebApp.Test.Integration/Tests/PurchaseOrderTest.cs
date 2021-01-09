@@ -155,10 +155,10 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
-        public async Task ShouldGetAtleastOnePurchaseOrderSuccess()
+        public async Task ShouldGetAtleastOnePurchaseOrderWithinTheWeekSuccess()
         {
-
-            var response = await _client.GetAsync("api/PurchaseOrder");
+            var endDate = DateTime.Today.AddDays(7);
+            var response = await _client.GetAsync($"api/PurchaseOrder?endDate={endDate.ToString("yyyy-M-d")}");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -166,6 +166,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             content.Should().NotBeNull();
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
+            content.Data.Should().OnlyContain(po => po.DeliveryDate >= DateTime.Today && po.DeliveryDate <= endDate);
+
         }
 
 
