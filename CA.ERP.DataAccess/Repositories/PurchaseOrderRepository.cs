@@ -46,7 +46,7 @@ namespace CA.ERP.DataAccess.Repositories
             }
 
 
-            return await queryable.Select(e => _mapper.Map<PurchaseOrder>(e)).ToListAsync(cancellationToken: cancellationToken);
+            return await queryable.OrderBy(po => po.DeliveryDate).Select(e => _mapper.Map<PurchaseOrder>(e)).ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async override Task<OneOf<PurchaseOrder, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
@@ -71,5 +71,14 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
+        public async Task<int> CountAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+        {
+            return await _context.PurchaseOrders.CountAsync(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate, cancellationToken);
+        }
+
+        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken)
+        {
+            return await _context.PurchaseOrders.Where(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate).OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
+        }
     }
 }

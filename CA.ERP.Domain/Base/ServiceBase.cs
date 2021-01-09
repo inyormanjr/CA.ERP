@@ -73,6 +73,8 @@ namespace CA.ERP.Domain.Base
             return await _repository.GetManyAsync(cancellationToken: cancellationToken);
         }
 
+        
+
         public virtual async Task<OneOf<T, NotFound>> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
         {
             OneOf<T, None> getOption = await _repository.GetByIdAsync(id, cancellationToken: cancellationToken);

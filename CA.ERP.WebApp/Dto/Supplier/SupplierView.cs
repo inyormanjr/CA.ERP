@@ -24,6 +24,6 @@ namespace CA.ERP.WebApp.Dto.Supplier
         /// <summary>
         /// Brands available to the supplier
         /// </summary>
-        public List<SupplierBrandView> SupllierBrands { get; set; } = new List<SupplierBrandView>();
+        public List<SupplierBrandView> SupplierBrands { get; set; } = new List<SupplierBrandView>();
     }
 }
