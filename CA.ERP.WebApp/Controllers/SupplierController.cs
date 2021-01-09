@@ -44,11 +44,14 @@ namespace CA.ERP.WebApp.Controllers
             var supplierBrands = _mapper.Map<List<SupplierBrand>>(request.Data.SupplierBrands);
             var createResult = await _supplierService.CreateSupplierAsync(request.Data.Name, request.Data.Address, request.Data.ContactPerson, supplierBrands, cancellationToken: cancellationToken);
             return createResult.Match<ActionResult>(
-            f0: (supplierId) =>
+            f0: (supplier) =>
             {
-                var response = new Dto.CreateResponse()
+                var response = new Dto.Supplier.CreateSupplierResponse()
                 {
-                    Id = supplierId
+                    Id = supplier.Id,
+                    Name = supplier.Name,
+                    Address = supplier.Address,
+                    ContactPerson = supplier.ContactPerson
                 };
                 _logger.LogInformation("User {0} supplier branch creation succeeded.", _userHelper.GetCurrentUserId());
                 return Ok(response);

@@ -43,9 +43,10 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateSupplierSuccess()
         {
+            const string name = "SupplierXYX";
             CreateSupplierRequest request = new CreateSupplierRequest() { 
                 Data = new SupplierCreate() { 
-                    Name = "SupplierXYX" ,
+                    Name = name,
                     SupplierBrands = new List<SupplierBrandCreate>() { 
                         new SupplierBrandCreate() { BrandId = Guid.Parse("4f724f6a-e590-41a7-96e1-b9d64febaa4c")}
                     }
@@ -55,10 +56,11 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var createSupplierResponse = await response.Content.ReadAsAsync<CreateResponse>();
+            var createSupplierResponse = await response.Content.ReadAsAsync<CreateSupplierResponse>();
 
             createSupplierResponse.Should().NotBeNull();
             createSupplierResponse.Id.Should().NotBe(Guid.Empty);
+            createSupplierResponse.Name.Should().Be(name);
         }
 
         [Fact]
