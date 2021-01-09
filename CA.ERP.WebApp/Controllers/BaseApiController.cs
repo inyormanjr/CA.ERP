@@ -25,6 +25,10 @@ namespace CA.ERP.WebApp.Controllers
             _userHelper = serviceProvider.GetService<IUserHelper>();
             _mapper = serviceProvider.GetService<IMapper>();
         }
+        /// <summary>
+        /// The users current selected branch.
+        /// </summary>
+        //public Guid? CurrentUserBranchId { get; set; }
     }
     
 }
