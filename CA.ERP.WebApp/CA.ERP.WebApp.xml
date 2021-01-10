@@ -292,6 +292,21 @@
             Contract to update stock
             </summary>
         </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.Name">
+            <summary>
+            The suppliers name
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.Address">
+            <summary>
+            Adress of the supplier
+            </summary>
+        </member>
+        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.ContactPerson">
+            <summary>
+            The name of the contact person for the supplier
+            </summary>
+        </member>
         <member name="P:CA.ERP.WebApp.Dto.Supplier.MasterProductLiteView.Id">
             <summary>
             Master Product Id

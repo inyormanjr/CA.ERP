@@ -170,6 +170,22 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
         }
 
+        [Fact]
+        public async Task ShouldGetAtleastOnePurchaseOrderThatStartWith()
+        {
+            string startBarcode = "00";
+            var response = await _client.GetAsync($"api/PurchaseOrder?barcode={startBarcode}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<PurchaseOrderView>>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterOrEqualTo(1);
+            content.Data.Should().OnlyContain(po => po.Barcode.StartsWith(startBarcode));
+
+        }
+
 
         [Fact]
         public async Task ShouldGetExactlyOnePurchaseOrderSuccess()

@@ -44,9 +44,9 @@ namespace CA.ERP.Domain.SupplierAgg
 
         
 
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateSupplierAsync(string name, string address, string contact, List<SupplierBrand> supplierBrands, CancellationToken cancellationToken = default)
+        public async Task<OneOf<Supplier, List<ValidationFailure>>> CreateSupplierAsync(string name, string address, string contact, List<SupplierBrand> supplierBrands, CancellationToken cancellationToken = default)
         {
-            OneOf<Guid, List<ValidationFailure>> ret;
+            OneOf<Supplier, List<ValidationFailure>> ret;
             //creation
             var supplier = _supplierFactory.CreateSupplier(name, address, contact, supplierBrands);
             supplier.CreatedBy = _userHelper.GetCurrentUserId();
@@ -66,8 +66,9 @@ namespace CA.ERP.Domain.SupplierAgg
             }
             else
             {
-                ret = await _supplierRepository.AddAsync(supplier, cancellationToken: cancellationToken);
+                supplier.Id = await _supplierRepository.AddAsync(supplier, cancellationToken: cancellationToken);
                 await _unitOfWork.CommitAsync();
+                ret = supplier;
             }
             return ret;
         }

@@ -76,9 +76,14 @@ namespace CA.ERP.DataAccess.Repositories
             return await _context.PurchaseOrders.CountAsync(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate, cancellationToken);
         }
 
-        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode,DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken)
         {
-            return await _context.PurchaseOrders.Where(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate).OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
+            var query = _context.PurchaseOrders.AsQueryable();
+            if (!string.IsNullOrEmpty(barcode))
+            {
+                query = query.Where(po => po.Barcode.StartsWith(barcode));
+            }
+            return await query.Where(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate).OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
         }
     }
 }
