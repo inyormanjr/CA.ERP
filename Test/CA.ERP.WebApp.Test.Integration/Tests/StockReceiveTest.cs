@@ -112,7 +112,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 
                 StockReceiveCreate data = new StockReceiveCreate()
                 {
-                    BranchId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
+                    BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4"),
                     StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
                     PurchaseOrderId = purchaseOrderId,
                     SupplierId = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063"),
