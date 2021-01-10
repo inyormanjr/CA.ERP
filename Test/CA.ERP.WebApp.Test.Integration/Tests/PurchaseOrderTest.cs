@@ -170,6 +170,22 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
         }
 
+        [Theory]
+        [InlineData(10)]
+        [InlineData(15)]
+        public async Task ShouldGetTenPurchaseOrder(int itemPerPage)
+        {
+            var response = await _client.GetAsync($"api/PurchaseOrder?itemPerPage={itemPerPage}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<PurchaseOrderView>>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCount(itemPerPage);
+
+        }
+
         [Fact]
         public async Task ShouldGetAtleastOnePurchaseOrderThatStartWith()
         {

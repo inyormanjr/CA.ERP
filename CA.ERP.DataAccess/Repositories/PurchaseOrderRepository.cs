@@ -71,19 +71,45 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task<int> CountAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
-        {
-            return await _context.PurchaseOrders.CountAsync(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate, cancellationToken);
-        }
-
-        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode,DateTime startDate, DateTime endDate, int skip, int take, CancellationToken cancellationToken)
+        public async Task<int> CountAsync(string barcode, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken)
         {
             var query = _context.PurchaseOrders.AsQueryable();
             if (!string.IsNullOrEmpty(barcode))
             {
                 query = query.Where(po => po.Barcode.StartsWith(barcode));
             }
-            return await query.Where(po => po.DeliveryDate >= startDate && po.DeliveryDate <= endDate).OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
+            if (startDate != null)
+            {
+                var startDateValue = startDate.Value;
+                query = query.Where(po => po.DeliveryDate >= startDateValue);
+            }
+            if (endDate != null)
+            {
+                var endDateValue = endDate.Value;
+                query = query.Where(po => po.DeliveryDate <= endDateValue);
+            }
+            return await query.CountAsync(cancellationToken);
         }
+
+        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode, DateTime? startDate, DateTime? endDate, int skip, int take, CancellationToken cancellationToken)
+        {
+            var query = _context.PurchaseOrders.AsQueryable();
+            if (!string.IsNullOrEmpty(barcode))
+            {
+                query = query.Where(po => po.Barcode.StartsWith(barcode));
+            }
+            if (startDate != null)
+            {
+                var startDateValue = startDate.Value;
+                query = query.Where(po => po.DeliveryDate >= startDateValue);
+            }
+            if (endDate != null)
+            {
+                var endDateValue = endDate.Value;
+                query = query.Where(po => po.DeliveryDate <= endDateValue);
+            }
+            return await query.OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
+        }
+
     }
 }

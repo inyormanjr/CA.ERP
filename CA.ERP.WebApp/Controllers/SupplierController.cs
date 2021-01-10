@@ -38,7 +38,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> CreateSupplier(Dto.Supplier.CreateSupplierRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Supplier.CreateSupplierResponse>> CreateSupplier(Dto.Supplier.CreateSupplierRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {0} creating supplier.", _userHelper.GetCurrentUserId());
             var supplierBrands = _mapper.Map<List<SupplierBrand>>(request.Data.SupplierBrands);

@@ -201,7 +201,7 @@ namespace CA.ERP.WebApp.Test.Integration
                 var poProducts = db.MasterProducts.ToList().Where(m => m.SupplierMasterProducts.Any()).OrderBy(m => random.Next()).Take(random.Next(5, 10)).ToList();
                 var approvedBy = db.Users.FirstOrDefault();
                 int barcode = 1;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     var poBranch = branches.OrderBy(b => random.Next()).FirstOrDefault();
                     //var poSupplier = suppliers.OrderBy(b => random.Next()).FirstOrDefault();
