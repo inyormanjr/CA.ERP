@@ -22,16 +22,8 @@ export class SupplierSelectionModalComponent implements OnInit {
   ) {}
 
   selectSupplier(supplierView: SupplierView) {
-    this.supplierService.getBrandsWithMasterProductsBySupplierId(supplierView.id).subscribe((data: any) => {
-    this.poStore.dispatch(PoActionTypes.populateBrandsWithModel({ brandsWithModels: data }));
-    this.poStore.dispatch(
-      PoActionTypes.selectSupplierForPurchaseOrder({
-        selectedSupplier: supplierView,
-      })
-    );
+    this.poStore.dispatch(PoActionTypes.fetchBrandsWithMasterproductsOfSupplier({ supplieView: supplierView }));
     this.bsModalRef.hide();
-    });
-
   }
 
   ngOnInit(): void {

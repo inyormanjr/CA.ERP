@@ -8,7 +8,6 @@ import { AlertifyService } from 'src/app/services/alertify/alertify.service';
 import { PoActionTypes } from '../../actions/po.actions.selector';
 import { PurchaseOrderState } from '../../reducers';
 import { Brand } from '../models/brand';
-import { BrandWithMasterProducts } from '../models/brandWithMasterProducts';
 import { BrandService } from '../services/brand.service';
 import { SupplierService } from '../services/supplier.service';
 @Component({
@@ -63,14 +62,12 @@ export class SupplierEntryComponent implements OnInit {
     const confirm = this.alertify.confirm('Save new supplier?', () => {
       const newRequest: NewRequest = { data: this.supplierForm.value};
       this.supplierService.create(newRequest).subscribe(result => {
-        console.log(result);
-
-        const useSupplier = this.alertify.confirm('New Supplier Created. Do you want to use this supplier?', () => {
-          this.supplierService.getById(result.id).subscribe(supplier => {
-            console.log(supplier);
-            this.poStore.dispatch(PoActionTypes.selectSupplierForPurchaseOrder({ selectedSupplier: supplier }));
-          }, error => { console.log(error); });
-        });
+      this.alertify.message('New Supplier added to the database.');
+      this.poStore.dispatch(
+        PoActionTypes.fetchBrandsWithMasterproductsOfSupplier({
+          supplieView: result,
+        })
+      );
         this.bsModaRef.hide();
       });
     });
