@@ -1,6 +1,7 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.StockAgg;
 using CA.ERP.Domain.StockInventoryAgg;
+using CA.ERP.Domain.StockMoveAgg;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -18,6 +19,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
     public class StockReceiveService : ServiceBase<StockReceive>
     {
         private readonly IStockInventoryRepository _stockInventoryRepository;
+        private readonly IStockMoveRepository _stockMoveRepository;
+        private readonly StockInventoryService _stockInventoryService;
         private readonly IStockReceiveFactory _stockReceiveFactory;
         private readonly IStockInventoryStockReceiveCalculator _stockInventoryStockReceiveCalculator;
 
@@ -25,13 +28,17 @@ namespace CA.ERP.Domain.StockReceiveAgg
             IUnitOfWork unitOfWork,
             IRepository<StockReceive> repository,
             IStockInventoryRepository stockInventoryRepository,
+            IStockMoveRepository stockMoveRepository,
             IValidator<StockReceive> validator,
             IUserHelper userHelper,
+            StockInventoryService stockInventoryService,
             IStockReceiveFactory stockReceiveFactory,
             IStockInventoryStockReceiveCalculator stockInventoryStockReceiveCalculator) 
             : base(unitOfWork, repository, validator, userHelper)
         {
             _stockInventoryRepository = stockInventoryRepository;
+            _stockMoveRepository = stockMoveRepository;
+            _stockInventoryService = stockInventoryService;
             _stockReceiveFactory = stockReceiveFactory;
             _stockInventoryStockReceiveCalculator = stockInventoryStockReceiveCalculator;
         }
@@ -51,12 +58,16 @@ namespace CA.ERP.Domain.StockReceiveAgg
                 //compute inventories
                 foreach (var stock in stockReceive.Stocks)
                 {
-                    var stockInventory = await _stockInventoryRepository.GetOneAsync(stock.MasterProductId, stock.BranchId);
+                    var stockInventory = await _stockInventoryService.GetStockInventoryAsync(stock.MasterProductId, stock.BranchId);
+                    var prevStockMoveOption = await _stockMoveRepository.GetLatestStockMoveAsync(stock.MasterProductId, stock.BranchId, cancellationToken);
+                    StockMove prevStockMove = prevStockMoveOption.Match(f0: sm => sm, f1: _ => null);
+                    stockInventory = _stockInventoryStockReceiveCalculator.CalculateStockInventory(stockInventory, stockReceive.Id, prevStockMove, stock);
+                    await _stockInventoryRepository.AddOrUpdateAsync(stockInventory);
                 }
                 ret = await _repository.AddAsync(stockReceive, cancellationToken);
-
+                await _unitOfWork.CommitAsync();
             }
-            await _unitOfWork.CommitAsync();
+            
             return ret;
         }
     }

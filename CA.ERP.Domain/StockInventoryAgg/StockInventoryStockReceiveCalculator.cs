@@ -10,15 +10,14 @@ namespace CA.ERP.Domain.StockInventoryAgg
 {
     public class StockInventoryStockReceiveCalculator : IStockInventoryStockReceiveCalculator
     {
-        public StockInventory CalculateStockInventory(StockInventory stockInventory, Guid stockReceiveId, Stock stock)
+        public StockInventory CalculateStockInventory(StockInventory stockInventory, Guid stockReceiveId, StockMove previousStockMove, Stock stock)
         {
-            var oldPrevStockMove = stockInventory.StockMoves.OrderByDescending(s => s.MoveDate).FirstOrDefault();
             var stockMove = new StockMove();
             stockMove.MasterProductId = stock.MasterProductId;
             stockMove.BranchId = stock.BranchId;
             stockMove.MoveDate = DateTime.Now;
             stockMove.MoveCause = MoveCause.StockReceive;
-            stockMove.PreviousQuantity = oldPrevStockMove?.CurrentQuantity ?? 0;
+            stockMove.PreviousQuantity = previousStockMove?.CurrentQuantity ?? 0;
             stockMove.ChangeQuantity = 1;
             stockMove.CurrentQuantity = stockMove.PreviousQuantity + stockMove.ChangeQuantity;
             stockMove.StockReceiveId = stockReceiveId;

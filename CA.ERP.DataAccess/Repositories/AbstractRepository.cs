@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
-    public abstract class AbstractRepository<TDomain, TDal> : IRepository<TDomain> where TDomain : class where TDal : class
+    public abstract class AbstractRepository<TDomain, TDal> : IRepository<TDomain> where TDomain : class where TDal : EntityBase
     {
         protected readonly CADataContext _context;
         protected readonly IMapper _mapper;

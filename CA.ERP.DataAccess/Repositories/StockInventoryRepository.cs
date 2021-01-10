@@ -14,10 +14,29 @@ using Dal = CA.ERP.DataAccess.Entities;
 
 namespace CA.ERP.DataAccess.Repositories
 {
-    public class StockInventoryRepository : AbstractRepository<StockInventory, Dal.StockInventory> , IStockInventoryRepository
+    public class StockInventoryRepository : IStockInventoryRepository
     {
-        public StockInventoryRepository(CADataContext context, IMapper mapper) : base(context, mapper)
+        private readonly CADataContext _context;
+        private readonly IMapper _mapper;
+
+        public StockInventoryRepository(CADataContext context, IMapper mapper)
         {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task AddOrUpdateAsync(StockInventory stockInventory, CancellationToken cancellationToken)
+        {
+            var dalStockInventory = await _context.StockInventories.FirstOrDefaultAsync(si => si.MasterProductId == stockInventory.MasterProductId && si.BranchId == stockInventory.BranchId, cancellationToken: cancellationToken);
+            if (dalStockInventory != null)
+            {
+                _mapper.Map(stockInventory, dalStockInventory);
+            }
+            else
+            {
+                dalStockInventory = _mapper.Map<Dal.StockInventory>(stockInventory);
+                _context.StockInventories.Add(dalStockInventory);
+            }
         }
 
         public async Task<OneOf<StockInventory, None>> GetOneAsync(Guid masterProductId, Guid branchId)
