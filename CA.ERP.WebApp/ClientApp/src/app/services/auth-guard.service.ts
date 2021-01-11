@@ -20,7 +20,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
   canActivate() {
     const token = this.authService.decodedToken();
     if (token) {
-      console.log(token);
+    
       return true;
     }
 
@@ -31,7 +31,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
   canActivateChild() {
     const token = this.authService.decodedToken();
     if (token) {
-      console.log(token);
+  
       return true;
     }
 

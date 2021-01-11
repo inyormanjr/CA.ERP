@@ -12,11 +12,10 @@ import { UserService } from './user.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-bootstrap-modules.module';
 import { UserListComponent } from './users-management-view/UserList/user-list.component';
-
-
+import { UserEntryComponent } from '../user/users-management-view/UserEntry/user-entry.component';
 
 @NgModule({
-  declarations: [UsersManagementViewComponent, UserListComponent],
+  declarations: [UsersManagementViewComponent, UserListComponent, UserEntryComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

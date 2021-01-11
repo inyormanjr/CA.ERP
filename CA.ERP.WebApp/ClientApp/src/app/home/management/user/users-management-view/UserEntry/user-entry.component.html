@@ -1,0 +1,137 @@
+<div class="wrapper h-100">
+    <h5>User Entry</h5>
+    <div class="form-container mt-2 container">
+        <form [formGroup]="userEntryForm">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="">First Name</label>
+                    <input formControlName="firstName"
+                        [ngClass]="{'is-invalid': fc.firstName.errors && fc.firstName.touched}" type="text"
+                        class="form-control" aria-describedby="helpId" placeholder="First Name">
+                    <div *ngIf="fc.firstName.errors && fc.firstName.touched">
+                        <div class="invalid-feedback" *ngIf="fc.firstName.errors.required">
+                            First name required.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Last Name</label>
+                    <input formControlName="lastName"
+                        [ngClass]="{'is-invalid': fc.lastName.errors && fc.lastName.touched}" type="text"
+                        class="form-control" aria-describedby="helpId" placeholder="Last Name">
+                    <div *ngIf="fc.lastName.errors && fc.lastName.touched">
+                        <div *ngIf="fc.lastName.errors.required">
+                            Last name required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="">Username</label>
+                    <input formControlName="userName"
+                        [ngClass]="{'is-invalid': fc.userName.errors && fc.userName.touched}" type="text"
+                        class="form-control" aria-describedby="helpId" placeholder="User Name">
+                    <div *ngIf="fc.userName.errors && fc.userName.touched">
+                        <div *ngIf="fc.userName.errors.required">
+                            Username required
+                        </div>
+                        <div *ngIf="fc.userName.errors.minlength">
+                            Username must be at least 5 characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="">Password</label>
+                    <input formControlName="password"
+                        [ngClass]="{'is-invalid': fc.password.errors && fc.password.touched}" type="password"
+                        class="form-control" aria-describedby="helpId" placeholder="Password">
+                    <div *ngIf="fc.password.errors && fc.password.touched">
+                        <div *ngIf="fc.password.errors.required">
+                            Password required
+                        </div>
+                        <div *ngIf="fc.password.errors.minlength">
+                            Password must be at least 5 characters
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Confirm Password</label>
+                    <input formControlName="confirmPassword"
+                        [ngClass]="{'is-invalid': fc.confirmPassword.errors && fc.confirmPassword.touched}"
+                        type="password" class="form-control" aria-describedby="helpId" placeholder="Confirm Password">
+                    <div *ngIf="fc.confirmPassword.errors && fc.confirmPassword.touched">
+                        <div *ngIf="fc.confirmPassword.errors.required">
+                            Confirm password required
+                        </div>
+                        <div *ngIf="fc.confirmPassword.errors.mustMatch">
+                            Passwords must match
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="pl-3" for="">Role Selection</label>
+            </div>
+            <div class="d-flex flex-row justify-content-between border pt-2 pb-0 pl-2">
+
+                <div class="form-group form-check form-check-inline" *ngFor="let role of roles">
+                    <input class="form-check-input" [value]="role" type="checkbox" id="{{role.name}}"
+                        (change)="addRemoveRole($event,role.num)">
+                    <label class="form-check-label" for="{{rolename}}">{{role.name}}</label>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="form-group col-md-11">
+                    <label for="">Branch </label>
+                    <select class="form-control" id="sel1">
+                        <option value="{{branch.id}}" *ngFor="let branch of branches$ | async">
+                            {{branch.name}}({{branch.code}})</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-1 pt-4 mt-2">
+                    <a class="btn btn-primary " role="button" (click)="addBranch(branch)"><i class="fa fa-plus-circle"
+                            aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-section">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th >Branch</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="fc.branches">
+                                    <tr *ngFor="let selectedBranches of fc.branches.value">
+                                        <td scope="row" >{{selectedBranches.name}}({{selectedBranches.code}})</td>
+                                        <td scope="row" class="text-right">
+                                            <a [routerLink]="['']" name="" id="" class="mr-1">
+                                                <i class="fa fa-pencil-square fa-2x" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <tr class="no-data">No Data</tr>
+                                </ng-template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <pre>{{userEntryForm.value | json}}</pre>
+            <div class="row">
+                <div class="col-md-12 d-flex flex-row justify-content-end">
+                    <button (click)="back()" type="button" class="btn btn-outline-danger mr-2">Back</button>
+                    <a (click)="newUser()" class="btn btn-success" role="button">Save</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

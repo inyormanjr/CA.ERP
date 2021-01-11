@@ -21,9 +21,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userViewList$ = this.store.pipe(select(UserManagementSelectorType.usersViewList));
-    this.isLoading$ = this.store.pipe(
-      select(UserManagementSelectorType.isLoading)
-    );
+    this.isLoading$ = this.store.pipe(select(UserManagementSelectorType.isLoading));
     this.fetchSuccess$ = this.store.pipe(select(UserManagementSelectorType.fetchSuccess));
     this.store.dispatch(fetchUsers());
   }
@@ -36,7 +34,6 @@ export class UserListComponent implements OnInit {
 
       if ((rolesFlag & val) === val) {
         selectedRoles.push(enumFlag);
-        
       }
 
     }

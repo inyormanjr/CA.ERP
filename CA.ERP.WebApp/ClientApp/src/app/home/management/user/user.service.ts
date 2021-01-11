@@ -18,7 +18,11 @@ export class UserService implements ServiceBase<UserView> {
     throw new Error('Method not implemented.');
   }
   create(createRequest: any): Observable<any> {
-    throw new Error('Method not implemented.');
+    return this.http.post<any>(this.baseUrl,createRequest).pipe(
+      map((res : any) =>{
+        return res.id;
+      })
+    )
   }
   update(id: any, updateRequest: any): Observable<any> {
     throw new Error('Method not implemented.');
