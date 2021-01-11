@@ -97,6 +97,53 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
+        public async Task ShouldCreateStockReceiveFail_WrongBranch()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+
+                int i = 1;
+
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+
+                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+
+                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
+
+                StockReceiveCreate data = new StockReceiveCreate()
+                {
+                    BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02"),
+                    StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
+                    PurchaseOrderId = purchaseOrderId,
+                    SupplierId = purchaseOrder.SupplierId
+                };
+
+                var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
+                foreach (var purchaseOrderItem in purchaseOrderItems)
+                {
+                    data.Stocks.Add(new StockCreate()
+                    {
+                        CostPrice = purchaseOrderItem.CostPrice,
+                        MasterProductId = purchaseOrderItem.MasterProductId,
+                        PurchaseOrderItemId = purchaseOrderItem.Id,
+                        SerialNumber = "XWD" + i.ToString("00000"),
+                        StockNumber = "BOP" + i.ToString("00000"),
+                        StockStatus = Domain.StockAgg.StockStatus.Available
+                    });
+                    i++;
+                }
+                var request = new CreateStockReceiveRequest()
+                {
+                    Data = data
+                };
+                var response = await _client.PostAsJsonAsync("api/StockReceive", request);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+            }
+        }
+
+        [Fact]
         public async Task ShouldCreateStockReceiveFail_WrongSupplier()
         {
             using (var scope = _factory.Services.CreateScope())
