@@ -53,7 +53,8 @@ namespace CA.ERP.WebApp.Controllers
 
                 _logger.LogInformation("User {0} stock receive creation failed.", _userHelper.GetCurrentUserId());
                 return BadRequest(response);
-            }
+            },
+            f2: _ => Forbid()
          );
         }
     }

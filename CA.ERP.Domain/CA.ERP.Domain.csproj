@@ -12,4 +12,8 @@
     <PackageReference Include="OneOf" Version="3.0.163" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CA.ERP.Common\CA.ERP.Common.csproj" />
+  </ItemGroup>
+
 </Project>

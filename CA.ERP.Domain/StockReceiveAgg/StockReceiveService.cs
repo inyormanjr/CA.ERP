@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Common;
 using CA.ERP.Domain.StockAgg;
 using CA.ERP.Domain.StockInventoryAgg;
 using CA.ERP.Domain.StockMoveAgg;
@@ -23,6 +24,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         private readonly StockInventoryService _stockInventoryService;
         private readonly IStockReceiveFactory _stockReceiveFactory;
         private readonly IStockInventoryStockReceiveCalculator _stockInventoryStockReceiveCalculator;
+        private readonly IBranchPermissionValidator<StockReceive> _branchPermissionValidator;
 
         public StockReceiveService(
             IUnitOfWork unitOfWork,
@@ -33,7 +35,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
             IUserHelper userHelper,
             StockInventoryService stockInventoryService,
             IStockReceiveFactory stockReceiveFactory,
-            IStockInventoryStockReceiveCalculator stockInventoryStockReceiveCalculator) 
+            IStockInventoryStockReceiveCalculator stockInventoryStockReceiveCalculator,
+            IBranchPermissionValidator<StockReceive> branchPermissionValidator) 
             : base(unitOfWork, repository, validator, userHelper)
         {
             _stockInventoryRepository = stockInventoryRepository;
@@ -41,17 +44,23 @@ namespace CA.ERP.Domain.StockReceiveAgg
             _stockInventoryService = stockInventoryService;
             _stockReceiveFactory = stockReceiveFactory;
             _stockInventoryStockReceiveCalculator = stockInventoryStockReceiveCalculator;
+            _branchPermissionValidator = branchPermissionValidator;
         }
 
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>, Forbidden>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks, CancellationToken cancellationToken)
         {
-            OneOf<Guid, List<ValidationFailure>> ret;
+            OneOf<Guid, List<ValidationFailure>, Forbidden> ret;
             StockReceive stockReceive = _stockReceiveFactory.CreateStockReceive(purchaseOrderId, branchId, stockSource, supplierId, stocks);
-            
+
+ 
             var validationResult = await _validator.ValidateAsync(stockReceive);
             if (!validationResult.IsValid)
             {
                 ret = validationResult.Errors.ToList();
+            }
+            else if (!await _branchPermissionValidator.HasPermissionAsync(stockReceive))
+            {
+                ret = default(Forbidden);
             }
             else
             {

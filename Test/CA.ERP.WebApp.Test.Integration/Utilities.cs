@@ -84,7 +84,7 @@ namespace CA.ERP.WebApp.Test.Integration
                         user.Id = Guid.Parse("e02fbc42-a8dc-4359-bfa1-7f0774bd1fd4");
                     }
 
-                    user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
+                    user.UserBranches.Add(new UserBranch() { BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") });
 
                     db.Users.Add(user);
                 }
