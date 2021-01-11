@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Common;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -23,6 +24,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         private readonly IPurchaseOrderFactory _purchaseOrderFactory;
         private readonly IValidator<PurchaseOrder> _purchaseOrderValidator;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+        private readonly IBranchPermissionValidator<PurchaseOrder> _branchPermissionValidator;
 
         public PurchaseOrderService(
             IUnitOfWork unitOfWork,
@@ -32,7 +34,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             IUserHelper userHelper,
             IPurchaseOrderFactory purchaseOrderFactory,
             IValidator<PurchaseOrder> purchaseOrderValidator,
-            IPurchaseOrderRepository purchaseOrderRepository)
+            IPurchaseOrderRepository purchaseOrderRepository,
+            IBranchPermissionValidator<PurchaseOrder> branchPermissionValidator)
             :base(unitOfWork, purchaseOrderRepository, purchaseOrderValidator, userHelper)
         {
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
@@ -42,16 +45,21 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             _purchaseOrderFactory = purchaseOrderFactory;
             _purchaseOrderValidator = purchaseOrderValidator;
             _purchaseOrderRepository = purchaseOrderRepository;
+            _branchPermissionValidator = branchPermissionValidator;
         }
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreatePurchaseOrder(DateTime deliveryDate, Guid supplierId, Guid branchId, List<PurchaseOrderItem> purchaseOrderItems, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>, Forbidden>> CreatePurchaseOrder(DateTime deliveryDate, Guid supplierId, Guid branchId, List<PurchaseOrderItem> purchaseOrderItems, CancellationToken cancellationToken)
         {
-            OneOf<Guid, List<ValidationFailure>> ret;
+            OneOf<Guid, List<ValidationFailure>, Forbidden> ret;
             var purchaseOrder = _purchaseOrderFactory.Create(deliveryDate, supplierId, branchId, purchaseOrderItems);
 
             var validationResult = _purchaseOrderValidator.Validate(purchaseOrder);
             if (!validationResult.IsValid)
             {
                 ret = validationResult.Errors.ToList();
+            }
+            else if (!await _branchPermissionValidator.HasPermissionAsync(purchaseOrder))
+            {
+                ret = default(Forbidden);
             }
             else
             {

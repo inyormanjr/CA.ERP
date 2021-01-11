@@ -68,6 +68,29 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
+        public async Task ShouldCreatePurchaseOrderFail_WrongBranch()
+        {
+            PurchaseOrderCreate data = new PurchaseOrderCreate()
+            {
+                BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02"),
+                DeliveryDate = DateTime.Now.AddDays(1),
+                SupplierId = Guid.Parse("25c38e11-0929-43f4-993d-76ab5ddba3f1"),
+                PurchaseOrderItems = new List<PurchaseOrderItemCreate>() {
+                    new PurchaseOrderItemCreate() { MasterProductId = Guid.Parse("78d75126-c24d-48d5-a192-f06db4ff6df3"), OrderedQuantity  = 10, FreeQuantity = 1, CostPrice = 1000, Discount = 50 },
+                    new PurchaseOrderItemCreate() { MasterProductId = Guid.Parse("f17db084-0b01-4226-b3c0-95d1953075ef"), OrderedQuantity  = 5, FreeQuantity = 2, CostPrice = 950, Discount = 100 }
+                }
+            };
+
+            var request = new CreatePurchaseOrderRequest()
+            {
+                Data = data
+            };
+            var response = await _client.PostAsJsonAsync("api/PurchaseOrder", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        }
+
+        [Fact]
         public async Task ShouldCreatePurchaseOrderFail_EmptyBranchId_BadRequest()
         {
             PurchaseOrderCreate data = new PurchaseOrderCreate()

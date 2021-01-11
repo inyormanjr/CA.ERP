@@ -78,7 +78,8 @@ namespace CA.ERP.WebApp.Controllers
 
                 _logger.LogInformation("User {0} supplier branch creation failed.", _userHelper.GetCurrentUserId());
                 return BadRequest(response);
-            }
+            },
+            f2: _ => Forbid()
          );
         }
 
