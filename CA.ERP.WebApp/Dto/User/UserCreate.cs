@@ -19,6 +19,6 @@ namespace CA.ERP.WebApp.Dto.User
         [Required]
         public UserRole Role { get; set; }
         [Required]
-        public List<Guid> Branches { get; set; }
+        public List<UserBranchCreate> Branches { get; set; }
     }
 }
