@@ -17,6 +17,6 @@ namespace CA.ERP.WebApp.Dto.User
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public UserRole Role { get; set; }
-        public List<Guid> Branches { get; set; }
+        public List<UserBranchUpdate> Branches { get; set; }
     }
 }
