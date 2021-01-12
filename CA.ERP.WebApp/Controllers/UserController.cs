@@ -40,7 +40,7 @@ namespace CA.ERP.WebApp.Controllers
         public async Task<ActionResult<Dto.CreateResponse>> Register(Dto.User.UserCreateRequest request, CancellationToken cancellationToken)
         {
 
-            var result = await _userService.CreateUserAsync(request.Data.UserName, request.Data.Password, (UserRole)(int)request.Data.Role, request.Data.FirstName, request.Data.LastName, request.Data.Branches, cancellationToken: cancellationToken);
+            var result = await _userService.CreateUserAsync(request.Data.UserName, request.Data.Password, (UserRole)(int)request.Data.Role, request.Data.FirstName, request.Data.LastName, request.Data.Branches.Select(ub => ub.BranchId).ToList(), cancellationToken: cancellationToken);
 
             //change to proper dto 
             return result.Match<ActionResult>(
@@ -59,7 +59,7 @@ namespace CA.ERP.WebApp.Controllers
         {
 
             var domUser = _mapper.Map<User>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> createResult = await _userService.UpdateUser(id, domUser, request.Data.Branches, cancellationToken: cancellationToken);
+            OneOf<Guid, List<ValidationFailure>, NotFound> createResult = await _userService.UpdateUser(id, domUser, request.Data.Branches.Select(ub=>ub.BranchId).ToList(), cancellationToken: cancellationToken);
             return createResult.Match<IActionResult>(
                 f0: (userId) =>
                 {
