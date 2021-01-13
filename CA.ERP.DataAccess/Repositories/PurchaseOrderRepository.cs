@@ -108,7 +108,7 @@ namespace CA.ERP.DataAccess.Repositories
                 var endDateValue = endDate.Value;
                 query = query.Where(po => po.DeliveryDate <= endDateValue);
             }
-            return await query.OrderBy(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
+            return await query.OrderByDescending(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
         }
 
     }
