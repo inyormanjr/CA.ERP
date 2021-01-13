@@ -1,0 +1,32 @@
+name: .NET Web API Dev Deploy
+
+on:
+  push:
+    branches: [ master ]
+    tags: 
+    - 'v*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore CA.ERP.sln
+    - name: Build
+      run: dotnet build --configuration Release --no-restore CA.ERP.sln
+    - name: Test
+      run: dotnet test  --no-build CA.ERP.sln
+    - name: Publish
+      run: dotnet publish -o ./release --no-restore   --configuration Release ./CA.ERP.WebApp/CA.ERP.WebApp.csproj 
+    - name: Setup Artifact Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-artifact
+        path: ./release # or path/to/artifact
