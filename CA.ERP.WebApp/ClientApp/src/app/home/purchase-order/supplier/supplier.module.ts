@@ -10,7 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
-  declarations: [SupplierSelectionModalComponent, SupplierEntryComponent],
+  declarations: [],
   imports: [CommonModule],
   exports: [],
   providers: [SupplierService, BrandService],
