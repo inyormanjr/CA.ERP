@@ -103,7 +103,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.StockController.Get(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.StockController.Get(System.Guid,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Generate stock numbers
             </summary>

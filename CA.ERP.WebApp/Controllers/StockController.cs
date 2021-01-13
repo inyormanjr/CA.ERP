@@ -22,6 +22,7 @@ namespace CA.ERP.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StockController : BaseApiController
     {
         private readonly BranchService _branchService;
@@ -60,13 +61,18 @@ namespace CA.ERP.WebApp.Controllers
         /// <param name="count">The number of stuck number to generate</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpGet("GenerateStockNumbers/{prefix}/{starting}/{count}")]
+        [HttpGet("GenerateStockNumbers/{branchId}/{count}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<string>>> Get(string prefix, string starting, int count, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.GetManyResponse<string>>> Get(Guid branchId, int count, CancellationToken cancellationToken)
         {
-            var stockNumbers = await _stockService.GenerateStockNumbersAsync(prefix, starting, count);
-            return Ok(stockNumbers);
+            var stockNumbersOption = await _stockService.GenerateStockNumbersAsync(branchId, count);
+            return stockNumbersOption.Match<ActionResult>(
+                f0: stockNumbers => Ok(new Dto.GetManyResponse<string>() { Data = stockNumbers.ToList() }),
+                f1: _ => NotFound(),
+                f2: _ => Forbid()
+                );
         }
 
         [HttpPut("{id}")]

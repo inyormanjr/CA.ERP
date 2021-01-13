@@ -103,5 +103,24 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
             content.Data.Should().OnlyContain(s => s.StockNumber.StartsWith(stockNumberStart), $"searching for serial starting with {stockNumberStart}");
         }
+
+
+        [Fact]
+        public async Task ShouldGetStockNumbersSuccess()
+        {
+
+            var stockNumberStart = "F" + (DateTime.Now.Year - 2000).ToString("00");
+            var branchId = Guid.Parse("3494905b-5dfb-45c6-aec9-0ea08a85fe24");
+            int count = 10;
+            var response = await _client.GetAsync($"api/Stock/GenerateStockNumbers/{branchId}/{count}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GetManyResponse<string>>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCount(10);
+            content.Data.Should().OnlyContain(s => s.StartsWith(stockNumberStart));
+        }
     }
 }
