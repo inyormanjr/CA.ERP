@@ -6,6 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import { PoActionTypes } from '../actions/po.actions.selector';
 import { PurchaseOrderService } from '../purchase-order.service';
 import { PurchaseOrderState } from '../reducers';
+import { SupplierService } from '../supplier/services/supplier.service';
 
 
 
@@ -24,8 +25,28 @@ export class PurchaseOrderEffects {
     ), {dispatch: false}
   );
 
+  fetchBrandsWithMasterProductsBySupplierId$ = createEffect(() =>
+    this.actions$.pipe(ofType(PoActionTypes.fetchBrandsWithMasterproductsOfSupplier),
+      tap((action) => {
+         this.supplierService
+           .getBrandsWithMasterProductsBySupplierId(action.supplieView.id)
+           .subscribe((data: any) => {
+             this.store.dispatch(
+               PoActionTypes.populateBrandsWithModel({ brandsWithModels: data })
+             );
+             this.store.dispatch(
+               PoActionTypes.selectSupplierForPurchaseOrder({
+                 selectedSupplier: action.supplieView,
+               })
+             );
+           });
+    })
+    ), {dispatch: false}
+  );
+
   constructor(private actions$: Actions,
     private store: Store<PurchaseOrderState>,
-    private purchaseOrderService: PurchaseOrderService) { }
+    private purchaseOrderService: PurchaseOrderService,
+    private supplierService: SupplierService) { }
 
 }
