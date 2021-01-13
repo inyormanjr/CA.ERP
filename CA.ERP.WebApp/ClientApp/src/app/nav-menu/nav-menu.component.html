@@ -1,8 +1,8 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
   >
-    <div class="container">
+    <div class="container-fluid">
       <a class="navbar-brand" [routerLink]="['/']">CA ERP</a>
       <button
         class="navbar-toggler"
@@ -20,25 +20,28 @@
         [ngClass]="{ show: isExpanded }"
       >
         <ul class="navbar-nav flex-grow">
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/counter']"
-              >Counter</a
-            >
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/fetch-data']"
-              >Fetch data</a
-            >
-          </li>
+          <ng-container *ngIf="currentUser$ | async as currentUser; else elseTemplate">
+            <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+              <a class="nav-link text-dark" [routerLink]="['home']">Home</a>
+            </li>
+                <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+                  <a class="nav-link text-dark" [routerLink]="['/']">{{currentUser.Username }}</a>
+                </li>
+                <li class="nav-item" >
+                  <a class="nav-link btn text-dark" >Log-Out</a>
+                </li>
+          </ng-container>
+          <ng-template #elseTemplate>
+                <li class="nav-item" [routerLinkActive]="['link-active']">
+                  <a class="nav-link text-dark" [routerLink]="['/login']">Login</a>
+                </li>
+          </ng-template>
         </ul>
       </div>
     </div>
   </nav>
+  <div *ngIf="loadinValue$ | async as loadingVlaue" class="progress" style="height: 2px;">
+    <div class="progress-bar" role="progressbar" style="width: 25%;"  [attr.aria-value]="loadingVlaue"  aria-valuemin="0"
+      aria-valuemax="100"></div>
+  </div>
 </header>

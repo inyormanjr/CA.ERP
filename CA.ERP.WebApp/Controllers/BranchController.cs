@@ -1,63 +1,148 @@
 ﻿using AutoMapper;
-using CA.ERP.Lib.DAL.IRepositories;
-using CA.ERP.Lib.Domain.BranchAgg;
+using CA.ERP.Domain.BranchAgg;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+using Dto = CA.ERP.WebApp.Dto;
+using Dom = CA.ERP.Domain.BranchAgg;
+using OneOf;
+using OneOf.Types;
+using Microsoft.AspNetCore.Authorization;
+using CA.ERP.WebApp.Dto;
 
 namespace CA.ERP.WebApp.Controllers
 {
+    [Authorize]
     public class BranchController:BaseApiController
     {
-        private readonly IMapper mapper;
+        private readonly BranchService _branchService;
 
-        public BranchController(IBranchRepo repo, IMapper mapper)
+        public BranchController(IServiceProvider serviceProvider, BranchService branchService)
+            : base(serviceProvider)
         {
-            Repo = repo;
-            this.mapper = mapper;
+            _branchService = branchService;
         }
 
-        public IBranchRepo Repo { get; }
 
+        /// <summary>
+        /// Get multiple branches
+        /// </summary>
+        /// <returns></returns>
         [HttpGet()]
-        public async Task<IActionResult> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get()
         {
-            var branches = await this.Repo.GetAll();
-            return Ok(branches);
+            var branches = await _branchService.GetManyAsync();
+            var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(branches);
+            var response = new Dto.GetManyResponse<Dto.Branch.BranchView>() {
+                Data = dtoBranches
+            };
+            return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dto.Branch.BranchView>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var branchOption = await _branchService.GetOneAsync(id, cancellationToken);
+            return branchOption.Match<ActionResult>(
+                f0: brand =>
+                {
+                    return Ok(_mapper.Map<Dto.Branch.BranchView>(brand));
+                },
+                f1: notfound => NotFound()
+            );
+        }
+
+        /// <summary>
+        /// Create branch
+        /// </summary>
+        /// <param name="request">The request data</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateBranch(Branch branch)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.Branch.CreateBranchRequest request, CancellationToken cancellationToken)
         {
-            this.Repo.Insert(branch);
-            await this.Repo.SaveAll();
-            return Ok(branch);
+
+            var createResult = await _branchService.CreateBranchAsync(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact, cancellationToken);
+
+            return createResult.Match<ActionResult>(
+                f0: (id) =>
+                {
+                    var response = new Dto.CreateResponse()
+                    {
+                        Id = id
+                    };
+                    return Ok(response);
+                },
+                f1: (validationErrors) => {
+                    var error = new ErrorResponse(HttpContext.TraceIdentifier) { 
+                        GeneralError = "Validation Error", 
+                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors) 
+                    };
+                    return BadRequest(error); 
+                }
+             );
         }
 
-
+        /// <summary>
+        /// Update branch base on Id
+        /// </summary>
+        /// <param name="id">The branch Id</param>
+        /// <param name="request">Updated data</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBranch(int id, Branch branch)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateBranch(Guid id, Dto.Branch.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
-            var branchFromRepo = await this.Repo.GetById(id);
-            if (branchFromRepo == null) return BadRequest("No Branch Found");
-            this.mapper.Map(branch, branchFromRepo);
-            if (await this.Repo.SaveAll())
-                return NoContent();
-            throw new System.Exception($"Updating data {id} failed");
+            var domBranch = _mapper.Map<Dom.Branch>(request.Data);
+            var result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
 
+            return result.Match<IActionResult>(
+                f0: (branch) => NoContent(),
+                f1: (validationErrors) => {
+                    var error = new ErrorResponse(HttpContext.TraceIdentifier)
+                    {
+                        GeneralError = "Validation Error",
+                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors)
+                    };
+                    return BadRequest(error);
+                },
+                f2: (error) => NotFound()
+            );
         }
 
+        /// <summary>
+        /// Delete the branch base on Id.
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBranch(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteBranch(Guid id, CancellationToken cancellationToken)
         {
-            var branchFromRepo = await this.Repo.GetById(id);
-            if (branchFromRepo == null) return BadRequest("No Branch Found");
-            this.Repo.Delete(branchFromRepo);
-            if(await this.Repo.SaveAll()) 
-                return Ok("Branch deleted.");
-            throw new System.Exception($"Updating data {id} failed");
+            OneOf<Success, NotFound> result = await _branchService.DeleteAsync(id, cancellationToken);
+            return result.Match<IActionResult>(
+                f0: (success) => NoContent(),
+                f1: (notFound) => NotFound()
+                );
         }
     }
 }

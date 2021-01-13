@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using CA.ERP.WebApp.Test.Integration.Fixtures;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,12 +9,12 @@ using Xunit;
 
 namespace CA.ERP.WebApp.Test.Integration.Tests
 {
-    public class HealthTest : IClassFixture<WebApplicationFactory<Startup>>
+    public class HealthTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private WebApplicationFactory<Startup> _factory;
         private HttpClient _client;
 
-        public HealthTest(WebApplicationFactory<Startup> factory)
+        public HealthTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
             _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -22,6 +23,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             });
 
         }
+
+
         [Fact]
         public async Task ShouldReturnHealthy()
         {

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using CA.ERP.Lib.DAL.IRepositories;
-using CA.ERP.Lib.Domain.UserAgg;
-using CA.ERP.Lib.Helpers;
-using CA.ERP.WebApp.DTO;
+using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.UserAgg;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,58 +12,78 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Controllers
 {
     public class AuthenticationController:BaseApiController
     {
-        private readonly IMapper mapper;
-        private readonly IConfiguration config;
+        private readonly IConfiguration _config;
+        private readonly UserService _userService;
+        private readonly EnumFlagsHelper _enumFlagsHelper;
 
-        public AuthenticationController(IMapper mapper, IAuthRepo repo, IConfiguration config)
+        public AuthenticationController(IServiceProvider serviceProvider,IConfiguration config, UserService userService, EnumFlagsHelper enumFlagsHelper)
+            : base(serviceProvider)
         {
-            this.mapper = mapper;
-            Repo = repo;
-            this.config = config;
-        }
-
-        public IAuthRepo Repo { get; }
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register (UserRegistrationDTO dto)
-        {
-            var mapped = this.mapper.Map<User>(dto);
-            var user = await this.Repo.Register(mapped, dto.Password);
-            return Ok(user);
+            _config = config;
+            _userService = userService;
+            _enumFlagsHelper = enumFlagsHelper;
         }
 
 
+
+        /// <summary>
+        /// Login using username and password
+        /// </summary>
+        /// <param name="loginCredentials"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Token use to login</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginDTO loginCredentials)
+        public async Task<ActionResult<Dto.LoginResponse>> Login(Dto.LoginRequest loginCredentials, CancellationToken cancellationToken)
         {
-            var user = await this.Repo.Login(loginCredentials.Username, loginCredentials.Password);
-            if (user == null) return Unauthorized();
+            var optionUserId = await _userService.AuthenticateUser(loginCredentials.Username, loginCredentials.Password, cancellationToken);
 
-            var claims = new[] {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+                var actionResult = optionUserId.Match<ActionResult>(f0: user =>
+                {
+                    
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim("RoleInt", ((int)user.Role).ToString()),
+                        new Claim("Username", user.Username),
+                        new Claim("FirstName", user.FirstName),
+                        new Claim("LastName", user.LastName),
+                    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config.GetSection("AppSettings:Token").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+                    var roles = _enumFlagsHelper.ConvertToList(user.Role);
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+                    }
 
-            var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(30),
-                SigningCredentials = creds
-            };
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config.GetSection("AppSettings:Token").Value));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-             
-            return Ok(new { 
-                token = tokenHandler.WriteToken(token)
-            });
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.AddHours(12),
+                    SigningCredentials = creds
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+                return Ok(new Dto.LoginResponse()
+                {
+                    token = tokenHandler.WriteToken(token)
+                });
+            },
+            f1: (none) => Unauthorized());
+
+            return actionResult;
         }
     }
 }

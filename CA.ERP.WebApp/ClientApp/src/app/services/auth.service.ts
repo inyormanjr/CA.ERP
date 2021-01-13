@@ -5,20 +5,29 @@ import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { UserLogin } from '../models/UserAgg/user.login';
 @Injectable({
-  providedIn: 'root',
+providedIn: 'root',
 })
 export class AuthService {
   baseUrl = environment.apiURL + 'api/Authentication/';
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
 
   login(model: UserLogin) {
-    return this.http.post(this.baseUrl + 'login', model)
+    return this.http.post(this.baseUrl + 'login', model, {reportProgress: true})
       .pipe(map((response: any) => {
         if (response) {
-          console.log(response);
           localStorage.setItem('token', response.token);
         }
     }));
+  }
+
+  getToken(): any{
+    return localStorage.getItem('token');
+  }
+
+  decodedToken(): any {
+    const token = this.getToken();
+    const decoded = this.jwtHelper.decodeToken(token);
+    return decoded;
   }
 }
