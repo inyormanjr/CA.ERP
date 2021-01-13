@@ -216,10 +216,10 @@ namespace CA.ERP.WebApp
 
             services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme);
             // In production, the Angular files will be served from this directory
-            //services.AddSpaStaticFiles(configuration =>
-            //{
-            //    configuration.RootPath = "ClientApp/dist";
-            //});
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
 
             //override asp.net validation to nothing    
 
@@ -233,6 +233,8 @@ namespace CA.ERP.WebApp
 
             //register textr encoding
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+
 
 
         }

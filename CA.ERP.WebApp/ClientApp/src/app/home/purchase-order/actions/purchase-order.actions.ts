@@ -26,6 +26,10 @@ export const populateBrandsWithModel = createAction(
   '[Purchase Order Entry] Populate array of populateBrandsWithModels',
   props<{ brandsWithModels: BrandWithMasterProducts[] }>());
 
+
+export const fetchBrandsWithMasterproductsOfSupplier = createAction('[Purchase Order] Populate Brands with corresponding models',
+  props<{ supplieView: SupplierView }>());
+
 export const fetchPurchaseOrders = createAction('[Purchase Order] Purchase Order Object List');
 
 export const populatePurchaseOrderListView = createAction(

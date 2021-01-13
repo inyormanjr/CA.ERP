@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UserListComponent } from './users-management-view/UserList/user-list.component';
 import { UsersManagementViewComponent } from './users-management-view/users-management-view.component';
-
+import { UserEntryComponent } from '../user/users-management-view/UserEntry/user-entry.component';
 
 const routes: Routes = [
   {
@@ -10,6 +10,8 @@ const routes: Routes = [
     component: UsersManagementViewComponent,
     children: [
       {path : 'list',component : UserListComponent}  ,
+      {path: 'entry', component : UserEntryComponent},
+      {path : 'update/:id',component : UserEntryComponent},
       { path: '', redirectTo: 'list', pathMatch: 'full'}
     ]
   }];

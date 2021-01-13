@@ -25,8 +25,8 @@ export class SupplierService implements ServiceBase<SupplierView> {
   }
 
   getById(id: any): Observable<SupplierView> {
-    return this.http.get<SupplierView>(this.baseUrl + '/' + id).pipe(
-      map((response: any) => response.data)
+    return this.http.get<SupplierView>(this.baseUrl  + id).pipe(
+      map((response: any) => response)
     );
   }
 

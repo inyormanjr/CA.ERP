@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CA.ERP.Domain.UserAgg;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -19,6 +20,6 @@ namespace CA.ERP.WebApp.Dto.User
         [Required]
         public UserRole Role { get; set; }
         [Required]
-        public List<Guid> Branches { get; set; }
+        public List<UserBranchCreate> Branches { get; set; }
     }
 }

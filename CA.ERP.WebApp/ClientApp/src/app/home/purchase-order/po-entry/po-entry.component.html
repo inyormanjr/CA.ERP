@@ -9,100 +9,94 @@
         <li role="menuitem"><a class="dropdown-item btn" (click)="createSupplier()" >
           <i class="fa fa-truck" aria-hidden="true"></i>
           Add Supplier</a></li>
-        <li role="menuitem"><a class="dropdown-item">
-          <i class="fa fa-money" aria-hidden="true"></i>
-          Update Price </a></li>
       </ul>
     </div>
   </section>
   <section class="entry-section mt-4">
     <form [formGroup]="poForm" class="container-fluid">
-      <div class="row ">
-        <div class="select-supplier form-inline   col-md-4">
-          <div class="form-group ">
-            <label for="" class="mr-2">Supplier Name:</label>
-            <input
-             [ngClass]="poForm.get('supplierId').invalid ? 'is-invalid': 'is-valid'"
-              formControlName="supplierName"
-              type="text" class="form-control mr-1 bg-light" name="" id="selectedSupplier" readonly aria-describedby="helpId"
-              placeholder="Select Supplier">
-            <button (click)="selectSupplierModal()" class="btn btn-danger ">Select Supplier </button>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="form-inline  col-md-8">
-          <div class="form-group w-100">
-            <label for="" class="mr-3">Branch Name:</label>
+        <div class="row">
+           <div class="col-md-8 container-fluid">
+                <div class="form-group row">
+                  <label for="" class="col-md-2 text-center">Branch:</label>
+                   <div class="col-md-10">
+                      <select [ngClass]="poForm.get('branchId').invalid ? 'is-invalid': 'is-valid'" formControlName="branchId"
+                        class="form-control d-flex flex-fill" name="" id="branchSelection">
+                        <option [value]="0">---Select Branch---</option>
+                        <option [ngValue]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
+                      </select>
+                   </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-md-2 text-center">Supplier: </label>
+                    <div class="col-md-10 d-flex">
+                        <input [ngClass]="poForm.get('supplierId').invalid ? 'is-invalid': 'is-valid'" formControlName="supplierName"
+                          type="text" class="form-control mr-1 bg-light" name="" id="selectedSupplier" readonly aria-describedby="helpId"
+                          placeholder="Select Supplier">
+                        <button [disabled]="this.purchaseOrderItemsFormArray.controls.length > 0" (click)="selectSupplierModal()" class="btn btn-danger ">Select</button>
+                    </div>
+                </div>
 
-            <select
-              [ngClass]="poForm.get('branchId').invalid ? 'is-invalid': 'is-valid'"
-            formControlName="branchId" class="form-control d-flex flex-fill" name="" id="branchSelection">
-              <option [value]="0">---Select Branch---</option>
-              <option  [ngValue]="branch.id" *ngFor="let branch of branches$ | async">{{branch.name}}</option>
-            </select>
-          </div>
+           </div>
+           <div class="col-md-4">
+                <div class="form-group row">
+                  <label for="" class="col-md-4 col-form-label text-right">Delivery:</label>
+                  <div class="col-md-8">
+                    <input [ngClass]="poForm.get('deliveryDate').invalid ? 'is-invalid': 'is-valid'" formControlName="deliveryDate"
+                      type="date" class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+                  </div>
+                </div>
+           </div>
         </div>
-        <div class="form-inline col-md-4 justify-content-end">
-          <div class="form-group ">
-            <label for="" class="mr-2">P.O Date:</label>
-            <label for=""></label>
-            <input
-            [ngClass]="poForm.get('poDate').invalid ? 'is-invalid': 'is-valid'"
-            type="date" formControlName="poDate" class="form-control" name="" id="poDatePicker" aria-describedby="helpId" placeholder="">
-          </div>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class=" col-md-4">
-          <div class="form-group w-100">
-            <label for="" class="mr-3">Brand:</label>
 
-            <select (ngModelChange)="onSelectBrand(selectedBrand)" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBrand" class="form-control d-flex flex-fill" name="" id="brandSelection">
-              <ng-container *ngIf="brands$ | async as brands; else elseTemplate">
-                <option [value]="0">--Select Brand First--</option>
-                <option    [ngValue]="brand"
-                  *ngFor="let brand of brands; let indext = index">{{brand.brandName}}</option>
-              </ng-container>
-              <ng-template #elseTemplate>
-                <option [value]="0">--Select Supplier First--</option>
-              </ng-template>
-            </select>
-          </div>
-        </div>
-        <div class=" col-md-4">
-          <div class="form-group">
-            <label for="">Model:</label>
-            <div class="form-inline">
-              <select class="form-control mr-1 d-flex flex-fill"
-               [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedModel"
-              name="" id="modelSelection">
-                <ng-container *ngIf="selectedBrand; else elseTemplateBrand">
-                  <option [value]="0">--Select model First--</option>
-                  <option  [ngValue]="products" *ngFor="let products of selectedBrand.masterProducts">
-                    {{products.model}}</option>
+        <div class="row">
+          <div class=" col-md-6">
+            <div class="form-group">
+              <label for="" class="">Brand:
+                <a name="" id="" class="btn m-0 p-0 text-success" href="#" role="button">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </a>
+              </label>
+
+              <select (ngModelChange)="onSelectBrand(selectedBrand)" [ngModelOptions]="{standalone: true}"
+                [(ngModel)]="selectedBrand" class="form-control d-flex flex-fill" name="" id="brandSelection">
+                <ng-container *ngIf="brands$ | async as brands; else elseTemplate">
+                  <option [value]="0">--Select Brand First--</option>
+                  <option [ngValue]="brand" *ngFor="let brand of brands; let indext = index">{{brand.brandName}}</option>
                 </ng-container>
-                <ng-template #elseTemplateBrand>
-                  <option>--Select Supplier First--</option>
+                <ng-template #elseTemplate>
+                  <option [value]="0">--Select Supplier First--</option>
                 </ng-template>
               </select>
-              <a [ngClass]="{'disabled': (selectedBrand === undefined || selectedModel === undefined)}" name="" id="" class="btn btn-success" (click)="addPurchaseItem()" role="button">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </a>
             </div>
+          </div>
+          <div class=" col-md-6">
+            <div class="form-group">
+              <label for="">Model:
+                <a name="" id="" class="btn m-0 p-0 text-success" href="#" role="button">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </a>
+              </label>
+              <div class="form-inline">
+                <select class="form-control flex-fill mr-1 " [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedModel" name=""
+                  id="modelSelection">
+                  <ng-container *ngIf="selectedBrand; else elseTemplateBrand">
+                    <option [value]="0">--Select model First--</option>
+                    <option [ngValue]="products" *ngFor="let products of selectedBrand.masterProducts">
+                      {{products.model}}</option>
+                  </ng-container>
+                  <ng-template #elseTemplateBrand>
+                    <option>--Select Supplier First--</option>
+                  </ng-template>
+                </select>
+                <a [ngClass]="{'disabled': (selectedBrand === undefined || selectedModel === undefined)}" name="" id=""
+                  class="btn btn-success" (click)="addPurchaseItem()" role="button">
+                  Include
+                </a>
+              </div>
 
+            </div>
           </div>
         </div>
-        <div class="form-inline col-md-4 justify-content-end">
-          <div class="form-group ">
-            <label for="" class="mr-2">Delivery Date:</label>
-            <label for=""></label>
-            <input
-            [ngClass]="poForm.get('deliveryDate').invalid ? 'is-invalid': 'is-valid'"
-            formControlName="deliveryDate" type="date" class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
-          </div>
-        </div>
-      </div>
       <div class="row">
         <div style="min-height: 33vh; max-height:33vh; overflow-y: auto;" formArrayName="purchaseOrderItems" class="table-section table-responsive-md col-md-12">
           <table class="table table-md  table-hover bg-white">
@@ -150,7 +144,7 @@
                   formControlName="discount" class="border-0 bg-white" value="2" type="number">
                 </td>
                 <td>
-                  {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalCostPrice | currency}}
+                  {{this.poForm.controls.purchaseOrderItems.value[podetailIndex].totalCostPrice | currency:"₱"}}
                 <td>
                   <a name="" id="" class="btn p-0 text-danger"
                     (click)="removePurchaseItem(podetailIndex)"
