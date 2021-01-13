@@ -42,7 +42,7 @@ const routes : Routes = [
   { path: 'fetch-data', component: FetchDataComponent },
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full'
   }
 ];
