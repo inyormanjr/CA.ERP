@@ -15,5 +15,10 @@ namespace CA.ERP.Domain.Helpers
         {
             return DateTimeOffset.Now;
         }
+
+        public int GetCurrentYear()
+        {
+            return DateTimeOffset.Now.Year;
+        }
     }
 }

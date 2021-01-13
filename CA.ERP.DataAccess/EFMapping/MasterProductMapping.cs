@@ -20,7 +20,8 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasOne(t => t.Brand)
                 .WithMany(t => t.MasterProducts)
-                .HasForeignKey(t => t.BrandId);
+                .HasForeignKey(t => t.BrandId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

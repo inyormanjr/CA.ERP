@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.MasterProductAgg;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.StockReceiveAgg;
@@ -25,6 +26,8 @@ namespace CA.ERP.Domain.StockAgg
 
         public string BrandName { get; set; }
         public string Model { get; set; }
+        public Guid BranchId { get; set; }
+        public Branch Branch { get; set; }
 
         public MasterProduct MasterProduct { get; set; }
         public StockReceive StockReceive { get; set; }

@@ -34,7 +34,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     .CustomInstantiator(f => new Branch() { Id = Guid.NewGuid() })
                     .RuleFor(f => f.Name, f => f.Address.City())
                     .RuleFor(f => f.BranchNo, f => f.PickRandom<int>(1, 2, 3, 4, 5))
-                    .RuleFor(f => f.Code, f => f.PickRandom<int>(1, 2, 3, 4, 5).ToString("00000"))
+                    .RuleFor(f => f.Code, f => f.PickRandom<string>("A", "B", "C", "D", "E"))
                     .RuleFor(f => f.Address, f => f.Address.StreetAddress())
                     .RuleFor(f => f.Contact, f => f.Name.FullName());
 
@@ -46,6 +46,7 @@ namespace CA.ERP.WebApp.Test.Integration
                     if (i == 0)
                     {
                         branch.Id = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4");
+                        
                     }
                     else if (i == 1)
                     {
@@ -54,6 +55,11 @@ namespace CA.ERP.WebApp.Test.Integration
                     else if (i == 2)
                     {
                         branch.Id = Guid.Parse("f853efb7-9aec-4750-bbcc-dbfd1ae47063");
+                    }
+                    else if (i == 3)
+                    {
+                        branch.Id = Guid.Parse("3494905b-5dfb-45c6-aec9-0ea08a85fe24");
+                        branch.Code = "F";
                     }
                     db.Branches.Add(branch);
                 }
@@ -84,7 +90,7 @@ namespace CA.ERP.WebApp.Test.Integration
                         user.Id = Guid.Parse("e02fbc42-a8dc-4359-bfa1-7f0774bd1fd4");
                     }
 
-                    user.UserBranches.Add(new UserBranch() { BranchId = branch.Id, UserId = user.Id, Branch = branch, User = user });
+                    user.UserBranches.Add(new UserBranch() { BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4") });
 
                     db.Users.Add(user);
                 }
@@ -251,6 +257,7 @@ namespace CA.ERP.WebApp.Test.Integration
                             SerialNumber = $"{i.ToString("000")}{x.ToString("000000")}",
                             StockStatus = Domain.StockAgg.StockStatus.Available,
                             CostPrice = random.Next(5000, 10000),
+                            BranchId = stockReceive.BranchId,
                         };
                         if (i == 0)
                         {

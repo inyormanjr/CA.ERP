@@ -24,16 +24,19 @@ namespace CA.ERP.DataAccess.EFMapping
             builder.HasOne(t => t.Supplier)
                 .WithMany(t => t.PurchaseOrders)
                 .HasForeignKey(t => t.SupplierId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.Branch)
                 .WithMany(t => t.PurchaseOrders)
                 .HasForeignKey(t => t.BranchId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.ApprovedBy)
                 .WithMany()
-                .HasForeignKey(t => t.ApprovedById);
+                .HasForeignKey(t => t.ApprovedById)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

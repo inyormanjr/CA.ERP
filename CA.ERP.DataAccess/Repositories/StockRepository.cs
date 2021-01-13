@@ -63,6 +63,15 @@ namespace CA.ERP.DataAccess.Repositories
             return await query.Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
         }
 
+        public async Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken)
+        {
+            var query = _context.Stocks.Include(s => s.MasterProduct).ThenInclude(m => m.Brand).AsQueryable();
+
+            query = query.Where(s => s.BranchId == branchId && stockIds.Contains(s.Id));
+
+            return await query.OrderBy(s => s.StockNumber).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
+        }
+
         public async Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default)
         {
             return await _context.Stocks.AnyAsync(s => s.SerialNumber == serialNumber && s.Id != exludeId);

@@ -1,6 +1,9 @@
 ﻿using CA.ERP.Domain.BranchAgg;
+using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.StockReceiveAgg;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,21 +11,26 @@ namespace CA.ERP.Domain.StockAgg
 {
     public class StockNumberGenerator : IStockNumberGenerator
     {
-        public StockNumberGenerator()
+        private readonly IDateTimeHelper _dateTimeHelper;
+
+        public StockNumberGenerator(IDateTimeHelper dateTimeHelper)
         {
-        }
-        public Task<IEnumerable<string>> GenerateStockNumberAsync(string prefix, string starting, int count)
-        {
-            return Task.FromResult(generateStockNumber(prefix, starting, count));
+            _dateTimeHelper = dateTimeHelper;
         }
 
-        private IEnumerable<string> generateStockNumber(string prefix, string starting, int count)
+        public Task<IEnumerable<string>> GenerateStockNumberAsync(StockCounter stockCounter, int count)
         {
-            int intStarting = int.Parse(starting);
-            string format = $"D{starting.Length}";
-            for (int i = 0; i < count; i++)
+
+            string prefix = $"{stockCounter.Code}{(_dateTimeHelper.GetCurrentYear() - 2000).ToString("D2")}";
+            return Task.FromResult(generateStockNumber(prefix, stockCounter.Counter, count));
+        }
+
+        private IEnumerable<string> generateStockNumber(string prefix, int starting, int count)
+        {
+            string format = $"D5";
+            for (int i = 1; i <= count; i++)
             {
-                yield return $"{prefix}{intStarting++.ToString(format)}";
+                yield return $"{prefix}{(starting+i).ToString(format)}";
             }
         }
     }

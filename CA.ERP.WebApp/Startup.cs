@@ -178,6 +178,14 @@ namespace CA.ERP.WebApp
                 .WithScopedLifetime()
                 );
 
+            //register validators
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(IBranchPermissionValidator))
+                .AddClasses(classes => classes.AssignableTo<IBranchPermissionValidator>())
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+                );
+
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 

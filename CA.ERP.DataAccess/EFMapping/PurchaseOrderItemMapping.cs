@@ -27,11 +27,13 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasOne(x => x.PurchaseOrder)
                 .WithMany(x => x.PurchaseOrderItems)
-                .HasForeignKey(x => x.PurchaseOrderId);
+                .HasForeignKey(x => x.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(x => x.MasterProduct)
                 .WithMany()
-                .HasForeignKey(x => x.MasterProductId);
+                .HasForeignKey(x => x.MasterProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

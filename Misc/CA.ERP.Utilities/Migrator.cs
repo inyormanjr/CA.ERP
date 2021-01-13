@@ -391,10 +391,12 @@ namespace CA.ERP.Utilities
                 {
                     newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
                     newStockReceive.StockSouce = StockSource.PurchaseOrder;
+                    newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
                 }
                 else
                 {
                     newStockReceive.StockSouce = StockSource.Direct;
+                    newStockReceive.SupplierId = newDeletedSupplier.Id;
                 }
 
                 //branch
@@ -409,6 +411,8 @@ namespace CA.ERP.Utilities
                     newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
                     newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
                     newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
+
+                    newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
 
                     newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
 

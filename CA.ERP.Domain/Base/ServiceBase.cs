@@ -14,21 +14,27 @@ using System.Threading.Tasks;
 namespace CA.ERP.Domain.Base
 {
     public abstract class ServiceBase
-    { 
+    {
+        public ServiceBase(IUnitOfWork unitOfWork, IUserHelper userHelper)
+        {
+            _unitOfWork = unitOfWork;
+            _userHelper = userHelper;
+        }
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IUserHelper _userHelper;
     }
     public abstract class ServiceBase<T> : ServiceBase where T: ModelBase 
     {
-        protected readonly IUnitOfWork _unitOfWork;
+        
         protected readonly IRepository<T> _repository;
         protected readonly IValidator<T> _validator;
-        protected readonly IUserHelper _userHelper;
+        
 
         public ServiceBase(IUnitOfWork unitOfWork, IRepository<T> repository, IValidator<T> validator, IUserHelper userHelper)
+            : base(unitOfWork, userHelper)
         {
-            _unitOfWork = unitOfWork;
             _repository = repository;
             _validator = validator;
-            _userHelper = userHelper;
         }
         public virtual async Task<OneOf<Success, NotFound>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {

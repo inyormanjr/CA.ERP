@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.StockReceiveAgg;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,6 +15,6 @@ namespace CA.ERP.Domain.StockAgg
         /// <param name="brancId"></param>
         /// <param name="count">number of stock number to generate</param>
         /// <returns></returns>
-        Task<IEnumerable<string>> GenerateStockNumberAsync(string prefix, string starting, int count);
+        Task<IEnumerable<string>> GenerateStockNumberAsync(StockCounter stockCounter, int count);
     }
 }

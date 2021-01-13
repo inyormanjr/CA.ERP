@@ -21,16 +21,25 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasOne(t => t.PurchaseOrder)
                 .WithMany(t => t.StockReceives)
-                .HasForeignKey(t => t.PurchaseOrderId);
+                .HasForeignKey(t => t.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.Branch)
                 .WithMany(t => t.StockReceives)
-                .HasForeignKey(t => t.BranchId);
+                .HasForeignKey(t => t.BranchId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             builder.HasMany(t => t.Stocks)
                 .WithOne(t => t.StockReceive)
-                .HasForeignKey(t => t.StockReceiveId);
+                .HasForeignKey(t => t.StockReceiveId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(t => t.Supplier)
+                .WithMany(t => t.StockReceives)
+                .HasForeignKey(t => t.SupplierId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

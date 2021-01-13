@@ -1,6 +1,7 @@
 ﻿using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.StockAgg;
+using CA.ERP.Domain.SupplierAgg;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,16 @@ namespace CA.ERP.Domain.StockReceiveAgg
     {
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IBranchRepository _branchRepository;
+        private readonly ISupplierRepository _supplierRepository;
 
-        public StockReceiveValidator(IPurchaseOrderRepository purchaseOrderRepository, IBranchRepository branchRepository, IValidator<Stock> stockValidator)
+        public StockReceiveValidator(IPurchaseOrderRepository purchaseOrderRepository, IBranchRepository branchRepository, ISupplierRepository supplierRepository, IValidator<Stock> stockValidator)
         {
             _purchaseOrderRepository = purchaseOrderRepository;
             _branchRepository = branchRepository;
-
-
-
+            _supplierRepository = supplierRepository;
             RuleFor(s => s.StockSouce).NotEqual(StockSource.Unknown).WithMessage($"Stock source must not be Unknown");
             RuleFor(s => s.PurchaseOrderId).MustAsync(purchaseOrderExist).WithMessage("Must exist");
+            RuleFor(s => s.SupplierId).MustAsync(supplierExist).WithMessage("Must exist");
             RuleFor(s => s.BranchId).MustAsync(branchExist).WithMessage("Must exist");
 
             RuleFor(s => s.Stocks).NotEmpty().Must(NoDuplicateSerialNumber).WithMessage("Duplicate serial number");
@@ -32,6 +33,11 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
             RuleForEach(s => s.Stocks)
                 .SetValidator(stockValidator);
+        }
+
+        private async Task<bool> supplierExist(Guid supplierId, CancellationToken cancellationToken)
+        {
+            return await _supplierRepository.ExistAsync(supplierId);
         }
 
         private bool NoDuplicateStockNumber(List<Stock> stocks)

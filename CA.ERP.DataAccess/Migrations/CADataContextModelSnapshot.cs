@@ -278,6 +278,9 @@ namespace CA.ERP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("CostPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -321,6 +324,8 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BranchId");
+
                     b.HasIndex("MasterProductId");
 
                     b.HasIndex("PurchaseOrderItemId");
@@ -334,6 +339,61 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasIndex("StockReceiveId");
 
                     b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockInventory", b =>
+                {
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.HasKey("BranchId", "MasterProductId");
+
+                    b.HasIndex("MasterProductId");
+
+                    b.ToTable("StockInventories");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockMove", b =>
+                {
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ChangeQuantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<decimal>("CurrentQuantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<int>("MoveCause")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MoveDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PreviousQuantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<Guid?>("StockReceiveId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BranchId", "MasterProductId");
+
+                    b.HasIndex("StockReceiveId");
+
+                    b.ToTable("StockMoves");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>
@@ -367,6 +427,9 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<int>("StockSouce")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -378,6 +441,8 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasIndex("BranchId");
 
                     b.HasIndex("PurchaseOrderId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("StockReceives");
                 });
@@ -557,7 +622,7 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
                         .WithMany("MasterProducts")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Brand");
@@ -568,19 +633,19 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasOne("CA.ERP.DataAccess.Entities.User", "ApprovedBy")
                         .WithMany()
                         .HasForeignKey("ApprovedById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
                         .WithMany("PurchaseOrders")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
                         .WithMany("PurchaseOrders")
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ApprovedBy");
@@ -595,13 +660,13 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
                         .WithMany()
                         .HasForeignKey("MasterProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrder", "PurchaseOrder")
                         .WithMany("PurchaseOrderItems")
                         .HasForeignKey("PurchaseOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("MasterProduct");
@@ -611,25 +676,71 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Stock", b =>
                 {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
+                        .WithMany("Stocks")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
                         .WithMany("Stocks")
                         .HasForeignKey("MasterProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrderItem", "PurchaseOrderItem")
                         .WithMany("Stocks")
-                        .HasForeignKey("PurchaseOrderItemId");
+                        .HasForeignKey("PurchaseOrderItemId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CA.ERP.DataAccess.Entities.StockReceive", "StockReceive")
                         .WithMany("Stocks")
                         .HasForeignKey("StockReceiveId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Branch");
 
                     b.Navigation("MasterProduct");
 
                     b.Navigation("PurchaseOrderItem");
+
+                    b.Navigation("StockReceive");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockInventory", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
+                        .WithMany("StockInventories")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
+                        .WithMany("StockInventories")
+                        .HasForeignKey("MasterProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("MasterProduct");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockMove", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.StockReceive", "StockReceive")
+                        .WithMany("StockMoves")
+                        .HasForeignKey("StockReceiveId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.StockInventory", "StockInventory")
+                        .WithMany("StockMoves")
+                        .HasForeignKey("BranchId", "MasterProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("StockInventory");
 
                     b.Navigation("StockReceive");
                 });
@@ -639,16 +750,25 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
                         .WithMany("StockReceives")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrder", "PurchaseOrder")
                         .WithMany("StockReceives")
-                        .HasForeignKey("PurchaseOrderId");
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("StockReceives")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Branch");
 
                     b.Navigation("PurchaseOrder");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
@@ -712,7 +832,11 @@ namespace CA.ERP.DataAccess.Migrations
                 {
                     b.Navigation("PurchaseOrders");
 
+                    b.Navigation("StockInventories");
+
                     b.Navigation("StockReceives");
+
+                    b.Navigation("Stocks");
 
                     b.Navigation("UserBranches");
                 });
@@ -726,6 +850,8 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
                 {
+                    b.Navigation("StockInventories");
+
                     b.Navigation("Stocks");
 
                     b.Navigation("SupplierMasterProducts");
@@ -743,14 +869,23 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("Stocks");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockInventory", b =>
+                {
+                    b.Navigation("StockMoves");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>
                 {
+                    b.Navigation("StockMoves");
+
                     b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
                     b.Navigation("PurchaseOrders");
+
+                    b.Navigation("StockReceives");
 
                     b.Navigation("SupplierBrands");
 

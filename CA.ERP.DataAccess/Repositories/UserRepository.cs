@@ -38,6 +38,17 @@ namespace CA.ERP.DataAccess.Repositories
             return result;
         }
 
+        public async Task<OneOf<User, None>> GetUserWithBranchesAsync(Guid userId)
+        {
+            OneOf<User, None> ret = default(None);
+            var user = await _context.Users.Include(u => u.UserBranches).FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                ret = _mapper.Map<User>(user);
+            }
+            return ret;
+        }
+
         /// <summary>
         /// Updates user except for PasswordHash and PasswordSalt
         /// </summary>

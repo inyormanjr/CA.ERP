@@ -9,5 +9,6 @@ namespace CA.ERP.Domain.Helpers
     {
         DateTimeOffset GetCurrentDateTimeOffset();
         DateTime GetCurrentDateTime();
+        int GetCurrentYear();
     }
 }

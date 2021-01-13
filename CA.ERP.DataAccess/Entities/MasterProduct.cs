@@ -16,5 +16,6 @@ namespace CA.ERP.DataAccess.Entities
         public Brand Brand { get; set; }
         public List<SupplierMasterProduct> SupplierMasterProducts { get; set; } = new List<SupplierMasterProduct>();
         public List<Stock> Stocks { get;  set; }
+        public List<StockInventory> StockInventories { get; set; }
     }
 }

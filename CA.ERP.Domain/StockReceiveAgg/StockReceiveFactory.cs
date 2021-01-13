@@ -14,14 +14,21 @@ namespace CA.ERP.Domain.StockReceiveAgg
         {
             _userHelper = userHelper;
         }
-        public StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, List<Stock> stocks)
+        public StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks)
         {
+            foreach (var stock in stocks)
+            {
+                stock.BranchId = branchId;
+            }
+
             var stockReceive = new StockReceive() { 
                 BranchId = branchId,
                 PurchaseOrderId = purchaseOrderId,
                 Status = Common.Status.Active,
                 StockSouce = stockSource,
+                SupplierId = supplierId,
                 CreatedBy = _userHelper.GetCurrentUserId(),
+                UpdatedBy = _userHelper.GetCurrentUserId(),
                 Stocks = stocks
             };
 
