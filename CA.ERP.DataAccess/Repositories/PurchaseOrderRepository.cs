@@ -93,7 +93,7 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode, DateTime? startDate, DateTime? endDate, int skip, int take, CancellationToken cancellationToken)
         {
-            var query = _context.PurchaseOrders.AsQueryable();
+            var query = _context.PurchaseOrders.Include(po => po.Supplier).Include(po => po.Branch).AsQueryable();
             if (!string.IsNullOrEmpty(barcode))
             {
                 query = query.Where(po => po.Barcode.StartsWith(barcode));
