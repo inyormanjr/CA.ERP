@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore CA.ERP.sln
     - name: Test
-      run: dotnet test  --no-build CA.ERP.sln
+      run: dotnet test --configuration Release --no-build CA.ERP.sln
     - name: Publish
       run: dotnet publish -o ./release --no-restore   --configuration Release ./CA.ERP.WebApp/CA.ERP.WebApp.csproj 
     - name: Setup Artifact Upload
