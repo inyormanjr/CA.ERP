@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AlertifyService } from 'src/app/services/alertify/alertify.service';
 import { UserManagementActions } from '../../action/user.action';
@@ -20,7 +20,7 @@ export class UserEntryComponent implements OnInit {
 
   userEntryForm : FormGroup;
   branches$ : Observable<BranchView[]>;
-  
+  selectedBranch : BranchView;
   roles = Object.values(Role).map(val => {
     return {
       name : val,
@@ -42,7 +42,7 @@ export class UserEntryComponent implements OnInit {
                     lastName : ['',Validators.required],
                     role : [0,Validators.required],
                     branches : this.formBuilder.array(
-                                    [{name : "Anikabury",code : "00001",id : "3fa85f64-5717-4562-b3fc-2c963f66afa6"}],
+                                    [],
                                     Validators.required)
                   },{
                     validators : MustMatch('password','confirmPassword')
@@ -60,23 +60,41 @@ export class UserEntryComponent implements OnInit {
     return this.userEntryForm.controls;
   }
 
+  get branchesArray() : FormArray {
+    return this.fc.branches as FormArray;
+  }
+
+  get selectedBranchGroup() : FormGroup {
+    return this.formBuilder.group({
+      branchId : this.selectedBranch.id,
+      name : this.selectedBranch.name,
+      code : this.selectedBranch.code
+    });
+  }
+
+  removeBranch(index : number){
+    this.branchesArray.removeAt(index);
+    this.alertify.warning('Selected branch removed.');
+  }
+
   newUser(){
-      // const newUser = {data : this.userEntryForm};
-      // this.userService.create(newUser).subscribe(
-      //   res => {
-      //     this.alertify.message('User added.');
-      //     this.userStore.dispatch(UserManagementActions.fetchUsers());
-      //     this.userEntryForm.reset();
-      //     console.log(res);
-      //   },
-      //   error => {
-      //     console.log(error);
-      //     this.alertify.error(error);
-      //   }
-      // )
+      const newUser = {data : this.userEntryForm.value};
+    
+      this.userService.create(newUser).subscribe(
+        res => {
+          this.alertify.message('User added.');
+          this.userStore.dispatch(UserManagementActions.fetchUsers());
+          this.userEntryForm.reset();
+          this.branchesArray.clear();
      
-      console.log(this.userEntryForm);
-      console.log(this.fc);
+        },
+        error => {
+          console.log(error);
+          this.alertify.error(error);
+        }
+      )
+     
+  
   }
 
   back(){
@@ -84,7 +102,6 @@ export class UserEntryComponent implements OnInit {
   }
 
   addRemoveRole(event : any, roleNum : number){
-
     if(event.currentTarget.checked){
       this.fc.role.setValue(this.fc.role.value + roleNum);
     }else{
@@ -92,8 +109,16 @@ export class UserEntryComponent implements OnInit {
     }
   }
 
-  addBranch(branch : any){
-    this.fc.branches.patchValue(branch);
-  }
 
+
+  addBranch(){
+    for (let index = 0; index < this.branchesArray.length; index++) {
+      const element = this.branchesArray.controls[index];
+      if(element.value.branchId === this.selectedBranchGroup.controls.branchId.value){
+        this.alertify.error('Branch exists');
+        return
+      }
+    }
+    this.branchesArray.push(this.selectedBranchGroup);
+  }
 }
