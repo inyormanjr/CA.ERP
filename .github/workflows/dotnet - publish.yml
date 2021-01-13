@@ -28,5 +28,5 @@ jobs:
     - name: Setup Artifact Upload
       uses: actions/upload-artifact@v2
       with:
-        name: release-artifact
+        name: release-artifact                                
         path: ./release # or path/to/artifact
