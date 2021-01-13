@@ -81,7 +81,6 @@ export class PoEntryComponent implements OnInit, OnDestroy {
       supplierId: [undefined, [Validators.required]],
       supplierName: [undefined],
       branchId: [0, [Validators.required, Validators.minLength(2)]],
-      poDate: [undefined, [Validators.required]],
       deliveryDate: [undefined, [Validators.required]],
       purchaseOrderItems: this.fb.array([], Validators.required),
     });
