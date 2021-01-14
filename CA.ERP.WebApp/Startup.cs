@@ -68,6 +68,12 @@ namespace CA.ERP.WebApp
                 {
                     setup.IncludeXmlComments(docs);
                 }
+                //add domain xml
+                var domaindocs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.Domain.xml");
+                if (File.Exists(domaindocs))
+                {
+                    setup.IncludeXmlComments(domaindocs);
+                }
 
                 //add security scheme
                 var securityScheme = new OpenApiSecurityScheme

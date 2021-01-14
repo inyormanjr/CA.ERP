@@ -78,7 +78,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var response = await _client.PutAsJsonAsync($"api/User/{id}", new UpdateBaseRequest<UserUpdate> {
                 Data = new UserUpdate() {
                     UserName = "User1",
-                    Password = "12345",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
@@ -100,7 +99,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 Data = new UserUpdate()
                 {
                     UserName = "",
-                    Password = "12345",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
@@ -122,7 +120,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 Data = new UserUpdate()
                 {
                     UserName = "",
-                    Password = "12345",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
