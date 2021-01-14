@@ -102,5 +102,20 @@ namespace CA.ERP.DataAccess.Repositories
 
             return supplierBrands;
         }
+
+        public async Task AddOrUpdateSupplierMasterProductCostPriceAsync(Guid supplierId, Guid masterProductId, decimal costPrice, CancellationToken cancellationToken = default)
+        {
+            var supplierMasterProduct = await _context.SupplierMasterProducts.FirstOrDefaultAsync(smp => smp.SupplierId == supplierId && smp.MasterProductId == masterProductId, cancellationToken);
+            if (supplierMasterProduct == null)
+            {
+                supplierMasterProduct = new Dal.SupplierMasterProduct() { 
+                    SupplierId = supplierId,
+                    MasterProductId = masterProductId,
+                };
+                _context.SupplierMasterProducts.Add(supplierMasterProduct);
+            }
+
+            supplierMasterProduct.CostPrice = costPrice;
+        }
     }
 }

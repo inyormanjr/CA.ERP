@@ -1,9 +1,11 @@
-﻿using CA.ERP.WebApp.Dto;
+﻿using CA.ERP.DataAccess;
+using CA.ERP.WebApp.Dto;
 using CA.ERP.WebApp.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Test.Integration.Fixtures;
 using CA.ERP.WebApp.Test.Integration.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +67,17 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             content.Should().NotBeNull();
             content.Id.Should().NotBe(Guid.Empty);
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+
+                foreach (var purchaseOrderItem in data.PurchaseOrderItems)
+                {
+                    var actualPrice = dbContext.SupplierMasterProducts.Where(smp => smp.SupplierId == data.SupplierId && smp.MasterProductId == purchaseOrderItem.MasterProductId).Select(smp => smp.CostPrice).FirstOrDefault();
+                    actualPrice.Should().Be(purchaseOrderItem.CostPrice);
+                }
+            }
         }
 
         [Fact]

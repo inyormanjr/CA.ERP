@@ -15,5 +15,6 @@ namespace CA.ERP.Domain.SupplierAgg
         Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken);
         Task<OneOf<Success, None>> DeleteSupplierBrandAsync(Guid id, Guid brandId, CancellationToken cancellationToken);
         Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, Status status = Status.Active, CancellationToken cancellationToken = default);
+        Task AddOrUpdateSupplierMasterProductCostPriceAsync(Guid supplierId, Guid masterProductId, decimal costPrice , CancellationToken cancellationToken = default);
     }
 }
