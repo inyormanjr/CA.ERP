@@ -35,6 +35,8 @@ using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Common.Rounding;
 using CA.ERP.WebApp.ActionFilters;
 using CA.ERP.Domain.UnitOfWorkAgg;
+using CA.ERP.WebApp.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CA.ERP.WebApp
 {
@@ -52,7 +54,7 @@ namespace CA.ERP.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHealthChecks();
+            services.AddHealthChecks().AddCheck<DatabaseCheck>("Database check", HealthStatus.Unhealthy);
 
 
             services.AddDbContext<CADataContext>(dbc =>
@@ -239,7 +241,6 @@ namespace CA.ERP.WebApp
 
             //register textr encoding
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
 
 
 
