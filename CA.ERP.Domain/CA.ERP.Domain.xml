@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CA.ERP.Domain</name>
+    </assembly>
+    <members>
+        <member name="T:CA.ERP.Domain.Base.IBusinessLogic">
+            <summary>
+            Interface flag to identify business logic interface/classes
+            </summary>
+        </member>
+        <member name="T:CA.ERP.Domain.Base.PaginationBase`1">
+            <summary>
+            Base for pagination on get all and searches
+            </summary>
+            <typeparam name="TData"></typeparam>
+        </member>
+        <member name="M:CA.ERP.Domain.BranchAgg.BranchService.CreateBranchAsync(System.String,System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Create a branch
+            </summary>
+            <param name="domBranch"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
+            <summary>
+            Flags if product can be deleted
+            </summary>
+        </member>
+        <member name="F:CA.ERP.Domain.MasterProductAgg.ProductStatus.Provisional">
+            <summary>
+            Product has no other data that reference it and can be deleted.
+            </summary>
+        </member>
+        <member name="F:CA.ERP.Domain.MasterProductAgg.ProductStatus.Permanent">
+            <summary>
+            Product has no other data that reference it and should not be deleted
+            </summary>
+        </member>
+        <member name="T:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator">
+            <summary>
+            Business logic interface for calculating Purchase order total amount
+            </summary>
+        </member>
+        <member name="M:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator.Calculate(CA.ERP.Domain.PurchaseOrderAgg.PurchaseOrder,System.Collections.Generic.ICollection{CA.ERP.Domain.PurchaseOrderAgg.PurchaseOrderItem})">
+            <summary>
+            Do the calculation
+            </summary>
+            <param name="purchaseOrder"></param>
+            <param name="purchaseOrderItems"></param>
+            <returns>The total cost base on pass purchase order and items</returns>
+        </member>
+        <member name="M:CA.ERP.Domain.StockAgg.IStockNumberGenerator.GenerateStockNumberAsync(CA.ERP.Domain.StockReceiveAgg.StockCounter,System.Int32)">
+            <summary>
+            Generate stock number for given branch
+            </summary>
+            <param name="brancId"></param>
+            <param name="count">number of stock number to generate</param>
+            <returns></returns>
+        </member>
+        <member name="T:CA.ERP.Domain.UserAgg.UserRole">
+             <summary>
+             None = 0,
+            Admin = 1, 
+            Moderator = 2, 
+            Marketing =4, 
+            Cashier = 8, 
+            Stocks = 16,
+            CC = 32,
+            Encoder = 64,
+            Accounting = 128,
+            Manager = 256
+             </summary>
+        </member>
+    </members>
+</doc>
