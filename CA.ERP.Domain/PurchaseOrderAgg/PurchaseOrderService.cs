@@ -1,5 +1,6 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
+using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -17,6 +18,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public class PurchaseOrderService : ServiceBase<PurchaseOrder>
     {
+        private readonly ISupplierRepository _supplierRepository;
         private readonly IPurchaseOrderTotalCostPriceCalculator _purchaseOrderTotalCostPriceCalculator;
         private readonly IPurchaseOrderItemTotalCostPriceCalculator _purchaseOrderItemTotalCostPriceCalculator;
         private readonly IPurchaseOrderItemTotalQuantityCalculator _purchaseOrderItemTotalQuantityCalculator;
@@ -28,6 +30,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public PurchaseOrderService(
             IUnitOfWork unitOfWork,
+            ISupplierRepository supplierRepository,
             IPurchaseOrderTotalCostPriceCalculator purchaseOrderTotalCostPriceCalculator,
             IPurchaseOrderItemTotalCostPriceCalculator purchaseOrderItemTotalCostPriceCalculator,
             IPurchaseOrderItemTotalQuantityCalculator purchaseOrderItemTotalQuantityCalculator,
@@ -38,6 +41,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             IBranchPermissionValidator<PurchaseOrder> branchPermissionValidator)
             :base(unitOfWork, purchaseOrderRepository, purchaseOrderValidator, userHelper)
         {
+            _supplierRepository = supplierRepository;
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
             _purchaseOrderItemTotalCostPriceCalculator = purchaseOrderItemTotalCostPriceCalculator;
             _purchaseOrderItemTotalQuantityCalculator = purchaseOrderItemTotalQuantityCalculator;
@@ -65,6 +69,11 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             {
                 purchaseOrder.CreatedBy = _userHelper.GetCurrentUserId();
                 purchaseOrder.UpdatedBy = _userHelper.GetCurrentUserId();
+                foreach (var purchaseOrderItem in purchaseOrder.PurchaseOrderItems)
+                {
+                    //update supplier stock price
+                    await _supplierRepository.AddOrUpdateSupplierMasterProductCostPriceAsync(purchaseOrder.SupplierId, purchaseOrderItem.MasterProductId, purchaseOrderItem.CostPrice, cancellationToken);
+                }
                 ret = await _purchaseOrderRepository.AddAsync(purchaseOrder, cancellationToken: cancellationToken);
                 await _unitOfWork.CommitAsync();
             }
