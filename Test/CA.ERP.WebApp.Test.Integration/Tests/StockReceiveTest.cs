@@ -98,7 +98,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         }
 
         [Fact]
-        public async Task ShouldCreateStockReceiveSucces_EmptySerial()
+        public async Task ShouldCreateStockReceiveSucces_NullSerial()
         {
             using (var scope = _factory.Services.CreateScope())
             {
@@ -128,7 +128,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                         MasterProductId = purchaseOrderItem.MasterProductId,
                         PurchaseOrderItemId = purchaseOrderItem.Id,
                         SerialNumber = null,
-                        StockNumber = "BBI" + i.ToString("00000"),
+                        StockNumber = "WWX" + i.ToString("00000"),
                         StockStatus = Domain.StockAgg.StockStatus.Available
                     });
                     i++;
