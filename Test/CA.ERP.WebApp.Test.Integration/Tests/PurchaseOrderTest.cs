@@ -209,16 +209,19 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Theory]
         [InlineData(10)]
         [InlineData(15)]
-        public async Task ShouldGetTenPurchaseOrder(int itemPerPage)
+        public async Task ShouldGetTenPurchaseOrder(int pageSize)
         {
-            var response = await _client.GetAsync($"api/PurchaseOrder?itemPerPage={itemPerPage}");
+            var response = await _client.GetAsync($"api/PurchaseOrder?pageSize={pageSize}");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var content = await response.Content.ReadAsAsync<GetManyResponse<PurchaseOrderView>>();
 
             content.Should().NotBeNull();
-            content.Data.Should().HaveCount(itemPerPage);
+            content.Data.Should().HaveCount(pageSize);
+            content.PageSize.Should().Equals(pageSize);
+            content.TotalCount.Should().BeGreaterThan(0);
+            content.Data.Should().HaveCount(pageSize);
 
         }
 

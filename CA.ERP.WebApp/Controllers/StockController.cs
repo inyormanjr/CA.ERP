@@ -41,15 +41,17 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Stock.StockView>>> Get(string brand = null, string model = null, string stockNumber = null, string serial = null, int itemPerPage = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Stock.StockView>>> Get(string brand = null, string model = null, string stockNumber = null, string serial = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
         {
-            var paginatedStocks = await _stockService.GetStocksAsync(brand, model, stockNumber, serial, itemPerPage, page, cancellationToken);
+            var paginatedStocks = await _stockService.GetStocksAsync(brand, model, stockNumber, serial, pageSize, page, cancellationToken);
             var dtoStocks = _mapper.Map<List<Dto.Stock.StockView>>(paginatedStocks.Data);
             var response = new Dto.GetManyResponse<Dto.Stock.StockView>()
             {
                 CurrentPage = paginatedStocks.CurrentPage,
                 TotalPage = paginatedStocks.TotalPage,
-                Data = dtoStocks
+                Data = dtoStocks,
+                PageSize = paginatedStocks.PageSize,
+                TotalCount = paginatedStocks.TotalCount,
             };
             return Ok(response);
         }
