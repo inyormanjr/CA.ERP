@@ -14,7 +14,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         {
             _userHelper = userHelper;
         }
-        public StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks)
+        public StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, string deliveryReference, List<Stock> stocks)
         {
             foreach (var stock in stocks)
             {
@@ -29,6 +29,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
                 SupplierId = supplierId,
                 CreatedBy = _userHelper.GetCurrentUserId(),
                 UpdatedBy = _userHelper.GetCurrentUserId(),
+                DeliveryReference = deliveryReference,
                 Stocks = stocks
             };
 

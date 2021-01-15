@@ -64,7 +64,8 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                     BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4"),
                     StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
                     PurchaseOrderId = purchaseOrderId,
-                    SupplierId = purchaseOrder.SupplierId
+                    SupplierId = purchaseOrder.SupplierId,
+                    DeliveryReference = "Ref#" + i.ToString()
                 };
 
                 var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
