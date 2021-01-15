@@ -44,9 +44,12 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
                 if (dbtype == "SqlServer")
                 {
+                    string dbSuffix = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
                     services.AddDbContext<CADataContext>(options =>
                     {
-                        options.UseSqlServer(configRoot.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess"));
+                        SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder(configRoot.GetConnectionString("DefaultConnection"));
+                        sqlConnectionStringBuilder.InitialCatalog = sqlConnectionStringBuilder.InitialCatalog + "-" + dbSuffix;
+                        options.UseSqlServer(sqlConnectionStringBuilder.ToString(), x => x.MigrationsAssembly("CA.ERP.DataAccess"));
                     });
                 }
                 else

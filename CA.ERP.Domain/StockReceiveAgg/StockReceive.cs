@@ -14,6 +14,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSouce { get; set; }
+        public string DeliveryReference { get; set; }
         public Guid SupplierId { get; set; }
         public Supplier Supplier { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }

@@ -5,6 +5,9 @@ RUN apt-get update -yq
 RUN apt-get install curl gnupg -yq 
 RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
 RUN apt-get install -y nodejs
+RUN apt-get install libc6-dev  -y
+RUN apt-get install libgdiplus -y
+
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
