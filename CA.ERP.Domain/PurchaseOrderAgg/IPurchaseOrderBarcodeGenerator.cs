@@ -7,6 +7,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public interface IPurchaseOrderBarcodeGenerator : IHelper
     {
+
         string GenerateBarcode();
     }
 }

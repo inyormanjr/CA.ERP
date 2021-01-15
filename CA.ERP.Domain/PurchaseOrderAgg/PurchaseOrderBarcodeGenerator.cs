@@ -1,4 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
@@ -20,10 +21,19 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             var nowUnix = now.ToUnixTimeSeconds();
             int year = now.Year;
             var epoch = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.FromSeconds(0)).ToUnixTimeSeconds();
+
+            var second = nowUnix - epoch;
             
-            var strSeconds = (nowUnix - epoch).ToString("00000000");
+            if (second == lastSecond)
+            {
+                second++;
+            }
+            var strSeconds = second.ToString("00000000");
+            lastSecond = second;
             var strYear = year.ToString("0000").Substring(2, 2);
             return $"{strYear}-{strSeconds}";
         }
+
+        static long lastSecond = -1;
     }
 }
