@@ -97,19 +97,21 @@ namespace CA.ERP.Domain.StockAgg
              );
         }
 
-        public async Task<PaginationBase<Stock>> GetStocksAsync(string brand = null, string model = null, string stockNumber = null, string serial = null, int itemPerPage = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<PaginationBase<Stock>> GetStocksAsync(string brand = null, string model = null, string stockNumber = null, string serial = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
         {
-            int skip = (page - 1) * itemPerPage;
-            int take = itemPerPage;
+            int skip = (page - 1) * pageSize;
+            int take = pageSize;
 
             int count = await _stockRepository.CountAsync(brand , model, stockNumber, serial);
-            IEnumerable<Stock> stocks = await _stockRepository.GetManyAsync(brand, model, stockNumber, serial, skip, take);
+            IEnumerable<Stock> stocks = await _stockRepository.GetManyAsync(brand, model, stockNumber, serial, skip, take, cancellationToken);
 
-            double totalPages = (double)count / (double)itemPerPage;
+            double totalPages = (double)count / (double)pageSize;
             return new PaginatedStocks() { 
                 Data = stocks.ToList(),
                 CurrentPage = page,
-                TotalPage = (int)Math.Ceiling(totalPages)
+                TotalPage = (int)Math.Ceiling(totalPages),
+                PageSize = pageSize,
+                TotalCount = count,
             };
         }
 
