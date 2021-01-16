@@ -33,6 +33,7 @@
 
 .center {
     justify-content: center;
+    align-items: center;
 }
 .text-align-right{
     text-align: right;
@@ -51,4 +52,14 @@ table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
   }
+
+  .box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .box:first-child > span { margin-right: auto; }
+  
+  .box:last-child  > span { margin-left: auto;  }
   

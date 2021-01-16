@@ -1,5 +1,5 @@
 {
-    "shortid": "SklGVg4lyu",
+    "shortid": "Bkg_cjslJO",
     "name": "report",
     "recipe": "chrome-pdf",
     "engine": "handlebars",
@@ -7,15 +7,14 @@
         "printBackground": true
     },
     "creationDate": {
-        "$$date": 1610788942782
+        "$$date": 1610820874404
     },
     "modificationDate": {
-        "$$date": 1610820505180
+        "$$date": 1610821604407
     },
-    "_id": "V7XjqqULm76lcw6b",
+    "_id": "aVbUQU0VjZ9CoYap",
     "$entitySet": "templates",
     "data": {
-        "shortid": "BylOy7Vly_"
-    },
-    "scripts": []
+        "shortid": "B1l5E3jgJ_"
+    }
 }

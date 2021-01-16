@@ -22,7 +22,7 @@ namespace CA.ERP.WebApp.Mapping
 
             //report dto
             CreateMap<PurchaseOrder, ReportDto.PurchaseOrder>()
-                .ForMember(src => src.Date, cfg => cfg.MapFrom(dest => dest.CreatedAt));
+                .ForMember(dest => dest.Date, cfg => cfg.MapFrom(src => src.CreatedAt));
             CreateMap<PurchaseOrderItem, ReportDto.PurchaseOrderItem>();
         }
     }

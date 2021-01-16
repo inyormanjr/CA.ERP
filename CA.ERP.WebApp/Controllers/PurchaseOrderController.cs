@@ -1,5 +1,4 @@
-﻿using AspNetCore.Reporting;
-using AutoMapper;
+﻿using AutoMapper;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.ReportAgg;
 using CA.ERP.Domain.UserAgg;
@@ -31,17 +30,13 @@ namespace CA.ERP.WebApp.Controllers
     public class PurchaseOrderController : BaseApiController
     {
         private readonly PurchaseOrderService _purchaseOrderService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IReportGenerator _reportGenerator;
         private readonly IBarcodeGenerator _barcodeGenerator;
         private readonly IRenderService _renderService;
 
-        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator, IRenderService renderService )
+        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService,  IBarcodeGenerator barcodeGenerator, IRenderService renderService )
             :base(serviceProvider)
         {
             _purchaseOrderService = purchaseOrderService;
-            _webHostEnvironment = webHostEnvironment;
-            _reportGenerator = reportGenerator;
             _barcodeGenerator = barcodeGenerator;
             _renderService = renderService;
         }
