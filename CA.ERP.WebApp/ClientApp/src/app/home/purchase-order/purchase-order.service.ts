@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PaginationResult } from 'src/app/models/data.pagination';
+import { ApiResponse } from 'src/app/models/response.data';
 import { AuthService } from 'src/app/services/auth.service';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
@@ -18,6 +20,10 @@ export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
   }
   get(): Observable<PurchaseOrder[]> {
     return this.http.get<PurchaseOrder[]>(this.baseUrl).pipe(map((result: any) =>   result.data ));
+  }
+
+  getByPagination(params: any): Observable<PaginationResult<PurchaseOrder[]>> {
+    return this.http.get<PaginationResult<PurchaseOrder[]>>(this.baseUrl).pipe(map((result: any) => result));
   }
   create(createRequest: any): Observable<any> {
     return this.http.post<string>(this.baseUrl, createRequest).pipe((map((result: any) => result.id)));
