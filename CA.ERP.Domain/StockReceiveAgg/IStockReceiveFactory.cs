@@ -8,6 +8,6 @@ namespace CA.ERP.Domain.StockReceiveAgg
 {
     public interface IStockReceiveFactory: IFactory<StockReceive>
     {
-        StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, List<Stock> stocks);
+        StockReceive CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, string deliveryReference, List<Stock> stocks);
     }
 }

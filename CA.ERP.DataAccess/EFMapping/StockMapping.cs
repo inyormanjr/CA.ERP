@@ -19,7 +19,7 @@ namespace CA.ERP.DataAccess.EFMapping
             builder.HasIndex(t => t.SerialNumber).IsUnique();
 
             builder.Property(t => t.StockNumber).IsRequired().HasMaxLength(50);
-            builder.Property(t => t.SerialNumber).IsRequired().HasMaxLength(50);
+            builder.Property(t => t.SerialNumber).HasMaxLength(50);
             builder.Property(t => t.CostPrice).HasPrecision(18, 2);
 
             builder.HasOne(t => t.MasterProduct)

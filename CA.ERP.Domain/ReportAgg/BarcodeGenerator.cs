@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetBarcode;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -11,13 +12,8 @@ namespace CA.ERP.Domain.ReportAgg
     {
         public byte[] GenerateBarcode(string barcode)
         {
-            BarcodeLib.Barcode b = new BarcodeLib.Barcode();
-            Image img = b.Encode(BarcodeLib.TYPE.CODE128, barcode, Color.Black, Color.White, 290, 120);
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                img.Save(memoryStream, ImageFormat.Png);
-                return memoryStream.ToArray();
-            }
+            var barcodeImage = new Barcode(barcode, NetBarcode.Type.Code128, true);
+            return barcodeImage.GetByteArray(ImageFormat.Jpeg);
         }
     }
 }

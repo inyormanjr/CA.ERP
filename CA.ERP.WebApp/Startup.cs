@@ -261,7 +261,7 @@ namespace CA.ERP.WebApp
             }
 
             //temp disable
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             
             app.UseRouting();
