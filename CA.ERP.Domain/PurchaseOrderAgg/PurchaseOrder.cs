@@ -4,6 +4,7 @@ using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
@@ -24,8 +25,23 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public string SupplierName { get; set; }
         public string BranchName { get; set; }
         public string BranchAddress { get; set; }
+        public decimal TotalFreeQuantity
+        {
+            get
+            {
+                return PurchaseOrderItems.Select(poi => poi.FreeQuantity).Sum();
+            }
+        }
 
-        public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public decimal TotalOrderedQuantity
+        {
+            get
+            {
+                return PurchaseOrderItems.Select(poi => poi.OrderedQuantity).Sum();
+            }
+        }
+
+        public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new List<PurchaseOrderItem>();
 
         public User ApprovedBy { get; set; }
         public Supplier Supplier { get; set; }

@@ -94,7 +94,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Print(System.Guid,AspNetCore.Reporting.RenderType,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Print(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Print the given Purchase order
             </summary>

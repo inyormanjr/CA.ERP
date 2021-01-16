@@ -1,0 +1,20 @@
+{
+    "shortid": "Bkg_cjslJO",
+    "name": "report",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1610820874404
+    },
+    "modificationDate": {
+        "$$date": 1610821604407
+    },
+    "_id": "aVbUQU0VjZ9CoYap",
+    "$entitySet": "templates",
+    "data": {
+        "shortid": "B1l5E3jgJ_"
+    }
+}
