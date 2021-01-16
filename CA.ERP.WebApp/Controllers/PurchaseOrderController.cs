@@ -4,6 +4,8 @@ using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.ReportAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
+using jsreport.AspNetCore;
+using jsreport.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,15 +34,16 @@ namespace CA.ERP.WebApp.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IReportGenerator _reportGenerator;
         private readonly IBarcodeGenerator _barcodeGenerator;
+        private readonly IRenderService _renderService;
 
-        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator )
+        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService, IMapper mapper, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator, IBarcodeGenerator barcodeGenerator, IRenderService renderService )
             :base(serviceProvider)
         {
             _purchaseOrderService = purchaseOrderService;
             _webHostEnvironment = webHostEnvironment;
             _reportGenerator = reportGenerator;
             _barcodeGenerator = barcodeGenerator;
-            
+            _renderService = renderService;
         }
 
         /// <summary>
@@ -181,36 +184,22 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("{id}/Print")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Print(Guid id, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Print(Guid id, CancellationToken cancellationToken = default)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return StatusCode(501);
-            }
+
             var getOption = await _purchaseOrderService.GetOneAsync(id);
 
-            return await Task.Run(() => {
-                return getOption.Match<IActionResult>(
-                f0: (purchaseOrder) =>
+            return await getOption.Match<Task<IActionResult>>(
+                f0: async (purchaseOrder) =>
                 {
-                    //var path = $"{_webHostEnvironment.WebRootPath}\\Reports\\PurchaseOrderReport.rdlc";
-                    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "PurchaseOrderReport.rdlc");
+                    var reportDto = _mapper.Map<ReportDto.PurchaseOrder>(purchaseOrder);
+                    reportDto.Barcode = _barcodeGenerator.GenerateBarcode(purchaseOrder.Barcode);
+                    var report = await _renderService.RenderByNameAsync("/purchase-orders/purchase-order/report", reportDto, cancellationToken);
 
-                    Dictionary<string, object> dataSources = new Dictionary<string, object>();
-                    dataSources.Add("PurchaseOrderDataSet", new List<PurchaseOrder>() { purchaseOrder });
-                    dataSources.Add("PurchaseOrderItemDataSet", purchaseOrder.PurchaseOrderItems);
-
-
-                    byte[] barcodeImage = _barcodeGenerator.GenerateBarcode(purchaseOrder.Barcode);
-                    dataSources.Add("BarcodeDataSet", new List<object>() { new { BarcodeImage = barcodeImage } });
-                    
-
-                    var result = _reportGenerator.GenerateReport(path, renderType, dataSources: dataSources);
-                    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
+                    return File(report.Content, report.Meta.ContentType);
                 },
-                f1: notFound => NotFound()
-                );
-            }, cancellationToken: cancellationToken);
+                f1: async notFound => NotFound()
+            );
         }
 
 

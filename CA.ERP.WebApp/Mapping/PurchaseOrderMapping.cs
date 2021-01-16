@@ -19,6 +19,11 @@ namespace CA.ERP.WebApp.Mapping
 
             CreateMap<PurchaseOrder, Dto.PurchaseOrder.PurchaseOrderView>();
             CreateMap<PurchaseOrderItem, Dto.PurchaseOrder.PurchaseOrderItemView> ();
+
+            //report dto
+            CreateMap<PurchaseOrder, ReportDto.PurchaseOrder>()
+                .ForMember(src => src.Date, cfg => cfg.MapFrom(dest => dest.CreatedAt));
+            CreateMap<PurchaseOrderItem, ReportDto.PurchaseOrderItem>();
         }
     }
 }

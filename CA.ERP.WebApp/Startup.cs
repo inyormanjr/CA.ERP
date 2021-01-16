@@ -37,6 +37,10 @@ using CA.ERP.WebApp.ActionFilters;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Shared;
+using System.Runtime.InteropServices;
 
 namespace CA.ERP.WebApp
 {
@@ -119,6 +123,21 @@ namespace CA.ERP.WebApp
                         .AllowCredentials();
                 } );
             });
+
+            services.AddJsReport(new LocalReporting()
+              .UseBinary(GetJsReportBinary())
+              .KillRunningJsReportProcesses()
+              .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "jsreport"))
+              .Configure((cfg) => {
+                  cfg.AllowedLocalFilesAccess();
+                  cfg.FileSystemStore();
+                  cfg.BaseUrlAsWorkingDirectory();
+                  return cfg;
+              })
+              .AsUtility()
+              .Create()
+            );
+
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
@@ -316,6 +335,21 @@ namespace CA.ERP.WebApp
             }
             
             
+        }
+
+        public static IReportingBinary GetJsReportBinary()
+        {
+            IReportingBinary reportingBinary;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                reportingBinary = jsreport.Binary.JsReportBinary.GetBinary();
+            }
+            else
+            {
+                reportingBinary = jsreport.Binary.Linux.JsReportBinary.GetBinary();
+            }
+            return reportingBinary;
+
         }
     }
 }
