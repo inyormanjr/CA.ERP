@@ -30,6 +30,12 @@ namespace CA.ERP.DataAccess
         public DbSet<StockInventory> StockInventories { get; set; }
         public DbSet<StockMove> StockMoves { get; set; }
         public DbSet<StockCounter> StockCounters { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<CashPaymentDetail> CashPaymentDetails { get; set; }
+        public DbSet<CardPaymentDetail> CardPaymentDetails { get; set; }
+        public DbSet<ChequePaymentDetail> ChequePaymentDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,6 +54,12 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new StockInventoryMapping());
             builder.ApplyConfiguration(new StockMoveMapping());
             builder.ApplyConfiguration(new StockCounterMapping());
+            builder.ApplyConfiguration(new BankMapping());
+            builder.ApplyConfiguration(new TransactionMapping());
+            builder.ApplyConfiguration(new PaymentMapping());
+            builder.ApplyConfiguration(new CashPaymentDetailMapping());
+            builder.ApplyConfiguration(new CardPaymentDetailMapping());
+            builder.ApplyConfiguration(new ChequePaymentDetailMapping());
             base.OnModelCreating(builder);
         }
 
