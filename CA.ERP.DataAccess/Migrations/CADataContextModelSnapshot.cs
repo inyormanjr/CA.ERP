@@ -298,7 +298,6 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SerialNumber")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -331,7 +330,8 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasIndex("PurchaseOrderItemId");
 
                     b.HasIndex("SerialNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[SerialNumber] IS NOT NULL");
 
                     b.HasIndex("StockNumber")
                         .IsUnique();
@@ -339,6 +339,23 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasIndex("StockReceiveId");
 
                     b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockCounter", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<int>("Counter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("StockCounters");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockInventory", b =>

@@ -47,7 +47,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
         private bool NoDuplicateSerialNumber(List<Stock> stocks)
         {
-            return stocks.GroupBy(s => s.SerialNumber).All(s => s.Count() == 1);
+            return stocks.Where(s=>s.SerialNumber != null).GroupBy(s => s.SerialNumber).All(s => s.Count() == 1);
         }
 
         private async Task<bool> branchExist(Guid branchId, CancellationToken cancellationToken)

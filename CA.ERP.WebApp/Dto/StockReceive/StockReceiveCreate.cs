@@ -16,6 +16,6 @@ namespace CA.ERP.WebApp.Dto.StockReceive
         public Guid SupplierId { get; set; }
 
         public List<StockCreate> Stocks { get; set; } = new List<StockCreate>();
-
+        public string DeliveryReference { get; set; }
     }
 }

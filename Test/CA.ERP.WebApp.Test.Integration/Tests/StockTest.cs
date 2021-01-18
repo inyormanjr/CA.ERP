@@ -102,6 +102,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             content.Should().NotBeNull();
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
             content.Data.Should().OnlyContain(s => s.StockNumber.StartsWith(stockNumberStart), $"searching for serial starting with {stockNumberStart}");
+            content.Should().NotBeNull();
+            content.PageSize.Should().Equals(10);
+            content.TotalCount.Should().BeGreaterThan(0);
         }
 
 

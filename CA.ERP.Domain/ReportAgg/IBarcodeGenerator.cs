@@ -7,6 +7,6 @@ namespace CA.ERP.Domain.ReportAgg
 {
     public interface IBarcodeGenerator : IHelper
     {
-        byte[] GenerateBarcode(string barcode);
+        string GenerateBarcode(string barcode);
     }
 }

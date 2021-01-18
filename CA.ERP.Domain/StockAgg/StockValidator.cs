@@ -23,7 +23,7 @@ namespace CA.ERP.Domain.StockAgg
             _stockRepository = stockRepository;
 
             RuleFor(s => s.StockNumber).NotEmpty().MustAsync(StockNumberNotExist).WithMessage("Duplicate stock number");
-            RuleFor(s => s.SerialNumber).NotEmpty().MustAsync(SerialNumberNotExist).WithMessage("Duplicate serial number");
+            RuleFor(s => s.SerialNumber).MustAsync(SerialNumberNotExist).WithMessage("Duplicate serial number");
             RuleFor(s => s.CostPrice).GreaterThanOrEqualTo(0);
             RuleFor(s => s.MasterProductId).MustAsync(MasterProductExist).WithMessage("MasterProduct must exist"); ;
             RuleFor(s => s.PurchaseOrderItemId).MustAsync(PurchaseOrderNotExist).WithMessage("Stock number must exist"); ;
@@ -37,7 +37,7 @@ namespace CA.ERP.Domain.StockAgg
 
         private async Task<bool> SerialNumberNotExist(Stock stock, string serialNumber, CancellationToken cancellationToken)
         {
-            return !(await _stockRepository.SerialNumberExist(serialNumber, stock.Id));
+            return serialNumber == null || !(await _stockRepository.SerialNumberExist(serialNumber, stock.Id));
         }
 
         private async Task<bool> MasterProductExist(Guid masterProductId, CancellationToken cancellationToken)

@@ -1,8 +1,8 @@
-﻿using AspNetCore.Reporting;
-using CA.ERP.Domain.BranchAgg;
+﻿using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.ReportAgg;
 using CA.ERP.Domain.StockAgg;
 using FluentValidation.Results;
+using jsreport.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,28 +28,30 @@ namespace CA.ERP.WebApp.Controllers
         private readonly BranchService _branchService;
         private readonly StockService _stockService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IReportGenerator _reportGenerator;
+        private readonly IRenderService _renderService;
 
-        public StockController(IServiceProvider serviceProvider, BranchService branchService , StockService stockService, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator) : base(serviceProvider)
+        public StockController(IServiceProvider serviceProvider, BranchService branchService , StockService stockService, IWebHostEnvironment webHostEnvironment, IRenderService renderService) : base(serviceProvider)
         {
             _branchService = branchService;
             _stockService = stockService;
             _webHostEnvironment = webHostEnvironment;
-            _reportGenerator = reportGenerator;
+            _renderService = renderService;
         }
 
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Stock.StockView>>> Get(string brand = null, string model = null, string stockNumber = null, string serial = null, int itemPerPage = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Stock.StockView>>> Get(string brand = null, string model = null, string stockNumber = null, string serial = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
         {
-            var paginatedStocks = await _stockService.GetStocksAsync(brand, model, stockNumber, serial, itemPerPage, page, cancellationToken);
+            var paginatedStocks = await _stockService.GetStocksAsync(brand, model, stockNumber, serial, pageSize, page, cancellationToken);
             var dtoStocks = _mapper.Map<List<Dto.Stock.StockView>>(paginatedStocks.Data);
             var response = new Dto.GetManyResponse<Dto.Stock.StockView>()
             {
                 CurrentPage = paginatedStocks.CurrentPage,
                 TotalPage = paginatedStocks.TotalPage,
-                Data = dtoStocks
+                Data = dtoStocks,
+                PageSize = paginatedStocks.PageSize,
+                TotalCount = paginatedStocks.TotalCount,
             };
             return Ok(response);
         }
@@ -101,31 +103,25 @@ namespace CA.ERP.WebApp.Controllers
         [HttpGet("PrintStockList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Print([FromQuery]Guid branchId, [FromQuery]List<Guid> stockIds, RenderType renderType = RenderType.Pdf, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Print([FromQuery]Guid branchId, [FromQuery]List<Guid> stockIds, CancellationToken cancellationToken = default)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return StatusCode(501);
-            }
+
 
             var branchOption = await _branchService.GetOneAsync(branchId);
             return await branchOption.Match<Task<IActionResult>>(
                 f0: async branch => {
-
-                    var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports", "StockListReport.rdlc");
-
                     List<Stock> stocks = await _stockService.GetManyAsync(branchId, stockIds.ToList());
 
-                    Dictionary<string, object> dataSources = new Dictionary<string, object>();
-                    dataSources.Add("StocksDataSet", stocks);
 
-                    Dictionary<string, string> parameters = new Dictionary<string, string>();
-                    parameters.Add("BranchName", branch.Name);
-                    parameters.Add("BranchContact", branch.Contact);
-                    parameters.Add("ReportDate", DateTime.Now.ToShortDateString());
+                    var reportDto = new ReportDto.StockList();
+                    reportDto.BranchContact = branch.Contact;
+                    reportDto.BranchName = branch.Name;
+                    reportDto.Date = DateTime.Now;
+                    reportDto.Stocks = _mapper.Map<List<ReportDto.StockListItem>>(stocks);
 
-                    var result = _reportGenerator.GenerateReport(path, renderType, parameters: parameters, dataSources: dataSources);
-                    return File(result.MainStream, _reportGenerator.GetMimeTypeFor(renderType));
+                    var report = await _renderService.RenderByNameAsync("/stocks/stock-list/report", reportDto, cancellationToken);
+
+                    return File(report.Content, report.Meta.ContentType);
                 },
                 f1: async _ => NotFound()
                 );
