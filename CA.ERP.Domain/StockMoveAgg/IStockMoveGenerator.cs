@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Domain.StockInventoryAgg
+namespace CA.ERP.Domain.StockMoveAgg
 {
-    public interface IStockInventoryCalculator : IHelper
+    public interface IStockMoveGenerator : IHelper
     {
     }
 }

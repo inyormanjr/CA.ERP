@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.DataAccess.Entities
 {
-    public class StockMove
+    public class StockMove : EntityBase
     {
         public Guid MasterProductId { get; set; }
         public Guid BranchId { get; set; }

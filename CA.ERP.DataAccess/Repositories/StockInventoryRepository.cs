@@ -31,20 +31,25 @@ namespace CA.ERP.DataAccess.Repositories
             if (dalStockInventory != null)
             {
                 _mapper.Map(stockInventory, dalStockInventory);
+                //set entity state to modified because for some reason auto mapper sets the state to deleted.
+                _context.Entry(dalStockInventory).State = EntityState.Modified;
             }
             else
             {
                 dalStockInventory = _mapper.Map<Dal.StockInventory>(stockInventory);
                 _context.StockInventories.Add(dalStockInventory);
+                
             }
+
         }
 
-        public async Task<OneOf<StockInventory, None>> GetOneAsync(Guid masterProductId, Guid branchId)
+        public async Task<OneOf<StockInventory, None>> GetOneNoTrackingAsync(Guid masterProductId, Guid branchId)
         {
             OneOf<StockInventory, None> ret = default(None);
-            var dalStockInventory = await _context.StockInventories.FirstOrDefaultAsync(s => s.MasterProductId == masterProductId && s.BranchId == branchId);
+            var dalStockInventory = await _context.StockInventories.AsNoTracking().FirstOrDefaultAsync(s => s.MasterProductId == masterProductId && s.BranchId == branchId);
             if (dalStockInventory != null)
             {
+                //clear branch
                 ret = _mapper.Map<StockInventory>(dalStockInventory);
             }
             return ret;

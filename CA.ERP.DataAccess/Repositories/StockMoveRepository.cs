@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CA.ERP.Common.Extensions;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -23,10 +24,17 @@ namespace CA.ERP.DataAccess.Repositories
             _mapper = mapper;
         }
 
+        public async Task AddStockMoveAsync(StockMove stockMove, CancellationToken cancellationToken)
+        {
+            stockMove.ThrowIfNullArgument(nameof(stockMove));
+            var dalStockMove = _mapper.Map<Entities.StockMove>(stockMove);
+            _context.StockMoves.Add(dalStockMove);
+        }
+
         public async Task<OneOf<StockMove, None>> GetLatestStockMoveAsync(Guid masterProductId, Guid branchId, CancellationToken cancellationToken)
         {
             OneOf<StockMove, None> ret = default(None);
-            var latestStockMove = await _context.StockMoves.Where(sm => sm.MasterProductId == masterProductId && sm.BranchId == branchId).OrderByDescending(sm => sm.MoveDate).FirstOrDefaultAsync(cancellationToken);
+            var latestStockMove = await _context.StockMoves.Where(sm => sm.MasterProductId == masterProductId && sm.BranchId == branchId).OrderByDescending(sm => sm.MoveDate).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (latestStockMove != null)
             {
                 ret = _mapper.Map<StockMove>(latestStockMove);

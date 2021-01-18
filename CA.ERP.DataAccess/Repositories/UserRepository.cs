@@ -38,10 +38,10 @@ namespace CA.ERP.DataAccess.Repositories
             return result;
         }
 
-        public async Task<OneOf<User, None>> GetUserWithBranchesAsync(Guid userId)
+        public async Task<OneOf<User, None>> GetUserWithBranchesAsync(Guid userId, CancellationToken cancellationToken)
         {
             OneOf<User, None> ret = default(None);
-            var user = await _context.Users.Include(u => u.UserBranches).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.Include(u => u.UserBranches).ThenInclude(ub=>ub.Branch).FirstOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
             if (user != null)
             {
                 ret = _mapper.Map<User>(user);

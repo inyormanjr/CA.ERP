@@ -12,5 +12,6 @@ namespace CA.ERP.Domain.StockMoveAgg
     public interface IStockMoveRepository : IRepository
     {
         Task<OneOf<StockMove, None>> GetLatestStockMoveAsync(Guid masterProductId, Guid branchId, CancellationToken cancellationToken = default);
+        Task AddStockMoveAsync(StockMove newStockMove, CancellationToken cancellationToken);
     }
 }
