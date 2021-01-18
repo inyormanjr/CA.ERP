@@ -56,6 +56,8 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                 {
                     services.AddDbContext<CADataContext>(options =>
                     {
+
+                        options.EnableSensitiveDataLogging();
                         options.UseInMemoryDatabase("InMemoryDbForTesting");
                     });
                 }
