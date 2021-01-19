@@ -26,6 +26,7 @@ WORKDIR /src
 COPY ["CA.ERP.WebApp/CA.ERP.WebApp.csproj", "CA.ERP.WebApp/"]
 COPY ["CA.ERP.DataAccess/CA.ERP.DataAccess.csproj", "CA.ERP.DataAccess/"]
 COPY ["CA.ERP.Domain/CA.ERP.Domain.csproj", "CA.ERP.Domain/"]
+COPY ["CA.ERP.Common/CA.ERP.Common.csproj", "CA.ERP.Common/"]
 RUN dotnet restore "CA.ERP.WebApp/CA.ERP.WebApp.csproj"
 COPY . .
 WORKDIR "/src/CA.ERP.WebApp"
