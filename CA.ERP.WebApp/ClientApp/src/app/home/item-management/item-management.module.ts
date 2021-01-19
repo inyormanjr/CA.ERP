@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { ItemManagementRoutingModule } from './item-management-routing.module';
 import { ItemManagementViewComponent } from './item-management-view/item-management-view.component';
+import { ItemListComponent } from './item-management-view/item-list/item-list.component';
+import { ItemEntryComponent } from './item-management-view/item-entry/item-entry.component';
 
 
 @NgModule({
-  declarations: [ItemManagementViewComponent],
+  declarations: [ItemManagementViewComponent, ItemListComponent, ItemEntryComponent],
   imports: [
     CommonModule,
     ItemManagementRoutingModule
