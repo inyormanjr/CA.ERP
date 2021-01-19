@@ -5,6 +5,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 @NgModule({
   declarations: [],
   imports: [
@@ -14,6 +15,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     NgxPaginationModule,
+    TabsModule.forRoot()
   ],
   exports: [
     BsDatepickerModule,
@@ -21,6 +23,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ModalModule,
     NgxDatatableModule,
     NgxPaginationModule,
+    TabsModule
   ],
 })
 export class NgxBootstrapModulesModule {}
