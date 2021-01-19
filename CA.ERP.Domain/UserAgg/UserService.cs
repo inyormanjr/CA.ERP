@@ -171,6 +171,12 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
+        public async override Task<OneOf<User, NotFound>> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var userResult = await _userRepository.GetUserWithBranchesAsync(id, cancellationToken);
+            return userResult.Match<OneOf<User, NotFound>>(f0: user => user, f1: _ => default(NotFound));
+        }
+
 
         public async Task<OneOf<User, None>> AuthenticateUser(string username, string password, CancellationToken cancellationToken = default)
         {

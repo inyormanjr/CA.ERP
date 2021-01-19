@@ -17,6 +17,5 @@ namespace CA.ERP.Domain.StockInventoryAgg
         public MasterProduct MasterProduct { get; set; }
         public Branch Branch { get; set; }
 
-        public List<StockMove> StockMoves { get; set; } = new List<StockMove>();
     }
 }

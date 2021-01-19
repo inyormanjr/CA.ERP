@@ -48,53 +48,59 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldCreateStockReceiveSuccesfully()
         {
+            int i = 1;
+            CADataContext dbContext;
+            Guid purchaseOrderId;
+            PurchaseOrder purchaseOrder;
+            List<PurchaseOrderItem> purchaseOrderItems;
             using (var scope = _factory.Services.CreateScope())
             {
-
-                int i = 1;
-
-                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
-
-                Guid purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
-
-                var purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
-
-                StockReceiveCreate data = new StockReceiveCreate()
-                {
-                    BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4"),
-                    StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
-                    PurchaseOrderId = purchaseOrderId,
-                    SupplierId = purchaseOrder.SupplierId,
-                    DeliveryReference = "Ref#" + i.ToString()
-                };
-
-                var purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == data.PurchaseOrderId).ToList();
-                foreach (var purchaseOrderItem in purchaseOrderItems)
-                {
-                    data.Stocks.Add(new StockCreate()
-                    {
-                        CostPrice = purchaseOrderItem.CostPrice,
-                        MasterProductId = purchaseOrderItem.MasterProductId,
-                        PurchaseOrderItemId = purchaseOrderItem.Id,
-                        SerialNumber = "XMN" + i.ToString("00000"),
-                        StockNumber = "BBI" + i.ToString("00000"),
-                        StockStatus = Domain.StockAgg.StockStatus.Available
-                    });
-                    i++;
-                }
-                var request = new CreateStockReceiveRequest()
-                {
-                    Data = data
-                };
-                var response = await _client.PostAsJsonAsync("api/StockReceive", request);
-
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-                var content = await response.Content.ReadAsAsync<CreateResponse>();
-
-                content.Should().NotBeNull();
-                content.Id.Should().NotBe(Guid.Empty);
+                dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                purchaseOrderId = Guid.Parse("6b9e9264-f04a-4885-a649-dba5f0232227");
+                purchaseOrder = dbContext.PurchaseOrders.FirstOrDefault(po => po.Id == purchaseOrderId);
+                purchaseOrderItems = dbContext.PurchaseOrderItems.Where(poi => poi.PurchaseOrderId == purchaseOrderId).Take(1).ToList();
             }
+
+
+
+
+
+            StockReceiveCreate data = new StockReceiveCreate()
+            {
+                BranchId = Guid.Parse("56e5e4fc-c583-4186-a288-55392a6946d4"),
+                StockSource = Domain.StockReceiveAgg.StockSource.PurchaseOrder,
+                PurchaseOrderId = purchaseOrderId,
+                SupplierId = purchaseOrder.SupplierId,
+                DeliveryReference = "Ref#" + i.ToString()
+            };
+
+
+            foreach (var purchaseOrderItem in purchaseOrderItems)
+            {
+                data.Stocks.Add(new StockCreate()
+                {
+                    CostPrice = purchaseOrderItem.CostPrice,
+                    MasterProductId = purchaseOrderItem.MasterProductId,
+                    PurchaseOrderItemId = purchaseOrderItem.Id,
+                    SerialNumber = "XMN" + i.ToString("00000"),
+                    StockNumber = "BBI" + i.ToString("00000"),
+                    StockStatus = Domain.StockAgg.StockStatus.Available
+                });
+                i++;
+            }
+            var request = new CreateStockReceiveRequest()
+            {
+                Data = data
+            };
+            var response = await _client.PostAsJsonAsync("api/StockReceive", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<CreateResponse>();
+
+            content.Should().NotBeNull();
+            content.Id.Should().NotBe(Guid.Empty);
+
         }
 
         [Fact]

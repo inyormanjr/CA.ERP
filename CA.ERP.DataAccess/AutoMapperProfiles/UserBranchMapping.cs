@@ -14,8 +14,11 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public UserBranchMapping()
         {
-            CreateMap<Dal.UserBranch, UserBranch>();
+            CreateMap<Dal.UserBranch, UserBranch>()
+                .ForMember(dest => dest.Name, cfg => cfg.MapFrom(src => src.Branch.Name))
+                .ForMember(dest => dest.Code, cfg => cfg.MapFrom(src => src.Branch.Code));
             CreateMap<UserBranch, Dal.UserBranch>();
+                
         }
     }
 }

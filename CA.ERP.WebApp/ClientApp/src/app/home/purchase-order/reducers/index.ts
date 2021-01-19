@@ -7,6 +7,7 @@ import {
   MetaReducer,
   on
 } from '@ngrx/store';
+import { PaginationResult } from 'src/app/models/data.pagination';
 import { environment } from 'src/environments/environment';
 import { PoActionTypes } from '../actions/po.actions.selector';
 import { PurchaseOrder } from '../models/new-purchase-order';
@@ -19,6 +20,7 @@ export interface PurchaseOrderState {
   isLoading: boolean;
   selectedSupplier: SupplierView;
   purchaseOrderList: PurchaseOrder[];
+  purchaseOrdersPaginationResult: PaginationResult<PurchaseOrder[]>;
   brandsWithModels: BrandWithMasterProducts[];
 
 }
@@ -26,6 +28,7 @@ export interface PurchaseOrderState {
 export const purchaseOrderInitialState: PurchaseOrderState = {
   isLoading: false,
   selectedSupplier: undefined,
+  purchaseOrdersPaginationResult: undefined,
   purchaseOrderList: undefined,
   brandsWithModels: undefined
 }
@@ -63,6 +66,12 @@ export const reducers = createReducer(
       brandsWithModels: action.brandsWithModels,
       isLoading: false
     };
+  }),
+  on(PoActionTypes.loadPurchaseOrderPaginationResult, (state, action) => {
+    return {
+      ...state,
+      purchaseOrdersPaginationResult: action.paginationResult
+    }
   })
 );
 

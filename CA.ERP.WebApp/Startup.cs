@@ -37,6 +37,12 @@ using CA.ERP.WebApp.ActionFilters;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Shared;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
 
 namespace CA.ERP.WebApp
 {
@@ -119,6 +125,21 @@ namespace CA.ERP.WebApp
                         .AllowCredentials();
                 } );
             });
+
+            services.AddJsReport(new LocalReporting()
+              .UseBinary(GetJsReportBinary())
+              .KillRunningJsReportProcesses()
+              .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "jsreport"))
+              .Configure((cfg) => {
+                  cfg.AllowedLocalFilesAccess();
+                  cfg.FileSystemStore();
+                  cfg.BaseUrlAsWorkingDirectory();
+                  return cfg;
+              })
+              .AsUtility()
+              .Create()
+            );
+
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
 
@@ -242,6 +263,13 @@ namespace CA.ERP.WebApp
             //register textr encoding
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.KnownNetworks.Clear(); //Loopback by default, this should be temporary
+                options.KnownProxies.Clear();
+            });
+
+
 
 
         }
@@ -249,6 +277,10 @@ namespace CA.ERP.WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -261,7 +293,11 @@ namespace CA.ERP.WebApp
             }
 
             //temp disable
-            app.UseHttpsRedirection();
+            if (env.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseStaticFiles();
             
             app.UseRouting();
@@ -271,8 +307,9 @@ namespace CA.ERP.WebApp
             app.UseAuthentication();
             app.UseAuthorization();
 
-
             
+
+
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -316,6 +353,21 @@ namespace CA.ERP.WebApp
             }
             
             
+        }
+
+        public static IReportingBinary GetJsReportBinary()
+        {
+            IReportingBinary reportingBinary;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                reportingBinary = jsreport.Binary.JsReportBinary.GetBinary();
+            }
+            else
+            {
+                reportingBinary = jsreport.Binary.Linux.JsReportBinary.GetBinary();
+            }
+            return reportingBinary;
+
         }
     }
 }

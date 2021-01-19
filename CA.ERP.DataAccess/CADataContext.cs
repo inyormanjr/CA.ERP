@@ -12,7 +12,6 @@ namespace CA.ERP.DataAccess
     {
        public CADataContext(DbContextOptions options): base(options)
         {
-
         }
 
        public  DbSet<Branch> Branches { get; set; }

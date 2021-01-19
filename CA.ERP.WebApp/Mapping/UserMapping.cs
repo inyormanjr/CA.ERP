@@ -15,6 +15,8 @@ namespace CA.ERP.WebApp.Mapping
             CreateMap<Dto.User.UserCreate, User>();
 
             CreateMap<User, Dto.User.UserView>();
+
+            CreateMap<UserBranch, Dto.User.UserBranchView>();
         }
     }
 }

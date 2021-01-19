@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { PaginationResult } from 'src/app/models/data.pagination';
 import { PurchaseOrder } from '../models/new-purchase-order';
 import { BrandWithMasterProducts } from '../supplier/models/brandWithMasterProducts';
 import { SupplierView } from '../supplier/models/supplier-view';
@@ -46,6 +47,11 @@ export const NewPurchaseOrderCreated = createAction('[New Purchase Order]  New P
 export const loadPurchaseOrdersSuccess = createAction(
   '[PurchaseOrder] Load PurchaseOrders Success',
   props<{ data: any }>()
+);
+
+export const loadPurchaseOrderPaginationResult = createAction(
+  '[Purchase Order] Load pagination result for purchase Order',
+  props<{ paginationResult: PaginationResult<PurchaseOrder[]> }>()
 );
 
 export const loadPurchaseOrdersFailure = createAction(

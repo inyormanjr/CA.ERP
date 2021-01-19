@@ -7,6 +7,8 @@ export const selectPurchaseOrderState = createFeatureSelector<PurchaseOrderState
 
 export const purchaseOrderIsLoding = createSelector(selectPurchaseOrderState, app => app.isLoading);
 
+export const purchaseOrderPaginationResult = createSelector(selectPurchaseOrderState, app => app.purchaseOrdersPaginationResult);
+
 export const selectedSupplier = createSelector(selectPurchaseOrderState, app => app.selectedSupplier);
 
 export const selectBrandsWithModels = createSelector(selectPurchaseOrderState, app => app.brandsWithModels);

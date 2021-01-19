@@ -379,19 +379,29 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockMove", b =>
                 {
-                    b.Property<Guid>("BranchId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("MasterProductId")
+                    b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("ChangeQuantity")
                         .HasPrecision(18, 3)
                         .HasColumnType("decimal(18,3)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("CurrentQuantity")
                         .HasPrecision(18, 3)
                         .HasColumnType("decimal(18,3)");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("MoveCause")
                         .HasColumnType("int");
@@ -403,12 +413,23 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasPrecision(18, 3)
                         .HasColumnType("decimal(18,3)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("StockReceiveId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BranchId", "MasterProductId");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("StockReceiveId");
+
+                    b.HasIndex("BranchId", "MasterProductId");
 
                     b.ToTable("StockMoves");
                 });
@@ -752,7 +773,7 @@ namespace CA.ERP.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CA.ERP.DataAccess.Entities.StockInventory", "StockInventory")
-                        .WithMany("StockMoves")
+                        .WithMany()
                         .HasForeignKey("BranchId", "MasterProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -884,11 +905,6 @@ namespace CA.ERP.DataAccess.Migrations
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
                 {
                     b.Navigation("Stocks");
-                });
-
-            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockInventory", b =>
-                {
-                    b.Navigation("StockMoves");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>

@@ -11,7 +11,7 @@ namespace CA.ERP.Domain.StockInventoryAgg
 {
     public interface IStockInventoryRepository : IRepository
     {
-        Task<OneOf<StockInventory, None>> GetOneAsync(Guid masterProductId, Guid branchId);
+        Task<OneOf<StockInventory, None>> GetOneNoTrackingAsync(Guid masterProductId, Guid branchId);
         Task AddOrUpdateAsync(StockInventory stockInventory, CancellationToken cancellationToken = default);
     }
 }
