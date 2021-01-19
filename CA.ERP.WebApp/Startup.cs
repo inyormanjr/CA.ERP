@@ -125,8 +125,8 @@ namespace CA.ERP.WebApp
                         .AllowCredentials();
                 } );
             });
-
-            services.AddJsReport(new ReportingService("http://jsreportserver:5488"));
+            string reportingServer = Configuration.GetSection("ReportServer")?.Value ?? "http://jsreportserver:5488";
+            services.AddJsReport(new ReportingService(reportingServer));
 
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
