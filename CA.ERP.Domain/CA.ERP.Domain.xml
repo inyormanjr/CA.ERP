@@ -48,18 +48,9 @@
         </member>
         <member name="T:CA.ERP.Domain.PaymentAgg.PaymentType">
             <summary>
-            OnSite = 1,
-            OnDelivery = 2
-            </summary>
-        </member>
-        <member name="F:CA.ERP.Domain.PaymentAgg.PaymentType.OnSite">
-            <summary>
-            When a payment is made on the site
-            </summary>
-        </member>
-        <member name="F:CA.ERP.Domain.PaymentAgg.PaymentType.OnDelivery">
-            <summary>
-            When a payment is made on delivery
+            Down = 1,
+            Installment = 2,
+            Full = 3
             </summary>
         </member>
         <member name="T:CA.ERP.Domain.PaymentAgg.TransactionType">

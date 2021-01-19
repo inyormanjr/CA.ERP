@@ -1,0 +1,60 @@
+<!--
+Invoice dynamically rendered into html using handlebars and converted into pdf
+using chrome-pdf recipe. The styles are extracted into separate asset for
+better readability and later reuse.
+
+Data to this sample are mocked at the design time and should be filled on the
+incoming API request.
+!-->
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <style>
+            {#asset style.css @encoding=utf8}
+            {#asset /shared/styles.css @encoding=utf8}
+        </style>
+    </head>
+    <body>
+        <div class="page container column" >
+            <div class="container column center" >
+                    <img class="logo item" src="{#asset /shared/citi-app-logo.png @encoding=dataURI}" />
+                    <span>{{BranchName}}</span>
+                    <span>{{BranchContact}}</span>
+                    
+                    
+                
+            </div>
+            <div class="container">
+                <div class="box"><span></span></div>
+                <div class="box"><span><h2>Product List</h2></span></div>
+                
+                <div class="box"><span><h3>{{formatDateShort Date}}<h3></span></div> 
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                    <th>Stock Number</th>
+                    <th>Brand Name</th>
+                    <th>Model </th>
+                    <th>Serial Number</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {{#each Stocks}}
+                    <tr>
+                        <td>{{StockNumber}}</td>
+                        <td>{{BrandName}}</td>
+                        <td>{{Model}}</td>
+                        <td>{{SerialNumber}}</td>
+                        <td>{{Status}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+                
+                
+            </table>
+        </div>
+    </body>
+</html>
