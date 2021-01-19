@@ -224,6 +224,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var response = await _client.GetAsync($"api/User/{id}");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var content = await response.Content.ReadAsAsync<UserView>();
+            content.UserBranches.Should().NotBeEmpty();
+            content.UserBranches.Should().OnlyContain(us => !string.IsNullOrEmpty(us.Name));
         }
 
         [Fact]
@@ -246,6 +249,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var content = await response.Content.ReadAsAsync<Dto.GetManyResponse<Dto.User.UserView>>();
             content.Should().NotBeNull();
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
+            
         }
     }
 }

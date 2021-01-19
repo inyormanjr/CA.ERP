@@ -15,6 +15,5 @@ namespace CA.ERP.DataAccess.Entities
         public MasterProduct MasterProduct { get; set; }
         public Branch Branch { get; set; }
 
-        public List<StockMove> StockMoves { get; set; }
     }
 }

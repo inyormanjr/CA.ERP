@@ -18,7 +18,7 @@ namespace CA.ERP.Domain.StockMoveAgg
         public decimal CurrentQuantity { get; set; }
         public Guid? StockReceiveId { get; set; }
 
-        public StockInventory StockInventory { get; set; }
+        public StockInventoryAgg.StockInventory StockInventory { get; set; }
 
         public StockReceive StockReceive { get; set; }
     }

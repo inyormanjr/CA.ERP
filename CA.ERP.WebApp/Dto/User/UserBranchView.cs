@@ -1,17 +1,16 @@
-﻿using CA.ERP.Domain.BranchAgg;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CA.ERP.Domain.UserAgg
+namespace CA.ERP.WebApp.Dto.User
 {
-    public class UserBranch
+    public class UserBranchView
     {
         public Guid UserId { get; set; }
         public Guid BranchId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-        public User User { get; set; }
-        public Branch Branch { get; set; }
+        
     }
 }

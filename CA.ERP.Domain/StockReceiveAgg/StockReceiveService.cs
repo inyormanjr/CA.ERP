@@ -23,7 +23,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         private readonly IStockMoveRepository _stockMoveRepository;
         private readonly StockInventoryService _stockInventoryService;
         private readonly IStockReceiveFactory _stockReceiveFactory;
-        private readonly IStockInventoryStockReceiveCalculator _stockInventoryStockReceiveCalculator;
+        private readonly IStockReceiveStockMoveGenerator _stockInventoryStockReceiveCalculator;
         private readonly IBranchPermissionValidator<StockReceive> _branchPermissionValidator;
 
         public StockReceiveService(
@@ -35,7 +35,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             IUserHelper userHelper,
             StockInventoryService stockInventoryService,
             IStockReceiveFactory stockReceiveFactory,
-            IStockInventoryStockReceiveCalculator stockInventoryStockReceiveCalculator,
+            IStockReceiveStockMoveGenerator stockInventoryStockReceiveCalculator,
             IBranchPermissionValidator<StockReceive> branchPermissionValidator) 
             : base(unitOfWork, repository, validator, userHelper)
         {
@@ -67,11 +67,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
                 //compute inventories
                 foreach (var stock in stockReceive.Stocks)
                 {
-                    var stockInventory = await _stockInventoryService.GetStockInventoryAsync(stock.MasterProductId, stock.BranchId);
-                    var prevStockMoveOption = await _stockMoveRepository.GetLatestStockMoveAsync(stock.MasterProductId, stock.BranchId, cancellationToken);
-                    StockMove prevStockMove = prevStockMoveOption.Match(f0: sm => sm, f1: _ => null);
-                    stockInventory = _stockInventoryStockReceiveCalculator.CalculateStockInventory(stockInventory, stockReceive.Id, prevStockMove, stock);
-                    await _stockInventoryRepository.AddOrUpdateAsync(stockInventory);
+                    await _stockInventoryService.CalculateStockInventoryForStockReceive(stockReceive.Id,  stock, cancellationToken);
                 }
                 ret = await _repository.AddAsync(stockReceive, cancellationToken);
                 await _unitOfWork.CommitAsync();

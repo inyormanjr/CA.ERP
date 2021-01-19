@@ -11,7 +11,7 @@ namespace CA.ERP.DataAccess.EFMapping
     {
         public void Configure(EntityTypeBuilder<StockMove> builder)
         {
-            builder.HasKey(t => new { t.BranchId, t.MasterProductId });
+            builder.HasKey(t => t.Id);
 
             builder.Property(t => t.PreviousQuantity)
                 .HasPrecision(18, 3);
@@ -21,7 +21,7 @@ namespace CA.ERP.DataAccess.EFMapping
                 .HasPrecision(18, 3);
 
             builder.HasOne(t => t.StockInventory)
-                .WithMany(t => t.StockMoves)
+                .WithMany()
                 .HasForeignKey(t => new { t.BranchId, t.MasterProductId })
                 .OnDelete(DeleteBehavior.Restrict);
 
