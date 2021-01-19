@@ -29,10 +29,14 @@ export class UserService implements ServiceBase<UserView> {
       map((res : any) =>{
         return res.id;
       })
-    )
+    );
   }
   update(id: any, updateRequest: any): Observable<any> {
-    throw new Error('Method not implemented.');
+    return this.http.put<any>(this.baseUrl+id,updateRequest).pipe(
+      map((res)=>{
+        return res;
+      })
+    );
   }
   delete(id: any) {
     throw new Error('Method not implemented.');

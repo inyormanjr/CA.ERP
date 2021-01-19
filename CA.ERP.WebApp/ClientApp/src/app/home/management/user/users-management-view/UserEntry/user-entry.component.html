@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" *ngIf="fc.id.value.length === 0">
+                    <div class="row" *ngIf="!userEntryForm.value.id">
                         <div class="form-group col-md-6">
                             <label for="">Password</label>
                             <input formControlName="password"
@@ -141,10 +141,12 @@
                     </div>
                 </tab>
             </tabset>
-            <div class="row">
+
+            <div class="row mt-2">
                 <div class="col-md-12 d-flex flex-row justify-content-end">
                     <button (click)="back()" type="button" class="btn btn-outline-danger mr-2">Back</button>
-                    <a (click)="newUser()" class="btn btn-success" role="button">Save</a>
+                    <a *ngIf="!userEntryForm.value.id" (click)="newUser()"  class="btn btn-success" role="button">Save</a>
+                    <a *ngIf="userEntryForm.value.id" (click)="updateUser()"  class="btn btn-success" role="button">Update</a>
                 </div>
             </div>
         </form>
