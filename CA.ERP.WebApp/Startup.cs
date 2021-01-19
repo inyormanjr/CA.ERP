@@ -263,11 +263,6 @@ namespace CA.ERP.WebApp
             //register textr encoding
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.KnownNetworks.Clear(); //Loopback by default, this should be temporary
-                options.KnownProxies.Clear();
-            });
 
 
 
