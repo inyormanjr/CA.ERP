@@ -5,6 +5,7 @@ using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using jsreport.AspNetCore;
 using jsreport.Shared;
+using jsreport.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,14 +32,14 @@ namespace CA.ERP.WebApp.Controllers
     {
         private readonly PurchaseOrderService _purchaseOrderService;
         private readonly IBarcodeGenerator _barcodeGenerator;
-        private readonly IRenderService _renderService;
+        private readonly IReportGenerator _reportGenerator;
 
-        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService,  IBarcodeGenerator barcodeGenerator, IRenderService renderService )
+        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService,  IBarcodeGenerator barcodeGenerator, IReportGenerator reportGenerator )
             :base(serviceProvider)
         {
             _purchaseOrderService = purchaseOrderService;
             _barcodeGenerator = barcodeGenerator;
-            _renderService = renderService;
+            _reportGenerator = reportGenerator;
         }
 
         /// <summary>
@@ -189,9 +190,13 @@ namespace CA.ERP.WebApp.Controllers
                 {
                     var reportDto = _mapper.Map<ReportDto.PurchaseOrder>(purchaseOrder);
                     reportDto.Barcode = _barcodeGenerator.GenerateBarcode(purchaseOrder.Barcode);
-                    var report = await _renderService.RenderByNameAsync("/purchase-orders/purchase-order/report", reportDto, cancellationToken);
-
-                    return File(report.Content, report.Meta.ContentType);
+                    
+                    string reportName = "PurchaseOrder";
+                    var reportResult = await _reportGenerator.GenerateReport(reportName, reportDto);
+                    return reportResult.Match<IActionResult>(
+                        f0: report =>  File(report.Content, report.ContentType),
+                        f1: _ => NotFound()
+                    );
                 },
                 f1: async notFound => NotFound()
             );
