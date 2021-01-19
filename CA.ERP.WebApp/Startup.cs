@@ -38,11 +38,11 @@ using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using jsreport.AspNetCore;
-using jsreport.Local;
 using jsreport.Shared;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+using jsreport.Client;
 
 namespace CA.ERP.WebApp
 {
@@ -125,20 +125,8 @@ namespace CA.ERP.WebApp
                         .AllowCredentials();
                 } );
             });
-
-            services.AddJsReport(new LocalReporting()
-              .UseBinary(GetJsReportBinary())
-              .KillRunningJsReportProcesses()
-              .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "jsreport"))
-              .Configure((cfg) => {
-                  cfg.AllowedLocalFilesAccess();
-                  cfg.FileSystemStore();
-                  cfg.BaseUrlAsWorkingDirectory();
-                  return cfg;
-              })
-              .AsUtility()
-              .Create()
-            );
+            string reportingServer = Configuration.GetSection("ReportServer")?.Value ?? "http://jsreportserver:5488";
+            services.AddJsReport(new ReportingService(reportingServer));
 
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
@@ -263,11 +251,6 @@ namespace CA.ERP.WebApp
             //register textr encoding
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.KnownNetworks.Clear(); //Loopback by default, this should be temporary
-                options.KnownProxies.Clear();
-            });
 
 
 
@@ -344,30 +327,16 @@ namespace CA.ERP.WebApp
                     // see https://go.microsoft.com/fwlink/?linkid=864501
 
                     spa.Options.SourcePath = "ClientApp";
-
-                    if (env.IsDevelopment())
-                    {
-                        spa.UseAngularCliServer(npmScript: "start");
-                    }
+                    spa.UseAngularCliServer(npmScript: "start");
+                    //if (env.IsDevelopment())
+                    //{
+                    //    spa.UseAngularCliServer(npmScript: "start");
+                    //}
                 });
             }
             
             
         }
 
-        public static IReportingBinary GetJsReportBinary()
-        {
-            IReportingBinary reportingBinary;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                reportingBinary = jsreport.Binary.JsReportBinary.GetBinary();
-            }
-            else
-            {
-                reportingBinary = jsreport.Binary.Linux.JsReportBinary.GetBinary();
-            }
-            return reportingBinary;
-
-        }
     }
 }

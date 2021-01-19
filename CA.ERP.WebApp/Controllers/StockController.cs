@@ -27,15 +27,13 @@ namespace CA.ERP.WebApp.Controllers
     {
         private readonly BranchService _branchService;
         private readonly StockService _stockService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IRenderService _renderService;
+        private readonly IReportGenerator _reportGenerator;
 
-        public StockController(IServiceProvider serviceProvider, BranchService branchService , StockService stockService, IWebHostEnvironment webHostEnvironment, IRenderService renderService) : base(serviceProvider)
+        public StockController(IServiceProvider serviceProvider, BranchService branchService, StockService stockService, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator) : base(serviceProvider)
         {
             _branchService = branchService;
             _stockService = stockService;
-            _webHostEnvironment = webHostEnvironment;
-            _renderService = renderService;
+            _reportGenerator = reportGenerator;
         }
 
         [HttpGet()]
@@ -119,9 +117,12 @@ namespace CA.ERP.WebApp.Controllers
                     reportDto.Date = DateTime.Now;
                     reportDto.Stocks = _mapper.Map<List<ReportDto.StockListItem>>(stocks);
 
-                    var report = await _renderService.RenderByNameAsync("/stocks/stock-list/report", reportDto, cancellationToken);
-
-                    return File(report.Content, report.Meta.ContentType);
+                    string reportName = "StockList";
+                    var reportResult = await _reportGenerator.GenerateReport(reportName, reportDto);
+                    return reportResult.Match<IActionResult>(
+                        f0: report => File(report.Content, report.ContentType),
+                        f1: _ => NotFound()
+                    );
                 },
                 f1: async _ => NotFound()
                 );

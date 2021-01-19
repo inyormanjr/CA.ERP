@@ -7,6 +7,16 @@ services:
       context: .
       dockerfile: CA.ERP.WebApp/Dockerfile
 
+  jsreportserver:
+    image: ${DOCKER_REGISTRY-}citi-app-erp-jspreortserver
+    build: 
+      context: .
+      dockerfile: jsreports/Dockerfile
+    ports:
+      - "5488:5488"
+    volumes:
+      - ./jsreports/data:/app/data
+
 
   database:
     image : mcr.microsoft.com/mssql/server:2019-latest

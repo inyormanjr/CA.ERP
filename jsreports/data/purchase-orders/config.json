@@ -1,0 +1,12 @@
+{
+    "name": "purchase-orders",
+    "creationDate": {
+        "$$date": 1610789555568
+    },
+    "modificationDate": {
+        "$$date": 1610790866353
+    },
+    "shortid": "yNiBONE",
+    "_id": "LYKThxilbwf6fcJx",
+    "$entitySet": "folders"
+}

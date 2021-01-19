@@ -23,9 +23,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
     <PackageReference Include="jsreport.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="jsreport.Binary" Version="2.9.0" />
-    <PackageReference Include="jsreport.Binary.Linux" Version="2.9.0" />
-    <PackageReference Include="jsreport.Local" Version="2.3.0" />
+    <PackageReference Include="jsreport.Client" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.1" />
@@ -65,7 +63,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
-    <ProjectReference Include="..\Misc\CA.ERP.JSReport.Studio\CA.ERP.JSReport.Studio.csproj" />
   </ItemGroup>
 
   <ItemGroup>
