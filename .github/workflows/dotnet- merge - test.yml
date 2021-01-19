@@ -1,8 +1,6 @@
-name: .NET Web API Dev Deploy
+name: .NET Web API Merge Test
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
@@ -23,3 +21,4 @@ jobs:
       run: dotnet build --no-restore CA.ERP.sln
     - name: Test
       run: dotnet test  --no-build CA.ERP.sln
+
