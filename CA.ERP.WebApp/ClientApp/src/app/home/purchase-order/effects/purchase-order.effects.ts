@@ -16,14 +16,16 @@ export class PurchaseOrderEffects {
   loadPurchaseOrders$ = createEffect(() =>
     this.actions$.pipe(ofType(PoActionTypes.fetchPurchaseOrders),
       tap((action) => {
-        this.purchaseOrderService.get().pipe(map((x) => {
-          this.store.dispatch(PoActionTypes.populatePurchaseOrderListView({ data: x }));
+        this.purchaseOrderService.getByPagination().pipe(map((x) => {
+          this.store.dispatch(PoActionTypes.loadPurchaseOrderPaginationResult({ paginationResult: x }));
         })).subscribe(noop, error => {
           console.log(error);
         });
     })
     ), {dispatch: false}
   );
+
+
 
   fetchBrandsWithMasterProductsBySupplierId$ = createEffect(() =>
     this.actions$.pipe(ofType(PoActionTypes.fetchBrandsWithMasterproductsOfSupplier),
