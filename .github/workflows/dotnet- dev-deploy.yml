@@ -36,7 +36,7 @@ jobs:
         context: ./
         file: ./CA.ERP.WebApp/Dockerfile
         push: true
-        tags: vic0111/caerpwebapp:latest
+        tags: vic0111/caerpwebapp:dev
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
