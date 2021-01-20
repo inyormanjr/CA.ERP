@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ServiceBase } from 'src/app/services/services.base';
 import { environment } from 'src/environments/environment';
 import { PurchaseOrder } from './models/new-purchase-order';
+import { PoPaginationParams } from './models/po.pagination.params';
 
 @Injectable({
   providedIn: 'root'
@@ -22,20 +23,30 @@ export class PurchaseOrderService implements ServiceBase<PurchaseOrder> {
     return this.http.get<PurchaseOrder[]>(this.baseUrl).pipe(map((result: any) =>   result.data ));
   }
 
-  getByPagination(page = 1, itemsPerPage = 5, barcode?): Observable<PaginationResult<PurchaseOrder[]>> {
+  getByPagination(poParams?: PoPaginationParams): Observable<PaginationResult<PurchaseOrder[]>> {
     let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('page', page.toString());
-      params = params.append('pageSize', itemsPerPage.toString());
+    if (poParams.page != null && poParams.pageSize != null) {
+      params = params.append('page', poParams.page.toString());
+      params = params.append('pageSize', poParams.pageSize.toString());
     }
 
-    if (barcode != null) {
-      params = params.append('barcode', barcode);
+    if (poParams.barcode != null) {
+      params = params.append('barcode', poParams.barcode);
+    }
+
+    if (poParams.startDate != null) {
+      params = params.append('startDate', poParams.startDate.toString());
+    }
+
+    if (poParams.endDate != null) {
+      params = params.append('endDate', poParams.endDate.toString());
     }
 
     return this.http
-      .get<PaginationResult<PurchaseOrder[]>>(this.baseUrl)
-      .pipe(map((result: PaginationResult<PurchaseOrder[]>) => result));
+      .get<PaginationResult<PurchaseOrder[]>>(this.baseUrl, { params})
+      .pipe(map((result: any) => {
+        return result;
+      }));
   }
   create(createRequest: any): Observable<any> {
     return this.http.post<string>(this.baseUrl, createRequest).pipe((map((result: any) => result.id)));

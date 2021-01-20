@@ -4,11 +4,11 @@
     <div class="form-group m-0">
       <label for="">Filter</label>
       <div class="filters d-flex flex-row">
-        <input type="text" class="form-control mr-3" name="" id="" aria-describedby="helpId"
+        <input [(ngModel)]="barcode" type="text" class="form-control mr-3" name="" id="" aria-describedby="helpId"
           placeholder="P.O Number....">
-        <input type="date" class="form-control mr-2" name="" id="" aria-describedby="helpId"
+        <input [(ngModel)]="dateSearch" type="date" class="form-control mr-2" name="" id="" aria-describedby="helpId"
           placeholder="P.O Number....">
-        <a name="" id="" class="btn btn-primary" href="#" role="button">Search</a>
+        <a name="" id="" class="btn btn-primary" (click)="search()" role="button">Search</a>
       </div>
     </div>
     <div class="actions">
@@ -26,8 +26,8 @@
           <th class="text-right">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let item of this.purchaseOrdersList$ | async | paginate : {itemsPerPage: 5, currentPage: 1} ">
+      <tbody *ngIf="this.poPaginationResult$ | async as PoPageResult">
+        <tr *ngFor="let item of PoPageResult.data  | paginate : {itemsPerPage: PoPageResult.pageSize, currentPage: PoPageResult.currentPage, totalItems: PoPageResult.totalCount} ">
           <td scope="row">{{item.barcode}}</td>
           <td>{{item.deliveryDate | date}}</td>
           <td>{{item.supplierName}}</td>
@@ -40,6 +40,7 @@
         </tr>
       </tbody>
     </table>
-    <pagination-controls (pageChange)=" $event"></pagination-controls>
+
+    <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
   </div>
 </div>
