@@ -11,7 +11,6 @@ namespace CA.ERP.Domain.PaymentAgg
         public Guid BranchId { get; set; }
         public string OfficialReceiptNumber { get; set; }
         public DateTime PaymentDate { get; set; }
-        public TransactionType TransactionType { get; set; }
         public PaymentType PaymentType { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal GrossAmount { get; set; }
