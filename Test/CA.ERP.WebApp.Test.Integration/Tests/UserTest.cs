@@ -249,7 +249,9 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var content = await response.Content.ReadAsAsync<Dto.GetManyResponse<Dto.User.UserView>>();
             content.Should().NotBeNull();
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
-            
+            content.CurrentPage.Should().Be(1);
+            content.PageSize.Should().Be(10);
+
         }
 
         [Fact]

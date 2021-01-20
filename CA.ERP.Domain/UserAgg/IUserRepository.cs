@@ -15,5 +15,7 @@ namespace CA.ERP.Domain.UserAgg
         Task<OneOf<User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken);
         Task<OneOf<Success, None>> UpdatePasswordAsync(Guid userId, byte[] passwordHash, byte[] passwordSalt);
         Task<OneOf<User, None>> GetUserWithBranchesAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<int> CountAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken);
+        Task<List<User>> GetManyAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken, int skip, int take);
     }
 }

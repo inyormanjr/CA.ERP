@@ -97,9 +97,9 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             return ret;
         }
 
-        public virtual async Task<PaginationBase<PurchaseOrder>> GetManyAsync(string barcode, DateTime? startDate, DateTime? endDate, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
+        public virtual async Task<PaginationBase<PurchaseOrder>> GetManyAsync(string barcode, DateTime? startDate, DateTime? endDate, int pageSize = 10, int currentPage = 1, CancellationToken cancellationToken = default)
         {
-            int skip = (page - 1) * pageSize;
+            int skip = (currentPage - 1) * pageSize;
             int take = pageSize;
             int count = await _purchaseOrderRepository.CountAsync(barcode, startDate, endDate, cancellationToken);
             IEnumerable<PurchaseOrder> purchaseOrders = await _purchaseOrderRepository.GetManyAsync(barcode, startDate, endDate, skip, take, cancellationToken);
@@ -107,7 +107,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             return new PaginatedPurchaseOrders()
             {
                 Data = purchaseOrders.ToList(),
-                CurrentPage = page,
+                CurrentPage = currentPage,
                 TotalPage = (int)Math.Ceiling(totalPages),
                 PageSize = pageSize,
                 TotalCount = count,
