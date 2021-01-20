@@ -1,0 +1,97 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @model CA.ERP.WebApp.ReportDto.PurchaseOrder;
+}
+
+
+<div class="page container column">
+    <div class="container row space-between">
+        <img class="logo item" src="@ViewData["WebAppUrl"]/images/logo.png" />
+        <img class="item" src="data:image/png;base64, @Model.Barcode" alt="Barocde" />
+
+    </div>
+    <div class="container">
+        <h1 class="item">PURCHASE ORDER</h1>
+    </div>
+    <div class="container row space-between">
+        <div class="container column">
+            <div class="container row">
+                <p class="item">Supplier:</p>
+                <h3 class="item">@Model.SupplierName</h3>
+            </div>
+            <div class="container row">
+                <p class="item">Delivery Address:</p>
+                <h3 class="item">@Model.BranchAddress</h3>
+            </div>
+        </div>
+
+        <div class="container column item">
+            <dev class="container row space-between">
+                <p class="item text-align-left">PO Date:</p>
+                <p class="item text-align-right bold">@Model.Date</p>
+            </dev>
+            <dev class="container row space-between">
+                <p class="item text-align-left">Delivery Date:</p>
+                <p class="item text-align-right bold">@Model.DeliveryDate</p>
+            </dev>
+            <dev class="container row space-between">
+                <p class="item text-align-left">Total Amount:</p>
+                <p class="item text-align-right bold">@Model.TotalCostPrice.ToString("C")</p>
+            </dev>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Ordered <br> Quantity</th>
+                <th>Free <br> Quantity</th>
+                <th>Cost</th>
+                <th>Discount</th>
+                <th>Total Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var purchaseOrderItem in @Model.PurchaseOrderItems)
+            {
+                <tr>
+                    <td>@purchaseOrderItem.Brand</td>
+                    <td>@purchaseOrderItem.Model</td>
+                    <td class="text-align-right">@purchaseOrderItem.OrderedQuantity</td>
+                    <td class="text-align-right">@purchaseOrderItem.FreeQuantity</td>
+                    <td class="text-align-right">@purchaseOrderItem.CostPrice</td>
+                    <td class="text-align-right">@purchaseOrderItem.Discount</td>
+                    <td class="text-align-right">@purchaseOrderItem.TotalCostPrice</td>
+                </tr>
+            }
+            <tr>
+                <td class="bold">Total</td>
+                <td></td>
+                <td class="text-align-right bold">@Model.TotalOrderedQuantity</td>
+                <td class="text-align-right bold">@Model.TotalFreeQuantity</td>
+                <td></td>
+                <td></td>
+                <td class="text-align-right bold">@Model.TotalCostPrice</td>
+            </tr>
+        </tbody>
+
+
+    </table>
+    <div class="container row center">
+        <dl>
+            <dt class="bold">Note</dt>
+            <dd class="bold">1. EXCESS DELIVERIES WILL BE CONSIDERED "AS CONSIGNMENT"</dd>
+            <dd class="bold">2. Attach photocopy of PO on Receipts/Invoices upon collection.</dd>
+        </dl>
+    </div>
+    <div class="container row center">
+        <dl>
+            <dd><center>Approved By:</center></dd>
+            <br>
+            <dd class="bold">________________________________________</dd>
+        </dl>
+    </div>
+</div>

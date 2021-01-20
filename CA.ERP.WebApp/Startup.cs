@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
@@ -43,6 +43,7 @@ using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using jsreport.Client;
+using System.Globalization;
 
 namespace CA.ERP.WebApp
 {
@@ -248,12 +249,13 @@ namespace CA.ERP.WebApp
             //add principal/user tranformer
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
-            //register textr encoding
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+            //set culture info
+            var cultureInfo = new CultureInfo("en-PH");
+            cultureInfo.NumberFormat.CurrencySymbol = "₱";
 
-
-
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
         }
 

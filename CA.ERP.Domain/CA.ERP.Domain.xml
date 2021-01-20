@@ -43,7 +43,7 @@
             The payment method use.
             Cash = 1,
             Card = 2,
-            Cheque = 3,
+            Cheque = 4,
             </summary>
         </member>
         <member name="T:CA.ERP.Domain.PaymentAgg.PaymentType">
@@ -72,6 +72,12 @@
             <param name="purchaseOrder"></param>
             <param name="purchaseOrderItems"></param>
             <returns>The total cost base on pass purchase order and items</returns>
+        </member>
+        <member name="T:CA.ERP.Domain.ReportAgg.FileFormat">
+            <summary>
+            Pdf = 0,
+            Docx = 1
+            </summary>
         </member>
         <member name="M:CA.ERP.Domain.StockAgg.IStockNumberGenerator.GenerateStockNumberAsync(CA.ERP.Domain.StockReceiveAgg.StockCounter,System.Int32)">
             <summary>

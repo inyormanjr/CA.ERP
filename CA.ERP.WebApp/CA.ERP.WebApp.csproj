@@ -53,11 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\Reports\StockListReport.rdlc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="wwwroot\Reports\StockListReport.rdlc" />
+    <Content Remove="wwwroot\images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,9 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\Reports\PurchaseOrderReport.rdlc">
+    <None Include="wwwroot\images\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

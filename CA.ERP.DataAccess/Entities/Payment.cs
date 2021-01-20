@@ -12,7 +12,6 @@ namespace CA.ERP.DataAccess.Entities
         public Guid BranchId { get; set; }
         public string OfficialReceiptNumber { get; set; }
         public DateTime PaymentDate { get; set; }
-        public Domain.PaymentAgg.TransactionType TransactionType { get; set; }
         public Domain.PaymentAgg.PaymentType PaymentType { get; set; }
         public Domain.PaymentAgg.PaymentMethod PaymentMethod { get; set; }
         public decimal GrossAmount { get; set; }
