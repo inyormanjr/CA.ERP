@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.Base
@@ -11,6 +12,6 @@ namespace CA.ERP.Domain.Base
     }
     public interface IBranchPermissionValidator<T> : IBranchPermissionValidator
     {
-        Task<bool> HasPermissionAsync(T toValidate);
+        Task<bool> HasPermissionAsync(T toValidate, CancellationToken cancellationToken = default);
     }
 }
