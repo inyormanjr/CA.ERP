@@ -171,6 +171,25 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
+        public async Task<PaginationBase<User>> GetManyAsync(string username, string firstName, string lastName, UserRole userRole, int pageSize = 10, int currentPage = 1, CancellationToken cancellationToken = default)
+        {;
+            int count =  await _userRepository.CountAsync(username, firstName, lastName, userRole, cancellationToken);
+
+            int skip = (currentPage - 1) * pageSize;
+            int take = pageSize;
+
+            var users = await  _userRepository.GetManyAsync(username, firstName, lastName, userRole, cancellationToken, skip, take);
+            double totalPages = (double)count / (double)pageSize;
+            return new PaginatedUsers()
+            {
+                Data = users.ToList(),
+                CurrentPage = currentPage,
+                TotalPage = (int)Math.Ceiling(totalPages),
+                PageSize = pageSize,
+                TotalCount = count,
+            };
+        }
+
         public async override Task<OneOf<User, NotFound>> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var userResult = await _userRepository.GetUserWithBranchesAsync(id, cancellationToken);
