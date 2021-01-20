@@ -38,7 +38,7 @@ namespace CA.ERP.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get()
         {
-            var branches = await _branchService.GetManyAsync();
+            var branches = await _branchService.GetCurrentUserBranches();
             var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(branches);
             var response = new Dto.GetManyResponse<Dto.Branch.BranchView>() {
                 Data = dtoBranches
