@@ -31,15 +31,11 @@ namespace CA.ERP.WebApp.Controllers.Api
     public class PurchaseOrderController : BaseApiController
     {
         private readonly PurchaseOrderService _purchaseOrderService;
-        private readonly IBarcodeGenerator _barcodeGenerator;
-        private readonly IReportGenerator _reportGenerator;
 
-        public PurchaseOrderController(IServiceProvider serviceProvider, IUserHelper userHelper, PurchaseOrderService purchaseOrderService,  IBarcodeGenerator barcodeGenerator, IReportGenerator reportGenerator )
+        public PurchaseOrderController(IServiceProvider serviceProvider, PurchaseOrderService purchaseOrderService)
             :base(serviceProvider)
         {
             _purchaseOrderService = purchaseOrderService;
-            _barcodeGenerator = barcodeGenerator;
-            _reportGenerator = reportGenerator;
         }
 
         /// <summary>
@@ -170,37 +166,6 @@ namespace CA.ERP.WebApp.Controllers.Api
             );
         }
 
-        /// <summary>
-        /// Print the given Purchase order
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="renderType"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpGet("{id}/Print")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Print(Guid id, CancellationToken cancellationToken = default)
-        {
-
-            var getOption = await _purchaseOrderService.GetOneAsync(id);
-
-            return await getOption.Match<Task<IActionResult>>(
-                f0: async (purchaseOrder) =>
-                {
-                    var reportDto = _mapper.Map<ReportDto.PurchaseOrder>(purchaseOrder);
-                    reportDto.Barcode = _barcodeGenerator.GenerateBarcode(purchaseOrder.Barcode);
-                    
-                    string reportName = "PurchaseOrder";
-                    var reportResult = await _reportGenerator.GenerateReport(reportName, reportDto);
-                    return reportResult.Match<IActionResult>(
-                        f0: report =>  File(report.Content, report.ContentType),
-                        f1: _ => NotFound()
-                    );
-                },
-                f1: async notFound => NotFound()
-            );
-        }
 
 
     }

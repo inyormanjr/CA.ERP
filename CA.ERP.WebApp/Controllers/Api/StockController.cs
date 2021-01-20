@@ -25,15 +25,11 @@ namespace CA.ERP.WebApp.Controllers.Api
     [Authorize]
     public class StockController : BaseApiController
     {
-        private readonly BranchService _branchService;
         private readonly StockService _stockService;
-        private readonly IReportGenerator _reportGenerator;
 
-        public StockController(IServiceProvider serviceProvider, BranchService branchService, StockService stockService, IWebHostEnvironment webHostEnvironment, IReportGenerator reportGenerator) : base(serviceProvider)
+        public StockController(IServiceProvider serviceProvider, StockService stockService) : base(serviceProvider)
         {
-            _branchService = branchService;
             _stockService = stockService;
-            _reportGenerator = reportGenerator;
         }
 
         [HttpGet()]
@@ -97,37 +93,5 @@ namespace CA.ERP.WebApp.Controllers.Api
             );
         }
 
-
-        [HttpGet("PrintStockList")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Print([FromQuery]Guid branchId, [FromQuery]List<Guid> stockIds, CancellationToken cancellationToken = default)
-        {
-
-
-            var branchOption = await _branchService.GetOneAsync(branchId);
-            return await branchOption.Match<Task<IActionResult>>(
-                f0: async branch => {
-                    List<Stock> stocks = await _stockService.GetManyAsync(branchId, stockIds.ToList());
-
-
-                    var reportDto = new ReportDto.StockList();
-                    reportDto.BranchContact = branch.Contact;
-                    reportDto.BranchName = branch.Name;
-                    reportDto.Date = DateTime.Now;
-                    reportDto.Stocks = _mapper.Map<List<ReportDto.StockListItem>>(stocks);
-
-                    string reportName = "StockList";
-                    var reportResult = await _reportGenerator.GenerateReport(reportName, reportDto);
-                    return reportResult.Match<IActionResult>(
-                        f0: report => File(report.Content, report.ContentType),
-                        f1: _ => NotFound()
-                    );
-                },
-                f1: async _ => NotFound()
-                );
-
-            
-        }
     }
 }

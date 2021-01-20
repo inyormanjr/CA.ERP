@@ -94,15 +94,6 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Print(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Print the given Purchase order
-            </summary>
-            <param name="id"></param>
-            <param name="renderType"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
         <member name="M:CA.ERP.WebApp.Controllers.Api.StockController.Get(System.Guid,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Generate stock numbers
