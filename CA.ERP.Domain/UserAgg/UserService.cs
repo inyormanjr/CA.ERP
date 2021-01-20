@@ -4,11 +4,13 @@ using CA.ERP.Domain.Helpers;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Configuration;
 using OneOf;
 using OneOf.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,8 +24,9 @@ namespace CA.ERP.Domain.UserAgg
         private readonly IUserFactory _userFactory;
         private readonly PasswordManagementHelper _passwordManagementHelper;
         private readonly IValidator<User> _userValidator;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IUnitOfWork unitOfWork,IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper)
+        public UserService(IUnitOfWork unitOfWork,IUserRepository userRepository, IBranchRepository branchRepository, IUserFactory userFactory, PasswordManagementHelper passwordManagementHelper, IValidator<User> userValidator, IUserHelper userHelper, IConfiguration configuration)
             : base(unitOfWork, userRepository, userValidator, userHelper)
         {
             _userRepository = userRepository;
@@ -31,6 +34,7 @@ namespace CA.ERP.Domain.UserAgg
             _userFactory = userFactory;
             _passwordManagementHelper = passwordManagementHelper;
             _userValidator = userValidator;
+            _configuration = configuration;
         }
 
         public async Task<OneOf<Guid, List<ValidationFailure>, Error<string>>> CreateUserAsync(string username, string password, UserRole role, string firstName, string lastName, List<Guid> branchIds, CancellationToken cancellationToken)
@@ -82,6 +86,11 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
 
             
+        }
+
+        public async Task<OneOf<User, None>> GetUserByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            return await _userRepository.GetUserByByRefreshTokenAsync(refreshToken, cancellationToken);
         }
 
         public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateUser(Guid id, User user, List<Guid> branchIds, CancellationToken cancellationToken)
@@ -218,5 +227,26 @@ namespace CA.ERP.Domain.UserAgg
             }
             return ret;
         }
+
+        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, CancellationToken cancellationToken)
+        {
+            var tokenTtl = _configuration.GetSection("AppSettings:TokenTtl")?.Get<int>() ?? 3600;
+            var expiration = DateTime.Now.AddSeconds(tokenTtl + 1800);
+            await _userRepository.UpdateUserRefreshTokenAsync(id, refreshToken, expiration, cancellationToken);
+            await _unitOfWork.CommitAsync();
+        }
+
+        public string GenerateRefreshToken()
+        {
+            using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            {
+                var randomBytes = new byte[64];
+                rngCryptoServiceProvider.GetBytes(randomBytes);
+                return Convert.ToBase64String(randomBytes);
+            }
+
+        }
+
+
     }
 }

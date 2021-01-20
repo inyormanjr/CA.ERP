@@ -145,5 +145,29 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return ret;
         }
+
+        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, CancellationToken cancellationToken)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiration = expiration;
+                _context.Entry(user).State = EntityState.Modified;
+            }
+        }
+
+        public async Task<OneOf<User, None>> GetUserByByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            OneOf<Dom.User, None> result = default(None);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiration >= DateTime.Now && u.Status == Status.Active, cancellationToken);
+            if (user != null)
+            {
+                result = _mapper.Map<Dom.User>(user);
+            };
+
+            return result;
+        }
     }
 }

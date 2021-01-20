@@ -17,6 +17,14 @@
             <param name="cancellationToken"></param>
             <returns>Token use to login</returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.AuthenticationController.RefreshToken(CA.ERP.WebApp.Dto.Authentication.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Refresh your token
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns>Token use to login</returns>
+        </member>
         <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.Get">
             <summary>
             Get multiple branches
