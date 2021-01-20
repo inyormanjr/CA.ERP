@@ -70,7 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="jsreport\**\*.*">
+    <Content Update="jsreports\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\Reports\PurchaseOrderReport.rdlc">
