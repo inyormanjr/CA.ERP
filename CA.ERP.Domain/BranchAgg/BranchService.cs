@@ -58,6 +58,11 @@ namespace CA.ERP.Domain.BranchAgg
             return ret;
         }
 
-        
+        public async Task<List<Branch>> GetCurrentUserBranches(CancellationToken cancellationToken = default)
+        {
+            return await _branchRepository.GetManyByUserIdAsync(_userHelper.GetCurrentUserId(), cancellationToken);
+        }
+
+
     }
 }
