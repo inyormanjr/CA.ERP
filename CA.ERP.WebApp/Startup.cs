@@ -175,6 +175,13 @@ namespace CA.ERP.WebApp
                 );
 
             services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(TokenGenerator))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsSelf()
+                .WithScopedLifetime()
+                );
+
+            services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
                 .AddClasses(classes => classes.AssignableTo<IHelper>())
                 .AsImplementedInterfaces()
