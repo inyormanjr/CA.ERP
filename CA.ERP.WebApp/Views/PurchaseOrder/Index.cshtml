@@ -60,8 +60,8 @@
                 <tr>
                     <td>@purchaseOrderItem.Brand</td>
                     <td>@purchaseOrderItem.Model</td>
-                    <td class="text-align-right">@purchaseOrderItem.OrderedQuantity</td>
-                    <td class="text-align-right">@purchaseOrderItem.FreeQuantity</td>
+                    <td class="text-align-right">@purchaseOrderItem.OrderedQuantity.ToString(ViewBag.QuantityFormat)</td>
+                    <td class="text-align-right">@purchaseOrderItem.FreeQuantity.ToString(ViewBag.QuantityFormat)</td>
                     <td class="text-align-right">@purchaseOrderItem.CostPrice.ToString(ViewBag.MoneyFormat)</td>
                     <td class="text-align-right">@purchaseOrderItem.Discount.ToString(ViewBag.MoneyFormat)</td>
                     <td class="text-align-right">@purchaseOrderItem.TotalCostPrice.ToString(ViewBag.MoneyFormat)</td>
@@ -70,8 +70,8 @@
             <tr>
                 <td class="bold">Total</td>
                 <td></td>
-                <td class="text-align-right bold">@Model.TotalOrderedQuantity</td>
-                <td class="text-align-right bold">@Model.TotalFreeQuantity</td>
+                <td class="text-align-right bold">@Model.TotalOrderedQuantity.ToString(ViewBag.QuantityFormat)</td>
+                <td class="text-align-right bold">@Model.TotalFreeQuantity.ToString(ViewBag.QuantityFormat)</td>
                 <td></td>
                 <td></td>
                 <td class="text-align-right bold">@Model.TotalCostPrice.ToString(ViewBag.MoneyFormat)</td>

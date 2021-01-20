@@ -28,6 +28,7 @@ namespace CA.ERP.WebApp.Controllers.Report
             ViewData.Add("WebAppUrl", webAppUrl);
             ViewData.Add("DateFormat", "MM/dd/yyyy");
             ViewData.Add("MoneyFormat", "C");
+            ViewData.Add("QuantityFormat", "0.###");
         }
 
         protected void SetFormat(FileFormat format)
