@@ -115,10 +115,10 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string barcode = null,DateTime? startDate = null, DateTime? endDate = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string primaryField = null,string barcode = null,DateTime? startDate = null, DateTime? endDate = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
         {
 
-
+            barcode = barcode ?? primaryField;
             var paginatedPurchaseOrders = await _purchaseOrderService.GetManyAsync(barcode, startDate, endDate, pageSize, page, cancellationToken);
             var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(paginatedPurchaseOrders.Data);
             var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>()
