@@ -9,7 +9,7 @@ using CA.ERP.Domain.UserAgg;
 using AutoMapper;
 using CA.ERP.Domain.Base;
 
-namespace CA.ERP.WebApp.Controllers
+namespace CA.ERP.WebApp.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]

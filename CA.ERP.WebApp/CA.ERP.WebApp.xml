@@ -9,7 +9,7 @@
             Copy's the header startTimestamp from request to response if it exist 
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
             <summary>
             Login using username and password
             </summary>
@@ -17,13 +17,13 @@
             <param name="cancellationToken"></param>
             <returns>Token use to login</returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.Get">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.Get">
             <summary>
             Get multiple branches
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.CreateBranch(CA.ERP.WebApp.Dto.Branch.CreateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.CreateBranch(CA.ERP.WebApp.Dto.Branch.CreateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Create branch
             </summary>
@@ -31,7 +31,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Update branch base on Id
             </summary>
@@ -40,7 +40,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.BranchController.DeleteBranch(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.DeleteBranch(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Delete the branch base on Id.
             
@@ -49,12 +49,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:CA.ERP.WebApp.Controllers.BrandController">
+        <member name="T:CA.ERP.WebApp.Controllers.Api.BrandController">
             <summary>
             Handles brand related operations.
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Create(CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Create(CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest,System.Threading.CancellationToken)">
             <summary>
             Create master product
             </summary>
@@ -62,14 +62,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.MasterProductController.Get(System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Get(System.Threading.CancellationToken)">
             <summary>
             Get a list of master products
             </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
             <summary>
             Create master products
             </summary>
@@ -77,7 +77,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
             <summary>
             Update purchase order
             </summary>
@@ -86,7 +86,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Delete(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Delete(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Delete purchase order by id
             </summary>
@@ -94,7 +94,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.PurchaseOrderController.Print(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Print(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Print the given Purchase order
             </summary>
@@ -103,7 +103,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.StockController.Get(System.Guid,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.StockController.Get(System.Guid,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Generate stock numbers
             </summary>
@@ -112,12 +112,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:CA.ERP.WebApp.Controllers.SupplierController">
+        <member name="T:CA.ERP.WebApp.Controllers.Api.SupplierController">
             <summary>
             Contains supplier and supllier brands related endpoints
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.Supplier.CreateSupplierRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.Supplier.CreateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Creates new supplier
             </summary>
@@ -125,7 +125,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest,System.Threading.CancellationToken)">
             <summary>
             Updates supplier
             </summary>
@@ -134,13 +134,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.Get(System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.Get(System.Threading.CancellationToken)">
             <summary>
             Get multiple suppliers
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.Get(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.Get(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Get single supplier
             </summary>
@@ -148,7 +148,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.SupplierController.GetSupplierBrands(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.GetSupplierBrands(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Get a lite version of supplier brands with master products and cost
             </summary>
@@ -156,7 +156,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.UserController.Register(CA.ERP.WebApp.Dto.User.UserCreateRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.UserController.Register(CA.ERP.WebApp.Dto.User.UserCreateRequest,System.Threading.CancellationToken)">
             <summary>
             Register user
             </summary>

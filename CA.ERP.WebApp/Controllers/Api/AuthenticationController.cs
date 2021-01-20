@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Controllers
+namespace CA.ERP.WebApp.Controllers.Api
 {
     public class AuthenticationController:BaseApiController
     {

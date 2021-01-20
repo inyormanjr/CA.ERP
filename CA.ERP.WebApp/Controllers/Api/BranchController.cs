@@ -15,7 +15,7 @@ using OneOf.Types;
 using Microsoft.AspNetCore.Authorization;
 using CA.ERP.WebApp.Dto;
 
-namespace CA.ERP.WebApp.Controllers
+namespace CA.ERP.WebApp.Controllers.Api
 {
     [Authorize]
     public class BranchController:BaseApiController

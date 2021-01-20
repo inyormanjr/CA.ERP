@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Controllers
+namespace CA.ERP.WebApp.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

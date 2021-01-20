@@ -30,15 +30,15 @@
         <div class="container column item">
             <dev class="container row space-between">
                 <p class="item text-align-left">PO Date:</p>
-                <p class="item text-align-right bold">@Model.Date</p>
+                <p class="item text-align-right bold">@Model.Date.ToString(ViewBag.DateFormat)</p>
             </dev>
             <dev class="container row space-between">
                 <p class="item text-align-left">Delivery Date:</p>
-                <p class="item text-align-right bold">@Model.DeliveryDate</p>
+                <p class="item text-align-right bold">@Model.DeliveryDate.ToString(ViewBag.DateFormat)</p>
             </dev>
             <dev class="container row space-between">
                 <p class="item text-align-left">Total Amount:</p>
-                <p class="item text-align-right bold">@Model.TotalCostPrice.ToString("C")</p>
+                <p class="item text-align-right bold">@Model.TotalCostPrice.ToString(ViewBag.MoneyFormat)</p>
             </dev>
         </div>
     </div>
@@ -62,9 +62,9 @@
                     <td>@purchaseOrderItem.Model</td>
                     <td class="text-align-right">@purchaseOrderItem.OrderedQuantity</td>
                     <td class="text-align-right">@purchaseOrderItem.FreeQuantity</td>
-                    <td class="text-align-right">@purchaseOrderItem.CostPrice</td>
-                    <td class="text-align-right">@purchaseOrderItem.Discount</td>
-                    <td class="text-align-right">@purchaseOrderItem.TotalCostPrice</td>
+                    <td class="text-align-right">@purchaseOrderItem.CostPrice.ToString(ViewBag.MoneyFormat)</td>
+                    <td class="text-align-right">@purchaseOrderItem.Discount.ToString(ViewBag.MoneyFormat)</td>
+                    <td class="text-align-right">@purchaseOrderItem.TotalCostPrice.ToString(ViewBag.MoneyFormat)</td>
                 </tr>
             }
             <tr>
@@ -74,7 +74,7 @@
                 <td class="text-align-right bold">@Model.TotalFreeQuantity</td>
                 <td></td>
                 <td></td>
-                <td class="text-align-right bold">@Model.TotalCostPrice</td>
+                <td class="text-align-right bold">@Model.TotalCostPrice.ToString(ViewBag.MoneyFormat)</td>
             </tr>
         </tbody>
 
