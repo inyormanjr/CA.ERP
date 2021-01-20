@@ -16,11 +16,21 @@ export class PurchaseOrderEffects {
   loadPurchaseOrders$ = createEffect(() =>
     this.actions$.pipe(ofType(PoActionTypes.fetchPurchaseOrders),
       tap((action) => {
-        this.purchaseOrderService.getByPagination().pipe(map((x) => {
-          this.store.dispatch(PoActionTypes.loadPurchaseOrderPaginationResult({ paginationResult: x }));
-        })).subscribe(noop, error => {
-          console.log(error);
-        });
+        this.purchaseOrderService
+          .getByPagination(action.params)
+          .pipe(
+            map((x: any) => {
+              console.log(x);
+              this.store.dispatch(
+                PoActionTypes.loadPurchaseOrderPaginationResult({
+                  paginationResult: x,
+                })
+              );
+            })
+          )
+          .subscribe(noop, (error) => {
+            console.log(error);
+          });
     })
     ), {dispatch: false}
   );

@@ -30,7 +30,7 @@ export function tokenGetter() {
   return localStorage.getItem('token');
 }
 
-const routes : Routes = [
+const routes: Routes = [
   { path: 'login', component: LoginViewComponent },
   {
     path: 'home',
@@ -64,8 +64,10 @@ const routes : Routes = [
     JwtModule.forRoot({
       config: {
         tokenGetter,
-        allowedDomains: ['localhost:5001'],
-        disallowedRoutes: ['localhost:5001/api/Authentication'],
+        allowedDomains: ['dev.erp.citi-appliance.co'],
+        disallowedRoutes: [
+            'dev.erp.citi-appliance.co/api/Authentication',
+        ],
       },
     }),
     StoreModule.forRoot(
@@ -82,7 +84,11 @@ const routes : Routes = [
 
     RouterModule.forRoot(routes),
   ],
-  providers: [AlertifyService, HttpRequestInterceptor, ErrorInterceptorProvider],
+  providers: [
+    AlertifyService,
+    HttpRequestInterceptor,
+    ErrorInterceptorProvider,
+  ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
