@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -21,11 +22,13 @@ namespace CA.ERP.WebApp.Controllers
     public class UserController : BaseApiController
     {
         private readonly UserService _userService;
+        private readonly BranchService _branchService;
 
-        public UserController(IServiceProvider serviceProvider, UserService userService)
+        public UserController(IServiceProvider serviceProvider, UserService userService, BranchService  branchService)
             :base(serviceProvider)
         {
             _userService = userService;
+            _branchService = branchService;
         }
         /// <summary>
         /// Register user
@@ -156,6 +159,20 @@ namespace CA.ERP.WebApp.Controllers
                 f0: user => Ok(_mapper.Map<Dto.User.UserView>(user)),
                 f1: notFound => NotFound()
                 ); 
+        }
+
+        [HttpGet("branch")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> GetUserBranches(CancellationToken cancellationToken)
+        {
+            var branches = await _branchService.GetCurrentUserBranches();
+            var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(branches);
+            var response = new Dto.GetManyResponse<Dto.Branch.BranchView>()
+            {
+                Data = dtoBranches
+            };
+            return Ok(response);
         }
     }
 }

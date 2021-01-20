@@ -251,5 +251,18 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             content.Data.Should().HaveCountGreaterOrEqualTo(1);
             
         }
+
+        [Fact]
+        public async Task ShouldGetAtLeastOneUserBranchSuccess_Ok()
+        {
+            var response = await _client.GetAsync($"api/User/Branch/");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<Dto.GetManyResponse<Dto.User.UserView>>();
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterOrEqualTo(1);
+
+        }
     }
 }
