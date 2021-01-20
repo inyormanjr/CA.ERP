@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { UserView } from './model/user.view';
 import { ServiceBase } from 'src/app/services/services.base';
+import { BranchView } from '../branch/model/branch.view';
 
 
 @Injectable({
@@ -16,24 +17,24 @@ export class UserService implements ServiceBase<UserView> {
 
   getById(id: any): Observable<UserView> {
     return this.http.get<UserView>(this.baseUrl+id).pipe(
-      map(res =>{
+      map(res => {
         return res;
       },
-      error =>{
+      error => {
         console.log(error);
       })
     )
   }
   create(createRequest: any): Observable<any> {
     return this.http.post<any>(this.baseUrl,createRequest).pipe(
-      map((res : any) =>{
+      map((res: any) => {
         return res.id;
       })
     );
   }
   update(id: any, updateRequest: any): Observable<any> {
-    return this.http.put<any>(this.baseUrl+id,updateRequest).pipe(
-      map((res)=>{
+    return this.http.put<any>(this.baseUrl + id, updateRequest).pipe(
+      map((res) => {
         return res;
       })
     );
@@ -48,5 +49,9 @@ export class UserService implements ServiceBase<UserView> {
           return res.data;
       })
     );
+  }
+
+  getUserBranches(): Observable<BranchView[]> {
+    return this.http.get<BranchView[]>(this.baseUrl + 'branch').pipe(map((res: any) => res.data));
   }
 }

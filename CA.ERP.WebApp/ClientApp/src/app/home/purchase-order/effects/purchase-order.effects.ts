@@ -20,7 +20,6 @@ export class PurchaseOrderEffects {
           .getByPagination(action.params)
           .pipe(
             map((x: any) => {
-              console.log(x);
               this.store.dispatch(
                 PoActionTypes.loadPurchaseOrderPaginationResult({
                   paginationResult: x,

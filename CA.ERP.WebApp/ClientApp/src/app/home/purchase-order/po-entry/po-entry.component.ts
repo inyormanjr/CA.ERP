@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { identifierModuleUrl } from '@angular/compiler';
 import { PoActionTypes } from '../actions/po.actions.selector';
 import { SupplierEntryComponent } from '../supplier/supplier-entry/supplier-entry.component';
+import { UserService } from '../../management/user/user.service';
 @Component({
   selector: 'app-po-entry',
   templateUrl: './po-entry.component.html',
@@ -44,7 +45,8 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     private modalSerivce: BsModalService,
     private purchaseOrderStore: Store<PurchaseOrderState>,
     private alertifyService: AlertifyService,
-    private poservice: PurchaseOrderService
+    private poservice: PurchaseOrderService,
+    private userService: UserService,
   ) {
     this.initializePOFormGroup();
 
@@ -68,7 +70,7 @@ export class PoEntryComponent implements OnInit, OnDestroy {
     this.brands$ = this.purchaseOrderStore.select(
       PurchaseOrderSelectorType.selectBrandsWithModels
     );
-    this.branches$ = this.branchService.get();
+    this.branches$ = this.userService.getUserBranches();
   }
   ngOnDestroy(): void {
     this.purchaseOrderStore.dispatch(
