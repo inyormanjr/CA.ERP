@@ -8,14 +8,9 @@ services:
       dockerfile: CA.ERP.WebApp/Dockerfile
 
   jsreportserver:
-    image: ${DOCKER_REGISTRY-}citi-app-erp-jspreortserver
-    build: 
-      context: .
-      dockerfile: jsreports/Dockerfile
+    image: jsreport/jsreport:2.11.0-full
     ports:
       - "5488:5488"
-    volumes:
-      - ./jsreports/data:/app/data
 
 
   database:

@@ -29,6 +29,7 @@ namespace CA.ERP.WebApp.Controllers.Report
         }
 
         [MiddlewareFilter(typeof(JsReportPipeline))]
+        [HttpGet]
         [Route("list")]
         public async Task<IActionResult> List([FromQuery]Guid branchId, [FromQuery] List<Guid> stockIds, FileFormat format = FileFormat.Pdf, CancellationToken cancellationToken = default)
         {

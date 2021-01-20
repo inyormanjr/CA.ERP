@@ -33,7 +33,8 @@ namespace CA.ERP.WebApp.Controllers.Report
 
 
         [MiddlewareFilter(typeof(JsReportPipeline))]
-        [Route("purchaseOrder/{id}")]
+        [HttpGet]
+        [Route("{id}/print")]
         public async Task<IActionResult> Index(Guid id, FileFormat format = FileFormat.Pdf, CancellationToken cancellationToken = default)
         {
             SetFormat(format);
