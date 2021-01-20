@@ -1,4 +1,4 @@
-From jsreport/jsreport:latest-full
-COPY ./jsreports/data  /app/data
+FROM jsreport/jsreport:latest-full
+COPY --chown=jsreport:jsreport ./jsreports/data  /app/data
 
 CMD ["bash", "/app/run.sh"]
