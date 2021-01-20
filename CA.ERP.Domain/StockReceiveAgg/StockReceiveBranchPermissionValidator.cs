@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.StockReceiveAgg
@@ -19,12 +20,12 @@ namespace CA.ERP.Domain.StockReceiveAgg
             _userHelper = userHelper;
             _userRepository = userRepository;
         }
-        public async Task<bool> HasPermissionAsync(StockReceive stockReceive)
+        public async Task<bool> HasPermissionAsync(StockReceive stockReceive, CancellationToken cancellationToken)
         {
             stockReceive.ThrowIfNullArgument(nameof(stockReceive));
             var branchIdToCheck = stockReceive.BranchId;
             var userId = _userHelper.GetCurrentUserId();
-            var user = await _userRepository.GetUserWithBranchesAsync(userId);
+            var user = await _userRepository.GetUserWithBranchesAsync(userId, cancellationToken);
             return user.Match<bool>(f0: u => u.UserBranches.Any(ub => ub.BranchId == branchIdToCheck), f1: _ => false);
         }
     }

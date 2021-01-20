@@ -14,7 +14,7 @@ namespace CA.ERP.DataAccess.EFMapping
         public void Configure(EntityTypeBuilder<CardPaymentDetail> builder)
         {
             builder.HasKey(t => t.PaymentId);
-            builder.HasIndex(t => t.TransactionNumber);
+            builder.HasIndex(t => t.TransactionNumber).IsUnique(true);
             builder.Property(t => t.TransactionNumber).IsRequired().HasMaxLength(50);
 
             builder.HasOne(t => t.Payment)

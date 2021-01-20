@@ -262,6 +262,8 @@ namespace CA.ERP.WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            UpdateDatabase(app);
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -339,6 +341,24 @@ namespace CA.ERP.WebApp
             
             
         }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<CADataContext>())
+                {
+                    if (context.Database.IsRelational())
+                    {
+                        context.Database.Migrate();
+                    }
+
+                }
+            }
+        }
+
 
     }
 }
