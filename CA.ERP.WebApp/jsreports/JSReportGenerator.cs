@@ -20,8 +20,8 @@ namespace CA.ERP.WebApp.JsReport
         public JSReportGenerator(IRenderService renderService)
         {
             _renderService = renderService;
-            _reportLocations.Add("PurchaseOrder", "jsreport/data/purchase-orders/purchase-order/report/content.handlebars");
-            _reportLocations.Add("StockList", "jsreport/data/stocks/stock-list/report/content.handlebars");
+            _reportLocations.Add("PurchaseOrder", "jsreports/data/purchase-orders/purchase-order/report/content.handlebars");
+            _reportLocations.Add("StockList", "jsreports/data/stocks/stock-list/report/content.handlebars");
         }
         public async Task<OneOf<Domain.ReportAgg.Report, None>> GenerateReport(string reportName, object data, CancellationToken cancellationToken = default)
         {
