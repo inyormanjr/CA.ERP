@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { PaginationResult } from 'src/app/models/data.pagination';
 import { UserView } from '../model/user.view';
 
 export const fetchUsers = createAction(
@@ -11,7 +12,7 @@ export const fetchingUsers = createAction(
 
 export const loadUserViewList = createAction(
   '[UserManagement] Load users list',
-  props<{usersViewList : UserView[]}>()
+  props<{usersViewList : PaginationResult<UserView[]>}>()
 );
 
 export const loadUserManagementsSuccess = createAction(

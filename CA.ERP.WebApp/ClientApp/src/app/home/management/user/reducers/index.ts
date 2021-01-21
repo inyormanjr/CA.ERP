@@ -3,6 +3,7 @@ import {
   MetaReducer,
   on
 } from '@ngrx/store';
+import { PaginationResult } from 'src/app/models/data.pagination';
 import { environment } from '../../../../../environments/environment';
 
 import {fetchUsers , 
@@ -17,12 +18,12 @@ export const userManagementFeatureKey = 'user-management';
 export interface UserManagementState {
   isLoading : boolean;
   fetchSuccess : boolean;
-  usersViewList : UserView[];
+  usersViewList : PaginationResult<UserView[]>;
 }
 
 export const userManagementInitialState : UserManagementState = {
   isLoading : false,
-  usersViewList : [],
+  usersViewList : undefined,
   fetchSuccess : undefined
 }
 

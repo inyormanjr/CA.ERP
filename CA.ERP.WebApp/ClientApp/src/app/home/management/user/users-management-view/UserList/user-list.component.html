@@ -27,7 +27,7 @@
         </thead>
           <tbody>
              <ng-container *ngIf="fetchSuccess$ | async; else elseTemplate">
-              <tr *ngFor="let user of userViewList$ | async ">
+              <tr  *ngFor="let user of userViewList$.data| async">
                 <td scope="row">{{user.firstName}}</td>
                 <td>{{user.lastName}}</td>
                 <td>{{selectedRole(user.role)}}</td>
@@ -43,9 +43,10 @@
            </ng-template>
           </tbody>
   
-  
+         
       </table>
     </div>
+    <pre>DATA : {{userViewList$.data | json}}</pre>
   </ng-template>
   
   

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { UserView } from './model/user.view';
 import { ServiceBase } from 'src/app/services/services.base';
+import { PaginationResult } from 'src/app/models/data.pagination';
 
 
 @Injectable({
@@ -43,9 +44,10 @@ export class UserService implements ServiceBase<UserView> {
   }
 
   get() {
-    return this.http.get<UserView[]>(this.baseUrl).pipe(
+    return this.http.get<PaginationResult<UserView[]>>(this.baseUrl).pipe(
       map((res : any) =>{
-          return res.data;
+       
+          return res;
       })
     );
   }

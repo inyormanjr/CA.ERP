@@ -6,6 +6,7 @@ import { UserManagementState } from '../../reducers';
 import { UserManagementSelectorType } from '../../reducers/user-management.selectors.type';
 import { fetchUsers } from '../../action/user-management.actions';
 import { Role } from '../../model/user.role';
+import { PaginationResult } from 'src/app/models/data.pagination';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -14,7 +15,7 @@ import { Role } from '../../model/user.role';
 export class UserListComponent implements OnInit {
   isLoading$: Observable<boolean>
   fetchSuccess$: Observable<boolean>;
-  userViewList$: Observable<UserView[]>;
+  userViewList$: Observable<PaginationResult<UserView[]>>;
   constructor(
     private store: Store<UserManagementState>
   ) { }
@@ -23,7 +24,9 @@ export class UserListComponent implements OnInit {
     this.userViewList$ = this.store.pipe(select(UserManagementSelectorType.usersViewList));
     this.isLoading$ = this.store.pipe(select(UserManagementSelectorType.isLoading));
     this.fetchSuccess$ = this.store.pipe(select(UserManagementSelectorType.fetchSuccess));
+
     this.store.dispatch(fetchUsers());
+ 
   }
 
   selectedRole(rolesFlag: number) {
