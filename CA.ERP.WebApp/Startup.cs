@@ -63,6 +63,13 @@ namespace CA.ERP.WebApp
         {
             services.AddHealthChecks().AddCheck<DatabaseCheck>("Database check", HealthStatus.Unhealthy);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
+
 
             services.AddDbContext<CADataContext>(dbc =>
 
@@ -271,10 +278,7 @@ namespace CA.ERP.WebApp
         {
             UpdateDatabase(app);
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+            app.UseForwardedHeaders();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
