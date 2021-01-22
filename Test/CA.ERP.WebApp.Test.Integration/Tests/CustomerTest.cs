@@ -130,5 +130,26 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             }
         }
 
+        [Fact]
+        public async Task ShouldSearchCustomerSuccess_Ok()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                var random = new Random();
+                var customer = dbContext.Customers.ToList().OrderBy(c => random.Next()).FirstOrDefault();
+            
+                var searchForFirstname = customer.FirstName.Substring(0, 3);
+                var searchForLastname = customer.LastName.Substring(0, 3);
+                var response = await _client.GetAsync($"api/Customer?firstname={searchForFirstname}&lastname={searchForLastname}");
+
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+                var content =  await response.Content.ReadAsAsync<GetManyResponse<Dto.Customer.CustomerView>>();
+                content.Data.Count().Should().BeGreaterThan(0);
+                content.Data.Should().OnlyContain(c => c.FirstName.StartsWith(searchForFirstname) && c.LastName.StartsWith(searchForLastname));
+            }
+        }
+
     }
 }

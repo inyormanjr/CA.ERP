@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CA.ERP.Domain.CustomerAgg;
@@ -52,6 +53,25 @@ namespace CA.ERP.WebApp.Controllers.Api
                  },
                  f2: _ => NotFound()
             );
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Get(string primaryField = null, string firstName = null, string lastname = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
+        {
+            lastname = lastname ?? primaryField;
+            var result = await _customerService.GetManyAsync(firstName, lastname, pageSize, page, cancellationToken);
+            var response = new Dto.GetManyResponse<Dto.Customer.CustomerView>()
+            {
+                CurrentPage = result.CurrentPage,
+                TotalPage = result.TotalPage,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount,
+                Data = result.Data.Select(d => _mapper.Map<Dto.Customer.CustomerView>(d))
+            };
+            return Ok(response);
         }
 
     }
