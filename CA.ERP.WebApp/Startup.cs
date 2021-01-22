@@ -65,6 +65,10 @@ namespace CA.ERP.WebApp
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
+                options.ForwardLimit=2;  //Limit number of proxy hops trusted
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
