@@ -48,5 +48,26 @@ namespace CA.ERP.Domain.CustomerAgg
 
         return ret;
     }
+
+    public async Task<PaginationBase<Customer>> GetManyAsync(string firstName, string lastname, int pageSize, int currentPage, CancellationToken cancellationToken)
+    {
+        int skip = (currentPage - 1) * pageSize;
+        int take = pageSize;
+        
+
+        var count = await _customerRepository.CountAsync(firstName, lastname, cancellationToken);
+
+        int totalPages = (int)Math.Ceiling((double)count / (double)pageSize);
+    
+        List<Customer> customers = await _customerRepository.GetManyAsync(firstName, lastname, skip, take, cancellationToken);
+
+        return new PaginatedCustomer() {
+            CurrentPage = currentPage,
+            PageSize = pageSize,
+            TotalCount = count,
+            TotalPage = totalPages,
+            Data = customers
+        };
+    }
   }
 }
