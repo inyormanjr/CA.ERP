@@ -17,7 +17,8 @@ namespace CA.ERP.Domain.UserAgg
         Task<OneOf<User, None>> GetUserWithBranchesAsync(Guid userId, CancellationToken cancellationToken = default);
         Task<int> CountAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken);
         Task<List<User>> GetManyAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken, int skip, int take);
-        Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, CancellationToken cancellationToken);
+        Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, string ipAddress, CancellationToken cancellationToken);
         Task<OneOf<User, None>> GetUserByByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
-    }
+        Task<bool> RefreshTokenExistAsync(string refreshToken, CancellationToken cancellationToken);
+  }
 }
