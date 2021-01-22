@@ -21,9 +21,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         private readonly ISupplierRepository _supplierRepository;
         private readonly IPurchaseOrderTotalCostPriceCalculator _purchaseOrderTotalCostPriceCalculator;
         private readonly IPurchaseOrderItemTotalCostPriceCalculator _purchaseOrderItemTotalCostPriceCalculator;
-        private readonly IPurchaseOrderItemTotalQuantityCalculator _purchaseOrderItemTotalQuantityCalculator;
-        private readonly IUserHelper _userHelper;
-        private readonly IPurchaseOrderFactory _purchaseOrderFactory;
+        private readonly IPurchaseOrderItemTotalQuantityCalculator _purchaseOrderItemTotalQuantityCalculator;        private readonly IPurchaseOrderFactory _purchaseOrderFactory;
         private readonly IValidator<PurchaseOrder> _purchaseOrderValidator;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IBranchPermissionValidator<PurchaseOrder> _branchPermissionValidator;
@@ -45,7 +43,6 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
             _purchaseOrderItemTotalCostPriceCalculator = purchaseOrderItemTotalCostPriceCalculator;
             _purchaseOrderItemTotalQuantityCalculator = purchaseOrderItemTotalQuantityCalculator;
-            _userHelper = userHelper;
             _purchaseOrderFactory = purchaseOrderFactory;
             _purchaseOrderValidator = purchaseOrderValidator;
             _purchaseOrderRepository = purchaseOrderRepository;
