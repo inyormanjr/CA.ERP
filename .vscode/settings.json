@@ -16,5 +16,18 @@
     //     "titleBar.inactiveForeground": "#e7e7e799"
     // },
     // "peacock.color": "#f34d28"
-    "dotnet-test-explorer.testProjectPath" : "Test/**/*.@(csproj|vbproj|fsproj)"
+    "dotnet-test-explorer.testProjectPath" : "Test/**/*.@(csproj|vbproj|fsproj)",
+    "omnisharp.enableEditorConfigSupport": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/log/*/**": true,
+        "**/logs/*/**": true,
+        "**/bin/*/**": true
+      },
+      "csharp.unitTestDebuggingOptions": {
+      
+      }
+    
 }

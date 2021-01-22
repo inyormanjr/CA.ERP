@@ -19,8 +19,6 @@
             <summary>
             Create a branch
             </summary>
-            <param name="domBranch"></param>
-            <param name="cancellationToken"></param>
             <returns></returns>
         </member>
         <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
@@ -83,8 +81,6 @@
             <summary>
             Generate stock number for given branch
             </summary>
-            <param name="brancId"></param>
-            <param name="count">number of stock number to generate</param>
             <returns></returns>
         </member>
         <member name="T:CA.ERP.Domain.UserAgg.UserRole">

@@ -77,7 +77,14 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
 
                     try
                     {
-                        db.Database.EnsureCreated();
+                        if (db.Database.IsRelational())
+                        {
+                            db.Database.Migrate();
+                        }else
+                        {
+                            db.Database.EnsureCreated();
+                        }
+                        
                         Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
 
 
