@@ -83,5 +83,52 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             }
         }
 
+
+        [Fact]
+        public async Task ShouldUpdateCustomerSuccess_NoContent()
+        {
+            Guid customerId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                var random = new Random();
+                customerId = dbContext.Customers.ToList().OrderBy(c => random.Next()).FirstOrDefault()?.Id ?? Guid.Empty;
+            }
+
+            var fake = new Faker();
+            var data = new Dto.Customer.CustomerUpdate()
+            {
+                FirstName = fake.Person.FirstName,
+                MiddleName = fake.Person.LastName,
+                LastName = fake.Person.LastName,
+                Address = fake.Person.Address.City.ToString(),
+                Employer = fake.Person.FullName,
+                EmployerAddress = fake.Person.Address.City.ToString(),
+                CoMaker = fake.Person.FullName,
+                CoMakerAddress = fake.Person.Address.City.ToString(),
+            };
+
+            var request = new Dto.UpdateBaseRequest<Dto.Customer.CustomerUpdate>()
+            {
+                Data = data
+            };
+
+
+            var response = await _client.PutAsJsonAsync($"api/Customer/{customerId}", request);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+               var customer = dbContext.Customers.FirstOrDefault(c => c.Id == customerId);
+               customer.Should().NotBeNull();
+
+               customer.FirstName.Should().Be(data.FirstName);
+               customer.MiddleName.Should().Be(data.MiddleName);
+               customer.LastName.Should().Be(data.LastName);
+               
+            }
+        }
+
     }
 }
