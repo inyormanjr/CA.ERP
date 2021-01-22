@@ -160,8 +160,6 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 var random = new Random();
                 var customer = dbContext.Customers.ToList().OrderBy(c => random.Next()).FirstOrDefault();
             
-                var searchForFirstname = customer.FirstName.Substring(0, 3);
-                var searchForLastname = customer.LastName.Substring(0, 3);
                 var response = await _client.GetAsync($"api/Customer/{customer.Id}");
 
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -173,6 +171,27 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 content.CoMaker.Should().Be(customer.CoMaker);
                 content.Id.Should().Be(customer.Id);
             }
+        }
+
+        [Fact]
+        public async Task ShouldDeleteCustomerSuccess_NoContent()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                var random = new Random();
+                var customer = dbContext.Customers.AsNoTracking().ToList().OrderBy(c => random.Next()).FirstOrDefault();
+            
+            
+                var response = await _client.DeleteAsync($"api/Customer/{customer.Id}");
+
+                response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+                var deletedCustomer =dbContext.Customers.FirstOrDefault(c => c.Id == customer.Id);
+                deletedCustomer.Should().NotBeNull();
+                deletedCustomer.Status.Should().Be(Status.Inactive);
+            }
+            
         }
 
     }

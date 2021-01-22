@@ -85,5 +85,16 @@ namespace CA.ERP.WebApp.Controllers.Api
             return result.Match<ActionResult>(f0: customer => Ok(_mapper.Map<Dto.Customer.CustomerView>(customer)), f1: _ => NotFound());
         }
 
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        public async Task<ActionResult<Dto.Customer.CustomerView>> Delete(Guid id, CancellationToken cancellationToken = default)
+        {
+            var result = await _customerService.DeleteAsync(id, cancellationToken);
+            return result.Match<ActionResult>(f0: _ => NoContent(), f1: _ => NotFound());
+        }
+
     }
 }
