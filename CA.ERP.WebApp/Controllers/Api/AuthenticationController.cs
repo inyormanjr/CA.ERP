@@ -51,8 +51,9 @@ namespace CA.ERP.WebApp.Controllers.Api
 
             var actionResult = await userResult.Match<Task<ActionResult>>(f0: async user =>
             {
-                string refreshToken = _userService.GenerateRefreshToken();
-                await _userService.UpdateUserRefreshTokenAsync(user.Id, refreshToken, cancellationToken);
+                string ipAddress = HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? string.Empty;
+                string refreshToken = await _userService.GenerateRefreshToken(cancellationToken);
+                await _userService.UpdateUserRefreshTokenAsync(user.Id, refreshToken,ipAddress, cancellationToken);
                 return Ok(new Dto.LoginResponse()
                 {
                     refreshToken = refreshToken,
@@ -81,8 +82,9 @@ namespace CA.ERP.WebApp.Controllers.Api
 
             var actionResult = await userResult.Match<Task<ActionResult>>(f0: async user =>
             {
-                string refreshToken = _userService.GenerateRefreshToken();
-                await _userService.UpdateUserRefreshTokenAsync(user.Id, refreshToken, cancellationToken);
+                string ipAddress = HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? string.Empty;
+                string refreshToken = await _userService.GenerateRefreshToken(cancellationToken);
+                await _userService.UpdateUserRefreshTokenAsync(user.Id, refreshToken, ipAddress, cancellationToken);
                 return Ok(new Dto.LoginResponse()
                 {
                     refreshToken = refreshToken,

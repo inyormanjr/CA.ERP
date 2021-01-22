@@ -59,7 +59,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Get(string primaryField = null, string firstName = null, string lastname = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.Customer.CustomerView>>> Get(string primaryField = null, string firstName = null, string lastname = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
         {
             lastname = lastname ?? primaryField;
             var result = await _customerService.GetManyAsync(firstName, lastname, pageSize, page, cancellationToken);
@@ -72,6 +72,28 @@ namespace CA.ERP.WebApp.Controllers.Api
                 Data = result.Data.Select(d => _mapper.Map<Dto.Customer.CustomerView>(d))
             };
             return Ok(response);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        public async Task<ActionResult<Dto.Customer.CustomerView>> Get(Guid id, CancellationToken cancellationToken = default)
+        {
+            var result = await _customerService.GetOneAsync(id, cancellationToken);
+            return result.Match<ActionResult>(f0: customer => Ok(_mapper.Map<Dto.Customer.CustomerView>(customer)), f1: _ => NotFound());
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        public async Task<ActionResult<Dto.Customer.CustomerView>> Delete(Guid id, CancellationToken cancellationToken = default)
+        {
+            var result = await _customerService.DeleteAsync(id, cancellationToken);
+            return result.Match<ActionResult>(f0: _ => NoContent(), f1: _ => NotFound());
         }
 
     }

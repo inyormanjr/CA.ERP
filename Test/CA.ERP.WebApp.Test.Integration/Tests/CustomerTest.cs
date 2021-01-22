@@ -151,5 +151,48 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             }
         }
 
+        [Fact]
+        public async Task ShouldGetOneCustomerSuccess_Ok()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                var random = new Random();
+                var customer = dbContext.Customers.ToList().OrderBy(c => random.Next()).FirstOrDefault();
+            
+                var response = await _client.GetAsync($"api/Customer/{customer.Id}");
+
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+                var content =  await response.Content.ReadAsAsync<Dto.Customer.CustomerView>();
+                content.LastName.Should().Be(customer.LastName);
+                content.FirstName.Should().Be(customer.FirstName);
+                content.Address.Should().Be(customer.Address);
+                content.CoMaker.Should().Be(customer.CoMaker);
+                content.Id.Should().Be(customer.Id);
+            }
+        }
+
+        [Fact]
+        public async Task ShouldDeleteCustomerSuccess_NoContent()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                var random = new Random();
+                var customer = dbContext.Customers.AsNoTracking().ToList().OrderBy(c => random.Next()).FirstOrDefault();
+            
+            
+                var response = await _client.DeleteAsync($"api/Customer/{customer.Id}");
+
+                response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+                var deletedCustomer =dbContext.Customers.FirstOrDefault(c => c.Id == customer.Id);
+                deletedCustomer.Should().NotBeNull();
+                deletedCustomer.Status.Should().Be(Status.Inactive);
+            }
+            
+        }
+
     }
 }
