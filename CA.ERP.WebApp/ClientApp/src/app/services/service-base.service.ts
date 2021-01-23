@@ -34,14 +34,7 @@ export class ServiceBaseService<T> implements IServiceBase<T> {
     }
 
     return this.http
-      .get<PaginationResult<T[]>>(this.baseUrl, {
-        params,
-      })
-      .pipe(
-        map((result: any) => {
-          return result;
-        })
-      );
+      .get<PaginationResult<T[]>>(this.baseUrl, {params}).pipe( map((result: any) =>  result));
   }
   public get(): Observable<T[]> {
     return this.http
