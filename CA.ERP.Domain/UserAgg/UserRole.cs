@@ -27,6 +27,9 @@ namespace CA.ERP.Domain.UserAgg
         Encoder = 64,
         Accounting = 128,
         Manager = 256,
-        All = int.MaxValue
-    }
+        Salesman = 512,
+        CreditInvestigation = 1024,
+        All = int.MaxValue,
+        
+  }
 }
