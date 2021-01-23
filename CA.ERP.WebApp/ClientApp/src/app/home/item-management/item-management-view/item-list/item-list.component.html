@@ -1,1 +1,49 @@
-<p>item-list works!</p>
+<div class="container-fluid bg-light p-4 h-100">
+  <h2>Stock List</h2>
+  <section class="d-flex border-bottom pb-2 flex-row justify-content-between align-items-end mt-4">
+    <div class="form-group m-0">
+      <label for="">Filter</label>
+      <div class="filters d-flex flex-row">
+        <select  class="form-control mr-1" name="" id="">
+          <option value="">Stock No</option>
+          <option>Serial</option>
+          <option>Model</option>
+        </select>
+        <input type="text" class="form-control mr-2" name="" id="" aria-describedby="helpId" placeholder="Search">
+        <a name="" id="" class="btn btn-primary" role="button">Search</a>
+      </div>
+    </div>
+    <div class="actions">
+      <a name="" id="" class="btn btn-success" [routerLink]="['../entry']" role="button">Create</a>
+    </div>
+  </section>
+  <section>
+     <table class="table responsive">
+       <thead>
+         <tr>
+           <th>Stock#</th>
+           <th>Brand</th>
+           <th>Serial#</th>
+           <th>Model</th>
+           <th>Actions</th>
+         </tr>
+       </thead>
+       <tbody *ngIf="stockPaginationResult$ | async as StockPaginationResult">
+         <tr *ngFor="let item of StockPaginationResult.data | paginate : {
+           itemsPerPage: StockPaginationResult.pageSize, currentPage: StockPaginationResult.currentPage, totalItems: StockPaginationResult.totalCount
+         }">
+           <td scope="row">{{item.stockNumber}}</td>
+           <td>{{item.brandName}}</td>
+           <td>{{item.serialNumber}}</td>
+           <td>{{item.model}}</td>
+           <td >
+             <a name="" id="" class="btn btn-danger" href="#" role="button">
+               <i class="fa fa-pencil" aria-hidden="true"></i>
+             </a>
+           </td>
+         </tr>
+       </tbody>
+     </table>
+    <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
+  </section>
+</div>
