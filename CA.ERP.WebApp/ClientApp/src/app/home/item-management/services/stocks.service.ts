@@ -11,6 +11,6 @@ import { StockView } from '../model/stockview';
 })
 export class StocksService extends ServiceBaseService<StockView> {
   constructor(httpClient: HttpClient, authService: AuthService) {
-    super(environment.apiURL + '/stocks/', httpClient, authService);
+    super(environment.apiURL + 'api/Stock/', httpClient, authService);
   }
 }

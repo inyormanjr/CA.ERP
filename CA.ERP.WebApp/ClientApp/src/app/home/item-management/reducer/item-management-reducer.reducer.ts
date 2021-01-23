@@ -6,24 +6,27 @@ import { StockView } from '../model/stockview';
 
 export const itemManagementReducerFeatureKey = 'itemManagementReducer';
 
-export interface State {
+export interface StockManageState {
   isLoading: boolean;
   stocksPaginationResult: PaginationResult<StockView[]>;
 }
 
-export const initialState: State = {
+export const initialState: StockManageState = {
   isLoading: false,
-  stocksPaginationResult: undefined
+  stocksPaginationResult: undefined,
 };
 
 
 export const reducer = createReducer(
   initialState,
-  on(ItemManagementActionTypes.populateStockPaginationResulState, (state, action) => {
-    return {
-      ...state,
-      stocksPaginationResult: action.paginationResult
-    };
-  }),
+  on(
+    ItemManagementActionTypes.populateStockPaginationResulState,
+    (state, action) => {
+      return {
+        ...state,
+        stocksPaginationResult: action.paginationResult,
+      };
+    }
+  )
 );
 
