@@ -4,54 +4,24 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { UserView } from './model/user.view';
-import { ServiceBase } from 'src/app/services/services.base';
+import { IServiceBase } from 'src/app/services/iService.base';
 import { BranchView } from '../branch/model/branch.view';
+import { PaginationParams } from 'src/app/models/pagination.params';
+import { ServiceBaseService } from 'src/app/services/service-base.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class UserService implements ServiceBase<UserView> {
+export class UserService extends ServiceBaseService<UserView> {
   baseUrl = environment.apiURL + 'api/User/';
-  constructor(private http: HttpClient) { }
-
-  getById(id: any): Observable<UserView> {
-    return this.http.get<UserView>(this.baseUrl+id).pipe(
-      map(res => {
-        return res;
-      },
-      error => {
-        console.log(error);
-      })
-    )
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(environment.apiURL + 'api/User/', httpClient, authService);
   }
-  create(createRequest: any): Observable<any> {
-    return this.http.post<any>(this.baseUrl,createRequest).pipe(
-      map((res: any) => {
-        return res.id;
-      })
-    );
-  }
-  update(id: any, updateRequest: any): Observable<any> {
-    return this.http.put<any>(this.baseUrl + id, updateRequest).pipe(
-      map((res) => {
-        return res;
-      })
-    );
-  }
-  delete(id: any) {
-    throw new Error('Method not implemented.');
-  }
-
-  get() {
-    return this.http.get<UserView[]>(this.baseUrl).pipe(
-      map((res : any) =>{
-          return res.data;
-      })
-    );
-  }
-
   getUserBranches(): Observable<BranchView[]> {
-    return this.http.get<BranchView[]>(this.baseUrl + 'branch').pipe(map((res: any) => res.data));
+    return this.http
+      .get<BranchView[]>(this.baseUrl + 'branch')
+      .pipe(map((res: any) => res.data));
   }
 }
