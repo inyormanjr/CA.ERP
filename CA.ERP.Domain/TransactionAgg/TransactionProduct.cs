@@ -1,8 +1,9 @@
 using System;
+using CA.ERP.Domain.Base;
 
-namespace CA.ERP.DataAccess.Entities
+namespace CA.ERP.Domain.TransactionAgg
 {
-    public class Product : EntityBase
+    public class TransactionProduct : ModelBase
     {
         public Guid StockId { get; set; }
         public string DownPaymentOfficialReceiptNumber { get; set; }

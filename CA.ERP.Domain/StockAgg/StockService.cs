@@ -1,6 +1,6 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
-using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Common.ResultTypes;
 using CA.ERP.Domain.StockCounterAgg;
 using CA.ERP.Domain.StockReceiveAgg;
 using CA.ERP.Domain.UnitOfWorkAgg;
@@ -38,7 +38,7 @@ namespace CA.ERP.Domain.StockAgg
         }
 
         public async Task<OneOf<IEnumerable<string>, NotFound, Forbidden>> GenerateStockNumbersAsync(Guid branchId, int count)
-        {
+        {Forbidden
             var branchOption = await _branchRepository.GetByIdAsync(branchId);
             return await branchOption.Match<Task<OneOf<IEnumerable<string>, NotFound, Forbidden>>>(
                 f0: async branch => {

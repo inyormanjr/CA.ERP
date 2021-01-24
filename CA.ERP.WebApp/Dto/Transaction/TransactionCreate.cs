@@ -23,6 +23,6 @@ namespace CA.ERP.WebApp.Dto.Transaction
     public int GrossMonthly { get; set; }
     public int RebateMonthly { get; set; }
     public int NetMonthly { get; set; }
-    public List<TransactionProductCreate> Products { get; set; }
+    public List<TransactionProductCreate> TransactionProducts { get; set; }
   }
 }

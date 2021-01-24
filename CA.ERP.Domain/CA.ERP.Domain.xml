@@ -51,13 +51,6 @@
             Full = 3
             </summary>
         </member>
-        <member name="T:CA.ERP.Domain.PaymentAgg.TransactionType">
-            <summary>
-            Down = 1,
-            Installment = 2,
-            Full = 3
-            </summary>
-        </member>
         <member name="T:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator">
             <summary>
             Business logic interface for calculating Purchase order total amount

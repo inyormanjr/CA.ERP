@@ -28,6 +28,6 @@ namespace CA.ERP.DataAccess.Entities
         public int RebateMonthly { get; set; }
         public int NetMonthly { get; set; }
         public List<Payment> Payments { get;  set; }
-        public List<Product> Products { get; set; }
+        public List<TransactionProduct> Products { get; set; }
     } 
 }

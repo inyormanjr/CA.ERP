@@ -70,6 +70,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
 
             };
 
+
             var data = new Dto.Transaction.TransactionCreate()
             {
                BranchId = branchId,
@@ -89,7 +90,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                GrossMonthly = 1706,
                RebateMonthly = 40,
                NetMonthly = 1666,
-               Products = new List<Dto.Transaction.TransactionProductCreate>(){
+               TransactionProducts = new List<Dto.Transaction.TransactionProductCreate>(){
                    product
                }
             };
