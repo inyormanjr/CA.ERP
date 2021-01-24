@@ -1,5 +1,6 @@
 ﻿using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Common.ResultTypes;
 using CA.ERP.Domain.StockAgg;
 using CA.ERP.Domain.StockInventoryAgg;
 using CA.ERP.Domain.StockMoveAgg;
@@ -47,7 +48,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             _branchPermissionValidator = branchPermissionValidator;
         }
 
-        public async Task<OneOf<Guid, List<ValidationFailure>, Forbidden>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, string deliveryReference, List<Stock> stocks, CancellationToken cancellationToken)
+        public async Task<OneOf<Guid, List<ValidationFailure>,  Forbidden>> CreateStockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, string deliveryReference, List<Stock> stocks, CancellationToken cancellationToken)
         {
             OneOf<Guid, List<ValidationFailure>, Forbidden> ret;
             StockReceive stockReceive = _stockReceiveFactory.CreateStockReceive(purchaseOrderId, branchId, stockSource, supplierId, deliveryReference, stocks);

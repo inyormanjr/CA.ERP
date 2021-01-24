@@ -18,15 +18,15 @@ namespace CA.ERP.DataAccess.Entities
         public string TransactionNumber { get; set; }
         public Guid SalesmanId { get; set; }
         public Guid InvenstigatedById { get; set; }
-        public int Total { get; set; }
-        public int Balance { get; set; }
-        public int UDI { get; set; }
-        public int TotalRebate { get; set; }
-        public int PN { get; set; }
-        public int Terms { get; set; }
-        public int GrossMonthly { get; set; }
-        public int RebateMonthly { get; set; }
-        public int NetMonthly { get; set; }
+        public decimal Total { get; set; }
+        public decimal Balance { get; set; }
+        public decimal UDI { get; set; }
+        public decimal TotalRebate { get; set; }
+        public decimal PN { get; set; }
+        public decimal Terms { get; set; }
+        public decimal GrossMonthly { get; set; }
+        public decimal RebateMonthly { get; set; }
+        public decimal NetMonthly { get; set; }
         public List<Payment> Payments { get;  set; }
         public List<TransactionProduct> Products { get; set; }
     } 

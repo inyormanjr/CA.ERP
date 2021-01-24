@@ -18,7 +18,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         public TransactionController(IServiceProvider serviceProvider, TransactionService transactionService)
             : base(serviceProvider)
         {
-        _   _transactionService = transactionService;
+           _transactionService = transactionService;
         }
 
 
@@ -26,7 +26,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.Transaction.CreateTransactionRequest>> CreateSupplier(Dto.Transaction.CreateTransactionRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.Transaction.CreateTransactionRequest>> Create(Dto.Transaction.CreateTransactionRequest request, CancellationToken cancellationToken)
         {
             
             var transactionProducts = _mapper.Map<List<TransactionProduct>>(request.Data.TransactionProducts);
@@ -38,12 +38,13 @@ namespace CA.ERP.WebApp.Controllers.Api
               request.Data.DeliveryDate,
               request.Data.TransactionNumber,
               request.Data.SalesmanId,
-              request.Data.InvenstigatedById,
+              request.Data.InvestigatedById,
               request.Data.Total,
+              request.Data.Down,
               request.Data.Balance,
-              request.Data.UDI,
+              request.Data.Udi,
               request.Data.TotalRebate,
-              request.Data.PN,
+              request.Data.PrincipalAmount,
               request.Data.Terms,
               request.Data.GrossMonthly,
               request.Data.RebateMonthly,
@@ -67,7 +68,8 @@ namespace CA.ERP.WebApp.Controllers.Api
                     ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
                 };
                 return BadRequest(response);
-            }
+            },
+            f2: _ => Forbid()
          );
         }
     }

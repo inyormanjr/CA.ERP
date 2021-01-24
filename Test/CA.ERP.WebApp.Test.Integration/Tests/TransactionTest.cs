@@ -80,12 +80,13 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                DeliveryDate = DateTime.Now.AddDays(1),
                TransactionNumber = "05539",
                SalesmanId = salesmanId,
-               InvenstigatedById = investigatedById,
+               InvestigatedById = investigatedById,
                Total = 24990,
+               Down = 4998,
                Balance = 19992,
-               UDI = 0,
+               Udi = 0,
                TotalRebate = 480,
-               PN = 20472,
+               PrincipalAmount = 20472,
                Terms = 12,
                GrossMonthly = 1706,
                RebateMonthly = 40,
@@ -117,7 +118,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                var dalTransaction = dbContext.Transactions.Include(t => t.Products).FirstOrDefault(p => p.Id == createContent.Id);
                dalTransaction.Should().NotBeNull();
                dalTransaction.Total.Should().Be(data.Total);
-               dalTransaction.PN.Should().Be(data.PN);
+               dalTransaction.PN.Should().Be(data.PrincipalAmount);
                dalTransaction.Products.Should().NotBeNull();
                dalTransaction.Products.Should().OnlyContain(p => p.StockId == product.StockId);
             }

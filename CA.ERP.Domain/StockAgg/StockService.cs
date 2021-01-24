@@ -38,7 +38,7 @@ namespace CA.ERP.Domain.StockAgg
         }
 
         public async Task<OneOf<IEnumerable<string>, NotFound, Forbidden>> GenerateStockNumbersAsync(Guid branchId, int count)
-        {Forbidden
+        {
             var branchOption = await _branchRepository.GetByIdAsync(branchId);
             return await branchOption.Match<Task<OneOf<IEnumerable<string>, NotFound, Forbidden>>>(
                 f0: async branch => {
