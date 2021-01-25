@@ -146,13 +146,14 @@ namespace CA.ERP.DataAccess.Repositories
             return ret;
         }
 
-        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, CancellationToken cancellationToken)
+        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
             if (user != null)
             {
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiration = expiration;
+                user.IpAddress = ipAddress;
                 _context.Entry(user).State = EntityState.Modified;
             }
         }
@@ -169,5 +170,11 @@ namespace CA.ERP.DataAccess.Repositories
 
             return result;
         }
-    }
+
+        public Task<bool> RefreshTokenExistAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            var now = DateTime.Now;
+            return _context.Users.AnyAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiration >= now);
+        }
+  }
 }

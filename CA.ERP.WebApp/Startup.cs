@@ -63,6 +63,17 @@ namespace CA.ERP.WebApp
         {
             services.AddHealthChecks().AddCheck<DatabaseCheck>("Database check", HealthStatus.Unhealthy);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardLimit=2;  //Limit number of proxy hops trusted
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
+
 
             services.AddDbContext<CADataContext>(dbc =>
 
@@ -271,10 +282,7 @@ namespace CA.ERP.WebApp
         {
             UpdateDatabase(app);
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+            app.UseForwardedHeaders();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

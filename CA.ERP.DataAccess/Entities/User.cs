@@ -18,6 +18,7 @@ namespace CA.ERP.DataAccess.Entities
         public string LastName { get; set; }
         public UserRole Role { get; set; }
         public string RefreshToken { get; set; }
+        public string IpAddress { get; set; }
         public DateTime RefreshTokenExpiration { get; set; }
         public List<UserBranch> UserBranches { get; set; }
 

@@ -2,9 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PaginationResult } from 'src/app/models/data.pagination';
 import { NewRequest } from 'src/app/models/NewRequest';
+import { PaginationParams } from 'src/app/models/pagination.params';
 import { ApiResponse } from 'src/app/models/response.data';
-import { ServiceBase } from 'src/app/services/services.base';
+import { AuthService } from 'src/app/services/auth.service';
+import { IServiceBase } from 'src/app/services/iService.base';
+import { ServiceBaseService } from 'src/app/services/service-base.service';
 import { environment } from 'src/environments/environment';
 import { BrandWithMasterProducts } from '../models/brandWithMasterProducts';
 import { SupplierView } from '../models/supplier-view';
@@ -12,43 +16,23 @@ import { SupplierView } from '../models/supplier-view';
 @Injectable({
   providedIn: 'root',
 })
-export class SupplierService implements ServiceBase<SupplierView> {
-  baseUrl = environment.apiURL + 'api/supplier/';
-  constructor(private http: HttpClient) {}
+export class SupplierService extends ServiceBaseService<SupplierView> {
 
-  get(): Observable<SupplierView[]> {
-    return this.http.get<SupplierView[]>(this.baseUrl).pipe(
-      map((response: any) => {
-        return response.data;
-      })
-    );
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(environment.apiURL + 'api/supplier/', httpClient, authService);
   }
 
-  getById(id: any): Observable<SupplierView> {
-    return this.http.get<SupplierView>(this.baseUrl  + id).pipe(
-      map((response: any) => response)
-    );
-  }
-
-  getBrandsWithMasterProductsBySupplierId(id: any): Observable<BrandWithMasterProducts[]> {
-    return this.http.get<BrandWithMasterProducts[]>(
-      this.baseUrl + id + '/Brands'
-    ).pipe(map((res: any) => res.data));
-  }
-
-  create(createRequest: any): Observable<any> {
-    return this.http.post(this.baseUrl, createRequest);
-  }
-  update(id: any, updateRequest: any): Observable<any> {
-    return this.http.put(this.baseUrl + id, updateRequest);
+  getBrandsWithMasterProductsBySupplierId(
+    id: any
+  ): Observable<BrandWithMasterProducts[]> {
+    return this.http
+      .get<BrandWithMasterProducts[]>(this.baseUrl + id + '/Brands')
+      .pipe(map((res: any) => res.data));
   }
 
   updateMasterProductCostPriceById(supplierId, updateRequest: NewRequest) {
-    this.http.put(this.baseUrl + supplierId + '/MasterProduct', updateRequest).pipe(
-      map((response: any) => response)
-    );
-  }
-  delete(id: any) {
-    this.http.delete(this.baseUrl + id);
+    this.http
+      .put(this.baseUrl + supplierId + '/MasterProduct', updateRequest)
+      .pipe(map((response: any) => response));
   }
 }

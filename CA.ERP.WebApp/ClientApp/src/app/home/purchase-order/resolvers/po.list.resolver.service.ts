@@ -22,7 +22,7 @@ export class PoListResolverService
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<PaginationResult<PurchaseOrder[]>> {
-    return this.poservice.getByPagination({page: 1, pageSize: 5}).pipe(
+    return this.poservice.getByPagination({page: 1, pageSize: 5, queryParams: []}).pipe(
       catchError((error) => {
         this.store.dispatch(PoActionTypes.loadPurchaseOrdersFailure({ error }));
         return of(null);

@@ -35,8 +35,6 @@ namespace CA.ERP.Domain.BranchAgg
         /// <summary>
         /// Create a branch
         /// </summary>
-        /// <param name="domBranch"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
         {

@@ -6,6 +6,12 @@ services:
     build:
       context: .
       dockerfile: CA.ERP.WebApp/Dockerfile
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "80:80"
+      - "443:443"
 
   jsreportserver:
     image: jsreport/jsreport:2.11.0-full
@@ -26,7 +32,7 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=DbPassword123@
-      - MSSQL_PID=HMWJ3-KY3J2-NMVD7-KG4JR-X2G8G
+      - MSSQL_PID=EXPRESS
       - MSSQL_RPC_PORT=135
       - MSSQL_DTC_TCP_PORT=51000
 

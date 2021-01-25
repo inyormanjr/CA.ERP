@@ -41,16 +41,26 @@ export class PoListComponent implements OnInit {
         params: {
           page: event,
           pageSize: 5,
-          startDate: this.dateSearch,
-          endDate: this.dateSearch,
+          queryParams: [{ name: 'startDate', value: this.dateSearch },
+                        { name: 'endDate', value: this.dateSearch}]
         },
       })
     );
   }
 
   search() {
-    this.store.dispatch(PoActionTypes.fetchPurchaseOrders(
-      { params: { page: 1, pageSize: 5, startDate: this.dateSearch, endDate: this.dateSearch } }));
+    this.store.dispatch(
+      PoActionTypes.fetchPurchaseOrders({
+        params: {
+          page: 1,
+          pageSize: 5,
+          queryParams: [
+            { name: 'startDate', value: this.dateSearch },
+            { name: 'endDate', value: this.dateSearch },
+          ],
+        },
+      })
+    );
   }
 
   viewAndPrintPDF(id) {

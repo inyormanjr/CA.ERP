@@ -228,21 +228,30 @@ namespace CA.ERP.Domain.UserAgg
             return ret;
         }
 
-        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, CancellationToken cancellationToken)
+        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, string ipAddress, CancellationToken cancellationToken)
         {
             var tokenTtl = _configuration.GetSection("AppSettings:TokenTtl")?.Get<int>() ?? 3600;
             var expiration = DateTime.Now.AddSeconds(tokenTtl + 1800);
-            await _userRepository.UpdateUserRefreshTokenAsync(id, refreshToken, expiration, cancellationToken);
+            await _userRepository.UpdateUserRefreshTokenAsync(id, refreshToken, expiration, ipAddress, cancellationToken);
             await _unitOfWork.CommitAsync();
         }
 
-        public string GenerateRefreshToken()
+        public async Task<string> GenerateRefreshToken(CancellationToken cancellationToken)
         {
             using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
             {
-                var randomBytes = new byte[64];
-                rngCryptoServiceProvider.GetBytes(randomBytes);
-                return Convert.ToBase64String(randomBytes);
+                string refreshToken = string.Empty;
+                bool isUnique = false;
+                while (!isUnique)
+                {
+                    var randomBytes = new byte[64];
+                    rngCryptoServiceProvider.GetBytes(randomBytes);
+                    refreshToken = Convert.ToBase64String(randomBytes);
+
+                    isUnique = !await _userRepository.RefreshTokenExistAsync(refreshToken, cancellationToken);
+                }
+                
+                return refreshToken;
             }
 
         }

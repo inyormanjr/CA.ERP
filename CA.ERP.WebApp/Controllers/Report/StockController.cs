@@ -50,7 +50,6 @@ namespace CA.ERP.WebApp.Controllers.Report
                 },
                 f1: async _ => NotFound()
                 );
-            return View();
         }
     }
 }

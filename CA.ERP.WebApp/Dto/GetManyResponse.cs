@@ -18,6 +18,6 @@ namespace CA.ERP.WebApp.Dto
         /// <summary>
         /// A list of data
         /// </summary>
-        public ICollection<T> Data { get; set; }
+        public IEnumerable<T> Data { get; set; }
     }
 }

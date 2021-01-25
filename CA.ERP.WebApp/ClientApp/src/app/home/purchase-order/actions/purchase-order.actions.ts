@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { PaginationResult } from 'src/app/models/data.pagination';
+import { PaginationParams } from 'src/app/models/pagination.params';
 import { PurchaseOrder } from '../models/new-purchase-order';
 import { PoPaginationParams } from '../models/po.pagination.params';
 import { BrandWithMasterProducts } from '../supplier/models/brandWithMasterProducts';
@@ -33,7 +34,7 @@ export const fetchBrandsWithMasterproductsOfSupplier = createAction('[Purchase O
   props<{ supplieView: SupplierView }>());
 
 export const fetchPurchaseOrders = createAction('[Purchase Order] Purchase Order Object List',
-  props<{ params: PoPaginationParams }>());
+  props<{ params: PaginationParams }>());
 
 export const populatePurchaseOrderListView = createAction(
   '[Purchase Order] populate purchase order list', props<{ data: PurchaseOrder[] }>()
