@@ -138,10 +138,10 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.User.UserView>>> Get(string primaryField = null, string username = null, string firstName = null, string lastName = null, UserRole userRole = UserRole.All, int pageSize = 10, int currentPage = 1 , CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.User.UserView>>> Get(string primaryField = null, string username = null, string firstName = null, string lastName = null, UserRole userRole = UserRole.All, int pageSize = 10, int page = 1 , CancellationToken cancellationToken = default)
         {
             username = username ?? primaryField;
-            var paginateUsers = await _userService.GetManyAsync(username, firstName, lastName, userRole, pageSize, currentPage , cancellationToken: cancellationToken);
+            var paginateUsers = await _userService.GetManyAsync(username, firstName, lastName, userRole, pageSize, page , cancellationToken: cancellationToken);
             var dtoUsers = _mapper.Map<List<Dto.User.UserView>>(paginateUsers.Data);
             var response = new Dto.GetManyResponse<Dto.User.UserView>()
             {
@@ -151,7 +151,6 @@ namespace CA.ERP.WebApp.Controllers.Api
                 TotalCount = paginateUsers.TotalCount,
                 Data = dtoUsers
             };
-            return Ok(response);
             return Ok(response);
         }
 
