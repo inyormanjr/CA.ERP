@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-bootstrap-modules.module';
 import { UserListComponent } from './users-management-view/UserList/user-list.component';
 import { UserEntryComponent } from '../user/users-management-view/UserEntry/user-entry.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [UsersManagementViewComponent, UserListComponent, UserEntryComponent],
@@ -22,6 +23,7 @@ import { UserEntryComponent } from '../user/users-management-view/UserEntry/user
     ReactiveFormsModule,
     UserRoutingModule,
     NgxBootstrapModulesModule,
+    NgxPaginationModule,
     StoreModule.forFeature(from.userManagementFeatureKey,
                         from.reducers,{metaReducers : from.metaReducers}),
     EffectsModule.forFeature([UserEffects])

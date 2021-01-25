@@ -31,6 +31,26 @@ export class UserEffects {
       })
     ), {dispatch: false}
   );
+  loadUsersPaginationResult$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(userManagementAction.fetchUsersPaginationResult),
+      tap(
+        action => {
+          this.userManagementStore.dispatch(userManagementAction.fetchingUsers());
+          this.userService.getByPagination(action.params)
+          .pipe(map((x: any)=>{
+              this.userManagementStore.dispatch(userManagementAction.loadUserViewListPaginationResult({
+                userViewListPaginationResult : x
+              }));
+              
+          }))
+          .subscribe(noop, (error) => {
+            console.log(error);
+          });
+        }
+      )
+    ), {dispatch: false}
+  );
   constructor(private actions$: Actions,
     private userService: UserService,
     private userManagementStore: Store<UserManagementState>) { }
