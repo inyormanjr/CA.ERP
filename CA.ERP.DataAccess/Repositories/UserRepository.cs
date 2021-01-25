@@ -16,6 +16,7 @@ using OneOf.Types;
 using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
+using System.Linq;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -25,6 +26,52 @@ namespace CA.ERP.DataAccess.Repositories
         public UserRepository(CADataContext context, IMapper mapper) : base(context, mapper)
         {
 
+        }
+
+        public async Task<int> CountAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken)
+        {
+            var query = _context.Users.AsQueryable();
+            query = prepareQuery(username, firstName, lastName, userRole, query);
+
+            return await query.CountAsync(cancellationToken);
+
+        }
+
+        private  IQueryable<Dal.User> prepareQuery(string username, string firstName, string lastName, UserRole userRole, IQueryable<Dal.User> query)
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                query = query.Where(u => u.Username.StartsWith(username));
+            }
+
+            if (!string.IsNullOrEmpty(username))
+            {
+                query = query.Where(u => u.Username.StartsWith(username));
+            }
+
+            if (!string.IsNullOrEmpty(firstName))
+            {
+                query = query.Where(u => u.FirstName.StartsWith(firstName));
+            }
+
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                query = query.Where(u => u.LastName.StartsWith(lastName));
+            }
+            if (userRole != UserRole.All)
+            {
+                query = query.Where(u => userRole.HasFlag(u.Role));
+            }
+
+            return query;
+        }
+
+        public async Task<List<User>> GetManyAsync(string username, string firstName, string lastName, UserRole userRole, CancellationToken cancellationToken, int skip, int take)
+        {
+            var query = _context.Users.AsQueryable();
+            query = prepareQuery(username, firstName, lastName, userRole, query);
+
+            return await query.OrderBy(u => u.Username).Skip(skip).Take(take).Select(u => _mapper.Map<User>(u)).ToListAsync(cancellationToken);
         }
 
         public async Task<OneOf<Dom.User, None>> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default)
@@ -98,5 +145,36 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return ret;
         }
-    }
+
+        public async Task UpdateUserRefreshTokenAsync(Guid id, string refreshToken, DateTime expiration, string ipAddress, CancellationToken cancellationToken)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiration = expiration;
+                user.IpAddress = ipAddress;
+                _context.Entry(user).State = EntityState.Modified;
+            }
+        }
+
+        public async Task<OneOf<User, None>> GetUserByByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            OneOf<Dom.User, None> result = default(None);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiration >= DateTime.Now && u.Status == Status.Active, cancellationToken);
+            if (user != null)
+            {
+                result = _mapper.Map<Dom.User>(user);
+            };
+
+            return result;
+        }
+
+        public Task<bool> RefreshTokenExistAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            var now = DateTime.Now;
+            return _context.Users.AnyAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiration >= now);
+        }
+  }
 }

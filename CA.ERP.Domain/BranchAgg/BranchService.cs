@@ -35,8 +35,6 @@ namespace CA.ERP.Domain.BranchAgg
         /// <summary>
         /// Create a branch
         /// </summary>
-        /// <param name="domBranch"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<OneOf<Guid, List<ValidationFailure>>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
         {
@@ -58,6 +56,11 @@ namespace CA.ERP.Domain.BranchAgg
             return ret;
         }
 
-        
+        public async Task<List<Branch>> GetCurrentUserBranches(CancellationToken cancellationToken = default)
+        {
+            return await _branchRepository.GetManyByUserIdAsync(_userHelper.GetCurrentUserId(), cancellationToken);
+        }
+
+
     }
 }

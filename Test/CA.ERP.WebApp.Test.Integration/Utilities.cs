@@ -276,6 +276,25 @@ namespace CA.ERP.WebApp.Test.Integration
 
                 db.SaveChanges();
 
+                for (int i = 0; i < 10; i++)
+                {
+                    var fake = new Faker();
+                    var fakeCustomer = new Customer()
+                    {
+                        FirstName = fake.Person.FirstName,
+                        MiddleName = fake.Person.LastName,
+                        LastName = fake.Person.LastName,
+                        Address = fake.Person.Address.City.ToString(),
+                        Employer = fake.Person.FullName,
+                        EmployerAddress = fake.Person.Address.City.ToString(),
+                        CoMaker = fake.Person.FullName,
+                        CoMakerAddress = fake.Person.Address.City.ToString(),
+                    };
+
+                    db.Customers.Add(fakeCustomer);
+                }
+                db.SaveChanges();
+
             }
         }
 

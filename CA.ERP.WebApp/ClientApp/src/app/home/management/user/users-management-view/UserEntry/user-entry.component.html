@@ -31,14 +31,14 @@
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label for="">Username</label>
-                            <input formControlName="userName"
-                                [ngClass]="{'is-invalid': fc.userName.errors && fc.userName.touched}" type="text"
+                            <input formControlName="username"
+                                [ngClass]="{'is-invalid': fc.username.errors && fc.username.touched}" type="text"
                                 class="form-control" aria-describedby="helpId" placeholder="User Name">
-                            <div *ngIf="fc.userName.errors && fc.userName.touched">
-                                <div *ngIf="fc.userName.errors.required">
+                            <div *ngIf="fc.username.errors && fc.username.touched">
+                                <div *ngIf="fc.username.errors.required">
                                     Username required
                                 </div>
-                                <div *ngIf="fc.userName.errors.minlength">
+                                <div *ngIf="fc.username.errors.minlength">
                                     Username must be at least 5 characters
                                 </div>
                             </div>
@@ -150,5 +150,6 @@
                 </div>
             </div>
         </form>
+        
     </div>
 </div>

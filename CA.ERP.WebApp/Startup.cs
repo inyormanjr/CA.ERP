@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
@@ -38,9 +38,12 @@ using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using jsreport.AspNetCore;
-using jsreport.Local;
 using jsreport.Shared;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
+using jsreport.Client;
+using System.Globalization;
 
 namespace CA.ERP.WebApp
 {
@@ -59,6 +62,17 @@ namespace CA.ERP.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks().AddCheck<DatabaseCheck>("Database check", HealthStatus.Unhealthy);
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardLimit=2;  //Limit number of proxy hops trusted
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
 
 
             services.AddDbContext<CADataContext>(dbc =>
@@ -123,20 +137,8 @@ namespace CA.ERP.WebApp
                         .AllowCredentials();
                 } );
             });
-
-            services.AddJsReport(new LocalReporting()
-              .UseBinary(GetJsReportBinary())
-              .KillRunningJsReportProcesses()
-              .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "jsreport"))
-              .Configure((cfg) => {
-                  cfg.AllowedLocalFilesAccess();
-                  cfg.FileSystemStore();
-                  cfg.BaseUrlAsWorkingDirectory();
-                  return cfg;
-              })
-              .AsUtility()
-              .Create()
-            );
+            string reportingServer = Configuration.GetSection("ReportServer")?.Value ?? "http://jsreportserver:5488";
+            services.AddJsReport(new ReportingService(reportingServer));
 
 
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
@@ -178,6 +180,13 @@ namespace CA.ERP.WebApp
             //register helpers
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(PasswordManagementHelper))
+                .AddClasses(classes => classes.AssignableTo<IHelper>())
+                .AsSelf()
+                .WithScopedLifetime()
+                );
+
+            services.Scan(scan =>
+                scan.FromAssembliesOf(typeof(TokenGenerator))
                 .AddClasses(classes => classes.AssignableTo<IHelper>())
                 .AsSelf()
                 .WithScopedLifetime()
@@ -258,16 +267,22 @@ namespace CA.ERP.WebApp
             //add principal/user tranformer
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
-            //register textr encoding
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+            //set culture info
+            var cultureInfo = new CultureInfo("en-PH");
+            cultureInfo.NumberFormat.CurrencySymbol = "₱";
 
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            UpdateDatabase(app);
+
+            app.UseForwardedHeaders();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -280,7 +295,11 @@ namespace CA.ERP.WebApp
             }
 
             //temp disable
-            app.UseHttpsRedirection();
+            if (env.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseStaticFiles();
             
             app.UseRouting();
@@ -290,8 +309,9 @@ namespace CA.ERP.WebApp
             app.UseAuthentication();
             app.UseAuthorization();
 
-
             
+
+
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -337,19 +357,23 @@ namespace CA.ERP.WebApp
             
         }
 
-        public static IReportingBinary GetJsReportBinary()
+        private static void UpdateDatabase(IApplicationBuilder app)
         {
-            IReportingBinary reportingBinary;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
             {
-                reportingBinary = jsreport.Binary.JsReportBinary.GetBinary();
-            }
-            else
-            {
-                reportingBinary = jsreport.Binary.Linux.JsReportBinary.GetBinary();
-            }
-            return reportingBinary;
+                using (var context = serviceScope.ServiceProvider.GetService<CADataContext>())
+                {
+                    if (context.Database.IsRelational())
+                    {
+                        context.Database.Migrate();
+                    }
 
+                }
+            }
         }
+
+
     }
 }

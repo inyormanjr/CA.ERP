@@ -19,6 +19,44 @@ namespace CA.ERP.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Bank", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Banks");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Branch", b =>
                 {
                     b.Property<Guid>("Id")
@@ -103,6 +141,133 @@ namespace CA.ERP.DataAccess.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.CardPaymentDetail", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TransactionNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("TransactionNumber")
+                        .IsUnique();
+
+                    b.ToTable("CardPaymentDetails");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.CashPaymentDetail", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Change")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TenderAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PaymentId");
+
+                    b.ToTable("CashPaymentDetails");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.ChequePaymentDetail", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ChequeNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("ChequeNumber");
+
+                    b.ToTable("ChequePaymentDetails");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("CoMaker")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CoMakerAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Employer")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("EmployerAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FirstName");
+
+                    b.HasIndex("LastName");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
                 {
                     b.Property<Guid>("Id")
@@ -147,6 +312,82 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasFilter("[Model] IS NOT NULL");
 
                     b.ToTable("MasterProducts");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Interest")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("NetAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("OfficialReceiptNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Rebate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("OfficialReceiptNumber")
+                        .IsUnique();
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
@@ -591,6 +832,40 @@ namespace CA.ERP.DataAccess.Migrations
                     b.ToTable("SupplierMasterProducts");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountNumber")
+                        .IsUnique();
+
+                    b.ToTable("Transactions");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -607,6 +882,9 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -615,6 +893,12 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiration")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -655,6 +939,55 @@ namespace CA.ERP.DataAccess.Migrations
                     b.ToTable("UserBranches");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.CardPaymentDetail", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Bank", "Bank")
+                        .WithMany("CardPaymentDetails")
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Payment", "Payment")
+                        .WithOne("CardPaymentDetail")
+                        .HasForeignKey("CA.ERP.DataAccess.Entities.CardPaymentDetail", "PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.CashPaymentDetail", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Payment", "Payment")
+                        .WithOne("CashPaymentDetail")
+                        .HasForeignKey("CA.ERP.DataAccess.Entities.CashPaymentDetail", "PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.ChequePaymentDetail", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Bank", "Bank")
+                        .WithMany("ChequePaymentDetails")
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Payment", "Payment")
+                        .WithOne("ChequePaymentDetail")
+                        .HasForeignKey("CA.ERP.DataAccess.Entities.ChequePaymentDetail", "PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+
+                    b.Navigation("Payment");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
                 {
                     b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
@@ -664,6 +997,17 @@ namespace CA.ERP.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Payment", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Transaction", "Transaction")
+                        .WithMany("Payments")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
@@ -866,6 +1210,13 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Bank", b =>
+                {
+                    b.Navigation("CardPaymentDetails");
+
+                    b.Navigation("ChequePaymentDetails");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Branch", b =>
                 {
                     b.Navigation("PurchaseOrders");
@@ -893,6 +1244,15 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("Stocks");
 
                     b.Navigation("SupplierMasterProducts");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Payment", b =>
+                {
+                    b.Navigation("CardPaymentDetail");
+
+                    b.Navigation("CashPaymentDetail");
+
+                    b.Navigation("ChequePaymentDetail");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
@@ -923,6 +1283,11 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("SupplierBrands");
 
                     b.Navigation("SupplierMasterProducts");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Transaction", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.User", b =>

@@ -24,11 +24,12 @@ namespace CA.ERP.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddStockMoveAsync(StockMove stockMove, CancellationToken cancellationToken)
+        public Task AddStockMoveAsync(StockMove stockMove, CancellationToken cancellationToken)
         {
             stockMove.ThrowIfNullArgument(nameof(stockMove));
             var dalStockMove = _mapper.Map<Entities.StockMove>(stockMove);
             _context.StockMoves.Add(dalStockMove);
+            return Task.FromResult(0);
         }
 
         public async Task<OneOf<StockMove, None>> GetLatestStockMoveAsync(Guid masterProductId, Guid branchId, CancellationToken cancellationToken)

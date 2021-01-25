@@ -19,8 +19,6 @@
             <summary>
             Create a branch
             </summary>
-            <param name="domBranch"></param>
-            <param name="cancellationToken"></param>
             <returns></returns>
         </member>
         <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
@@ -38,6 +36,28 @@
             Product has no other data that reference it and should not be deleted
             </summary>
         </member>
+        <member name="T:CA.ERP.Domain.PaymentAgg.PaymentMethod">
+            <summary>
+            The payment method use.
+            Cash = 1,
+            Card = 2,
+            Cheque = 4,
+            </summary>
+        </member>
+        <member name="T:CA.ERP.Domain.PaymentAgg.PaymentType">
+            <summary>
+            Down = 1,
+            Installment = 2,
+            Full = 3
+            </summary>
+        </member>
+        <member name="T:CA.ERP.Domain.PaymentAgg.TransactionType">
+            <summary>
+            Down = 1,
+            Installment = 2,
+            Full = 3
+            </summary>
+        </member>
         <member name="T:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator">
             <summary>
             Business logic interface for calculating Purchase order total amount
@@ -51,12 +71,16 @@
             <param name="purchaseOrderItems"></param>
             <returns>The total cost base on pass purchase order and items</returns>
         </member>
+        <member name="T:CA.ERP.Domain.ReportAgg.FileFormat">
+            <summary>
+            Pdf = 0,
+            Docx = 1
+            </summary>
+        </member>
         <member name="M:CA.ERP.Domain.StockAgg.IStockNumberGenerator.GenerateStockNumberAsync(CA.ERP.Domain.StockReceiveAgg.StockCounter,System.Int32)">
             <summary>
             Generate stock number for given branch
             </summary>
-            <param name="brancId"></param>
-            <param name="count">number of stock number to generate</param>
             <returns></returns>
         </member>
         <member name="T:CA.ERP.Domain.UserAgg.UserRole">

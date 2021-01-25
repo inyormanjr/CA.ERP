@@ -32,8 +32,11 @@ namespace CA.ERP.Lib.DAL.Repositories
             return _mapper.Map<List<Branch>>(branches);
         }
 
+        public async Task<List<Branch>> GetManyByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var queryable = _context.Branches.AsQueryable().Where(e => e.UserBranches.Any(ub => ub.UserId == userId) &&  e.Status == Status.Active);
 
-       
-        
+            return await queryable.Select(e => _mapper.Map<Branch>(e)).ToListAsync(cancellationToken: cancellationToken);
+        }
     }
 }

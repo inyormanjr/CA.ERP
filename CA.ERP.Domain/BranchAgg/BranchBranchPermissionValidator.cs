@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.BranchAgg
@@ -18,10 +19,10 @@ namespace CA.ERP.Domain.BranchAgg
             _userHelper = userHelper;
             _userRepository = userRepository;
         }
-        public async Task<bool> HasPermissionAsync(Branch branch)
+        public async Task<bool> HasPermissionAsync(Branch branch, CancellationToken cancellationToken)
         {
             var userId = _userHelper.GetCurrentUserId();
-            var user = await _userRepository.GetUserWithBranchesAsync(userId);
+            var user = await _userRepository.GetUserWithBranchesAsync(userId, cancellationToken);
             return user.Match<bool>(f0: u => u.UserBranches.Any(ub => ub.BranchId == branch.Id), f1: _ => false);
         }
     }

@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <NoWarn>1591</NoWarn>
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
@@ -23,9 +24,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
     <PackageReference Include="jsreport.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="jsreport.Binary" Version="2.9.0" />
-    <PackageReference Include="jsreport.Binary.Linux" Version="2.9.0" />
-    <PackageReference Include="jsreport.Local" Version="2.3.0" />
+    <PackageReference Include="jsreport.Client" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.1" />
@@ -55,17 +54,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\Reports\StockListReport.rdlc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="wwwroot\Reports\StockListReport.rdlc" />
+    <Content Remove="wwwroot\images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
-    <ProjectReference Include="..\Misc\CA.ERP.JSReport.Studio\CA.ERP.JSReport.Studio.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,9 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\Reports\PurchaseOrderReport.rdlc">
+    <None Include="wwwroot\images\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
