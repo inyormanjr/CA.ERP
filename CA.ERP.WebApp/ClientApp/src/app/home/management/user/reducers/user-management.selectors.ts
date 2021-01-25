@@ -9,6 +9,9 @@ export const isLoading = createSelector(userManagementStateSelector,
 export const usersViewList = createSelector(userManagementStateSelector,
     app=>app.usersViewList);
 
+export const userViewListPaginationResult = createSelector(userManagementStateSelector,
+    app=>app.userViewListPaginationResult);
+
     export const fetchSuccess = createSelector(
         userManagementStateSelector,
         app => app.fetchSuccess

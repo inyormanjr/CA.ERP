@@ -44,7 +44,7 @@ export class ServiceBaseService<T> implements IServiceBase<T> {
   public getById(id: any): Observable<T> {
     return this.http
       .get<T>(this.baseUrl + id)
-      .pipe(map((result: any) => result.id));
+      .pipe(map((result: any) => result));
   }
   public create(createRequest: NewRequest): Observable<any> {
     return this.http.post(this.baseUrl, createRequest);

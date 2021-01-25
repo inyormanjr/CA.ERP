@@ -12,6 +12,7 @@ import { BranchService } from '../../../branch/branch.service';
 import { Observable } from 'rxjs';
 import { BranchView } from '../../../branch/model/branch.view';
 import { ActivatedRoute } from '@angular/router';
+import { fetchUsersPaginationResult } from '../../action/user-management.actions';
 
 @Component({
   selector: 'app-user-entry',
@@ -44,7 +45,7 @@ export class UserEntryComponent implements OnInit {
     private branchService: BranchService) {
     this.userEntryForm = this.formBuilder.group({
       id: [undefined],
-      userName: ['', [Validators.required, Validators.minLength(5)]],
+      username: ['', [Validators.required, Validators.minLength(5)]],
       password: ['', [Validators.required, Validators.minLength(5)]],
       confirmPassword: ['', Validators.required],
       firstName: ['', Validators.required],
@@ -59,11 +60,12 @@ export class UserEntryComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       if (params.id !== undefined) {
         activatedRoute.data.subscribe((data) => {
+    
           if (data !== undefined) {
-            this.userEntryForm.patchValue(data.data);
+            this.userEntryForm.patchValue(data.data);       
             this.populateUserBranch(data.data.userBranches);
             this.selectedRole(data.data.role)
-            console.log(this.userEntryForm.value);
+         
           }
         });
       }
@@ -114,7 +116,13 @@ export class UserEntryComponent implements OnInit {
       this.userService.create(newUser).subscribe(
         res => {
           this.alertify.message('User added.');
-          this.userStore.dispatch(UserManagementActions.fetchUsers());
+          this.userStore.dispatch(fetchUsersPaginationResult({
+            params : {
+              page : 1,
+              pageSize : 5,
+              queryParams : []
+            }
+          }));
           this.userEntryForm.reset();
           this.branchesArray.clear();
           this.selectedBranch = undefined;
@@ -136,10 +144,16 @@ export class UserEntryComponent implements OnInit {
     this.userService.update(this.fc.id.value, updateUser).subscribe(
       res => {
         this.alertify.message('User updated.');
-        this.userStore.dispatch(UserManagementActions.fetchUsers());
+        this.userStore.dispatch(fetchUsersPaginationResult({
+          params : {
+            page : 1,
+            pageSize : 5,
+            queryParams : []
+          }
+        }));
       },
       error => {
-       console.log(error);
+     
         this.alertify.error(`Error ${error.status} : ${error.title}`);
 
       }
@@ -180,7 +194,7 @@ export class UserEntryComponent implements OnInit {
     this.roles.forEach(element => {
       element.isSelected = false;
     });
-    console.log(this.roles);
+    
   }
 
   addBranch() {

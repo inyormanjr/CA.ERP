@@ -5,8 +5,9 @@ export interface UserView {
     createdBy : string;
     updatedAt : string;
     updatedBy : string;
-    userName : string;
+    username : string;
     firstName : string;
     lastName : string;
     role : number;
+    userBranches : []
 }
