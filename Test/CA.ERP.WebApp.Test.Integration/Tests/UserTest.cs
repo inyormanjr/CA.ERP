@@ -46,7 +46,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterSuccessful()
         {
-            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { UserName = "User1asd", Password = "12345", Role = UserRole.Admin, FirstName = "Firstname", LastName = "Lastname", Branches = new List<UserBranchCreate> { new UserBranchCreate() {  BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02") } } } };
+            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { Username = "User1asd", Password = "12345", Role = UserRole.Admin, FirstName = "Firstname", LastName = "Lastname", Branches = new List<UserBranchCreate> { new UserBranchCreate() {  BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02") } } } };
             var response = await _client.PostAsJsonAsync("api/User/", request);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
@@ -54,7 +54,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterFail_EmptyUsernamePassword()
         {
-            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { UserName = "", Password = "", Role = UserRole.Admin, FirstName = "Firstname", LastName = "Lastname", Branches = new List<UserBranchCreate> { new UserBranchCreate() { BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02") } } } };
+            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { Username = "", Password = "", Role = UserRole.Admin, FirstName = "Firstname", LastName = "Lastname", Branches = new List<UserBranchCreate> { new UserBranchCreate() { BranchId = Guid.Parse("e80554e8-e7b5-4f8c-8e59-9d612d547d02") } } } };
             var response = await _client.PostAsJsonAsync("api/User/", request);
 
 
@@ -64,7 +64,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
         [Fact]
         public async Task ShouldRegisterFail_InvalidBranch()
         {
-            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { UserName = "User2", Password = "12345", Branches = new List<UserBranchCreate> { new UserBranchCreate() { BranchId = Guid.NewGuid() } } } };
+            CreateBaseRequest<UserCreate> request = new CreateBaseRequest<UserCreate>() { Data = new UserCreate() { Username = "User2", Password = "12345", Branches = new List<UserBranchCreate> { new UserBranchCreate() { BranchId = Guid.NewGuid() } } } };
             var response = await _client.PostAsJsonAsync("api/User/", request);
 
 
@@ -77,7 +77,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             var id = Guid.Parse("14a2497c-f85d-40cb-9361-92a580b1b6c5");
             var response = await _client.PutAsJsonAsync($"api/User/{id}", new UpdateBaseRequest<UserUpdate> {
                 Data = new UserUpdate() {
-                    UserName = "User1",
+                    Username = "User1",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
@@ -98,7 +98,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             {
                 Data = new UserUpdate()
                 {
-                    UserName = "",
+                    Username = "",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
@@ -119,7 +119,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
             {
                 Data = new UserUpdate()
                 {
-                    UserName = "",
+                    Username = "",
                     Role = UserRole.Cashier,
                     FirstName = "Firstname",
                     LastName = "Lastname",
