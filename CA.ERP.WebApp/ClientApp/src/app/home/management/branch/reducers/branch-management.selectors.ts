@@ -9,3 +9,4 @@ export const fetchSuccess = createSelector(
   branchManageStateSelector,
   (app) => app.fetchSuccess
 );
+export const branchViewListPaginationResult = createSelector(branchManageStateSelector,app=> app.branchViewListPaginationResult);

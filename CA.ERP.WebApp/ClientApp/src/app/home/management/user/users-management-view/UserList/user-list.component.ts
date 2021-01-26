@@ -26,7 +26,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.userViewListPaginationResult$ = this.store.pipe(select(UserManagementSelectorType.userViewListPaginationResult));
-    this.isLoading$ = this.store.pipe(select(UserManagementSelectorType.isLoading));
+    //this.isLoading$ = this.store.pipe(select(UserManagementSelectorType.isLoading));
     this.fetchSuccess$ = this.store.pipe(select(UserManagementSelectorType.fetchSuccess));
     
     this.store.dispatch(fetchUsersPaginationResult({

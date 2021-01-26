@@ -66,8 +66,8 @@
             <div class="col-md-12 d-flex flex-row justify-content-end">
               <button (click)="backPage()" type="button" class="btn btn-outline-danger mr-2">Back</button>
               <a
-              (click)="branchFormEntry.value.id.length > 0 ? updateBranch() : createBranch()"
-              [ngClass]="{'disabled': branchFormEntry.invalid}" name="" id="" class="btn btn-success"  role="button">{{branchFormEntry.value.id.length > 0 ? "Update": "Save"}}</a>
+              (click)="branchFormEntry.value.id   ? updateBranch() : createBranch()"
+              [ngClass]="{'disabled': branchFormEntry.invalid}" name="" id="" class="btn btn-success"  role="button">{{branchFormEntry.value.id ? "Update": "Save"}}</a>
             </div>
        </div>
     </form>
