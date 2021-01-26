@@ -27,12 +27,15 @@
       </thead>
         <tbody>
            <ng-container *ngIf="fetchSuccess$ | async; else elseTemplate">
-            <tr *ngFor="let branchView of branchViewList$ | async ">
+            <tr *ngFor="let branchView of (branchViewList$ | async)  | paginate :{
+            itemsPerPage: 5,
+            currentPage: page,
+            totalItems: (branchViewList$ | async).length}">
               <td scope="row">{{branchView.name}}</td>
               <td>{{branchView.address}}</td>
               <td>{{branchView.code}}</td>
               <td scope="row" class="text-right">
-                <a [routerLink]="['../update/', branchView.id]" name="" id="" class="mr-1">
+                <a [routerLink]="['../update/', branchView.id]"  class="mr-1">
                   <i class="fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                 </a>
               </td>
@@ -47,5 +50,6 @@
     </table>
   </div>
 </ng-template>
+<pagination-controls (pageChange)="page = $event" autoHide="true"></pagination-controls>
 
 

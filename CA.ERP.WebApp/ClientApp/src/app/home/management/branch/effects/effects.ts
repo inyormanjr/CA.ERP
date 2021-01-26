@@ -27,7 +27,26 @@ export class Effects {
       })
     ), {dispatch: false}
   );
-
+  loadUsersPaginationResult$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(BranchManagementActions.fetchBranchPaginationResult),
+      tap(
+        action => {
+          this.store.dispatch(BranchManagementActions.fetchingBranches());
+          this.branchService.getByPagination(action.params)
+          .pipe(map((x: any)=>{
+              this.store.dispatch(BranchManagementActions.loadBranchesViewListPaginationResult({
+                branchViewListPaginationResult : x
+              }));
+              
+          }))
+          .subscribe(noop, (error) => {
+            console.log(error);
+          });
+        }
+      )
+    ), {dispatch: false}
+  );
   constructor(
     private actions$: Actions,
     private branchService: BranchService,
