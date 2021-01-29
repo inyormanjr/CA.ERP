@@ -14,7 +14,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim AS build
 WORKDIR /src
 COPY ["CA.ERP.WebApp/CA.ERP.WebApp.csproj", "CA.ERP.WebApp/"]
 COPY ["CA.ERP.DataAccess/CA.ERP.DataAccess.csproj", "CA.ERP.DataAccess/"]
