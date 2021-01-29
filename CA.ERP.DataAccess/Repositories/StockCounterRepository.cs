@@ -24,6 +24,21 @@ namespace CA.ERP.DataAccess.Repositories
             _mapper = mapper;
         }
 
+        public void AddOrUpdateStockCounter(StockCounter stockCounter)
+        {
+            stockCounter.ThrowIfNullArgument(nameof(stockCounter));
+            var dalStockCounter = _context.StockCounters.FirstOrDefault(sc => sc.Code == stockCounter.Code);
+            if (dalStockCounter != null)
+            {
+                _mapper.Map(stockCounter, dalStockCounter);
+            }
+            else
+            {
+                dalStockCounter = _mapper.Map<Entities.StockCounter>(stockCounter);
+                _context.StockCounters.Add(dalStockCounter);
+            }
+        }
+
         public async Task AddOrUpdateStockCounterAsync(StockCounter stockCounter, CancellationToken cancellationToken)
         {
             stockCounter.ThrowIfNullArgument(nameof(stockCounter));
@@ -34,7 +49,7 @@ namespace CA.ERP.DataAccess.Repositories
             }
             else
             {
-                dalStockCounter = _mapper.Map<Entities.StockCounter>(dalStockCounter);
+                dalStockCounter = _mapper.Map<Entities.StockCounter>(stockCounter);
                 _context.StockCounters.Add(dalStockCounter);
             }
         }
@@ -42,7 +57,7 @@ namespace CA.ERP.DataAccess.Repositories
         public async Task<OneOf<StockCounter, None>> GetStockCounterAsync(string code, CancellationToken cancellationToken)
         {
             OneOf<StockCounter, None> ret = default(None);
-            var stockCounter = await _context.StockCounters.FirstOrDefaultAsync(sc => sc.Code == code,cancellationToken);
+            var stockCounter = await _context.StockCounters.AsNoTracking().FirstOrDefaultAsync(sc => sc.Code == code,cancellationToken);
             if (stockCounter != null)
             {
                 ret = _mapper.Map<StockCounter>(stockCounter);

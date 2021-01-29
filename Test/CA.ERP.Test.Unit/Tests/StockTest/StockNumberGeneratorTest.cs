@@ -23,10 +23,10 @@ namespace CA.ERP.Test.Unit.Tests.StockTest
 
             var stockCodeMock = new Mock<IStockCounterRepository>();
 
-            var stockNumberGenerator = new StockNumberGenerator(dateTimeMock.Object);
+            var stockNumberGenerator = new StockNumberGenerator(dateTimeMock.Object, stockCounter);
 
 
-            List<string> actualStockNumbers = (await stockNumberGenerator.GenerateStockNumberAsync(stockCounter, count)).ToList();
+            List<string> actualStockNumbers = (await stockNumberGenerator.GenerateStockNumberAsync()).Take(count).ToList();
             actualStockNumbers.Should().HaveCount(10);
             for (int i = 0; i < count; i++)
             {

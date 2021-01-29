@@ -111,5 +111,21 @@ namespace CA.ERP.DataAccess.Repositories
             return await query.OrderByDescending(po => po.DeliveryDate).Skip(skip).Take(take).Select(po => _mapper.Map<PurchaseOrder>(po)).ToListAsync(cancellationToken);
         }
 
+    public async Task<OneOf<PurchaseOrder, None>> GetByBarocdeAsync(string purchaseOrderBarcode, CancellationToken cancellationToken)
+    {
+      OneOf<PurchaseOrder, None> ret = default(None);
+
+            var queryable = _context.Set<Dal.PurchaseOrder>()
+                .Include(po => po.Supplier)
+                .Include(po => po.Branch)
+                .Include(po => po.PurchaseOrderItems).ThenInclude(pois => pois.MasterProduct).ThenInclude(mp => mp.Brand)
+                .AsQueryable();
+            var entity = await queryable.Where(po => po.Barcode == purchaseOrderBarcode).Select(po => _mapper.Map<PurchaseOrder>(po)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            if (entity != null)
+            {
+                ret = entity;
+            }
+            return ret;
     }
+  }
 }
