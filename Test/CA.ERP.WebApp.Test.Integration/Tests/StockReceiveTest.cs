@@ -400,7 +400,7 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 purchaseOrderNumber = dbContext.PurchaseOrders.Where(po => po.Status == Domain.Common.Status.Active).Select(po => po.Barcode).FirstOrDefault();
             }
 
-            var response = await _client.GetAsync($"api/StockReceive/Generate/{purchaseOrderNumber}");
+            var response = await _client.GetAsync($"api/StockReceive/GenerateStocks/{purchaseOrderNumber}");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
