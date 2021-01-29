@@ -387,5 +387,28 @@ namespace CA.ERP.WebApp.Test.Integration.Tests
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
         }
+
+        [Fact]
+        public async Task ShouldGenerateStockReceiveSuccesfully()
+        {
+            int i = 1;
+            CADataContext dbContext;
+            string purchaseOrderNumber;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                dbContext = scope.ServiceProvider.GetService<CADataContext>();
+                purchaseOrderNumber = dbContext.PurchaseOrders.Where(po => po.Status == Domain.Common.Status.Active).Select(po => po.Barcode).FirstOrDefault();
+            }
+
+            var response = await _client.GetAsync($"api/StockReceive/Generate/{purchaseOrderNumber}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsAsync<GenerateStockReceiveResponse>();
+
+            content.Should().NotBeNull();
+            content.Data.Should().HaveCountGreaterThan(0);
+
+        }
     }
 }

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.StockAgg
 {
-    public interface IStockNumberGenerator: IHelper
+    public interface IStockNumberGenerator
     {
         /// <summary>
         /// Generate stock number for given branch
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<string>> GenerateStockNumberAsync(StockCounter stockCounter, int count);
+        Task<IEnumerable<string>> GenerateStockNumberAsync();
     }
 }
