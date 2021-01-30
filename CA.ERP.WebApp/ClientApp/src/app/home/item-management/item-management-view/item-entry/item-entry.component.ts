@@ -1,40 +1,64 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PurchaseOrderService } from 'src/app/home/purchase-order/purchase-order.service';
 import { StocksService } from '../../services/stocks.service';
 
 @Component({
   selector: 'app-item-entry',
   templateUrl: './item-entry.component.html',
-  styleUrls: ['./item-entry.component.css']
+  styleUrls: ['./item-entry.component.css'],
 })
 export class ItemEntryComponent implements OnInit {
   stockEntryForm: FormGroup;
-  constructor(private fB: FormBuilder,
+  constructor(
+    private fB: FormBuilder,
     private poService: PurchaseOrderService,
-    private stocksService: StocksService) {
+    private stocksService: StocksService
+  ) {
     this.initializeForm();
-   }
+  }
 
   initializeForm() {
     this.stockEntryForm = this.fB.group({
+      poNumber: ['', Validators.required],
       purchaseOrderId: ['', Validators.required],
+      dateReceived: [],
       branchId: ['', Validators.required],
+      branchName: [''],
       StockSource: ['', Validators.required],
       supplierId: ['', Validators.required],
-      stocks: [this.fB.array([]), Validators.required],
-      deliveryReference: ['', Validators.required]
+      supplierName: [],
+      stocks: this.fB.array([], Validators.required),
+      deliveryReference: ['', Validators.required],
     });
+  }
+
+  trackByFn(index: any, item: any) {
+    return index;
   }
 
   generateStock() {
-    this.poService.getById(this.stockEntryForm.controls.purcharseOrderId.value).subscribe((x: any) => {
-      console.log(x);
+    this.stocksService
+      .generateStocksByPoNumber(this.stockEntryForm.controls.poNumber.value)
+      .subscribe((x: any) => {
+        x.forEach((data) => {
+          (this.stockEntryForm.controls.stocks as FormArray).push(
+            this.stock(data)
+          );
+        });
+      });
+  }
+
+  stock(data): FormGroup {
+    return this.fB.group({
+      masterProductId: [data.masterProductId],
+      purchaseOrderItemId: [data.purchaseOrderItemId],
+      stockNumber: [data.stockNumber],
+      serialNumber: [data.serialNumber],
+      stockStatus: [data.stockStatus],
+      costPrice: [data.costPrice],
     });
   }
 
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

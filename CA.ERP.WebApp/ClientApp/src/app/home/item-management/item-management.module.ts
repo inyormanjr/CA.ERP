@@ -9,6 +9,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ItemManageEffectEffects } from './effect/item-manage-effect.effects';
 import { StoreModule } from '@ngrx/store';
 import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-bootstrap-modules.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { NgxBootstrapModulesModule } from 'src/app/ngx-bootstrap-modules/ngx-boo
   imports: [
     CommonModule,
     ItemManagementRoutingModule,
+    ReactiveFormsModule,
     NgxBootstrapModulesModule,
     StoreModule.forFeature(From.itemManagementReducerFeatureKey, From.reducer, {}),
     EffectsModule.forFeature([ItemManageEffectEffects])
