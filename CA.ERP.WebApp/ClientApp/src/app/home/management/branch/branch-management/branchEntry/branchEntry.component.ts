@@ -28,7 +28,7 @@ export class BranchEntryComponent implements OnInit {
     private alertify: AlertifyService,
   private location: Location) {
     this.branchFormEntry = fB.group({
-      id: [''],
+      id: [undefined],
       name: ['', Validators.required],
       branchNo: [0, Validators.required],
       code: ['', Validators.required],
@@ -71,7 +71,7 @@ export class BranchEntryComponent implements OnInit {
   updateBranch(): void {
     const updateBranch = { data: this.branchFormEntry.value};
 
-    console.log(updateBranch);
+   
       this.branchService
         .update(this.branchFormEntry.value.id, updateBranch)
         .subscribe(
