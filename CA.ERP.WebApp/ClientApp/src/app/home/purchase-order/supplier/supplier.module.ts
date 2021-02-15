@@ -6,11 +6,12 @@ import { SupplierService } from './services/supplier.service';
 import { BrandService } from './services/brand.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrandEntryComponent } from './brand-entry/brand-entry.component';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [BrandEntryComponent],
   imports: [CommonModule],
   exports: [],
   providers: [SupplierService, BrandService],
