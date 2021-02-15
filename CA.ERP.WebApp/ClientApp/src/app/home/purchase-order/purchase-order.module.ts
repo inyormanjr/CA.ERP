@@ -17,6 +17,7 @@ import { FilterPipeModule } from 'ngx-filter-pipe';
 import { PurchaseOrderPdfViewerComponent } from './purchase-order-pdf-viewer/purchase-order-pdf-viewer.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { SupplierEntryComponent } from './supplier/supplier-entry/supplier-entry.component';
+import { BrandEntryComponent } from './supplier/brand-entry/brand-entry.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { SupplierEntryComponent } from './supplier/supplier-entry/supplier-entry
     SupplierSelectionModalComponent,
     SupplierEntryComponent,
     PurchaseOrderPdfViewerComponent,
+    BrandEntryComponent
   ],
   imports: [
     CommonModule,
