@@ -1,6 +1,11 @@
-button.active {
+li.active {
   background-color: white!important;
   color: black;
   border-color: grey;
   font-weight: bold;
 }
+
+li:hover {
+    cursor: pointer;
+}
+

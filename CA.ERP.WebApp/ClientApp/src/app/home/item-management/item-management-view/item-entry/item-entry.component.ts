@@ -55,6 +55,8 @@ export class ItemEntryComponent implements OnInit {
       purchaseOrderItemId: [data.purchaseOrderItemId],
       stockNumber: [data.stockNumber],
       serialNumber: [data.serialNumber],
+      brandName: [data.brandName],
+      model: [data.model],
       stockStatus: [data.stockStatus],
       costPrice: [data.costPrice],
     });

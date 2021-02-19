@@ -1,13 +1,15 @@
 
 <div class="h-100  d-flex flex-row">
-  <div class="menu-section mr-3">
-    <div class="list-group ">
-      <button [routerLink]="['branch']" [routerLinkActive]="['active']" type="button" class="list-group-item bg-light">Branch</button>
-      <button [routerLink]="['users']" [routerLinkActive]="['active']" type="button" class="list-group-item bg-light">Users</button>
-      <button type="button" class="list-group-item bg-light">Morbi leo risus</button>
-      <button type="button" class="list-group-item bg-light">Porta ac consectetur ac</button>
-      <button type="button" class="list-group-item bg-light">Vestibulum at eros</button>
-    </div>
+  <div class="menu-section mr-3  " style="width: 20%;">
+    <ul class="list-group w-100 ">
+      <li [routerLink]="['branch']" [routerLinkActive]="['active', 'bg-dark', ' text-light']" class="list-group-item" >
+        <i class="fa fa-map-marker mr-2 "  aria-hidden="true"></i>
+        Branch
+      </li>
+      <li [routerLink]="['users']" [routerLinkActive]="['active', 'bg-dark', ' text-light']" class="list-group-item">
+        <i class="fa fa-users mr-2"  aria-hidden="true"></i>
+        Users</li>
+    </ul>
   </div>
   <div class="router-section d-flex flex-column  flex-fill">
     <router-outlet></router-outlet>

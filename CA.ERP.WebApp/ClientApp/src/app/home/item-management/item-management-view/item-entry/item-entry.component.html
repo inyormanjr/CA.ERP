@@ -72,10 +72,10 @@
                         <td>{{stock.stockNumber}}</td>
                         <td>
                           <input
-                           
+
                             formControlName="serialNumber" class="border-0 bg-white"  type="text">
                         </td>
-                        <td>{{stock.model}}</td>
+                        <td>{{stock.model}} ({{stock.brandName}})</td>
                         <td>{{stock.costPrice | currency:"₱"}}</td>
                       </tr>
                     </ng-container>
