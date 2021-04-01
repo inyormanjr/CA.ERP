@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
@@ -225,21 +225,17 @@ namespace CA.ERP.WebApp
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
-            services.AddAuthentication(options =>
+            services.AddAuthentication("Bearer").AddJwtBearer( options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer( options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("AppSettings:Token").Value)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                    
-                };
+              options.Authority = "https://localhost:5001";
 
-                options.Events = new JwtBearerEvents { 
+              options.TokenValidationParameters = new TokenValidationParameters
+              {
+                ValidateAudience = false
+              };
+
+
+              options.Events = new JwtBearerEvents { 
                     OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
@@ -250,7 +246,7 @@ namespace CA.ERP.WebApp
                 };
             });
 
-            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme);
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -286,6 +282,8 @@ namespace CA.ERP.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true;
             }
             else
             {

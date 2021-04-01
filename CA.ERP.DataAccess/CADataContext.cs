@@ -1,4 +1,4 @@
-﻿
+
 using CA.ERP.DataAccess.EFMapping;
 using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -40,8 +40,6 @@ namespace CA.ERP.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new BranchMapping());
-            builder.ApplyConfiguration(new UserMapping());
-            builder.ApplyConfiguration(new UserBranchMapping());
             builder.ApplyConfiguration(new SupplierMapping());
             builder.ApplyConfiguration(new SupplierBrandMapping());
             builder.ApplyConfiguration(new BrandMapping());
@@ -61,7 +59,9 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new CardPaymentDetailMapping());
             builder.ApplyConfiguration(new ChequePaymentDetailMapping());
             builder.ApplyConfiguration(new CustomerMapping());
-            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new UserMapping());
+            builder.ApplyConfiguration(new UserBranchMapping());
+      base.OnModelCreating(builder);
         }
 
         public override int SaveChanges()

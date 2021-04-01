@@ -37,3 +37,13 @@ services:
       - MSSQL_DTC_TCP_PORT=51000
 
 
+
+  ca.identity:
+    image: ${DOCKER_REGISTRY-}caidentity
+    build:
+      context: .
+      dockerfile: CA.Identity/Dockerfile
+    ports:
+        - "5000:80"
+        - "5001:443"
+

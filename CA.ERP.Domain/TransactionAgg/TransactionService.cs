@@ -24,7 +24,8 @@ namespace CA.ERP.Domain.TransactionAgg
 
     public async Task<OneOf<Guid, ValidationError, Forbidden>> CreateTransactionAsync(Guid branchId, TransactionType transactionType, InterestType interestType, DateTime transactionDate, DateTime deliveryDate, string transactionNumber, Guid salesmanId, Guid investigatedById, decimal total, decimal down, decimal balance, decimal udi, decimal totalRebate, decimal principalAmount, decimal terms, decimal grossMonthly, decimal rebateMonthly, decimal netMonthly, List<TransactionProduct> transactionProducts, CancellationToken cancellationToken)
     {
-      var transaction = new Transaction() {
+      var transaction = new Transaction()
+      {
         BranchId = branchId,
         TransactionType = transactionType,
         InterestType = interestType,
@@ -50,16 +51,19 @@ namespace CA.ERP.Domain.TransactionAgg
 
       if (!await _transactionBranchPermissionValidator.HasPermissionAsync(transaction, cancellationToken))
       {
-          ret = default(Forbidden);
-      }else{
+        ret = default(Forbidden);
+      }
+      else
+      {
         var validationResult = await _validator.ValidateAsync(transaction);
         if (!validationResult.IsValid)
         {
-            ret = new ValidationError(validationResult.Errors.ToList());
-        }else
+          ret = new ValidationError(validationResult.Errors.ToList());
+        }
+        else
         {
-            ret = await _repository.AddAsync(transaction, cancellationToken);
-            await _unitOfWork.CommitAsync();
+          ret = await _repository.AddAsync(transaction, cancellationToken);
+          await _unitOfWork.CommitAsync();
         }
       }
 
