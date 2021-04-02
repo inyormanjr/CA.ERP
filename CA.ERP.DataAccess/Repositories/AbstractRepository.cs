@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
 using OneOf;
 using OneOf.Types;
@@ -14,6 +14,7 @@ using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Dal = CA.ERP.DataAccess.Entities;
 using System.Linq.Expressions;
+using CA.ERP.Domain.Core;
 
 namespace CA.ERP.DataAccess.Repositories
 {

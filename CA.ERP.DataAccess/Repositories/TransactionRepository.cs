@@ -1,4 +1,5 @@
 using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.TransactionAgg;
 using OneOf;
 using OneOf.Types;

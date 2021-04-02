@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -14,39 +14,50 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.MasterProductAgg
 {
-    public class MasterProductService: ServiceBase<MasterProduct>
+    public class MasterProductService : ServiceBase<MasterProduct>
     {
         private readonly IMasterProductRepository _masterProductRepository;
-        private readonly IMasterProductFactory _masterProductFactory;
         private readonly IValidator<MasterProduct> _masterProductValidator;
 
-        public MasterProductService(IUnitOfWork unitOfWork,IMasterProductRepository masterProductRepository, IMasterProductFactory masterProductFactory, IValidator<MasterProduct> masterProductValidator, IUserHelper userHelper)
-            : base(unitOfWork, masterProductRepository, masterProductValidator, userHelper)
+        public MasterProductService(IUnitOfWork unitOfWork, IMasterProductRepository masterProductRepository, IUserHelper userHelper)
+            : base(unitOfWork, masterProductRepository, null, userHelper)
         {
             _masterProductRepository = masterProductRepository;
-            _masterProductFactory = masterProductFactory;
-            _masterProductValidator = masterProductValidator;
         }
 
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateMasterProduct(string model,string description,ProductStatus productStatus, Guid brandId, CancellationToken cancellationToken = default)
+        public async Task<Guid> CreateMasterProduct(string model, string description,  Guid brandId, CancellationToken cancellationToken = default)
         {
-            OneOf<Guid, List<ValidationFailure>> ret;
-            MasterProduct masterProduct = _masterProductFactory.CreateMasterProduct(model, description, productStatus, brandId);
-            var validationResult = await _masterProductValidator.ValidateAsync(masterProduct, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                ret = validationResult.Errors.ToList();
-            }
-            else
-            {
-                masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
-                masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
-                ret = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
-            }
+
+            MasterProduct masterProduct = MasterProduct.Create(model, description,  brandId);
+            masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
+            masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
+            Guid id = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
             await _unitOfWork.CommitAsync();
-            return ret;
+            return id;
         }
 
-        
+        public async Task UpdateAsync(Guid id, string model, string description, Guid brandId, ProductStatus productStatus, CancellationToken cancellationToken)
+        {
+            var masterProduct = await _masterProductRepository.GetByIdAsync(id, cancellationToken);
+            checkMasterProduct(masterProduct);
+            masterProduct.Update(model, description, brandId, productStatus);
+
+            await _masterProductRepository.UpdateAsync(id, masterProduct);
+        }
+
+        private static void checkMasterProduct(MasterProduct masterProduct)
+        {
+            if (masterProduct == null)
+            {
+                throw new MasterProductException(MasterProductException.MasterProductNotFound, "Master product was not found while updating");
+            }
+        }
+
+        public async Task<MasterProduct> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var masterProduct = await _masterProductRepository.GetByIdAsync(id, cancellationToken);
+            checkMasterProduct(masterProduct);
+            return masterProduct;
+        }
     }
 }

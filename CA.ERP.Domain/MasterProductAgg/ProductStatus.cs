@@ -1,4 +1,4 @@
-﻿namespace CA.ERP.Domain.MasterProductAgg
+namespace CA.ERP.Domain.MasterProductAgg
 {
     /// <summary>
     /// Flags if product can be deleted

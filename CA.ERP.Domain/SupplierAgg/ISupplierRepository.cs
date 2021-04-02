@@ -1,5 +1,6 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Core;
 using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;

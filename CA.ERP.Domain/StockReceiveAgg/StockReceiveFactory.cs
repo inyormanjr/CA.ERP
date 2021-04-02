@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.StockAgg;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.StockAgg;
 using CA.ERP.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             var stockReceive = new StockReceive() { 
                 BranchId = branchId,
                 PurchaseOrderId = purchaseOrderId,
-                Status = Common.Status.Active,
+                Status = Status.Active,
                 StockSouce = stockSource,
                 SupplierId = supplierId,
                 CreatedBy = _userHelper.GetCurrentUserId(),

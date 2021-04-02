@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CA.ERP.Common\CA.ERP.Common.csproj" />
+    <ProjectReference Include="..\CA.ERP.Domain.Core\CA.ERP.Domain.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

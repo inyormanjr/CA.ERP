@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
