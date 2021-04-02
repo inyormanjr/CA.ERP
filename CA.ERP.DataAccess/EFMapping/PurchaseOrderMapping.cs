@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,7 +14,7 @@ namespace CA.ERP.DataAccess.EFMapping
         public void Configure(EntityTypeBuilder<PurchaseOrder> builder)
         {
             builder.HasKey(t => t.Id);
-            builder.Property(t => t.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
+      builder.Property(t => t.Id);
             builder.HasIndex(t => new { t.BranchId, t.Barcode }).IsUnique(true);
 
             builder.Property(t => t.Barcode).HasMaxLength(20);

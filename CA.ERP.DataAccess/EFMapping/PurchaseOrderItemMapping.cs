@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,7 +14,7 @@ namespace CA.ERP.DataAccess.EFMapping
         public void Configure(EntityTypeBuilder<PurchaseOrderItem> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
+            builder.Property(x => x.Id);
             builder.Property(t => t.OrderedQuantity).HasPrecision(10, 3);
             builder.Property(t => t.FreeQuantity).HasPrecision(10, 3);
             builder.Property(t => t.TotalQuantity).HasPrecision(10, 3);

@@ -44,6 +44,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using jsreport.Client;
 using System.Globalization;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace CA.ERP.WebApp
 {
@@ -77,7 +78,7 @@ namespace CA.ERP.WebApp
 
             services.AddDbContext<CADataContext>(dbc =>
 
-                dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
+                dbc.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
