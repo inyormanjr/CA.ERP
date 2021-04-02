@@ -342,3 +342,5 @@ healthchecksdb
 #exlcude local setting file
 *.local.json
 mssql
+data
+.tye
