@@ -30,31 +30,7 @@ services:
     containerPort: 5488
     protocol: http
     name : reporthttp
-- name: database
-  image: mcr.microsoft.com/mssql/server:2019-latest
-  bindings:
-  - port: 1433
-    containerPort: 1433
-    protocol: http
-    name : sqlport1
-  - port: 135
-    containerPort: 135
-    protocol: http
-    name : sqlport2
-  env:
-  - name: ACCEPT_EULA
-    value: Y
-  - name: SA_PASSWORD
-    value: DbPassword123@
-  - name: MSSQL_PID
-    value: EXPRESS
-  - name: MSSQL_RPC_PORT
-    value: 135
-  - name: MSSQL_DTC_TCP_PORT
-    value: 51000
-  volumes:
-   - source: ./data/mssql
-     target: /var/opt/mssql/data
+
 - name: ca-identity
   project: CA.Identity/CA.Identity.csproj
   bindings:
@@ -66,3 +42,15 @@ services:
     containerPort: 443
     protocol: https
     name : https
+- name: postgress
+  image: postgres:13.2
+  bindings:
+  - port: 5432
+    containerPort: 5432
+  env:
+  - name: POSTGRES_PASSWORD
+    value: DbPassword123@
+
+  volumes:
+   - source: ./data/postgresql
+     target: /var/lib/postgresql/data

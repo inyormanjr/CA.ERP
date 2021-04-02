@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace CA.Identity
 {
@@ -30,7 +31,7 @@ namespace CA.Identity
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddDbContext<ApplicationDbContext>(options =>
-          options.UseSqlServer(
+          options.UseNpgsql(
               Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddDatabaseDeveloperPageExceptionFilter();
