@@ -1,0 +1,68 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: ca.erp
+services:
+- name: ca-erp-webapp
+  #dockerFile: CA.ERP.WebApp/Dockerfile
+  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+  bindings:
+  - port: 80
+    containerPort: 80
+    protocol: http
+    name : http
+  - port: 443
+    containerPort: 443
+    protocol: https
+    name : https
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
+  - name: ASPNETCORE_URLS
+    value: http://+:80
+- name: jsreportserver
+  image: jsreport/jsreport:2.11.0-full
+  bindings:
+  - port: 5488
+    containerPort: 5488
+    protocol: http
+    name : reporthttp
+- name: database
+  image: mcr.microsoft.com/mssql/server:2019-latest
+  bindings:
+  - port: 1433
+    containerPort: 1433
+    protocol: http
+    name : sqlport1
+  - port: 135
+    containerPort: 135
+    protocol: http
+    name : sqlport2
+  env:
+  - name: ACCEPT_EULA
+    value: Y
+  - name: SA_PASSWORD
+    value: DbPassword123@
+  - name: MSSQL_PID
+    value: EXPRESS
+  - name: MSSQL_RPC_PORT
+    value: 135
+  - name: MSSQL_DTC_TCP_PORT
+    value: 51000
+  volumes:
+   - source: ./data/mssql
+     target: /var/opt/mssql/data
+- name: ca-identity
+  project: CA.Identity/CA.Identity.csproj
+  bindings:
+  - port: 5000
+    containerPort: 80
+    protocol: http
+    name : http
+  - port: 5001
+    containerPort: 443
+    protocol: https
+    name : https

@@ -17,32 +17,33 @@ using System.Collections.Generic;
 
 namespace CA.Identity
 {
-    public class Startup
+  public class Startup
+  {
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+      Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+      services.AddDbContext<ApplicationDbContext>(options =>
+          options.UseSqlServer(
+              Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
+      services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+      services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+          .AddEntityFrameworkStores<ApplicationDbContext>();
 
- 
+
 
       services.AddIdentityServer()
         .AddDeveloperSigningCredential()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => {
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+                {
                   options.Clients.Add(new Client()
                   {
                     ClientId = "Erp",
@@ -55,82 +56,99 @@ namespace CA.Identity
                   options.ApiResources.AddApiResource("Erp", cfg => cfg.WithScopes("Erp").AllowAllClients());
                 });
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+      services.AddAuthentication()
+          .AddIdentityServerJwt();
+      services.AddControllersWithViews();
+      services.AddRazorPages();
+      // In production, the Angular files will be served from this directory
+      services.AddSpaStaticFiles(configuration =>
+      {
+        configuration.RootPath = "ClientApp/dist";
+      });
 
-            services.AddMvc();
+      services.AddMvc();
 
-            services.AddSwaggerGen();
+      services.AddSwaggerGen();
 
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+      UpdateDatabase(app);
+      if (env.IsDevelopment())
+      {
+        app.UseDeveloperExceptionPage();
+        app.UseMigrationsEndPoint();
+      }
+      else
+      {
+        app.UseExceptionHandler("/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+      }
+
+      app.UseHttpsRedirection();
+      app.UseStaticFiles();
+      if (!env.IsDevelopment())
+      {
+        app.UseSpaStaticFiles();
+      }
+
+      app.UseRouting();
+
+      app.UseAuthentication();
+      app.UseIdentityServer();
+      app.UseAuthorization();
+
+      app.UseSwagger();
+
+      // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+      // specifying the Swagger JSON endpoint.
+      app.UseSwaggerUI(c =>
+      {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+      });
+
+      app.UseEndpoints(endpoints =>
+      {
+        endpoints.MapControllerRoute(
+                  name: "default",
+                  pattern: "{controller}/{action=Index}/{id?}");
+        endpoints.MapRazorPages();
+
+      });
+
+      app.UseSpa(spa =>
+      {
+              // To learn more about options for serving an Angular SPA from ASP.NET Core,
+              // see https://go.microsoft.com/fwlink/?linkid=864501
+
+              spa.Options.SourcePath = "ClientApp";
+
+        if (env.IsDevelopment())
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+          spa.UseAngularCliServer(npmScript: "start");
+        }
+      });
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
 
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseIdentityServer();
-            app.UseAuthorization();
-
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-              c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-
-            });
-
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
-
-            
     }
+    private static void UpdateDatabase(IApplicationBuilder app)
+    {
+      using (var serviceScope = app.ApplicationServices
+          .GetRequiredService<IServiceScopeFactory>()
+          .CreateScope())
+      {
+        using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+        {
+          if (context.Database.IsRelational())
+          {
+            context.Database.Migrate();
+          }
+
+        }
+      }
     }
+  }
 }

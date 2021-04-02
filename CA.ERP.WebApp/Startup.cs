@@ -227,7 +227,7 @@ namespace CA.ERP.WebApp
 
             services.AddAuthentication("Bearer").AddJwtBearer( options =>
             {
-              options.Authority = "https://localhost:5001";
+              options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
               options.TokenValidationParameters = new TokenValidationParameters
               {
