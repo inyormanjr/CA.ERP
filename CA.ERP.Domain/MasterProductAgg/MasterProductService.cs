@@ -1,4 +1,5 @@
 using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -25,39 +26,53 @@ namespace CA.ERP.Domain.MasterProductAgg
             _masterProductRepository = masterProductRepository;
         }
 
-        public async Task<Guid> CreateMasterProduct(string model, string description,  Guid brandId, CancellationToken cancellationToken = default)
+        public async Task<DomainResult<Guid>> CreateMasterProduct(string model, string description,  Guid brandId, CancellationToken cancellationToken = default)
         {
 
-            MasterProduct masterProduct = MasterProduct.Create(model, description,  brandId);
-            masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
-            masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
-            Guid id = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
-            await _unitOfWork.CommitAsync();
-            return id;
+            var result = MasterProduct.Create(model, description, brandId);
+            if (result.IsSuccess)
+            {
+                MasterProduct masterProduct = result.Result;
+                masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
+                masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
+                Guid id = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
+                await _unitOfWork.CommitAsync();
+                return DomainResult<Guid>.Success(id);
+            }
+            else
+            {
+                return result.ConvertTo<Guid>();
+            }
+
+          
         }
 
-        public async Task UpdateAsync(Guid id, string model, string description, Guid brandId, ProductStatus productStatus, CancellationToken cancellationToken)
+        public async Task<DomainResult> UpdateAsync(Guid id, string model, string description, Guid brandId, ProductStatus productStatus, CancellationToken cancellationToken)
         {
             var masterProduct = await _masterProductRepository.GetByIdAsync(id, cancellationToken);
-            checkMasterProduct(masterProduct);
+            if (masterProduct == null)
+            {
+                return DomainResult.Error(MasterProductErrorCodes.MasterProductNotFound, "Master product was not found while updating");
+            }
+
             masterProduct.Update(model, description, brandId, productStatus);
 
             await _masterProductRepository.UpdateAsync(id, masterProduct);
+            return DomainResult.Success();
         }
 
-        private static void checkMasterProduct(MasterProduct masterProduct)
+
+        public async  Task<DomainResult<MasterProduct>> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
         {
+            var  masterProduct = await _masterProductRepository.GetByIdAsync(id, cancellationToken);
+
             if (masterProduct == null)
             {
-                throw new MasterProductException(MasterProductException.MasterProductNotFound, "Master product was not found while updating");
+                return DomainResult<MasterProduct>.Error(MasterProductErrorCodes.MasterProductNotFound, "Master product was not found");
             }
-        }
 
-        public async Task<MasterProduct> GetOneAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var masterProduct = await _masterProductRepository.GetByIdAsync(id, cancellationToken);
-            checkMasterProduct(masterProduct);
-            return masterProduct;
+            return DomainResult<MasterProduct>.Success(masterProduct);
+
         }
     }
 }

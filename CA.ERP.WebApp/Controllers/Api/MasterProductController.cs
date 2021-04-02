@@ -25,7 +25,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         private readonly IMasterProductAppService _masterProductAppService;
 
         public MasterProductController(IServiceProvider serviceProvider, IMasterProductAppService masterProductAppService)
-            :base(serviceProvider)
+            : base(serviceProvider)
         {
             _masterProductAppService = masterProductAppService;
         }
@@ -44,12 +44,20 @@ namespace CA.ERP.WebApp.Controllers.Api
         {
             _logger.LogInformation("User {0} creating masterproduct.", _userHelper.GetCurrentUserId());
             var createResult = await _masterProductAppService.CreateMasterProduct(request.Data.Model, request.Data.Description, request.Data.BrandId, cancellationToken: cancellationToken);
-            var response = new Dto.CreateResponse()
+            if (createResult.IsSuccess)
             {
-                Id = createResult
-            };
-            _logger.LogInformation("User {0} masterproduct creation succeeded.", _userHelper.GetCurrentUserId());
-            return Ok(response);
+                var response = new Dto.CreateResponse()
+                {
+                    Id = createResult.Result
+                };
+                _logger.LogInformation("User {0} masterproduct creation succeeded.", _userHelper.GetCurrentUserId());
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
 
         }
 
@@ -59,23 +67,24 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.MasterProduct.MasterProductUpdate> request, CancellationToken cancellationToken)
         {
-            try
+            var result = await _masterProductAppService.UpdateAsync(id, request.Data.Model, request.Data.Description, request.Data.BrandId, request.Data.ProductStatus, cancellationToken);
+            if (result.IsSuccess)
             {
-                await _masterProductAppService.UpdateAsync(id, request.Data.Model, request.Data.Description, request.Data.BrandId, request.Data.ProductStatus, cancellationToken);
                 return NoContent();
             }
-            catch (MasterProductException ex)
+            else
             {
-                switch (ex.Code)
+                switch (result.ErrorCode)
                 {
-                    case MasterProductException.MasterProductNotFound:
-                        return NotFound(ex.Message);
+                    case MasterProductErrorCodes.MasterProductNotFound:
+                        return NotFound();
                     default:
                         break;
                 }
-                throw;
+                _logger.LogError(result.ErrorCode, result);
+                return BadRequest(result);
             }
-            
+
 
         }
 
@@ -104,24 +113,22 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.MasterProduct.MasterProductView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            try
+
+            var result = await _masterProductAppService.GetOneAsync(id, cancellationToken);
+            if (result.IsSuccess)
             {
                 var masterProduct = await _masterProductAppService.GetOneAsync(id, cancellationToken);
                 return Ok(masterProduct);
             }
-            catch (MasterProductException ex)
+            switch (result.ErrorCode)
             {
-                switch (ex.Code)
-                {
-                    case MasterProductException.MasterProductNotFound:
-                        return NotFound(ex.Message);
-                    default:
-                        break;
-                }
-                throw;
+                case MasterProductErrorCodes.MasterProductNotFound:
+                    return NotFound();
+                default:
+                    break;
             }
-            
 
+            return BadRequest(result);
         }
     }
 }

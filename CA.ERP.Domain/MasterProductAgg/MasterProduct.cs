@@ -1,14 +1,15 @@
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BrandAgg;
+using CA.ERP.Domain.Core.DomainResullts;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CA.ERP.Domain.MasterProductAgg
 {
-    public class MasterProduct: ModelBase
+    public class MasterProduct : ModelBase
     {
-        private  MasterProduct()
+        private MasterProduct()
         {
             ProductStatus = ProductStatus.Provisional;
         }
@@ -17,40 +18,42 @@ namespace CA.ERP.Domain.MasterProductAgg
         public ProductStatus ProductStatus { get; private set; }
         public Guid BrandId { get; private set; }
 
-        public void Update(string model, string description, Guid brandId, ProductStatus productStatus)
+        public DomainResult Update(string model, string description, Guid brandId, ProductStatus productStatus)
         {
-            CheckModel(model);
-            CheckBrandid(brandId);
+            if (string.IsNullOrEmpty(model))
+            {
+                return DomainResult<MasterProduct>.Error(MasterProductErrorCodes.InvalidModel, "Product model is invalid.");
+            }
+            if (brandId == Guid.Empty)
+            {
+                return DomainResult<MasterProduct>.Error(MasterProductErrorCodes.EmptyBrandId, "Brand Id is empty.");
+            }
 
             Model = model;
             Description = description;
             BrandId = brandId;
             ProductStatus = productStatus;
+
+            return DomainResult.Success();
         }
 
-        
 
-        public static MasterProduct Create(string model, string description, Guid brandId)
-        {
-            CheckModel(model);
-            CheckBrandid(brandId);
-            return new MasterProduct() { Model = model, Description = description, ProductStatus = ProductStatus.Provisional, BrandId = brandId };
-        }
 
-        private static void CheckBrandid(Guid brandId)
-        {
-            if (brandId == Guid.Empty)
-            {
-                throw new MasterProductException(MasterProductException.EmptyBrandId, "Brand Id is empty.");
-            }
-        }
-
-        private static void CheckModel(string model)
+        public static DomainResult<MasterProduct> Create(string model, string description, Guid brandId)
         {
             if (string.IsNullOrEmpty(model))
             {
-                throw new MasterProductException(MasterProductException.InvalidModel, "Product model is invalid.");
+                return DomainResult<MasterProduct>.Error(MasterProductErrorCodes.InvalidModel, "Product model is invalid.");
             }
+            if (brandId == Guid.Empty)
+            {
+                return DomainResult<MasterProduct>.Error(MasterProductErrorCodes.EmptyBrandId, "Brand Id is empty.");
+            }
+
+            var result = new MasterProduct() { Model = model, Description = description, ProductStatus = ProductStatus.Provisional, BrandId = brandId };
+            return DomainResult<MasterProduct>.Success(result);
         }
+
+
     }
 }
