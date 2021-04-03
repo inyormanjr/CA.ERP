@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,18 +14,20 @@ using OneOf;
 using OneOf.Types;
 using Microsoft.AspNetCore.Authorization;
 using CA.ERP.WebApp.Dto;
+using CA.ERP.Application.Services;
+using CA.ERP.Domain.Core.DomainResullts;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
     [Authorize]
     public class BranchController:BaseApiController
     {
-        private readonly BranchService _branchService;
+        private readonly IBranchAppService _branchAppService;
 
-        public BranchController(IServiceProvider serviceProvider, BranchService branchService)
+        public BranchController(IServiceProvider serviceProvider, IBranchAppService branchAppService)
             : base(serviceProvider)
         {
-            _branchService = branchService;
+            _branchAppService = branchAppService;
         }
 
 
@@ -38,7 +40,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get()
         {
-            var branches = await _branchService.GetManyAsync();
+            var branches = await _branchAppService.GetManyAsync();
             var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(branches);
             var response = new Dto.GetManyResponse<Dto.Branch.BranchView>() {
                 Data = dtoBranches
@@ -51,14 +53,24 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Branch.BranchView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var branchOption = await _branchService.GetOneAsync(id, cancellationToken);
-            return branchOption.Match<ActionResult>(
-                f0: brand =>
-                {
-                    return Ok(_mapper.Map<Dto.Branch.BranchView>(brand));
-                },
-                f1: notfound => NotFound()
-            );
+            DomainResult<Branch> result = await _branchAppService.GetOneAsync(id, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok(_mapper.Map<Dto.Branch.BranchView>(result.Result));
+            }
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    break;
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+            return BadRequest(result);
+
         }
 
         /// <summary>
@@ -74,25 +86,29 @@ namespace CA.ERP.WebApp.Controllers.Api
         public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.Branch.CreateBranchRequest request, CancellationToken cancellationToken)
         {
 
-            var createResult = await _branchService.CreateBranchAsync(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact, cancellationToken);
-
-            return createResult.Match<ActionResult>(
-                f0: (id) =>
+            DomainResult<Guid> createResult = await _branchAppService.CreateBranchAsync(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact, cancellationToken);
+            if (createResult.IsSuccess)
+            {
+                var response = new Dto.CreateResponse()
                 {
-                    var response = new Dto.CreateResponse()
-                    {
-                        Id = id
-                    };
-                    return Ok(response);
-                },
-                f1: (validationErrors) => {
-                    var error = new ErrorResponse(HttpContext.TraceIdentifier) { 
-                        GeneralError = "Validation Error", 
-                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors) 
-                    };
-                    return BadRequest(error); 
-                }
-             );
+                    Id = createResult.Result
+                };
+                return Ok(response);
+            }
+            switch (createResult.ErrorType)
+            {
+                case Domain.Core.DomainResullts.ErrorType.Success:
+                    break;
+                case Domain.Core.DomainResullts.ErrorType.Forbidden:
+                    return Forbid();
+
+                case Domain.Core.DomainResullts.ErrorType.NotFound:
+                    return NotFound();
+
+                default:
+                    break;
+            }
+            return BadRequest(createResult);
         }
 
         /// <summary>
@@ -108,21 +124,27 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBranch(Guid id, Dto.Branch.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
-            var domBranch = _mapper.Map<Dom.Branch>(request.Data);
-            var result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
 
-            return result.Match<IActionResult>(
-                f0: (branch) => NoContent(),
-                f1: (validationErrors) => {
-                    var error = new ErrorResponse(HttpContext.TraceIdentifier)
-                    {
-                        GeneralError = "Validation Error",
-                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors)
-                    };
-                    return BadRequest(error);
-                },
-                f2: (error) => NotFound()
-            );
+            var result = await _branchAppService.UpdateAsync(id, request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    break;
+
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+
+            return BadRequest(result);
+
         }
 
         /// <summary>
@@ -138,11 +160,21 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBranch(Guid id, CancellationToken cancellationToken)
         {
-            OneOf<Success, NotFound> result = await _branchService.DeleteAsync(id, cancellationToken);
-            return result.Match<IActionResult>(
-                f0: (success) => NoContent(),
-                f1: (notFound) => NotFound()
-                );
+            var result = await _branchAppService.DeleteAsync(id, cancellationToken);
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    return NoContent();
+
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+            return BadRequest(result);
+
         }
     }
 }

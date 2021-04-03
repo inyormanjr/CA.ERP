@@ -1,4 +1,5 @@
-﻿using System;
+using CA.ERP.Domain.MasterProductAgg;
+using System;
 
 namespace CA.ERP.WebApp.Dto.MasterProduct
 {

@@ -18,7 +18,7 @@ namespace CA.ERP.Domain.MasterProductAgg
     public class MasterProductService : ServiceBase<MasterProduct>
     {
         private readonly IMasterProductRepository _masterProductRepository;
-        private readonly IValidator<MasterProduct> _masterProductValidator;
+
 
         public MasterProductService(IUnitOfWork unitOfWork, IMasterProductRepository masterProductRepository, IUserHelper userHelper)
             : base(unitOfWork, masterProductRepository, null, userHelper)
@@ -26,26 +26,6 @@ namespace CA.ERP.Domain.MasterProductAgg
             _masterProductRepository = masterProductRepository;
         }
 
-        public async Task<DomainResult<Guid>> CreateMasterProduct(string model, string description,  Guid brandId, CancellationToken cancellationToken = default)
-        {
-
-            var result = MasterProduct.Create(model, description, brandId);
-            if (result.IsSuccess)
-            {
-                MasterProduct masterProduct = result.Result;
-                masterProduct.CreatedBy = _userHelper.GetCurrentUserId();
-                masterProduct.UpdatedBy = _userHelper.GetCurrentUserId();
-                Guid id = await _masterProductRepository.AddAsync(masterProduct, cancellationToken);
-                await _unitOfWork.CommitAsync();
-                return DomainResult<Guid>.Success(id);
-            }
-            else
-            {
-                return result.ConvertTo<Guid>();
-            }
-
-          
-        }
 
         public async Task<DomainResult> UpdateAsync(Guid id, string model, string description, Guid brandId, ProductStatus productStatus, CancellationToken cancellationToken)
         {

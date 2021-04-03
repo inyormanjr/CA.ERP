@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Common.ResultTypes;
 using CA.ERP.Domain.StockCounterAgg;
@@ -39,22 +39,23 @@ namespace CA.ERP.Domain.StockAgg
 
         public async Task<OneOf<IEnumerable<string>, NotFound, Forbidden>> GenerateStockNumbersAsync(Guid branchId, int count)
         {
-            var branchOption = await _branchRepository.GetByIdAsync(branchId);
-            return await branchOption.Match<Task<OneOf<IEnumerable<string>, NotFound, Forbidden>>>(
-                f0: async branch => {
-                    OneOf<IEnumerable<string>, NotFound, Forbidden> ret;
-                    if (await _branchBranchPermissionValidator.HasPermissionAsync(branch))
-                    {
-                        ret = default(Forbidden);
-                    }
-                    var stockCounterOption = await _stockCounterRepository.GetStockCounterAsync(branch.Code);
-                    var stockCounter = stockCounterOption.Match(f0: st => st, f1: _ => _stockCounterFactory.CreateFresh(branch.Code));
-                    IEnumerable<string> stockNumbers = await _stockNumberGenerator.GenerateStockNumberAsync(stockCounter, count);
+            throw new NotImplementedException();
+            //var branchOption = await _branchRepository.GetByIdAsync(branchId);
+            //return await branchOption.Match<Task<OneOf<IEnumerable<string>, NotFound, Forbidden>>>(
+            //    f0: async branch => {
+            //        OneOf<IEnumerable<string>, NotFound, Forbidden> ret;
+            //        if (await _branchBranchPermissionValidator.HasPermissionAsync(branch))
+            //        {
+            //            ret = default(Forbidden);
+            //        }
+            //        var stockCounterOption = await _stockCounterRepository.GetStockCounterAsync(branch.Code);
+            //        var stockCounter = stockCounterOption.Match(f0: st => st, f1: _ => _stockCounterFactory.CreateFresh(branch.Code));
+            //        IEnumerable<string> stockNumbers = await _stockNumberGenerator.GenerateStockNumberAsync(stockCounter, count);
 
-                    ret = stockNumbers.ToList();
-                    return ret;
-                },
-                f1: async _ => default(NotFound) );
+            //        ret = stockNumbers.ToList();
+            //        return ret;
+            //    },
+            //    f1: async _ => default(NotFound) );
             
             
         }

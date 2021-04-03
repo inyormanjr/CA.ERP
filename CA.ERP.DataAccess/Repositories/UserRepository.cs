@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +17,7 @@ using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
 using System.Linq;
+using CA.ERP.Domain.Core;
 
 namespace CA.ERP.DataAccess.Repositories
 {

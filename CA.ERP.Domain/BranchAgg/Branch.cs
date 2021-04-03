@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,69 @@ namespace CA.ERP.Domain.BranchAgg
 {
     public class Branch : ModelBase
     {
-        public string Name { get; set; }
-        public int BranchNo { get; set; }
-        public string Code { get; set; }
-        public string Address  { get; set; }
-        public string Contact { get; set; }
-        public List<UserBranch> UserBranches { get; set; }
+        public string Name { get; private set; }
+        public int BranchNo { get; private set; }
+        public string Code { get; private set; }
+        public string Address  { get; private set; }
+        public string Contact { get; private set; }
+
+        private Branch(string name, int branchNo, string code, string address, string contact)
+        {
+            Name = name;
+            BranchNo = branchNo;
+            Code = code;
+            Address = address;
+            Contact = contact;
+        }
+
+        public DomainResult Update(string name, int branchNo, string code, string address, string contact)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return DomainResult<Branch>.Error(ErrorType.Error, BranchErrorCodes.InvalidName, $"'{nameof(name)}' cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(code))
+            {
+                return DomainResult<Branch>.Error(BranchErrorCodes.InvalidCode, $"'{nameof(code)}' cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(address))
+            {
+                return DomainResult<Branch>.Error(BranchErrorCodes.InvalidAddress, $"'{nameof(address)}' cannot be null or empty.");
+            }
+
+            Name = name;
+            BranchNo = branchNo;
+            Code = code;
+            Address = address;
+            Contact = contact;
+
+
+            return DomainResult.Success();
+        }
+
+
+        public static DomainResult<Branch> Create(string name, int branchNo, string code, string address, string contact)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return DomainResult<Branch>.Error(ErrorType.Error,BranchErrorCodes.InvalidName, $"'{nameof(name)}' cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(code))
+            {
+                return DomainResult<Branch>.Error(BranchErrorCodes.InvalidCode, $"'{nameof(code)}' cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(address))
+            {
+                return DomainResult<Branch>.Error(BranchErrorCodes.InvalidAddress, $"'{nameof(address)}' cannot be null or empty.");
+            }
+
+
+            var branch = new Branch(name, branchNo, code, address, contact);
+            return DomainResult<Branch>.Success(branch);
+        }
     }
 }

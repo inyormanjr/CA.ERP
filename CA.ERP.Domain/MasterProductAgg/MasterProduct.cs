@@ -1,13 +1,14 @@
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Domain.Core.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CA.ERP.Domain.MasterProductAgg
 {
-    public class MasterProduct : ModelBase
+    public class MasterProduct : ModelBase, IEntity
     {
         private MasterProduct()
         {

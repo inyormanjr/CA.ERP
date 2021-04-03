@@ -256,21 +256,6 @@
             The main reference for the product
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus">
-            <summary>
-            Flags if product can be deleted
-            </summary>
-        </member>
-        <member name="F:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus.Provisional">
-            <summary>
-            Product has no other data that reference it and can be deleted.
-            </summary>
-        </member>
-        <member name="F:CA.ERP.WebApp.Dto.MasterProduct.ProductStatus.Permanent">
-            <summary>
-            Product has no other data that reference it and should not be deleted
-            </summary>
-        </member>
         <member name="T:CA.ERP.WebApp.Dto.Status">
             <summary>
             Enum status for dto

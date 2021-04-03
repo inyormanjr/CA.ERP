@@ -1,21 +1,11 @@
-using CA.ERP.Domain.Common;
-using CA.ERP.Domain.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace CA.ERP.DataAccess.Entities
+namespace CA.ERP.Domain.Core.Entity
 {
-    public abstract class EntityBase
+    public interface IEntity
     {
-        public EntityBase()
-        {
-            CreatedBy = Guid.Empty;
-            UpdatedBy = Guid.Empty;
-            Status = Status.Active;
-        }
         public Guid Id { get; set; }
         public Status Status { get; set; }
         public DateTime CreatedAt { get; set; }

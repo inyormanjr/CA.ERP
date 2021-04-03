@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.Common;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Common.Extensions;
+using CA.ERP.Domain.Core;
 
 namespace CA.ERP.DataAccess.Repositories
 {

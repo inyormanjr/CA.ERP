@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;
@@ -19,16 +20,12 @@ namespace CA.ERP.Domain.BranchAgg
     {
         private readonly ILogger<BranchService> _logger;
         private readonly IBranchRepository _branchRepository;
-        private readonly IBranchFactory _branchFactory;
-        private readonly IValidator<Branch> _branchValidator;
 
-        public BranchService(IUnitOfWork unitOfWork, ILogger<BranchService> logger, IBranchRepository branchRepository, IBranchFactory branchFactory, IValidator<Branch> branchValidator, IUserHelper userHelper)
+        public BranchService(IUnitOfWork unitOfWork, ILogger<BranchService> logger, IBranchRepository branchRepository, IValidator<Branch> branchValidator, IUserHelper userHelper)
             :base(unitOfWork, branchRepository, branchValidator, userHelper)
         {
             _logger = logger;
             _branchRepository = branchRepository;
-            _branchFactory = branchFactory;
-            _branchValidator = branchValidator;
         }
 
 
@@ -36,21 +33,23 @@ namespace CA.ERP.Domain.BranchAgg
         /// Create a branch
         /// </summary>
         /// <returns></returns>
-        public async Task<OneOf<Guid, List<ValidationFailure>>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
+        public async Task<DomainResult<Guid>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken = default)
         {
-            OneOf<Guid, List<ValidationFailure>> ret;
+            DomainResult<Guid> ret;
             //validate branch here/ no idea how to validate yet.
-            var branch = _branchFactory.Create(name, branchNo, code, address, contact);
-            var validationResult = _branchValidator.Validate(branch);
-            if (!validationResult.IsValid)
+
+            var result = Branch.Create(name, branchNo, code, address, contact);
+            if (result.IsSuccess)
             {
-                ret = validationResult.Errors.ToList();
+                Branch branch = result.Result;
+                branch.CreatedBy = _userHelper.GetCurrentUserId();
+                branch.UpdatedBy = _userHelper.GetCurrentUserId();
+                var id = await _branchRepository.AddAsync(branch, cancellationToken);
+                ret = DomainResult<Guid>.Success(id);
             }
             else
             {
-                branch.CreatedBy = _userHelper.GetCurrentUserId();
-                branch.UpdatedBy = _userHelper.GetCurrentUserId();
-                ret = await _branchRepository.AddAsync(branch, cancellationToken);
+                ret = result.ConvertTo<Guid>();
             }
             await _unitOfWork.CommitAsync();
             return ret;
