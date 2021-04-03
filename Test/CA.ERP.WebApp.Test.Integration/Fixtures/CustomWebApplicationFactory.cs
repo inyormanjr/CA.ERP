@@ -85,7 +85,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                             db.Database.EnsureCreated();
                         }
                         
-                        Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
+                        //Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
 
 
                     }

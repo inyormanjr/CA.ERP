@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.Helpers;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using FluentAssertions;
 using Moq;

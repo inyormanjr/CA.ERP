@@ -1,6 +1,6 @@
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.MasterProductAgg;
-using CA.ERP.Domain.UnitOfWorkAgg;
 using System;
 using System.Collections.Generic;
 using System.Text;

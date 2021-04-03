@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CA.ERP.Domain.UnitOfWorkAgg
+namespace CA.ERP.Domain.Core
 {
     public interface IUnitOfWork : IDisposable
     {

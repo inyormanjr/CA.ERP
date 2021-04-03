@@ -28,7 +28,6 @@ using CA.ERP.WebApp.CustomAuthentication;
 using CA.ERP.WebApp.Middlewares;
 using CA.ERP.Domain.Common.Rounding;
 using CA.ERP.WebApp.ActionFilters;
-using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using jsreport.AspNetCore;
@@ -39,6 +38,8 @@ using System.Net;
 using jsreport.Client;
 using System.Globalization;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.Repository;
 
 namespace CA.ERP.WebApp
 {
@@ -159,13 +160,7 @@ namespace CA.ERP.WebApp
             //    .WithScopedLifetime()
             //);
 
-            //register helpers
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsSelf()
-                .WithScopedLifetime()
-                );
+
 
 
 
