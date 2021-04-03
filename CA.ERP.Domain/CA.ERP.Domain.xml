@@ -9,12 +9,6 @@
             Interface flag to identify business logic interface/classes
             </summary>
         </member>
-        <member name="T:CA.ERP.Domain.Base.PaginationBase`1">
-            <summary>
-            Base for pagination on get all and searches
-            </summary>
-            <typeparam name="TData"></typeparam>
-        </member>
         <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
             <summary>
             Flags if product can be deleted

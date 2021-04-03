@@ -1,19 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Domain.Base
+namespace CA.ERP.Domain.Core
 {
-    /// <summary>
+    // <summary>
     /// Base for pagination on get all and searches
     /// </summary>
     /// <typeparam name="TData"></typeparam>
-    public abstract class PaginationBase<TData> where TData: class
+    public class PaginatedList<TData> where TData : class
     {
-        public int CurrentPage { get; set; }
-        public int TotalPage { get; set; }
-        public int PageSize { get; set; }
         public int TotalCount { get; set; }
         public ICollection<TData> Data;
     }
+
 }

@@ -40,6 +40,7 @@ using System.Globalization;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.Repository;
+using MediatR;
 
 namespace CA.ERP.WebApp
 {
@@ -205,6 +206,10 @@ namespace CA.ERP.WebApp
 
             //add principal/user tranformer
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
+            //add mediator
+            services.AddMediatR(typeof(Startup));
+
 
 
             //set culture info

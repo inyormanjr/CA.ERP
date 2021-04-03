@@ -1,6 +1,5 @@
-﻿using CA.ERP.Common.Extensions;
+using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Base;
-using CA.ERP.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;

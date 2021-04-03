@@ -9,7 +9,7 @@
             Copy's the header startTimestamp from request to response if it exist 
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.Get">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.Get(System.Threading.CancellationToken)">
             <summary>
             Get multiple branches
             </summary>

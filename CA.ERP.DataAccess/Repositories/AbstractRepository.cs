@@ -49,14 +49,26 @@ namespace CA.ERP.DataAccess.Repositories
 
         public virtual async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
+            IQueryable<TDal> queryable = generateQuery(status);
+
+            return await queryable.Select(e => _mapper.Map<TDal, TDomain>(e)).ToListAsync(cancellationToken: cancellationToken);
+        }
+
+        private IQueryable<TDal> generateQuery(Status status)
+        {
             var queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
             {
                 queryable = queryable.Where(e => e.Status == status);
             }
 
+            return queryable;
+        }
 
-            return await queryable.Select(e=>_mapper.Map<TDal, TDomain>(e)).ToListAsync(cancellationToken: cancellationToken);
+        public Task<int> GetCountAsync(Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            IQueryable<TDal> queryable = generateQuery(status);
+            return queryable.CountAsync(cancellationToken);
         }
 
         public virtual async Task<TDomain> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -97,5 +109,7 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return await queryable.AnyAsync(e => e.Id == id, cancellationToken);
         }
+
+        
     }
 }

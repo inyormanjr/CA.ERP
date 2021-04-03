@@ -55,5 +55,10 @@ namespace CA.ERP.Lib.DAL.Repositories
             }
             return ret;
         }
+
+        public Task<int> Count(Status status, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

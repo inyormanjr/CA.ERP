@@ -1,4 +1,5 @@
 using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.Repository;
 using OneOf;
 using OneOf.Types;
@@ -14,5 +15,6 @@ namespace CA.ERP.Domain.BranchAgg
     {
 
         Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken);
+        Task<int> Count(Status status, CancellationToken cancellationToken);
     }
 }
