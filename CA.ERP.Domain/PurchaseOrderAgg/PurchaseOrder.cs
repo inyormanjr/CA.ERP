@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Domain.UserAgg;
@@ -43,8 +43,5 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new List<PurchaseOrderItem>();
 
-        public User ApprovedBy { get; set; }
-        public Supplier Supplier { get; set; }
-        public Branch Branch { get; set; }
     }
 }

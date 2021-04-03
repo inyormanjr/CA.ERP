@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.MasterProductAgg;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public MasterProductMapping()
         {
             CreateMap<MasterProduct, Dal.MasterProduct>();
-            CreateMap<Dal.MasterProduct, MasterProduct>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +12,10 @@ namespace CA.ERP.DataAccess.Entities
         public string Code { get; set; }
         public string Address { get; set; }
         public string Contact { get; set; }
-        public List<UserBranch> UserBranches { get;  set; }
-        public List<PurchaseOrder> PurchaseOrders { get; set; }
-        public List<StockReceive> StockReceives { get; set; }
-        public List<Stock> Stocks { get;  set; }
-        public List<StockInventory> StockInventories { get; set; }
+        //public List<UserBranch> UserBranches { get;  set; }
+        //public List<PurchaseOrder> PurchaseOrders { get; set; }
+        //public List<StockReceive> StockReceives { get; set; }
+        //public List<Stock> Stocks { get;  set; }
+        //public List<StockInventory> StockInventories { get; set; }
     }
 }

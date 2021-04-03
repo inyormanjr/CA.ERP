@@ -1,19 +1,24 @@
 using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
-using CA.ERP.Domain.UserAgg;
+using CA.ERP.Domain.Core.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CA.ERP.Domain.BranchAgg
 {
-    public class Branch : ModelBase
+    public class Branch :IEntity
     {
         public string Name { get; private set; }
         public int BranchNo { get; private set; }
         public string Code { get; private set; }
         public string Address  { get; private set; }
         public string Contact { get; private set; }
+
+        public Guid Id { get; private set; }
+
+        public Status Status { get; private set; }
 
         private Branch(string name, int branchNo, string code, string address, string contact)
         {

@@ -50,19 +50,16 @@ namespace CA.ERP.DataAccess.Repositories
             return await queryable.OrderBy(po => po.DeliveryDate).Select(e => _mapper.Map<PurchaseOrder>(e)).ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public async override Task<OneOf<PurchaseOrder, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public async override Task<PurchaseOrder> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            OneOf<PurchaseOrder, None> ret = default(None);
+            PurchaseOrder ret = null;
 
             var queryable = _context.Set<Dal.PurchaseOrder>()
                 .Include(po => po.Supplier)
                 .Include(po => po.Branch)
                 .Include(po => po.PurchaseOrderItems).ThenInclude(pois => pois.MasterProduct).ThenInclude(mp => mp.Brand)
                 .AsQueryable();
-            if (status != Status.All)
-            {
-                queryable = queryable.Where(e => e.Status == status);
-            }
+
 
             var entity = await queryable.Where(po => po.Id == id).Select(po => _mapper.Map<PurchaseOrder>(po)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
             if (entity != null)

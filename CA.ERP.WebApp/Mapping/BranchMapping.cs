@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
 using Dto = CA.ERP.WebApp.Dto;
 using System;
@@ -12,7 +12,7 @@ namespace CA.ERP.WebApp.Mapping
     {
         public BranchMapping()
         {
-            CreateMap<Branch, Dto.Branch.BranchView>().ReverseMap();
+            CreateMap<Branch, Dto.Branch.BranchView>();
         }
     }
 }

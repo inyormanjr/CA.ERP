@@ -14,6 +14,5 @@ namespace CA.ERP.Domain.BranchAgg
         Task<Branch> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
         Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken);
-        Task<List<Branch>> GetManyByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     }
 }

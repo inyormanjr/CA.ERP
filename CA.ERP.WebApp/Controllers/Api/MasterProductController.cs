@@ -1,7 +1,6 @@
 using AutoMapper;
 using CA.ERP.Application.Services;
 using CA.ERP.Domain.MasterProductAgg;
-using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,14 +19,17 @@ namespace CA.ERP.WebApp.Controllers.Api
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class MasterProductController : BaseApiController
+    public class MasterProductController : ControllerBase
     {
         private readonly IMasterProductAppService _masterProductAppService;
+        private readonly ILogger<MasterProductController> _logger;
+        private readonly IMapper _mapper;
 
-        public MasterProductController(IServiceProvider serviceProvider, IMasterProductAppService masterProductAppService)
-            : base(serviceProvider)
+        public MasterProductController(IMasterProductAppService masterProductAppService, ILogger<MasterProductController> logger, IMapper mapper)
         {
             _masterProductAppService = masterProductAppService;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.MasterProduct.CreateMasterProductRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {0} creating masterproduct.", _userHelper.GetCurrentUserId());
+
             var createResult = await _masterProductAppService.CreateMasterProduct(request.Data.Model, request.Data.Description, request.Data.BrandId, cancellationToken: cancellationToken);
             if (createResult.IsSuccess)
             {
@@ -50,7 +52,7 @@ namespace CA.ERP.WebApp.Controllers.Api
                 {
                     Id = createResult.Result
                 };
-                _logger.LogInformation("User {0} masterproduct creation succeeded.", _userHelper.GetCurrentUserId());
+
                 return Ok(response);
             }
             else

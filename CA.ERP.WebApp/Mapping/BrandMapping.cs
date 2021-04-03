@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BrandAgg;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,6 @@ namespace CA.ERP.WebApp.Mapping
     {
         public BrandMapping()
         {
-            CreateMap<Dto.Brand.BrandCreate, Brand>();
-            CreateMap<Dto.Brand.BrandUpdate, Brand>();
             CreateMap<Brand, Dto.Brand.BrandView>();
         }
 

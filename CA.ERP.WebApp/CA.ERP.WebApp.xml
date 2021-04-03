@@ -9,22 +9,6 @@
             Copy's the header startTimestamp from request to response if it exist 
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.AuthenticationController.Login(CA.ERP.WebApp.Dto.LoginRequest,System.Threading.CancellationToken)">
-            <summary>
-            Login using username and password
-            </summary>
-            <param name="loginCredentials"></param>
-            <param name="cancellationToken"></param>
-            <returns>Token use to login</returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.AuthenticationController.RefreshToken(CA.ERP.WebApp.Dto.Authentication.RefreshTokenRequest,System.Threading.CancellationToken)">
-            <summary>
-            Refresh your token
-            </summary>
-            <param name="request"></param>
-            <param name="cancellationToken"></param>
-            <returns>Token use to login</returns>
-        </member>
         <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.Get">
             <summary>
             Get multiple branches
@@ -74,92 +58,6 @@
             <summary>
             Get a list of master products
             </summary>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
-            <summary>
-            Create master products
-            </summary>
-            <param name="request"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
-            <summary>
-            Update purchase order
-            </summary>
-            <param name="id"></param>
-            <param name="request"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Delete(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Delete purchase order by id
-            </summary>
-            <param name="id"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.StockController.Get(System.Guid,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Generate stock numbers
-            </summary>
-            <param name="branchId">The branch id to generate the stock number for</param>
-            <param name="count">The number of stuck number to generate</param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:CA.ERP.WebApp.Controllers.Api.SupplierController">
-            <summary>
-            Contains supplier and supllier brands related endpoints
-            </summary>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.CreateSupplier(CA.ERP.WebApp.Dto.Supplier.CreateSupplierRequest,System.Threading.CancellationToken)">
-            <summary>
-            Creates new supplier
-            </summary>
-            <param name="request"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.UpdateSupplier(System.Guid,CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest,System.Threading.CancellationToken)">
-            <summary>
-            Updates supplier
-            </summary>
-            <param name="id">The id of the supplier to update</param>
-            <param name="request">The request data</param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.Get(System.Threading.CancellationToken)">
-            <summary>
-            Get multiple suppliers
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.Get(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Get single supplier
-            </summary>
-            <param name="id">The id of suppler to get.</param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.GetSupplierBrands(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Get a lite version of supplier brands with master products and cost
-            </summary>
-            <param name="id"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.UserController.Register(CA.ERP.WebApp.Dto.User.UserCreateRequest,System.Threading.CancellationToken)">
-            <summary>
-            Register user
-            </summary>
-            <param name="request"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -271,91 +169,6 @@
             Should be the default status
             </summary>
         </member>
-        <member name="T:CA.ERP.WebApp.Dto.Stock.StockUpdate">
-            <summary>
-            Contract to update stock
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.Name">
-            <summary>
-            The suppliers name
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.Address">
-            <summary>
-            Adress of the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.CreateSupplierResponse.ContactPerson">
-            <summary>
-            The name of the contact person for the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.MasterProductLiteView.Id">
-            <summary>
-            Master Product Id
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.Name">
-            <summary>
-            Name of the supplier.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.Address">
-            <summary>
-            Adress of the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierCreate.ContactPerson">
-            <summary>
-            The name of the contact person for the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.Name">
-            <summary>
-            Name of the supplier.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.Address">
-            <summary>
-            Adress of the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierUpdate.ContactPerson">
-            <summary>
-            The name of the contact person for the supplier
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.Supplier.SupplierView">
-            <summary>
-            Supplier Dto
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.Name">
-            <summary>
-            The name of the supplier.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.Address">
-            <summary>
-            Adress of the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.ContactPerson">
-            <summary>
-            The name of the contact person for the supplier
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.Supplier.SupplierView.SupplierBrands">
-            <summary>
-            Brands available to the supplier
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.Supplier.UpdateSupplierRequest">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:CA.ERP.WebApp.Dto.UpdateBaseRequest`1">
             <summary>
             Base class for update request
@@ -367,16 +180,6 @@
             The data to update
             </summary>
             
-        </member>
-        <member name="T:CA.ERP.WebApp.Mapping.ValidationErrorMapping">
-            <summary>
-            Maps Fluent validation failiure to dto ValidationError
-            </summary>
-        </member>
-        <member name="M:CA.ERP.WebApp.Mapping.ValidationErrorMapping.#ctor">
-            <summary>
-            Maps Fluent validation failiure to dto ValidationError
-            </summary>
         </member>
     </members>
 </doc>

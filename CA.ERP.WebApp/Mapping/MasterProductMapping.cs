@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.MasterProductAgg;
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,8 @@ namespace CA.ERP.WebApp.Mapping
     {
         public MasterProductMapping()
         {
-            CreateMap<Dto.MasterProduct.MasterProductCreate, MasterProduct>().ReverseMap();
-            CreateMap<Dto.MasterProduct.MasterProductUpdate, MasterProduct>().ReverseMap();
-            CreateMap<MasterProduct, Dto.MasterProduct.MasterProductView>().ReverseMap();
+
+            CreateMap<MasterProduct, Dto.MasterProduct.MasterProductView>();
         }
     }
 }

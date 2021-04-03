@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace CA.ERP.DataAccess.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public List<MasterProduct> MasterProducts { get; set; } = new List<MasterProduct>();
-        public List<SupplierBrand> SupplierBrands { get; set; } = new List<SupplierBrand>();
+        //public List<SupplierBrand> SupplierBrands { get; set; } = new List<SupplierBrand>();
 
     }
 }

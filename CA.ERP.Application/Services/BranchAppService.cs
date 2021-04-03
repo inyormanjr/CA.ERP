@@ -2,7 +2,6 @@ using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.UnitOfWorkAgg;
-using CA.ERP.Domain.UserAgg;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,16 +22,15 @@ namespace CA.ERP.Application.Services
     public class BranchAppService : IBranchAppService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<BranchService> _logger;
+        private readonly ILogger<BranchAppService> _logger;
         private readonly IBranchRepository _branchRepository;
-        private readonly IUserHelper _userHelper;
 
-        public BranchAppService(IUnitOfWork unitOfWork, ILogger<BranchService> logger, IBranchRepository branchRepository, IUserHelper userHelper)
+        public BranchAppService(IUnitOfWork unitOfWork, ILogger<BranchAppService> logger, IBranchRepository branchRepository)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _branchRepository = branchRepository;
-            _userHelper = userHelper;
+
         }
         public async Task<DomainResult<Guid>> CreateBranchAsync(string name, int branchNo, string code, string address, string contact, CancellationToken cancellationToken)
         {
@@ -43,8 +41,7 @@ namespace CA.ERP.Application.Services
             if (result.IsSuccess)
             {
                 Branch branch = result.Result;
-                branch.CreatedBy = _userHelper.GetCurrentUserId();
-                branch.UpdatedBy = _userHelper.GetCurrentUserId();
+
                 var id = await _branchRepository.AddAsync(branch, cancellationToken);
                 ret = DomainResult<Guid>.Success(id);
             }

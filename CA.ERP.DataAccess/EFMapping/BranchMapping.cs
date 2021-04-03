@@ -15,9 +15,7 @@ namespace CA.ERP.DataAccess.EFMapping
       builder.Property(x => x.Id);
             builder.HasIndex(x => x.Name).IsUnique(true);
 
-            builder.HasMany(x => x.UserBranches)
-                .WithOne(x => x.Branch)
-                .HasForeignKey(x => x.BranchId);
+            
         }
     }
 }

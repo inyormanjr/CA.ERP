@@ -20,14 +20,15 @@ using CA.ERP.Domain.Core.DomainResullts;
 namespace CA.ERP.WebApp.Controllers.Api
 {
     [Authorize]
-    public class BranchController:BaseApiController
+    public class BranchController: ControllerBase
     {
         private readonly IBranchAppService _branchAppService;
+        private readonly IMapper _mapper;
 
-        public BranchController(IServiceProvider serviceProvider, IBranchAppService branchAppService)
-            : base(serviceProvider)
+        public BranchController(IBranchAppService branchAppService, IMapper mapper)
         {
             _branchAppService = branchAppService;
+            _mapper = mapper;
         }
 
 

@@ -1,11 +1,8 @@
 using AutoMapper;
 using CA.ERP.DataAccess;
-using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Helpers;
-using CA.ERP.Domain.UserAgg;
-using DtoMapping = CA.ERP.WebApp.Mapping;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -20,8 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using CA.ERP.WebApp.Helpers;
-using CA.ERP.Domain.SupplierAgg;
 using FluentValidation;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -31,7 +26,6 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using CA.ERP.WebApp.CustomAuthentication;
 using CA.ERP.WebApp.Middlewares;
-using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Common.Rounding;
 using CA.ERP.WebApp.ActionFilters;
 using CA.ERP.Domain.UnitOfWorkAgg;
@@ -142,41 +136,28 @@ namespace CA.ERP.WebApp
             services.AddJsReport(new ReportingService(reportingServer));
 
 
-            services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
+            //services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly);
 
             services.AddHttpContextAccessor();
 
-            //register web api helpers
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-            );
 
             //register repositories
             services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserRepository))
+                scan.FromAssembliesOf(typeof(MasterProductRepository))
                 .AddClasses(classes => classes.AssignableTo<IRepository>())
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
-            //register factories
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserFactory))
-                .AddClasses(classes => classes.AssignableTo<IFactory>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-            );
 
-            //register services
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserService))
-                .AddClasses(classes => classes.AssignableTo<ServiceBase>())
-                .AsSelf()
-                .WithScopedLifetime()
-            );
+
+            ////register services
+            //services.Scan(scan =>
+            //    scan.FromAssembliesOf(typeof(UserService))
+            //    .AddClasses(classes => classes.AssignableTo<ServiceBase>())
+            //    .AsSelf()
+            //    .WithScopedLifetime()
+            //);
 
             //register helpers
             services.Scan(scan =>
@@ -186,42 +167,8 @@ namespace CA.ERP.WebApp
                 .WithScopedLifetime()
                 );
 
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(TokenGenerator))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsSelf()
-                .WithScopedLifetime()
-                );
 
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
 
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PurchaseOrderBarcodeGenerator))
-                .AddClasses(classes => classes.AssignableTo<IBusinessLogic>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
-
-            //register validators
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(SupplierValidator))
-                .AddClasses(classes => classes.AssignableTo<IValidator>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
-
-            //register validators
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(IBranchPermissionValidator))
-                .AddClasses(classes => classes.AssignableTo<IBranchPermissionValidator>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
 
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();

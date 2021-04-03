@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public BranchMapping()
         {
-            CreateMap<Dal.Branch, Branch>();
             CreateMap<Branch, Dal.Branch>();
         }
     }

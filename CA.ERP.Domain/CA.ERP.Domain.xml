@@ -15,12 +15,6 @@
             </summary>
             <typeparam name="TData"></typeparam>
         </member>
-        <member name="M:CA.ERP.Domain.BranchAgg.BranchService.CreateBranchAsync(System.String,System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Create a branch
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
             <summary>
             Flags if product can be deleted
@@ -35,60 +29,6 @@
             <summary>
             Product has no other data that reference it and should not be deleted
             </summary>
-        </member>
-        <member name="T:CA.ERP.Domain.PaymentAgg.PaymentMethod">
-            <summary>
-            The payment method use.
-            Cash = 1,
-            Card = 2,
-            Cheque = 4,
-            </summary>
-        </member>
-        <member name="T:CA.ERP.Domain.PaymentAgg.PaymentType">
-            <summary>
-            Down = 1,
-            Installment = 2,
-            Full = 3
-            </summary>
-        </member>
-        <member name="T:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator">
-            <summary>
-            Business logic interface for calculating Purchase order total amount
-            </summary>
-        </member>
-        <member name="M:CA.ERP.Domain.PurchaseOrderAgg.IPurchaseOrderTotalCostPriceCalculator.Calculate(CA.ERP.Domain.PurchaseOrderAgg.PurchaseOrder,System.Collections.Generic.ICollection{CA.ERP.Domain.PurchaseOrderAgg.PurchaseOrderItem})">
-            <summary>
-            Do the calculation
-            </summary>
-            <param name="purchaseOrder"></param>
-            <param name="purchaseOrderItems"></param>
-            <returns>The total cost base on pass purchase order and items</returns>
-        </member>
-        <member name="T:CA.ERP.Domain.ReportAgg.FileFormat">
-            <summary>
-            Pdf = 0,
-            Docx = 1
-            </summary>
-        </member>
-        <member name="M:CA.ERP.Domain.StockAgg.IStockNumberGenerator.GenerateStockNumberAsync(CA.ERP.Domain.StockReceiveAgg.StockCounter,System.Int32)">
-            <summary>
-            Generate stock number for given branch
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:CA.ERP.Domain.UserAgg.UserRole">
-             <summary>
-             None = 0,
-            Admin = 1, 
-            Moderator = 2, 
-            Marketing =4, 
-            Cashier = 8, 
-            Stocks = 16,
-            CC = 32,
-            Encoder = 64,
-            Accounting = 128,
-            Manager = 256
-             </summary>
         </member>
     </members>
 </doc>
