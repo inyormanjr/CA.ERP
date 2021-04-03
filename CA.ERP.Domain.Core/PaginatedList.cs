@@ -10,6 +10,11 @@ namespace CA.ERP.Domain.Core
     /// <typeparam name="TData"></typeparam>
     public class PaginatedList<TData> where TData : class
     {
+        public PaginatedList(ICollection<TData> data, int totalCount)
+        {
+            Data = data;
+            TotalCount = totalCount;
+        }
         public int TotalCount { get; set; }
         public ICollection<TData> Data;
     }

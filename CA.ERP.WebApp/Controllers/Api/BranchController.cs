@@ -17,7 +17,7 @@ using CA.ERP.WebApp.Dto;
 using CA.ERP.Application.Services;
 using CA.ERP.Domain.Core.DomainResullts;
 using MediatR;
-using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranches;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch;
 using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetOneBranch;
 using CA.ERP.Application.CommandQuery.BranchCommandQuery.CreateBranch;
 using CA.ERP.Application.CommandQuery.BranchCommandQuery.UpdateBranch;
@@ -47,7 +47,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get(CancellationToken cancellationToken)
         {
-            var query = new GetManyBranchesQuery();
+            var query = new GetManyBranchQuery();
             var paginatedBranches = await _mediator.Send(query, cancellationToken);
 
             var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(paginatedBranches.Data);

@@ -1,8 +1,14 @@
 using AutoMapper;
+using CA.ERP.Application.CommandQuery.BrandCommandQuery.CreateBrand;
+using CA.ERP.Application.CommandQuery.BrandCommandQuery.DeleteBrand;
+using CA.ERP.Application.CommandQuery.BrandCommandQuery.GetManyBrand;
+using CA.ERP.Application.CommandQuery.BrandCommandQuery.GetOneBrand;
+using CA.ERP.Application.CommandQuery.BrandCommandQuery.UpdateBrand;
 using CA.ERP.Application.Services;
 using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.Core.DomainResullts;
 using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,14 +31,13 @@ namespace CA.ERP.WebApp.Controllers.Api
     [Authorize]
     public class BrandController : ControllerBase
     {
-
-        private readonly IBrandAppService _brandAppService;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public BrandController(IBrandAppService brandAppService, IMapper mapper)
+        public BrandController(IMediator mediator, IMapper mapper)
         {
 
-            _brandAppService = brandAppService;
+            _mediator = mediator;
             _mapper = mapper;
         }
 
@@ -42,8 +47,8 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> CreateBrand(Dto.Brand.CreateBrandRequest request, CancellationToken cancellationToken)
         {
-
-            var createResult = await _brandAppService.CreateBrandAsync(request.Data.Name, request.Data.Description, cancellationToken: cancellationToken);
+            var command = new CreateBrandCommand(request.Data.Name, request.Data.Description);
+            var createResult = await _mediator.Send(command, cancellationToken);
             switch (createResult.ErrorType)
             {
                 case Domain.Core.DomainResullts.ErrorType.Success:
@@ -64,8 +69,8 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, Dto.Brand.UpdateBrandRequest request, CancellationToken cancellationToken)
         {
-
-            DomainResult result = await _brandAppService.UpdateAsync(id, request.Data.Name, request.Data.Description, cancellationToken);
+            var command = new UpdateBrandCommand(id, request.Data.Name, request.Data.Description);
+            var result = await _mediator.Send(command, cancellationToken);
 
             switch (result.ErrorType)
             {
@@ -87,11 +92,14 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand.BrandView>>> Get(CancellationToken cancellationToken)
         {
-            var brands = await _brandAppService.GetManyAsync(cancellationToken);
-            var dtoBrands = _mapper.Map<List<Dto.Brand.BrandView>>(brands);
+            var query = new GetManyBrandQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+
+            var dtoBrands = _mapper.Map<List<Dto.Brand.BrandView>>(result.Data);
             var response = new Dto.GetManyResponse<Dto.Brand.BrandView>()
             {
-                Data = dtoBrands
+                Data = dtoBrands,
+                TotalCount = result.TotalCount
             };
             return Ok(response);
         }
@@ -101,11 +109,14 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Brand.BrandView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            DomainResult<Brand> brandResult = await _brandAppService.GetOneAsync(id, cancellationToken);
-            switch (brandResult.ErrorType)
+            var query = new GetOneBrandQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+
+            switch (result.ErrorType)
             {
                 case ErrorType.Success:
-                    return Ok(_mapper.Map<Dto.Brand.BrandView>(brandResult.Result));
+                    return Ok(_mapper.Map<Dto.Brand.BrandView>(result.Result));
                 case ErrorType.Forbidden:
                     return Forbid();
                 case ErrorType.NotFound:
@@ -114,7 +125,7 @@ namespace CA.ERP.WebApp.Controllers.Api
                     break;
             }
 
-            return BadRequest(brandResult);
+            return BadRequest(result);
 
         }
 
@@ -123,8 +134,10 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            DomainResult brandResult = await _brandAppService.DeleteAsync(id, cancellationToken);
-            switch (brandResult.ErrorType)
+            var command = new DeleteBrandCommand(id);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            switch (result.ErrorType)
             {
                 case ErrorType.Success:
                     return Ok();
@@ -135,7 +148,7 @@ namespace CA.ERP.WebApp.Controllers.Api
                 default:
                     break;
             }
-            return BadRequest(brandResult);
+            return BadRequest(result);
             
         }
 
