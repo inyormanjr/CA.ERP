@@ -22,10 +22,7 @@ namespace CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch
         {
             var branches = await _branchRepository.GetManyAsync(request.Skip, request.Take, request.Status, cancellationToken: cancellationToken);
             var total = await _branchRepository.Count(request.Status, cancellationToken: cancellationToken);
-            return new PaginatedList<Branch>() {
-                 Data = branches,
-                 TotalCount = total
-            };
+            return new PaginatedList<Branch>(branches, total);
         }
     }
 }

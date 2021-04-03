@@ -1,7 +1,11 @@
 using AutoMapper;
-using CA.ERP.Application.Services;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.CreateMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetOneMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.UpdateMasterProduct;
 using CA.ERP.Domain.MasterProductAgg;
 using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +25,16 @@ namespace CA.ERP.WebApp.Controllers.Api
     [ApiController]
     public class MasterProductController : ControllerBase
     {
-        private readonly IMasterProductAppService _masterProductAppService;
+
         private readonly ILogger<MasterProductController> _logger;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public MasterProductController(IMasterProductAppService masterProductAppService, ILogger<MasterProductController> logger, IMapper mapper)
+        public MasterProductController(ILogger<MasterProductController> logger, IMapper mapper, IMediator mediator)
         {
-            _masterProductAppService = masterProductAppService;
             _logger = logger;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -44,8 +49,10 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.MasterProduct.CreateMasterProductRequest request, CancellationToken cancellationToken)
         {
+            var command = new CreateMasterProductCommand(request.Data.Model, request.Data.Description, request.Data.BrandId);
+            var createResult = await _mediator.Send(command, cancellationToken);
 
-            var createResult = await _masterProductAppService.CreateMasterProduct(request.Data.Model, request.Data.Description, request.Data.BrandId, cancellationToken: cancellationToken);
+
             if (createResult.IsSuccess)
             {
                 var response = new Dto.CreateResponse()
@@ -57,7 +64,7 @@ namespace CA.ERP.WebApp.Controllers.Api
             }
             else
             {
-                return BadRequest();
+                return BadRequest(createResult);
             }
 
 
@@ -69,7 +76,9 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.MasterProduct.MasterProductUpdate> request, CancellationToken cancellationToken)
         {
-            var result = await _masterProductAppService.UpdateAsync(id, request.Data.Model, request.Data.Description, request.Data.BrandId, request.Data.ProductStatus, cancellationToken);
+            var command = new UpdateMasterProductCommand(id, request.Data.Model, request.Data.Description, request.Data.BrandId, request.Data.ProductStatus);
+            var result = await _mediator.Send(command, cancellationToken);
+            
             if (result.IsSuccess)
             {
                 return NoContent();
@@ -100,11 +109,14 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
         {
-            var masterProducts = await _masterProductAppService.GetManyAsync(cancellationToken);
-            var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(masterProducts);
+            var query = new GetManyMasterProductQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+
+            var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result.Data);
             var response = new Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>()
             {
-                Data = dtoMasterProducts
+                Data = dtoMasterProducts,
+                TotalCount = result.TotalCount
             };
             return Ok(response);
 
@@ -115,16 +127,17 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.MasterProduct.MasterProductView>> Get(Guid id, CancellationToken cancellationToken)
         {
+            var query = new GetOneMasterProductQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
 
-            var result = await _masterProductAppService.GetOneAsync(id, cancellationToken);
             if (result.IsSuccess)
             {
-                var masterProduct = await _masterProductAppService.GetOneAsync(id, cancellationToken);
-                return Ok(masterProduct);
+
+                return Ok(result.Result);
             }
-            switch (result.ErrorCode)
+            switch (result.ErrorType)
             {
-                case MasterProductErrorCodes.MasterProductNotFound:
+                case Domain.Core.DomainResullts.ErrorType.NotFound:
                     return NotFound();
                 default:
                     break;

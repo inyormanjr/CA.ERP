@@ -1,4 +1,4 @@
-using CA.ERP.Application.Services;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.CreateMasterProduct;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.MasterProductAgg;
 using FakeItEasy;
@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CA.ERP.Test.AppServices
+namespace CA.ERP.Test.MasterProductTests
 {
-    public class MasterProductAppServiceTest
+    public class CreateMasterProducCommandTest
     {
         [Fact]
         public async Task Should_Create_MasterProduct_Success()
@@ -21,10 +21,10 @@ namespace CA.ERP.Test.AppServices
             var unitOfWork = A.Fake<IUnitOfWork>();
             IMasterProductRepository masterProductRepository = A.Fake<IMasterProductRepository>();
 
-            MasterProductAppService sut = new MasterProductAppService(unitOfWork, masterProductRepository);
-
+            CreateMasterProductHandler sut = new CreateMasterProductHandler(unitOfWork, masterProductRepository);
+            var command = new CreateMasterProductCommand("m160", "no idea", Guid.NewGuid());
             //act
-            var result = await sut.CreateMasterProduct("m160", "no idea", Guid.NewGuid(),default);
+            var result = await sut.Handle(command, default);
 
             //assert
             result.Should().NotBeNull();
@@ -41,10 +41,12 @@ namespace CA.ERP.Test.AppServices
             var unitOfWork = A.Fake<IUnitOfWork>();
             IMasterProductRepository masterProductRepository = A.Fake<IMasterProductRepository>();
 
-            MasterProductAppService sut = new MasterProductAppService(unitOfWork, masterProductRepository);
-
+            CreateMasterProductHandler sut = new CreateMasterProductHandler(unitOfWork, masterProductRepository);
+            var command = new CreateMasterProductCommand("", "no idea", Guid.NewGuid());
             //act
-            var result = await sut.CreateMasterProduct("", "no idea", Guid.NewGuid(), default);
+            var result = await sut.Handle(command, default);
+
+
 
             //assert
             result.Should().NotBeNull();

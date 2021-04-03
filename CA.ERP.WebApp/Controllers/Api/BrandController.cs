@@ -4,7 +4,6 @@ using CA.ERP.Application.CommandQuery.BrandCommandQuery.DeleteBrand;
 using CA.ERP.Application.CommandQuery.BrandCommandQuery.GetManyBrand;
 using CA.ERP.Application.CommandQuery.BrandCommandQuery.GetOneBrand;
 using CA.ERP.Application.CommandQuery.BrandCommandQuery.UpdateBrand;
-using CA.ERP.Application.Services;
 using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.Core.DomainResullts;
 using FluentValidation.Results;
