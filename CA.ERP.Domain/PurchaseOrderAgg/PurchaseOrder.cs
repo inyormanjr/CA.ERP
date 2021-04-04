@@ -23,7 +23,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public Guid SupplierId { get; private set; }
         public Guid BranchId { get; private set; }
 
-        public decimal TotalFreeQuantity
+        public decimal GetTotalFreeQuantity
         {
             get
             {
@@ -51,7 +51,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         protected PurchaseOrder(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId)
         {
-            
+
             Barcode = barcode;
             DeliveryDate = deliveryDate;
             OrderedById = orderedById;
@@ -60,20 +60,22 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             PurchaseOrderItems = new List<PurchaseOrderItem>();
         }
 
-
-        public static DomainResult<PurchaseOrder> Create(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider)
+        public void AddPurchaseOrderItem(PurchaseOrderItem purchaseOrderItem)
         {
-            if (string.IsNullOrEmpty(barcode))
-            {
-                DomainResult<PurchaseOrder>.Error(PurchaseOrderErrorCodes.InvalidBarcode, $"'{nameof(barcode)}' cannot be null or empty.");
-            }
+            PurchaseOrderItems.Add(purchaseOrderItem);
+        }
 
+
+        public static DomainResult<PurchaseOrder> Create(DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator)
+        {
             if (deliveryDate < dateTimeProvider.GetCurrentDateTimeOffset())
             {
-                DomainResult<PurchaseOrder>.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
+               return  DomainResult<PurchaseOrder>.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
             }
 
-            var purchaseOrder = new PurchaseOrder(barcode, deliveryDate, orderedById, supplierId, branchId);
+
+
+            var purchaseOrder = new PurchaseOrder(purchaseOrderBarcodeGenerator.GenerateBarcode(), deliveryDate, orderedById, supplierId, branchId);
             return DomainResult<PurchaseOrder>.Success(purchaseOrder);
         }
 

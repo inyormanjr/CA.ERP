@@ -1,8 +1,4 @@
-﻿using CA.ERP.Domain.Base;
-using CA.ERP.Domain.Common.ResultTypes;
-using CA.ERP.Domain.SupplierAgg;
-using CA.ERP.Domain.UnitOfWorkAgg;
-using CA.ERP.Domain.UserAgg;
+using CA.ERP.Domain.Base;
 using FluentValidation;
 using FluentValidation.Results;
 using OneOf;
@@ -16,38 +12,10 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
 {
-    public class PurchaseOrderService : ServiceBase<PurchaseOrder>
-    {
-        private readonly ISupplierRepository _supplierRepository;
-        private readonly IPurchaseOrderTotalCostPriceCalculator _purchaseOrderTotalCostPriceCalculator;
-        private readonly IPurchaseOrderItemTotalCostPriceCalculator _purchaseOrderItemTotalCostPriceCalculator;
-        private readonly IPurchaseOrderItemTotalQuantityCalculator _purchaseOrderItemTotalQuantityCalculator;        private readonly IPurchaseOrderFactory _purchaseOrderFactory;
-        private readonly IValidator<PurchaseOrder> _purchaseOrderValidator;
-        private readonly IPurchaseOrderRepository _purchaseOrderRepository;
-        private readonly IBranchPermissionValidator<PurchaseOrder> _branchPermissionValidator;
+    public class PurchaseOrderService { 
 
-        public PurchaseOrderService(
-            IUnitOfWork unitOfWork,
-            ISupplierRepository supplierRepository,
-            IPurchaseOrderTotalCostPriceCalculator purchaseOrderTotalCostPriceCalculator,
-            IPurchaseOrderItemTotalCostPriceCalculator purchaseOrderItemTotalCostPriceCalculator,
-            IPurchaseOrderItemTotalQuantityCalculator purchaseOrderItemTotalQuantityCalculator,
-            IUserHelper userHelper,
-            IPurchaseOrderFactory purchaseOrderFactory,
-            IValidator<PurchaseOrder> purchaseOrderValidator,
-            IPurchaseOrderRepository purchaseOrderRepository,
-            IBranchPermissionValidator<PurchaseOrder> branchPermissionValidator)
-            :base(unitOfWork, purchaseOrderRepository, purchaseOrderValidator, userHelper)
-        {
-            _supplierRepository = supplierRepository;
-            _purchaseOrderTotalCostPriceCalculator = purchaseOrderTotalCostPriceCalculator;
-            _purchaseOrderItemTotalCostPriceCalculator = purchaseOrderItemTotalCostPriceCalculator;
-            _purchaseOrderItemTotalQuantityCalculator = purchaseOrderItemTotalQuantityCalculator;
-            _purchaseOrderFactory = purchaseOrderFactory;
-            _purchaseOrderValidator = purchaseOrderValidator;
-            _purchaseOrderRepository = purchaseOrderRepository;
-            _branchPermissionValidator = branchPermissionValidator;
-        }
+        private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+
         public async Task<OneOf<Guid, List<ValidationFailure>, Forbidden>> CreatePurchaseOrder(DateTime deliveryDate, Guid supplierId, Guid branchId, List<PurchaseOrderItem> purchaseOrderItems, CancellationToken cancellationToken)
         {
             OneOf<Guid, List<ValidationFailure>, Forbidden> ret;

@@ -13,7 +13,6 @@
     <Compile Remove="BankAgg\**" />
     <Compile Remove="CustomerAgg\**" />
     <Compile Remove="PaymentAgg\**" />
-    <Compile Remove="PurchaseOrderAgg\**" />
     <Compile Remove="RebateMonthlyAgg\**" />
     <Compile Remove="ReportAgg\**" />
     <Compile Remove="StockAgg\**" />
@@ -21,13 +20,10 @@
     <Compile Remove="StockInventoryAgg\**" />
     <Compile Remove="StockMoveAgg\**" />
     <Compile Remove="StockReceiveAgg\**" />
-    <Compile Remove="SupplierAgg\**" />
     <Compile Remove="TransactionAgg\**" />
-    <Compile Remove="UserAgg\**" />
     <EmbeddedResource Remove="BankAgg\**" />
     <EmbeddedResource Remove="CustomerAgg\**" />
     <EmbeddedResource Remove="PaymentAgg\**" />
-    <EmbeddedResource Remove="PurchaseOrderAgg\**" />
     <EmbeddedResource Remove="RebateMonthlyAgg\**" />
     <EmbeddedResource Remove="ReportAgg\**" />
     <EmbeddedResource Remove="StockAgg\**" />
@@ -35,13 +31,10 @@
     <EmbeddedResource Remove="StockInventoryAgg\**" />
     <EmbeddedResource Remove="StockMoveAgg\**" />
     <EmbeddedResource Remove="StockReceiveAgg\**" />
-    <EmbeddedResource Remove="SupplierAgg\**" />
     <EmbeddedResource Remove="TransactionAgg\**" />
-    <EmbeddedResource Remove="UserAgg\**" />
     <None Remove="BankAgg\**" />
     <None Remove="CustomerAgg\**" />
     <None Remove="PaymentAgg\**" />
-    <None Remove="PurchaseOrderAgg\**" />
     <None Remove="RebateMonthlyAgg\**" />
     <None Remove="ReportAgg\**" />
     <None Remove="StockAgg\**" />
@@ -49,13 +42,17 @@
     <None Remove="StockInventoryAgg\**" />
     <None Remove="StockMoveAgg\**" />
     <None Remove="StockReceiveAgg\**" />
-    <None Remove="SupplierAgg\**" />
     <None Remove="TransactionAgg\**" />
-    <None Remove="UserAgg\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="PurchaseOrderAgg\PurchaseOrderService.cs" />
+    <Compile Remove="SupplierAgg\SupplierService.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="9.3.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />

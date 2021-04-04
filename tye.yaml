@@ -6,23 +6,23 @@
 #
 name: ca.erp
 services:
-- name: ca-erp-webapp
+#- name: ca-erp-webapp
   #dockerFile: CA.ERP.WebApp/Dockerfile
-  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
-  bindings:
-  - port: 80
-    containerPort: 80
-    protocol: http
-    name : http
-  - port: 443
-    containerPort: 443
-    protocol: https
-    name : https
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
-  - name: ASPNETCORE_URLS
-    value: http://+:80
+  #project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+  #bindings:
+  #- port: 80
+  #  containerPort: 80
+  #  protocol: http
+  #  name : http
+  #- port: 443
+  #  containerPort: 443
+  #  protocol: https
+  #  name : https
+  #env:
+  #- name: ASPNETCORE_ENVIRONMENT
+  #  value: Development
+  #- name: ASPNETCORE_URLS
+  #  value: http://+:80
 - name: jsreportserver
   image: jsreport/jsreport:2.11.0-full
   bindings:

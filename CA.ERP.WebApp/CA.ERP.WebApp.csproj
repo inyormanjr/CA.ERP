@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -53,7 +53,6 @@
     <Compile Remove="Controllers\Report\**" />
     <Compile Remove="Dto\Customer\**" />
     <Compile Remove="Dto\Payment\**" />
-    <Compile Remove="Dto\PurchaseOrder\**" />
     <Compile Remove="Dto\StockReceive\**" />
     <Compile Remove="Dto\Stock\**" />
     <Compile Remove="Dto\Supplier\**" />
@@ -63,7 +62,6 @@
     <Content Remove="Controllers\Report\**" />
     <Content Remove="Dto\Customer\**" />
     <Content Remove="Dto\Payment\**" />
-    <Content Remove="Dto\PurchaseOrder\**" />
     <Content Remove="Dto\StockReceive\**" />
     <Content Remove="Dto\Stock\**" />
     <Content Remove="Dto\Supplier\**" />
@@ -72,7 +70,6 @@
     <EmbeddedResource Remove="Controllers\Report\**" />
     <EmbeddedResource Remove="Dto\Customer\**" />
     <EmbeddedResource Remove="Dto\Payment\**" />
-    <EmbeddedResource Remove="Dto\PurchaseOrder\**" />
     <EmbeddedResource Remove="Dto\StockReceive\**" />
     <EmbeddedResource Remove="Dto\Stock\**" />
     <EmbeddedResource Remove="Dto\Supplier\**" />
@@ -82,7 +79,6 @@
     <None Remove="Controllers\Report\**" />
     <None Remove="Dto\Customer\**" />
     <None Remove="Dto\Payment\**" />
-    <None Remove="Dto\PurchaseOrder\**" />
     <None Remove="Dto\StockReceive\**" />
     <None Remove="Dto\Stock\**" />
     <None Remove="Dto\Supplier\**" />
@@ -118,10 +114,6 @@
     <ProjectReference Include="..\CA.ERP.Application\CA.ERP.Application.csproj" />
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="logs\" />
   </ItemGroup>
 
   <ItemGroup>
