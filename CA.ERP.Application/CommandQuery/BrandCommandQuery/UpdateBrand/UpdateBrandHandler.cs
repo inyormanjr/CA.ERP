@@ -28,7 +28,11 @@ namespace CA.ERP.Application.CommandQuery.BrandCommandQuery.UpdateBrand
             {
                 return DomainResult.Error(ErrorType.NotFound, BrandErrorCodes.InvalidName, "Brand not found");
             }
-            brand.Update(request.Name, request.Description);
+            var updateResult = brand.Update(request.Name, request.Description);
+            if (!updateResult.IsSuccess)
+            {
+                return updateResult;
+            }
             await _brandRepository.UpdateAsync(request.Id, brand, cancellationToken);
             await _unitOfWork.CommitAsync(cancellationToken);
             return DomainResult.Success();

@@ -12,4 +12,8 @@
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CommandQuery\PurchaseOrderCommandQuery\DeletePurchaseOrder\" />
+  </ItemGroup>
+
 </Project>

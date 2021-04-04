@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace CA.ERP.WebApp.Dto.PurchaseOrder
         [Required]
         public Guid SupplierId { get; set; }
         [Required]
-        public Guid BranchId { get; set; }
+        public Guid DestinationBranchId { get; set; }
 
         public List<PurchaseOrderItemUpdate> PurchaseOrderItems { get; set; }
     }

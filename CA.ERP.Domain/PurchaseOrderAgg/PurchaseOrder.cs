@@ -21,7 +21,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public Guid OrderedById { get; private set; }
         public Guid SupplierId { get; private set; }
-        public Guid BranchId { get; private set; }
+        public Guid DestinationBranchId { get; private set; }
 
         public decimal GetTotalFreeQuantity
         {
@@ -56,8 +56,28 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             DeliveryDate = deliveryDate;
             OrderedById = orderedById;
             SupplierId = supplierId;
-            BranchId = branchId;
+            DestinationBranchId = branchId;
             PurchaseOrderItems = new List<PurchaseOrderItem>();
+        }
+
+        public DomainResult Update(DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider)
+        {
+            //only the creator can edit 
+            if (orderedById != OrderedById)
+            {
+                return DomainResult.Error(ErrorType.Forbidden, PurchaseOrderErrorCodes.DenyOtherUser, "Can't update other user's purchase order");
+            }
+
+            if (deliveryDate < dateTimeProvider.GetCurrentDateTimeOffset())
+            {
+                return DomainResult.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
+            }
+
+            DeliveryDate = deliveryDate;
+            SupplierId = supplierId;
+            DestinationBranchId = branchId;
+
+            return DomainResult.Success();
         }
 
         public void AddPurchaseOrderItem(PurchaseOrderItem purchaseOrderItem)
@@ -72,7 +92,6 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             {
                return  DomainResult<PurchaseOrder>.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
             }
-
 
 
             var purchaseOrder = new PurchaseOrder(purchaseOrderBarcodeGenerator.GenerateBarcode(), deliveryDate, orderedById, supplierId, branchId);

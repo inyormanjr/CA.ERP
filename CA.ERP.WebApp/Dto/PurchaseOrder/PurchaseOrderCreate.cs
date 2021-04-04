@@ -17,7 +17,7 @@ namespace CA.ERP.WebApp.Dto.PurchaseOrder
         [Required]
         public Guid SupplierId { get; set; }
         [Required]
-        public Guid BranchId { get; set; }
+        public Guid DestinationBranchId { get; set; }
 
         public List<PurchaseOrderItemCreate> PurchaseOrderItems { get; set; }
     }

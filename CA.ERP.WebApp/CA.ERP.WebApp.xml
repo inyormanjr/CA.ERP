@@ -61,6 +61,23 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
+            <summary>
+            Create master products
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
+            <summary>
+            Update purchase order
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal">
             <summary>
             A custom principal for modified behavior.

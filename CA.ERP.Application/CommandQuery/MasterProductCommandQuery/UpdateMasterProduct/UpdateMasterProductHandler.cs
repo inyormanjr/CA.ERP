@@ -33,8 +33,11 @@ namespace CA.ERP.Application.CommandQuery.MasterProductCommandQuery.UpdateMaster
                 return DomainResult.Error(MasterProductErrorCodes.MasterProductNotFound, "Master product was not found while updating");
             }
 
-            masterProduct.Update(request.Model, request.Description, request.BrandId, request.ProductStatus);
-
+            var updateResult = masterProduct.Update(request.Model, request.Description, request.BrandId, request.ProductStatus);
+            if (!updateResult.IsSuccess)
+            {
+                return updateResult;
+            }
             await _masterProductRepository.UpdateAsync(request.Id, masterProduct);
             return DomainResult.Success();
         }

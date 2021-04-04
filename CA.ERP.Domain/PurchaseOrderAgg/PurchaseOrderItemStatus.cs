@@ -1,4 +1,4 @@
-﻿namespace CA.ERP.Domain.PurchaseOrderAgg
+namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public enum PurchaseOrderItemStatus
     {

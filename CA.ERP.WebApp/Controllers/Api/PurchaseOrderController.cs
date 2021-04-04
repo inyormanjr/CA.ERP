@@ -1,11 +1,15 @@
-﻿using AutoMapper;
+using AutoMapper;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurchaseOrder;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurchaseOrder;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetOnePurchaseOrder;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.UpdatePurchaseOrder;
 using CA.ERP.Domain.PurchaseOrderAgg;
-using CA.ERP.Domain.ReportAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
 using jsreport.AspNetCore;
 using jsreport.Shared;
 using jsreport.Types;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,14 +32,18 @@ namespace CA.ERP.WebApp.Controllers.Api
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class PurchaseOrderController : BaseApiController
+    public class PurchaseOrderController : ApiControllerBase
     {
-        private readonly PurchaseOrderService _purchaseOrderService;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        private readonly ILogger<PurchaseOrderController> _logger;
 
-        public PurchaseOrderController(IServiceProvider serviceProvider, PurchaseOrderService purchaseOrderService)
-            :base(serviceProvider)
+        public PurchaseOrderController(IMediator mediator, IMapper mapper, ILogger<PurchaseOrderController> logger)
         {
-            _purchaseOrderService = purchaseOrderService;
+
+            _mediator = mediator;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -50,32 +58,21 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.PurchaseOrder.CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {0} creating purchase order.", _userHelper.GetCurrentUserId());
-            var purchaseOrderItems = _mapper.Map<List<PurchaseOrderItem>>(request.Data.PurchaseOrderItems);
-            var createResult = await _purchaseOrderService.CreatePurchaseOrder(request.Data.DeliveryDate, request.Data.SupplierId, request.Data.BranchId, purchaseOrderItems, cancellationToken: cancellationToken);
-            return createResult.Match<ActionResult>(
-            f0: (purchaseOrderId) =>
+            var createPurchaseOrderItems = request.Data.PurchaseOrderItems.Select(poi => new CreatePurchaseOrderItem(poi.MasterProductId, poi.OrderedQuantity, poi.FreeQuantity, poi.CostPrice, poi.Discount, poi.TotalCostPrice, poi.DeliveredQuantity));
+            var command = new CreatePurchaseOrderCommand(request.Data.DeliveryDate, request.Data.SupplierId, request.Data.DestinationBranchId, createPurchaseOrderItems.ToList());
+
+            var createResult = await _mediator.Send(command, cancellationToken);
+            if (createResult.IsSuccess)
             {
                 var response = new Dto.CreateResponse()
                 {
-                    Id = purchaseOrderId
-                };
-                _logger.LogInformation("User {0} creating purchase order succeeded.", _userHelper.GetCurrentUserId());
-                return Ok(response);
-            },
-            f1: (validationErrors) =>
-            {
-                var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
-                {
-                    GeneralError = "Validation Error",
-                    ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    Id = createResult.Result
                 };
 
-                _logger.LogInformation("User {0} supplier branch creation failed.", _userHelper.GetCurrentUserId());
-                return BadRequest(response);
-            },
-            f2: _ => Forbid()
-         );
+                return Ok(response);
+            }
+            return HandleDomainResult(createResult);
+
         }
 
         /// <summary>
@@ -92,44 +89,36 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Obsolete]
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.PurchaseOrder.PurchaseOrderUpdate> request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-            var domData = _mapper.Map<PurchaseOrder>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _purchaseOrderService.UpdateAsync(id, domData, cancellationToken);
+            var updatePurchaseOrderItems = request.Data.PurchaseOrderItems.Select(poi => new UpdatePurchaseOrderItem(poi.Id, id, poi.MasterProductId, poi.OrderedQuantity, poi.FreeQuantity, poi.CostPrice, poi.Discount, poi.DeliveredQuantity));
+            var command = new UpdatePurchaseOrderCommand(id,request.Data.DeliveryDate, request.Data.SupplierId, request.Data.DestinationBranchId, updatePurchaseOrderItems.ToList());
 
-            return result.Match<IActionResult>(
-                f0: (guid) => NoContent(),
-                f1: (validationErrors) => {
-                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
-                    {
-                        GeneralError = "Validation Error",
-                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
-                    };
-
-                    _logger.LogInformation("User {0} purhcase order update failed.", _userHelper.GetCurrentUserId());
-                    return BadRequest(response);
-                },
-                f2: (notFound) => NotFound()
-            );
+            var createResult = await _mediator.Send(command, cancellationToken);
+            if (createResult.IsSuccess)
+            {
+                return NoContent();
+            }
+            return HandleDomainResult(createResult);
         }
 
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string primaryField = null,string barcode = null,DateTime? startDate = null, DateTime? endDate = null, int pageSize = 10, int page = 1, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string barcode = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int skip = 0, int take = 9999, CancellationToken cancellationToken = default)
         {
+            var query = new GetManyPurchaseOrderQuery(skip, take, barcode:barcode, startDate:startDate, endDate:endDate);
 
-            barcode = barcode ?? primaryField;
-            var paginatedPurchaseOrders = await _purchaseOrderService.GetManyAsync(barcode, startDate, endDate, pageSize, page, cancellationToken);
-            var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(paginatedPurchaseOrders.Data);
-            var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>()
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
             {
-                CurrentPage = paginatedPurchaseOrders.CurrentPage,
-                TotalPage = paginatedPurchaseOrders.TotalPage,
-                PageSize = paginatedPurchaseOrders.PageSize,
-                TotalCount = paginatedPurchaseOrders.TotalCount,
-                Data = dtoList
-            };
-            return Ok(response);
+                var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(result.Result.Data);
+                var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>()
+                {
+                    TotalCount = result.Result.TotalCount,
+                    Data = dtoList
+                };
+                return Ok(response);
+            }
+            return HandleDomainResult(result);
         }
 
         [HttpGet("{id}")]
@@ -137,34 +126,17 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.PurchaseOrder.PurchaseOrderView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var option = await _purchaseOrderService.GetOneAsync(id, cancellationToken);
+            var query = new GetOnePurchaseOrderQuery(id);
 
-            return option.Match<ActionResult>(
-                f0: data => Ok(_mapper.Map<Dto.PurchaseOrder.PurchaseOrderView>(data)),
-                f1: notfound => NotFound()
-                );
+            var result = await _mediator.Send(query, cancellationToken);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Result);
+            }
+            return HandleDomainResult(result);
         }
 
-        /// <summary>
-        /// Delete purchase order by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
-        {
-            var option = await _purchaseOrderService.DeleteAsync(id, cancellationToken);
-            return option.Match<ActionResult>(
-                f0: success =>
-                {
-                    return NoContent();
-                },
-                f1: notfound => NotFound()
-            );
-        }
 
 
 
