@@ -319,7 +319,7 @@ namespace CA.ERP.Utilities
                 }
                 if (newBranch != null)
                 {
-                    newPurchaseOrder.BranchId = newBranch.Id;
+                    newPurchaseOrder.DestinationBranchId = newBranch.Id;
                 }
                 else
                 {

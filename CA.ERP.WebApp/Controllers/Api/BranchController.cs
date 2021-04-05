@@ -24,8 +24,10 @@ using CA.ERP.Application.CommandQuery.BranchCommandQuery.DeleteBranch;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
+    [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
-    public class BranchController: ControllerBase
+    public class BranchController: ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -93,7 +95,6 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.Branch.CreateBranchRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateBranchCommand(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact);
@@ -107,20 +108,8 @@ namespace CA.ERP.WebApp.Controllers.Api
                 };
                 return Ok(response);
             }
-            switch (createResult.ErrorType)
-            {
-                case ErrorType.Success:
-                    break;
-                case ErrorType.Forbidden:
-                    return Forbid();
 
-                case ErrorType.NotFound:
-                    return NotFound();
-
-                default:
-                    break;
-            }
-            return BadRequest(createResult);
+            return HandleDomainResult(createResult);
         }
 
         /// <summary>

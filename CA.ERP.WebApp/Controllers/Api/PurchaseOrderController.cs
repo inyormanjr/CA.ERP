@@ -55,7 +55,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.PurchaseOrder.CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
         {
             var createPurchaseOrderItems = request.Data.PurchaseOrderItems.Select(poi => new CreatePurchaseOrderItem(poi.MasterProductId, poi.OrderedQuantity, poi.FreeQuantity, poi.CostPrice, poi.Discount, poi.TotalCostPrice, poi.DeliveredQuantity));

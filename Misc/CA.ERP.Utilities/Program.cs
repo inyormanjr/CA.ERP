@@ -136,7 +136,7 @@ namespace CA.ERP.Utilities
                 PurchaseOrder purchaseOrder = new PurchaseOrder()
                 {
                     Barcode = $"20-{barcode++.ToString("00000000")}",
-                    BranchId = poBranch.Id,
+                    DestinationBranchId = poBranch.Id,
                     DeliveryDate = DateTime.Now.AddDays(1),
                     SupplierId = poSupplier.SupplierId,
                     ApprovedById = users.OrderBy(u => random.Next()).FirstOrDefault().Id

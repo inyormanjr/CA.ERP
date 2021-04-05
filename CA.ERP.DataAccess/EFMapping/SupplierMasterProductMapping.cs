@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -22,9 +22,9 @@ namespace CA.ERP.DataAccess.EFMapping
                 .WithMany(t=>t.SupplierMasterProducts)
                 .HasForeignKey(t => t.MasterProductId);
 
-            builder.HasOne(t => t.Supplier)
-                .WithMany(t => t.SupplierMasterProducts)
-                .HasForeignKey(t => t.SupplierId);
+            //builder.HasOne(t => t.Supplier)
+            //    .WithMany(t => t.SupplierMasterProducts)
+            //    .HasForeignKey(t => t.SupplierId);
 
             builder.Ignore(t => t.Id);
 

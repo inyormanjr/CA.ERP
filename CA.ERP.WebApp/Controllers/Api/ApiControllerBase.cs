@@ -9,7 +9,7 @@ namespace CA.ERP.WebApp.Controllers.Api
 {
     public class ApiControllerBase : ControllerBase
     {
-        public ActionResult HandleDomainResult(DomainResult domainResult)
+        protected ActionResult HandleDomainResult(DomainResult domainResult)
         {
             switch (domainResult.ErrorType)
             {

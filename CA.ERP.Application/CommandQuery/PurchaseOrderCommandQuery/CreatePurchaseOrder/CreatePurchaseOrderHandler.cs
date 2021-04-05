@@ -1,5 +1,6 @@
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Domain.Core.EventBus;
 using CA.ERP.Domain.IdentityAgg;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.SupplierAgg;
@@ -19,15 +20,18 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurcha
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IPurchaseOrderBarcodeGenerator _purchaseOrderBarcodeGenerator;
         private readonly ISupplierMasterProductRepository _supplierMasterProductRepository;
+        private readonly IEventBus _eventBus;
         private readonly IIdentityProvider _identityProvider;
 
-        public CreatePurchaseOrderHandler(IUnitOfWork unitOfWork, IPurchaseOrderRepository purchaseOrderRepository, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator, ISupplierMasterProductRepository supplierMasterProductRepository)
+        public CreatePurchaseOrderHandler(IUnitOfWork unitOfWork, IIdentityProvider identityProvider, IPurchaseOrderRepository purchaseOrderRepository, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator, ISupplierMasterProductRepository supplierMasterProductRepository, IEventBus eventBus)
         {
             _unitOfWork = unitOfWork;
+            _identityProvider = identityProvider;
             _purchaseOrderRepository = purchaseOrderRepository;
             _dateTimeProvider = dateTimeProvider;
             _purchaseOrderBarcodeGenerator = purchaseOrderBarcodeGenerator;
             _supplierMasterProductRepository = supplierMasterProductRepository;
+            _eventBus = eventBus;
         }
         public async Task<DomainResult<Guid>> Handle(CreatePurchaseOrderCommand request, CancellationToken cancellationToken)
         {
@@ -56,18 +60,9 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurcha
             }
 
             var id = await _purchaseOrderRepository.AddAsync(purchaseOrder, cancellationToken: cancellationToken);
-            
 
-            //update supplier prices
-            foreach (var item in purchaseOrder.PurchaseOrderItems)
-            {
-                var createSupplierMasterProduct = SupplierMasterProduct.Create(item.MasterProductId, request.SupplierId, item.CostPrice);
-                if (createSupplierMasterProduct.IsSuccess)
-                {
-                    await _supplierMasterProductRepository.AddOrUpdateAsync(createSupplierMasterProduct.Result, cancellationToken);
-                }
-                
-            }
+            await _eventBus.Publish(new PurchaseOrderCreated(purchaseOrder), cancellationToken);
+           
             await _unitOfWork.CommitAsync();
 
             return DomainResult<Guid>.Success(id);

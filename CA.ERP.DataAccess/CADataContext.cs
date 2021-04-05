@@ -21,9 +21,9 @@ namespace CA.ERP.DataAccess
        //public  DbSet<SupplierBrand> SupplierBrands { get; set; }
        public  DbSet<Brand> Brands { get; set; }
        public  DbSet<MasterProduct> MasterProducts { get; set; }
-       //public  DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-       //public  DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
-       //public  DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
+       public  DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+       public  DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+       public  DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
        // public DbSet<StockReceive> StockReceives { get; set; }
        // public DbSet<Stock> Stocks { get; set; }
        // public DbSet<StockInventory> StockInventories { get; set; }
@@ -44,9 +44,9 @@ namespace CA.ERP.DataAccess
            // builder.ApplyConfiguration(new SupplierBrandMapping());
             builder.ApplyConfiguration(new BrandMapping());
             builder.ApplyConfiguration(new MasterProductMapping());
-            //builder.ApplyConfiguration(new PurchaseOrderMapping());
-            //builder.ApplyConfiguration(new PurchaseOrderItemMapping());
-            //builder.ApplyConfiguration(new SupplierMasterProductMapping());
+            builder.ApplyConfiguration(new PurchaseOrderMapping());
+            builder.ApplyConfiguration(new PurchaseOrderItemMapping());
+            builder.ApplyConfiguration(new SupplierMasterProductMapping());
             //builder.ApplyConfiguration(new StockReceiveMapping());
             //builder.ApplyConfiguration(new StockMapping());
             //builder.ApplyConfiguration(new StockInventoryMapping());

@@ -1,4 +1,5 @@
-﻿using System;
+using CA.ERP.Domain.PurchaseOrderAgg;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,6 @@ namespace CA.ERP.DataAccess.Entities
 
         public PurchaseOrder PurchaseOrder { get; set; }
         public MasterProduct MasterProduct { get; set; }
-        public List<Stock> Stocks { get;  set; }
+        //public List<Stock> Stocks { get;  set; }
     }
 }

@@ -13,7 +13,7 @@ namespace CA.ERP.DataAccess.Entities
         public string Address { get; set; }
         public string Contact { get; set; }
         //public List<UserBranch> UserBranches { get;  set; }
-        //public List<PurchaseOrder> PurchaseOrders { get; set; }
+        public List<PurchaseOrder> PurchaseOrders { get; set; }
         //public List<StockReceive> StockReceives { get; set; }
         //public List<Stock> Stocks { get;  set; }
         //public List<StockInventory> StockInventories { get; set; }

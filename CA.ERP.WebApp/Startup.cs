@@ -41,6 +41,17 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.Repository;
 using MediatR;
+using MassTransit;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
+using CA.ERP.Application.DomainEventHandlers.Supplier;
+using DtoMapping = CA.ERP.DataAccess.AutoMapperProfiles;
+using CA.ERP.WebApp.Mapping;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurchaseOrder;
+using CA.ERP.Domain.IdentityAgg;
+using CA.ERP.WebApp.Infrastructure;
+using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Domain.Core.EventBus;
+using CA.ERP.Infrastructure.EventBus;
 
 namespace CA.ERP.WebApp
 {
@@ -138,7 +149,7 @@ namespace CA.ERP.WebApp
             services.AddJsReport(new ReportingService(reportingServer));
 
 
-            //services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly);
+            services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(DataAccess.AutoMapperProfiles.BranchMapping).Assembly);
 
             services.AddHttpContextAccessor();
 
@@ -183,8 +194,12 @@ namespace CA.ERP.WebApp
                     OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
-                        var path = context.HttpContext.Request.Path;
-                        context.Token = accessToken;
+                        if (accessToken.ToString() != null)
+                        {
+                            var path = context.HttpContext.Request.Path;
+                            context.Token = accessToken;
+                            
+                        }
                         return Task.CompletedTask;
                     }
                 };
@@ -199,16 +214,29 @@ namespace CA.ERP.WebApp
 
             //override asp.net validation to nothing    
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+           
 
             //add principal/user tranformer
-            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+            //services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
             //add mediator
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(CreatePurchaseOrderCommand));
+
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) => cfg.Host("localhost", "/", h =>
+                {
+
+                }));
+                x.AddConsumersFromNamespaceContaining<PurchaseOrderCreatedHandler>();
+            });
+
+            services.AddMassTransitHostedService();
+
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddScoped<IIdentityProvider, IdentityProvider>();
+            services.AddScoped<IPurchaseOrderBarcodeGenerator, PurchaseOrderBarcodeGenerator>();
+            services.AddScoped<IEventBus, MassTransitEventBus>();
 
 
 
@@ -248,16 +276,9 @@ namespace CA.ERP.WebApp
             
             app.UseStaticFiles();
             
-            app.UseRouting();
-
-            app.UseCors();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             
 
-
+            app.UseCors();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -265,7 +286,17 @@ namespace CA.ERP.WebApp
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
-            app.UseMiddleware<ErrorLoggingMiddleware>();
+
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
+
+            
+
+
+
+            
+            //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

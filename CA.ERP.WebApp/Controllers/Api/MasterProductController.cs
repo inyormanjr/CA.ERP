@@ -46,7 +46,6 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.MasterProduct.CreateMasterProductRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateMasterProductCommand(request.Data.Model, request.Data.Description, request.Data.BrandId);

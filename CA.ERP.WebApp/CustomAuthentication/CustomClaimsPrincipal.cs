@@ -45,7 +45,7 @@ namespace CA.ERP.WebApp.CustomAuthentication
                 }
 
             }
-            return isInRole;
+            return true;
         }
     }
 }
