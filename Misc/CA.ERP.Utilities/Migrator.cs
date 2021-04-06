@@ -1,11 +1,15 @@
-﻿using CA.ERP.DataAccess;
+using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Helpers;
-using CA.ERP.Domain.StockAgg;
-using CA.ERP.Domain.StockReceiveAgg;
 using CA.ERP.Utilities.MoneyConvertionStrategies;
 using CA.ERP.Utilities.PrevDataModel;
+using CA.Identity.Data;
+using CA.Identity.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,17 +24,26 @@ namespace CA.ERP.Utilities
 {
     public class Migrator
     {
-        public static async Task MigrateScoped()
+
+        public static async Task Migrate(IServiceProvider services)
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            CitiAppDatabaseContext citiAppDatabaseContext = services.GetRequiredService<CitiAppDatabaseContext>();
+
+            using (var scope = services.CreateScope())
             {
-                await Migrate().ConfigureAwait(true);
-                scope.Complete();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.Database.EnsureDeleted();
+                    newDbContext.Database.Migrate();
+                }
+
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
+                {
+                    newDbContext.Database.EnsureDeleted();
+                    newDbContext.Database.Migrate();
+                }
             }
-        }
-        public static async Task Migrate()
-        {
-            CitiAppDatabaseContext citiAppDatabaseContext = GetOldDbContext();
+
 
 
             Console.WriteLine("Migrating suppliers");
@@ -57,10 +70,13 @@ namespace CA.ERP.Utilities
                 newSuppliers.Add(newSupplier);
             }
             //save suppliers
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.Suppliers.AddRange(newSuppliers);
-                await newDbContext.SaveChangesAsync();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.Suppliers.AddRange(newSuppliers);
+                    await newDbContext.SaveChangesAsync();
+                }
             }
 
 
@@ -69,7 +85,8 @@ namespace CA.ERP.Utilities
 
             var oldBrands = await citiAppDatabaseContext.Brands.ToListAsync();
             var newBrands = new List<New.Brand>();
-            var newDeletedBrand = new New.Brand() { 
+            var newDeletedBrand = new New.Brand()
+            {
                 Name = "Deleted",
                 Description = "Deleted",
             };
@@ -91,18 +108,20 @@ namespace CA.ERP.Utilities
 
                         newBrand.SupplierBrands.Add(newSupplierBrand);
                     }
-                    
+
                 }
                 newBrands.Add(newBrand);
 
             }
 
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.Brands.AddRange(newBrands);
-                await newDbContext.SaveChangesAsync();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.Brands.AddRange(newBrands);
+                    await newDbContext.SaveChangesAsync();
+                }
             }
-
 
             Console.WriteLine("Migrating master products");
             //migrate model to masterproducts 
@@ -143,10 +162,13 @@ namespace CA.ERP.Utilities
                 newMasterProducts.Add(newMasterProduct);
             }
 
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.MasterProducts.AddRange(newMasterProducts);
-                await newDbContext.SaveChangesAsync();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.MasterProducts.AddRange(newMasterProducts);
+                    await newDbContext.SaveChangesAsync();
+                }
             }
 
 
@@ -197,12 +219,14 @@ namespace CA.ERP.Utilities
 
             }
 
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.SupplierMasterProducts.AddRange(newSupplierMasterProducts);
-                await newDbContext.SaveChangesAsync();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.SupplierMasterProducts.AddRange(newSupplierMasterProducts);
+                    await newDbContext.SaveChangesAsync();
+                }
             }
-
 
             Console.WriteLine("Migrating branches");
 
@@ -239,62 +263,37 @@ namespace CA.ERP.Utilities
                 }
             }
 
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.Branches.AddRange(newBranches);
-                await newDbContext.SaveChangesAsync();
-            }
-
-
-            Console.WriteLine("Migrating users");
-            //generate users
-            var oldUsers = citiAppDatabaseContext.Users.ToList();
-            var newUsers = new List<New.User>();
-            foreach (var oldUser in oldUsers)
-            {
-                New.User newUser = new New.User();
-                newUser.Username = oldUser.Username;
-                PasswordGenerator(newUser, oldUser.Password);
-
-                newUser.Role = (Domain.UserAgg.UserRole)Enum.Parse(typeof(Domain.UserAgg.UserRole), oldUser.Role.Replace("&", ""), true);
-                newUser.FirstName = oldUser.FName;
-                newUser.LastName = oldUser.LName;
-
-                var newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldUser.BranchNo));
-                if (newBranch != null)
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
                 {
-                    newUser.UserBranches.Add(new UserBranch()
-                    {
-                        BranchId = newBranch.Id
-                    });
+                    newDbContext.Branches.AddRange(newBranches);
+                    await newDbContext.SaveChangesAsync();
                 }
-
-                newUsers.Add(newUser);
-
-
             }
-
-            using (var newDbContext = GetCADataContext())
+            List<ApplicationUser> newUsers;
+            using (var scope = services.CreateScope())
             {
-                newDbContext.Users.AddRange(newUsers);
-                await newDbContext.SaveChangesAsync();
+                newUsers = await scope.ServiceProvider.GetRequiredService<UserMigrator>().Migrate(newBranches);
+                await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().SaveChangesAsync();
+
             }
+
 
 
             Console.WriteLine("Migrating purchase orders");
             var oldPurchaseOrders = citiAppDatabaseContext.PurchaseOrders.Include(po => po.PoDetails).ToList();
             var newPurchaseOrders = new List<New.PurchaseOrder>();
-            var rgmUser = newUsers.FirstOrDefault(u => u.Username == "rgm");
+            var rgmUser = newUsers.FirstOrDefault(u => u.UserName == "rgm");
 
             Parallel.ForEach(oldPurchaseOrders, oldPurchaseOder =>
             {
                 New.PurchaseOrder newPurchaseOrder = new New.PurchaseOrder();
                 newPurchaseOrder.Barcode = oldPurchaseOder.PoId;
                 newPurchaseOrder.DeliveryDate = oldPurchaseOder.DeliveryDate ?? DateTime.Now;
-                newPurchaseOrder.CreatedAt = newPurchaseOrder.DeliveryDate;
                 newPurchaseOrder.TotalCostPrice = decimal.Parse(oldPurchaseOder.TotalAmount);
-                newPurchaseOrder.Status = Domain.Common.Status.Active;
-                newPurchaseOrder.ApprovedById = rgmUser.Id;
+                newPurchaseOrder.Status = Status.Active;
+                newPurchaseOrder.ApprovedById = Guid.Parse( rgmUser.Id);
 
                 var oldSupplier = oldSuppliers.FirstOrDefault(s => s.SupIdno == oldPurchaseOder.SupIdno);
                 if (oldSupplier != null)
@@ -338,7 +337,7 @@ namespace CA.ERP.Utilities
                     newPurchaseOrderItem.Discount = StringToMoneyConverter(oldPurchaseOrderItem.Discount);
                     newPurchaseOrderItem.TotalCostPrice = StringToMoneyConverter(oldPurchaseOrderItem.TotalCost);
                     newPurchaseOrderItem.DeliveredQuantity = newPurchaseOrderItem.OrderedQuantity - decimal.Parse(oldPurchaseOrderItem.RemainingQty ?? "0");
-                    newPurchaseOrderItem.PurchaseOrderItemStatus = PurchaseOrderItemStatus.Completed;
+                    newPurchaseOrderItem.PurchaseOrderItemStatus = Domain.PurchaseOrderAgg.PurchaseOrderItemStatus.Completed;
 
                     var newMasterProduct = newMasterProducts.FirstOrDefault(m => m.Model == oldPurchaseOrderItem.Model);
                     if (newMasterProduct != null)
@@ -361,96 +360,99 @@ namespace CA.ERP.Utilities
 
             //foreach (var oldPurchaseOder in oldPurchaseOrders)
             //{
-                
+
             //}
 
             Console.WriteLine("Saving PO");
-            using (var newDbContext = GetCADataContext())
+            using (var scope = services.CreateScope())
             {
-                newDbContext.PurchaseOrders.AddRange(newPurchaseOrders);
-                await newDbContext.SaveChangesAsync();
+                using (var newDbContext = scope.ServiceProvider.GetRequiredService<CADataContext>())
+                {
+                    newDbContext.PurchaseOrders.AddRange(newPurchaseOrders);
+                    await newDbContext.SaveChangesAsync();
+                }
             }
 
             //stocks
-            var oldStocks = citiAppDatabaseContext.Products.ToList();
-            var oldStocksGroup = oldStocks.GroupBy(s => s.DeliveryNo);
-            var oldPurchaseOrderItems = citiAppDatabaseContext.PoDetails.ToList();
-            var newStockReceives = new List<New.StockReceive>();
-            var newStocks = new ConcurrentBag<New.Stock>();
-            Parallel.ForEach(oldStocksGroup, oldStockG => {
-                var firstOldStockG = oldStockG.FirstOrDefault();
+            //var oldStocks = citiAppDatabaseContext.Products.ToList();
+            //var oldStocksGroup = oldStocks.GroupBy(s => s.DeliveryNo);
+            //var oldPurchaseOrderItems = citiAppDatabaseContext.PoDetails.ToList();
+            //var newStockReceives = new List<New.StockReceive>();
+            //var newStocks = new ConcurrentBag<New.Stock>();
+            //Parallel.ForEach(oldStocksGroup, oldStockG => {
+            //    var firstOldStockG = oldStockG.FirstOrDefault();
 
 
-                New.StockReceive newStockReceive = new New.StockReceive();
-                newStockReceive.DateReceived = firstOldStockG.DateReceived ?? DateTime.Now;
-                newStockReceive.DeliveryReference = firstOldStockG.DeliveryNo;
+            //    New.StockReceive newStockReceive = new New.StockReceive();
+            //    newStockReceive.DateReceived = firstOldStockG.DateReceived ?? DateTime.Now;
+            //    newStockReceive.DeliveryReference = firstOldStockG.DeliveryNo;
 
-                //purchaseOrder
-                var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
-                if (newPurchaseOrder != null)
-                {
-                    newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
-                    newStockReceive.StockSouce = StockSource.PurchaseOrder;
-                    newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
-                }
-                else
-                {
-                    newStockReceive.StockSouce = StockSource.Direct;
-                    newStockReceive.SupplierId = newDeletedSupplier.Id;
-                }
+            //    //purchaseOrder
+            //    var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
+            //    if (newPurchaseOrder != null)
+            //    {
+            //        newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
+            //        newStockReceive.StockSouce = StockSource.PurchaseOrder;
+            //        newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
+            //    }
+            //    else
+            //    {
+            //        newStockReceive.StockSouce = StockSource.Direct;
+            //        newStockReceive.SupplierId = newDeletedSupplier.Id;
+            //    }
 
-                //branch
-                var oldBranchNo = oldStockG.FirstOrDefault()?.BranchNo ?? "";
-                New.Branch newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldBranchNo));
-                newStockReceive.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+            //    //branch
+            //    var oldBranchNo = oldStockG.FirstOrDefault()?.BranchNo ?? "";
+            //    New.Branch newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldBranchNo));
+            //    newStockReceive.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
 
-                foreach (var oldStock in oldStockG)
-                {
-                    New.Stock newStock = new New.Stock();
-                    newStock.StockNumber = oldStock.StockNo;
-                    newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
-                    newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
-                    newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
+            //    foreach (var oldStock in oldStockG)
+            //    {
+            //        New.Stock newStock = new New.Stock();
+            //        newStock.StockNumber = oldStock.StockNo;
+            //        newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
+            //        newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
+            //        newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
 
-                    newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+            //        newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
 
-                    newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
+            //        newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
 
-                    newStock.PurchaseOrderItemId = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem?.Id;
+            //        newStock.PurchaseOrderItemId = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem?.Id;
 
-                    newStockReceive.Stocks.Add(newStock);
-                    newStocks.Add(newStock);
-                }
+            //        newStockReceive.Stocks.Add(newStock);
+            //        newStocks.Add(newStock);
+            //    }
 
-                Console.WriteLine("Stock receive added");
-                newStockReceives.Add(newStockReceive);
-            });
+            //    Console.WriteLine("Stock receive added");
+            //    newStockReceives.Add(newStockReceive);
+            //});
             //foreach (var oldStockG in oldStocksGroup)
             //{
 
             //}
             //process duplicate serial
-            Parallel.ForEach(newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1), sg =>
-            {
-                int i = 2;
-                foreach (var stock in sg)
-                {
-                    if (stock != sg.FirstOrDefault())
-                    {
-                        stock.SerialNumber = $"{stock.SerialNumber}-DUPLICATE-{i++}";
-                    }
-                }
-            });
+            //Parallel.ForEach(newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1), sg =>
+            //{
+            //    int i = 2;
+            //    foreach (var stock in sg)
+            //    {
+            //        if (stock != sg.FirstOrDefault())
+            //        {
+            //            stock.SerialNumber = $"{stock.SerialNumber}-DUPLICATE-{i++}";
+            //        }
+            //    }
+            //});
             //foreach (var sg in newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1))
             //{
-                
+
             //}
-            Console.WriteLine("Saving Stock receives");
-            using (var newDbContext = GetCADataContext())
-            {
-                newDbContext.StockReceives.AddRange(newStockReceives);
-                await newDbContext.SaveChangesAsync();
-            }
+            //Console.WriteLine("Saving Stock receives");
+            //using (var newDbContext = services.GetRequiredService<CADataContext>())
+            //{
+            //    newDbContext.StockReceives.AddRange(newStockReceives);
+            //    await newDbContext.SaveChangesAsync();
+            //}
 
         }
 
@@ -526,36 +528,26 @@ namespace CA.ERP.Utilities
             }
             return dMoney;
         }
-        private static int serialCounter = 1;
-        private static object _lock = new object();
-        private static List<string> emptySerials = new List<string>() { "-", string.Empty, "-0-" };
-        private static string getSerialNumber(string oldSerialNumber, ConcurrentBag<New.Stock> newStocks)
-        {
-                
-                if (emptySerials.Contains(oldSerialNumber))
-                {
-                    lock (_lock)
-                    {
-                        return "EMPTY-" + serialCounter++;
-                    }
-                    
-                }
-                return oldSerialNumber;
-            
-        }
+        //private static int serialCounter = 1;
+        //private static object _lock = new object();
+        //private static List<string> emptySerials = new List<string>() { "-", string.Empty, "-0-" };
+        //private static string getSerialNumber(string oldSerialNumber, ConcurrentBag<New.Stock> newStocks)
+        //{
 
-        private static void PasswordGenerator(New.User newUser, string password)
-        {
-            PasswordManagementHelper passwordManagementHelper = new PasswordManagementHelper();
-            byte[] passwordHash;
-            byte[] passwordSalt;
-            passwordManagementHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            newUser.PasswordHash = passwordHash;
-            newUser.PasswordSalt = passwordSalt;
+        //        if (emptySerials.Contains(oldSerialNumber))
+        //        {
+        //            lock (_lock)
+        //            {
+        //                return "EMPTY-" + serialCounter++;
+        //            }
 
-        }
+        //        }
+        //        return oldSerialNumber;
 
-        private static int BranchNumberComverter(string oldBranchNumber)
+        //}
+
+
+        public static int BranchNumberComverter(string oldBranchNumber)
         {
             string strBranchNo = oldBranchNumber;
             int ret = 0;
@@ -580,16 +572,16 @@ namespace CA.ERP.Utilities
             return new CitiAppDatabaseContext(optionsBuilder.Options);
         }
 
-        public static CADataContext GetCADataContext()
-        {
-            var connectionstring = Program.GetConfiguration().GetSection("connectionStrings")["DefaultConnection"];
+        //public static CADataContext services.GetRequiredService<CADataContext>()
+        //{
+        //    var connectionstring = Program.GetConfiguration().GetSection("connectionStrings")["DefaultConnection"];
 
-            var optionsBuilder = new DbContextOptionsBuilder<CADataContext>();
-            optionsBuilder.UseSqlServer(connectionstring);
-            optionsBuilder.EnableSensitiveDataLogging();
-            var db = new CADataContext(optionsBuilder.Options);
-            db.Database.Migrate();
-            return db;
-        }
+        //    var optionsBuilder = new DbContextOptionsBuilder<CADataContext>();
+        //    optionsBuilder.UseSqlServer(connectionstring);
+        //    optionsBuilder.EnableSensitiveDataLogging();
+        //    var db = new CADataContext(optionsBuilder.Options);
+        //    db.Database.Migrate();
+        //    return db;
+        //}
     }
 }

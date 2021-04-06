@@ -12,7 +12,6 @@
     <Compile Remove="AutoMapperProfiles\StockMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockMoveMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockReceiveMapping.cs" />
-    <Compile Remove="AutoMapperProfiles\SupplierMapping.cs" />
     <Compile Remove="AutoMapperProfiles\UserBranchMapping.cs" />
     <Compile Remove="AutoMapperProfiles\UserMapping.cs" />
     <Compile Remove="EFMapping\CardPaymentDetailMapping.cs" />
@@ -25,8 +24,6 @@
     <Compile Remove="EFMapping\StockMapping.cs" />
     <Compile Remove="EFMapping\StockMoveMapping.cs" />
     <Compile Remove="EFMapping\StockReceiveMapping.cs" />
-    <Compile Remove="EFMapping\SupplierBrandMapping.cs" />
-    <Compile Remove="EFMapping\SupplierMapping.cs" />
     <Compile Remove="EFMapping\TransactionMapping.cs" />
     <Compile Remove="EFMapping\UserBranchMapping.cs" />
     <Compile Remove="EFMapping\UserMapping.cs" />
@@ -41,8 +38,6 @@
     <Compile Remove="Entities\StockInventory.cs" />
     <Compile Remove="Entities\StockMove.cs" />
     <Compile Remove="Entities\StockReceive.cs" />
-    <Compile Remove="Entities\Supplier.cs" />
-    <Compile Remove="Entities\SupplierBrand.cs" />
     <Compile Remove="Entities\Transaction.cs" />
     <Compile Remove="Entities\TransactionProduct.cs" />
     <Compile Remove="Entities\User.cs" />

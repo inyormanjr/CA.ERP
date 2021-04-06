@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CA.ERP.DataAccess.Migrations
 {
     [DbContext(typeof(CADataContext))]
-    [Migration("20210405161650_AddPurchaseOrder")]
-    partial class AddPurchaseOrder
+    [Migration("20210406140213_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,12 +27,6 @@ namespace CA.ERP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -44,12 +38,6 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -77,23 +65,11 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<string>("Contact")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -109,12 +85,6 @@ namespace CA.ERP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -125,12 +95,6 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -149,12 +113,6 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<Guid>("BrandId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -168,12 +126,6 @@ namespace CA.ERP.DataAccess.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -198,12 +150,6 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTimeOffset>("DeliveryDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -220,13 +166,9 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
 
                     b.HasIndex("DestinationBranchId", "Barcode")
                         .IsUnique();
@@ -243,12 +185,6 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<decimal>("CostPrice")
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
 
                     b.Property<decimal>("DeliveredQuantity")
                         .HasPrecision(10, 3)
@@ -286,12 +222,6 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasPrecision(10, 3)
                         .HasColumnType("numeric(10,3)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MasterProductId");
@@ -299,6 +229,53 @@ namespace CA.ERP.DataAccess.Migrations
                     b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("PurchaseOrderItems");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ContactPerson")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
+                {
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SupplierId", "BrandId");
+
+                    b.HasIndex("BrandId");
+
+                    b.ToTable("SupplierBrands");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierMasterProduct", b =>
@@ -313,20 +290,8 @@ namespace CA.ERP.DataAccess.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
 
                     b.HasKey("SupplierId", "MasterProductId");
 
@@ -354,6 +319,12 @@ namespace CA.ERP.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", null)
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Branch");
                 });
 
@@ -376,11 +347,36 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
+                        .WithMany("SupplierBrands")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("SupplierBrands")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Supplier");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierMasterProduct", b =>
                 {
                     b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
                         .WithMany("SupplierMasterProducts")
                         .HasForeignKey("MasterProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", null)
+                        .WithMany("SupplierMasterProducts")
+                        .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -395,6 +391,8 @@ namespace CA.ERP.DataAccess.Migrations
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Brand", b =>
                 {
                     b.Navigation("MasterProducts");
+
+                    b.Navigation("SupplierBrands");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
@@ -405,6 +403,15 @@ namespace CA.ERP.DataAccess.Migrations
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
                 {
                     b.Navigation("PurchaseOrderItems");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
+                {
+                    b.Navigation("PurchaseOrders");
+
+                    b.Navigation("SupplierBrands");
+
+                    b.Navigation("SupplierMasterProducts");
                 });
 #pragma warning restore 612, 618
         }

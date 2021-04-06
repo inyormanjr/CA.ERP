@@ -7,8 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
+    <ProjectReference Include="..\..\CA.Identity\CA.Identity.csproj" />
   </ItemGroup>
 
   <ItemGroup>

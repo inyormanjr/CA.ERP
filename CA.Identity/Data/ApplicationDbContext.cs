@@ -1,4 +1,4 @@
-﻿using CA.Identity.Data.Mapping;
+using CA.Identity.Data.Mapping;
 using CA.Identity.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -14,7 +14,7 @@ namespace CA.Identity.Data
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public ApplicationDbContext(
-            DbContextOptions options,
+            DbContextOptions<ApplicationDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
