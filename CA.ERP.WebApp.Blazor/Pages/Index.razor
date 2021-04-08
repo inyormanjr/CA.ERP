@@ -1,11 +1,15 @@
-﻿@page "/"
+@page "/"
 
-<h1>Hello, world!</h1>
+<MudContainer>
 
-<div class="alert alert-warning" role="alert">
-    Before authentication will function correctly, you must configure your provider details in <code>Program.cs</code>
-</div>
 
-Welcome to your new app.
+    <MudText>Hello, world!</MudText>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <MudText >
+        Before authentication will function correctly, you must configure your provider details in <code>Program.cs</code>
+    </MudText>
+
+    Welcome to your new app.
+
+    <SurveyPrompt Title="How is Blazor working for you?" />
+</MudContainer>

@@ -6,8 +6,9 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudText Typo="Typo.h6" Class="mud-theme-primary">Hello, @context.User.Identity.Name!</MudText>
-        <MudLink Typo="Typo.button" Color="Color.Dark" Class="mud-theme-primary" @onclick="BeginSignOut" Href="authentication/login"> Log out</MudLink>
+        <MudText Typo="Typo.button" Color="Color.Dark">Hello, @context.User.Identity.Name! </MudText>
+
+        <MudLink Typo="Typo.button" Color="Color.Dark" Class="ml-4"  @onclick="BeginSignOut" Href="authentication/login"> Log out</MudLink>
     </Authorized>
     <NotAuthorized>
         <MudLink Typo="Typo.button" Color="Color.Dark" Href="authentication/login">Log in</MudLink>

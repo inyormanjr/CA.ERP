@@ -1,34 +1,43 @@
 @inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <div class="main">
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
 
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
-</div>
-
-<MudThemeProvider />
+<MudThemeProvider Theme="@Theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h5" Class="ml-3">Citi Appliance</MudText>
+    <MudAppBar Elevation="1" Class=" justify-center">
+        <MudText Typo="Typo.h6" Color="Color.Dark">Citi Appliance</MudText>
         <MudAppBarSpacer />
         <LoginDisplay />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+
     </MudAppBar>
+
     <MudMainContent>
-        @*Body*@
+        <MudContainer Class="d-flex justify-center py-2 px-1 mt-6">
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4" Link="/authent">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Class="pa-4">Primary</MudButton>
+
+        </MudContainer>
+        @Body
     </MudMainContent>
 </MudLayout>
+
+@code{
+    MudTheme Theme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+
+            AppbarBackground = Colors.Shades.White,
+        },
+
+
+    };
+}
