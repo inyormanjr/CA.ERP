@@ -21,13 +21,14 @@ namespace CA.ERP.WebApp.Blazor
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 
             builder.Services.AddHttpClient("ErpApi", client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Erp").Value))
                 .AddHttpMessageHandler<AuthorizationMessageHandler>();
             builder.Services.AddHttpClient("Identity", client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Identity").Value))
                 .AddHttpMessageHandler<AuthorizationMessageHandler>(); ;
+
+            builder.Services.AddMudServices();
 
             builder.Services.AddOidcAuthentication(options =>
             {

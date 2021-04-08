@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject NavigationManager Navigation
@@ -6,11 +6,11 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <MudText Typo="Typo.h6" Class="mud-theme-primary">Hello, @context.User.Identity.Name!</MudText>
+        <MudLink Typo="Typo.button" Color="Color.Dark" Class="mud-theme-primary" @onclick="BeginSignOut" Href="authentication/login"> Log out</MudLink>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <MudLink Typo="Typo.button" Color="Color.Dark" Href="authentication/login">Log in</MudLink>
     </NotAuthorized>
 </AuthorizeView>
 
