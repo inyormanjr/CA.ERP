@@ -18,6 +18,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using IdentityServer4.Services;
 using CA.Identity.Services;
 using CA.Identity.Repository;
+using IdentityServer4;
 
 namespace CA.Identity
 {
@@ -51,13 +52,21 @@ namespace CA.Identity
               .AddDeveloperSigningCredential()
                       .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                       {
-                          options.Clients.Add(new Client()
+                          options.Clients.Add(new Client
                           {
                               ClientId = "Erp",
+                              AllowedGrantTypes = GrantTypes.Code,
+                              RequirePkce = true,
                               RequireClientSecret = false,
-                              AllowedScopes = new List<string>() { "Erp" },
-                              AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
+                              AllowedCorsOrigins = { "https://localhost:6001" },
+                              AllowedScopes =
+                                {
+                                    IdentityServerConstants.StandardScopes.OpenId,
+                                    IdentityServerConstants.StandardScopes.Profile,
+                                    "Erp"
+                                },
+                              RedirectUris = { "https://localhost:6001/authentication/login-callback" },
+                              PostLogoutRedirectUris = { "https://localhost:6001/authentication/logout-callback" }
                           });
                           options.ApiScopes.Add(new ApiScope("Erp"));
                           options.ApiResources.AddApiResource("Erp", cfg => cfg.WithScopes("Erp").AllowAllClients());
@@ -66,8 +75,21 @@ namespace CA.Identity
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IUserBranchRepository, UserBranchRepository>();
+
+            services.AddCors(option =>
+            {
+                option.AddDefaultPolicy(builder =>
+                {
+                    builder
+                    .SetIsOriginAllowed(origin => true)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -108,10 +130,15 @@ namespace CA.Identity
 
             app.UseRouting();
 
+
+            app.UseCors();
+
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
+
+            //wee
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -132,10 +159,10 @@ namespace CA.Identity
 
             app.UseSpa(spa =>
             {
-          // To learn more about options for serving an Angular SPA from ASP.NET Core,
-          // see https://go.microsoft.com/fwlink/?linkid=864501
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
 
-          spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
                 {

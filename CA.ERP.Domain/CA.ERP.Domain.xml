@@ -9,20 +9,5 @@
             Interface flag to identify business logic interface/classes
             </summary>
         </member>
-        <member name="T:CA.ERP.Domain.MasterProductAgg.ProductStatus">
-            <summary>
-            Flags if product can be deleted
-            </summary>
-        </member>
-        <member name="F:CA.ERP.Domain.MasterProductAgg.ProductStatus.Provisional">
-            <summary>
-            Product has no other data that reference it and can be deleted.
-            </summary>
-        </member>
-        <member name="F:CA.ERP.Domain.MasterProductAgg.ProductStatus.Permanent">
-            <summary>
-            Product has no other data that reference it and should not be deleted
-            </summary>
-        </member>
     </members>
 </doc>

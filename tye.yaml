@@ -23,6 +23,29 @@ services:
     value: Development
   - name: ASPNETCORE_URLS
     value: http://+:80
+
+- name: ca-identity
+  project: CA.Identity/CA.Identity.csproj
+  bindings:
+  - port: 5000
+    protocol: http
+    name : http
+  - port: 5001
+    protocol: https
+    name : https
+
+- name: ca-frontend
+  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
+  bindings:
+  - port: 6000
+    containerPort: 80
+    protocol: http
+    name : http
+  - port: 6001
+    containerPort: 443
+    protocol: https
+    name : https
+
 - name: jsreportserver
   image: jsreport/jsreport:2.11.0-full
   bindings:
@@ -31,17 +54,7 @@ services:
     protocol: http
     name : reporthttp
 
-- name: ca-identity
-  project: CA.Identity/CA.Identity.csproj
-  bindings:
-  - port: 5000
-    containerPort: 80
-    protocol: http
-    name : http
-  - port: 5001
-    containerPort: 443
-    protocol: https
-    name : https
+
 - name: postgress
   image: postgres:13.2
   bindings:

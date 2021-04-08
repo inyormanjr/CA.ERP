@@ -292,10 +292,6 @@ namespace CA.ERP.WebApp
             app.UseAuthorization();
 
             
-
-
-
-            
             //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {

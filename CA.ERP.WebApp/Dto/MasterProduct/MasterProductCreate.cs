@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.MasterProductAgg;
 using System;
 using System.Collections.Generic;
