@@ -34,4 +34,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

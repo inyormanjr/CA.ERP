@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.Infrastructure", "CA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.Shared", "CA.ERP.Shared\CA.ERP.Shared.csproj", "{BEA45964-E849-4864-B2AA-A2FD1B8018F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA.ERP.WebApp.Blazor", "CA.ERP.WebApp.Blazor\CA.ERP.WebApp.Blazor.csproj", "{7A61B5CA-3407-42D1-8F1C-D328645921C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.WebApp.Blazor", "CA.ERP.WebApp.Blazor\CA.ERP.WebApp.Blazor.csproj", "{7A61B5CA-3407-42D1-8F1C-D328645921C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
