@@ -1,7 +1,7 @@
 using CA.ERP.Common.Types;
 using System;
 
-namespace CA.ERP.WebApp.Dto.MasterProduct
+namespace CA.ERP.Shared.Dto.MasterProduct
 {
     /// <summary>
     /// The main reference for the product

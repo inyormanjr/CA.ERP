@@ -55,39 +55,11 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="Controllers\Report\**" />
-    <Compile Remove="Dto\Customer\**" />
-    <Compile Remove="Dto\Payment\**" />
-    <Compile Remove="Dto\StockReceive\**" />
-    <Compile Remove="Dto\Stock\**" />
-    <Compile Remove="Dto\Supplier\**" />
-    <Compile Remove="Dto\Transaction\**" />
-    <Compile Remove="Dto\User\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="Controllers\Report\**" />
-    <Content Remove="Dto\Customer\**" />
-    <Content Remove="Dto\Payment\**" />
-    <Content Remove="Dto\StockReceive\**" />
-    <Content Remove="Dto\Stock\**" />
-    <Content Remove="Dto\Supplier\**" />
-    <Content Remove="Dto\Transaction\**" />
-    <Content Remove="Dto\User\**" />
     <EmbeddedResource Remove="Controllers\Report\**" />
-    <EmbeddedResource Remove="Dto\Customer\**" />
-    <EmbeddedResource Remove="Dto\Payment\**" />
-    <EmbeddedResource Remove="Dto\StockReceive\**" />
-    <EmbeddedResource Remove="Dto\Stock\**" />
-    <EmbeddedResource Remove="Dto\Supplier\**" />
-    <EmbeddedResource Remove="Dto\Transaction\**" />
-    <EmbeddedResource Remove="Dto\User\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="Controllers\Report\**" />
-    <None Remove="Dto\Customer\**" />
-    <None Remove="Dto\Payment\**" />
-    <None Remove="Dto\StockReceive\**" />
-    <None Remove="Dto\Stock\**" />
-    <None Remove="Dto\Supplier\**" />
-    <None Remove="Dto\Transaction\**" />
-    <None Remove="Dto\User\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -101,7 +73,6 @@
     <Compile Remove="Controllers\Api\TransactionController.cs" />
     <Compile Remove="Controllers\Api\UserController.cs" />
     <Compile Remove="Mapping\CustomerMapping.cs" />
-    <Compile Remove="Mapping\PurchaseOrderMapping.cs" />
     <Compile Remove="Mapping\StockMapping.cs" />
     <Compile Remove="Mapping\StocReceiveMapping.cs" />
     <Compile Remove="Mapping\SupplierMapping.cs" />
@@ -118,6 +89,7 @@
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
     <ProjectReference Include="..\CA.ERP.Infrastructure\CA.ERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,6 +17,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         public Status Status { get; private set; }
         public string Barcode { get; private set; }
+        public string SupplierName { get; private set; }
+        public string BranchName { get; private set; }
         public DateTimeOffset DeliveryDate { get; private set; }
 
         public Guid OrderedById { get; private set; }
@@ -48,6 +50,11 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         }
 
         public List<PurchaseOrderItem> PurchaseOrderItems { get; private set; }
+
+        public PurchaseOrder()
+        {
+
+        }
 
         protected PurchaseOrder(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId)
         {
@@ -97,6 +104,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             var purchaseOrder = new PurchaseOrder(purchaseOrderBarcodeGenerator.GenerateBarcode(), deliveryDate, orderedById, supplierId, branchId);
             return DomainResult<PurchaseOrder>.Success(purchaseOrder);
         }
+
+
 
     }
 }

@@ -1,22 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CA.ERP.Shared.Dto
 {
     /// <summary>
-    /// Base class for update request
+    /// Default response for getting list of data.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class UpdateBaseRequest<T> where T:class
+    public class PaginatedResponse<T> where T:class
     {
+        public int TotalCount { get; set; }
         /// <summary>
-        /// The data to update
+        /// A list of data
         /// </summary>
-        /// 
-        [Required]
-        public T Data { get; set; }
+        public IEnumerable<T> Data { get; set; }
     }
 }

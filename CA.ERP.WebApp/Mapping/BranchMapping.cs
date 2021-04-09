@@ -1,6 +1,6 @@
 using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
-using Dto = CA.ERP.WebApp.Dto;
+using Dto = CA.ERP.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ namespace CA.ERP.WebApp.Mapping
     {
         public BranchMapping()
         {
+
             CreateMap<Branch, Dto.Branch.BranchView>();
         }
     }

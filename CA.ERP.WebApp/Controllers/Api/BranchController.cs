@@ -8,12 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using Dto = CA.ERP.WebApp.Dto;
+using Dto = CA.ERP.Shared.Dto;
 using Dom = CA.ERP.Domain.BranchAgg;
 using OneOf;
 using OneOf.Types;
 using Microsoft.AspNetCore.Authorization;
-using CA.ERP.WebApp.Dto;
+using CA.ERP.Shared.Dto;
 using CA.ERP.Domain.Core.DomainResullts;
 using MediatR;
 using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch;
@@ -46,13 +46,13 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.Branch.BranchView>>> Get(CancellationToken cancellationToken)
         {
             var query = new GetManyBranchQuery();
             var paginatedBranches = await _mediator.Send(query, cancellationToken);
 
             var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(paginatedBranches.Data);
-            var response = new Dto.GetManyResponse<Dto.Branch.BranchView>() {
+            var response = new Dto.PaginatedResponse<Dto.Branch.BranchView>() {
                 Data = dtoBranches,
                 TotalCount = paginatedBranches.TotalCount
             };

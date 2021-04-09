@@ -1,3 +1,5 @@
+using CA.ERP.WebApp.Blazor.Services;
+using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +23,21 @@ namespace CA.ERP.WebApp.Blazor
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            builder.Services.AddScoped<AuthorizationMessageHandler>();
 
+            builder.Services.AddHttpClient(Constants.ApiErp, client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Erp").Value))
+                 .AddHttpMessageHandler(cfg => {
+                     var hadnler = cfg.GetRequiredService<AuthorizationMessageHandler>();
+                     hadnler.ConfigureHandler(new List<string>() { builder.Configuration.GetSection("BaseAddress:Erp").Value, builder.Configuration.GetSection("BaseAddress:Erp").Value });
+                     return hadnler;
+                 });
 
-            builder.Services.AddHttpClient("ErpApi", client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Erp").Value))
-                .AddHttpMessageHandler<AuthorizationMessageHandler>();
-            builder.Services.AddHttpClient("Identity", client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Identity").Value))
-                .AddHttpMessageHandler<AuthorizationMessageHandler>(); ;
+            builder.Services.AddHttpClient(Constants.ApiIdentity, client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Identity").Value))
+                .AddHttpMessageHandler(cfg => {
+                    var hadnler = cfg.GetRequiredService<AuthorizationMessageHandler>();
+                    hadnler.ConfigureHandler(new List<string>() { builder.Configuration.GetSection("BaseAddress:Erp").Value, builder.Configuration.GetSection("BaseAddress:Identity").Value });
+                    return hadnler;
+                });
 
             builder.Services.AddMudServices();
 
@@ -37,7 +48,11 @@ namespace CA.ERP.WebApp.Blazor
                 builder.Configuration.Bind("Identity", options.ProviderOptions);
             });
 
-            builder.Services.AddMudServices();
+
+            builder.Services.AddScoped<PurchaseOrderService>();
+
+
+            builder.Services.AddScoped<PurchaseOrderViewModel>();
 
             await builder.Build().RunAsync();
         }

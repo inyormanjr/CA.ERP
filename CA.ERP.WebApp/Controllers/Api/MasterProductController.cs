@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dto = CA.ERP.Shared.Dto;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
@@ -106,13 +107,13 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
         {
             var query = new GetManyMasterProductQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
             var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result.Data);
-            var response = new Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>()
+            var response = new Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>()
             {
                 Data = dtoMasterProducts,
                 TotalCount = result.TotalCount

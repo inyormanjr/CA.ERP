@@ -26,6 +26,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Dto = CA.ERP.Shared.Dto;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
@@ -103,15 +104,15 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string barcode = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int skip = 0, int take = 9999, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(string barcode = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int skip = 0, int take = 10, CancellationToken cancellationToken = default)
         {
             var query = new GetManyPurchaseOrderQuery(skip, take, barcode:barcode, startDate:startDate, endDate:endDate);
 
             var result = await _mediator.Send(query, cancellationToken);
             if (result.IsSuccess)
             {
-                var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(result.Result.Data);
-                var response = new Dto.GetManyResponse<Dto.PurchaseOrder.PurchaseOrderView>()
+                var dtoList = _mapper.Map<List<Dto.PurchaseOrder.PurchaseOrderView>>(result.Result.Data.ToList());
+                var response = new Dto.PaginatedResponse<Dto.PurchaseOrder.PurchaseOrderView>()
                 {
                     TotalCount = result.Result.TotalCount,
                     Data = dtoList

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto
+namespace CA.ERP.Shared.Dto
 {
     /// <summary>
     /// Enum status for dto

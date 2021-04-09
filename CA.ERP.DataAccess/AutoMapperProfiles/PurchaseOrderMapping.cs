@@ -13,9 +13,10 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public PurchaseOrderMapping()
         {
-            CreateMap<Dal.PurchaseOrder, PurchaseOrder>();
-
-            CreateMap<PurchaseOrder, Dal.PurchaseOrder>();
+            CreateMap<Dal.PurchaseOrder, PurchaseOrder>()
+                .ForMember(po => po.SupplierName, opt => opt.MapFrom(po => po.Supplier.Name))
+                .ForMember(po => po.BranchName, opt => opt.MapFrom(po => po.Branch.Name));
+            //CreateMap<PurchaseOrder, Dal.PurchaseOrder>();
 
 
             CreateMap<Dal.PurchaseOrderItem, PurchaseOrderItem>()

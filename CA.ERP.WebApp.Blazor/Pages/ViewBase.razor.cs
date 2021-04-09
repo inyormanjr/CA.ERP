@@ -10,12 +10,8 @@ namespace CA.ERP.WebApp.Blazor.Pages
 {
     public partial class ViewBase<T>  : ComponentBase, IDisposable where T : ViewModelBase 
     {
-        public T ViewModel { get; protected set; }
-
-        public ViewBase(T viewModel) :base()
-        {
-            ViewModel = viewModel;
-        }
+        [Inject]
+        public T ViewModel { get;  set; }
 
         protected override void OnInitialized()
         {
@@ -32,8 +28,6 @@ namespace CA.ERP.WebApp.Blazor.Pages
         {
             ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
         }
-
-
 
 
     }

@@ -1,20 +1,43 @@
 @page "/purchase-order/"
 
-@using CA.ERP.WebApp.Dto.PurchaseOrder;
+@using CA.ERP.Shared.Dto.PurchaseOrder;
+@using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 
 
 
+@inherits ViewBase<PurchaseOrderViewModel>
 <MudContainer>
-
-
-
-
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<PurchaseOrderView>>>(ServerReload))"  Hover="true"  Striped="true" @ref="table">
+    <MudText Typo="Typo.h6">Purchase Orders</MudText>
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<PurchaseOrderView>>>(ServerReload))" Hover="true" Striped="true" @ref="table">
         <ToolBarContent>
-            <MudText Typo="Typo.h6">Purchase Orders</MudText>
-            <MudToolBarSpacer />
-            <MudTextField @bind-Value="PoNumber" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" Placeholder="P.O. Number" Class="ml-4" ></MudTextField>
-            <MudDatePicker @bind-Value="Date" Adornment="Adornment.Start" Class="ml-4"></MudDatePicker>
+            <MudGrid>
+                <MudItem xs="12" md="2">
+                    <MudTextField @bind-Value="PoNumber" AdornmentIcon="@Icons.Material.Outlined.Receipt" Adornment="Adornment.Start" Placeholder="P.O. Number" Class="ml-4"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="2">
+                    <MudDatePicker  Editable="true"  Adornment="Adornment.Start"  Class="ml-4"  @ref="_picker">
+                        
+                    </MudDatePicker>
+                </MudItem>
+                <MudItem xs="12" md="2">
+                    <MudButton Class="mt-4" Variant="Variant.Filled" DisableElevation="true" Color="Color.Secondary" OnClick="Search">Search</MudButton>
+                </MudItem>
+                <MudItem xs="12" md="3">
+
+                </MudItem>
+                <MudItem xs="12" md="3" Class="d-flex flex-row-reverse "  >
+
+                    <MudButton Class="mt-4 px-8" Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary">New</MudButton>
+                </MudItem>
+
+
+
+
+
+
+            </MudGrid>
+
+           
         </ToolBarContent>
         <HeaderContent>
             <MudTh>P.O. #</MudTh>
@@ -25,13 +48,14 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="PO">@context.Barcode</MudTd>
-            <MudTd DataLabel="Delivery Date">@context.DeliveryDate.ToShortDateString()</MudTd>
-            <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
+            <MudTd DataLabel="Delivery Date">@context.DeliveryDate.Date.ToString("MMM dd, yyyy")</MudTd>
+            <MudTd DataLabel="Supplier">@(context.SupplierName ?? "n/a") </MudTd>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
             <MudTd DataLabel="Action"></MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager  />
+            <MudTablePager />
+
         </PagerContent>
     </MudTable>
 
@@ -40,18 +64,29 @@
 
 @code{
     private MudTable<PurchaseOrderView> table;
+    MudDatePicker _picker;
+
 
 
     public string PoNumber { get; set; }
-    public DateTime Date { get; set; } = DateTime.Now;
+    public DateTimeOffset? Date { get; set; }
 
     public IEnumerable<PurchaseOrderView> PurchaseOrders { get; set; } = new List<PurchaseOrderView>();
 
     private async Task<TableData<PurchaseOrderView>> ServerReload(TableState state)
     {
-
-        return new TableData<PurchaseOrderView>() { TotalItems = 0, Items = new List<PurchaseOrderView>() { new PurchaseOrderView() } };
+        var paginatedPurchaseOrders = await ViewModel.GetPurchaseOrdersAsync(PoNumber, Date, Date, state.Page, state.PageSize);
+        return new TableData<PurchaseOrderView>() { TotalItems = paginatedPurchaseOrders.TotalCount, Items = paginatedPurchaseOrders.Data };
     }
+
+    public void Search()
+    {
+        Date = _picker.Date;
+        table.ReloadServerData();
+    }
+
+
+
 
 
 }

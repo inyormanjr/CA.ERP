@@ -1,4 +1,4 @@
-namespace CA.ERP.WebApp.Dto.MasterProduct
+namespace CA.ERP.Shared.Dto.MasterProduct
 {
 
 }

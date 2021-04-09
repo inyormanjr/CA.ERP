@@ -44,7 +44,7 @@ using MediatR;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using CA.ERP.Application.DomainEventHandlers.Supplier;
-using DtoMapping = CA.ERP.DataAccess.AutoMapperProfiles;
+using DtoMapping = CA.ERP.WebApp.Mapping;
 using CA.ERP.WebApp.Mapping;
 using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurchaseOrder;
 using CA.ERP.Domain.IdentityAgg;
@@ -52,12 +52,12 @@ using CA.ERP.WebApp.Infrastructure;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Core.EventBus;
 using CA.ERP.Infrastructure.EventBus;
+using System.Diagnostics;
 
 namespace CA.ERP.WebApp
 {
     public class Startup
     {
-        private string _corsAllowAll = "AllowAll";
 
         public Startup(IConfiguration configuration)
         {
@@ -152,6 +152,7 @@ namespace CA.ERP.WebApp
             services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(DataAccess.AutoMapperProfiles.BranchMapping).Assembly);
 
             services.AddHttpContextAccessor();
+
 
 
             //register repositories

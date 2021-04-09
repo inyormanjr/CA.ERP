@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CA.ERP.WebApp.Dto.PurchaseOrder
+namespace CA.ERP.Shared.Dto.PurchaseOrder
 {
     public class PurchaseOrderItemView : DtoViewBase
     {

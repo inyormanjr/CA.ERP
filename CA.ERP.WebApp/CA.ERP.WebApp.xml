@@ -15,7 +15,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.CreateBranch(CA.ERP.WebApp.Dto.Branch.CreateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.CreateBranch(CA.ERP.Shared.Dto.Branch.CreateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Create branch
             </summary>
@@ -23,7 +23,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.UpdateBranch(System.Guid,CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.BranchController.UpdateBranch(System.Guid,CA.ERP.Shared.Dto.Branch.UpdateBranchRequest,System.Threading.CancellationToken)">
             <summary>
             Update branch base on Id
             </summary>
@@ -46,7 +46,7 @@
             Handles brand related operations.
             </summary>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Create(CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Create(CA.ERP.Shared.Dto.MasterProduct.CreateMasterProductRequest,System.Threading.CancellationToken)">
             <summary>
             Create master product
             </summary>
@@ -61,7 +61,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Create(CA.ERP.WebApp.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Create(CA.ERP.Shared.Dto.PurchaseOrder.CreatePurchaseOrderRequest,System.Threading.CancellationToken)">
             <summary>
             Create master products
             </summary>
@@ -69,7 +69,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Update(System.Guid,CA.ERP.WebApp.Dto.UpdateBaseRequest{CA.ERP.WebApp.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.PurchaseOrderController.Update(System.Guid,CA.ERP.Shared.Dto.UpdateBaseRequest{CA.ERP.Shared.Dto.PurchaseOrder.PurchaseOrderUpdate},System.Threading.CancellationToken)">
             <summary>
             Update purchase order
             </summary>
@@ -88,115 +88,6 @@
         </member>
         <member name="M:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal.IsInRole(System.String)">
             <inheritdoc/>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.Branch.UpdateBranchRequest">
-            <summary>
-            Hold update data for updating the branch
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.CreateBaseRequest`1.Data">
-            <summary>
-            The data to create
-            </summary>
-            
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.CreateResponse">
-            <summary>
-            The default response for creating data.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.CreateResponse.Id">
-            <summary>
-            Id of the created data.
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.DtoViewBase">
-            <summary>
-            Base class for dto poco classes
-            </summary>
-        </member>
-        <member name="M:CA.ERP.WebApp.Dto.DtoViewBase.#ctor">
-            <summary>
-            Default constructor
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.Id">
-            <summary>
-            The unique identifier for the data
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.Status">
-            <summary>
-            Active or Inactive consider the data deleted if inactive.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.CreatedAt">
-            <summary>
-            Date the data was created
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.CreatedBy">
-            <summary>
-            The unique identifier for the user who created the data.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.UpdatedAt">
-            <summary>
-            The date the data was last updated.
-            </summary>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.DtoViewBase.UpdatedBy">
-            <summary>
-            The unique identifier for the user who last updated the data.
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.GetManyResponse`1">
-            <summary>
-            Default response for getting list of data.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.GetManyResponse`1.Data">
-            <summary>
-            A list of data
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.CreateMasterProductRequest">
-            <summary>
-            Request body for creating master product
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.MasterProduct.MasterProductView">
-            <summary>
-            The main reference for the product
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.Status">
-            <summary>
-            Enum status for dto
-            </summary>
-        </member>
-        <member name="F:CA.ERP.WebApp.Dto.Status.Inactive">
-            <summary>
-            Consider the item deleted
-            </summary>
-        </member>
-        <member name="F:CA.ERP.WebApp.Dto.Status.Active">
-            <summary>
-            Should be the default status
-            </summary>
-        </member>
-        <member name="T:CA.ERP.WebApp.Dto.UpdateBaseRequest`1">
-            <summary>
-            Base class for update request
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:CA.ERP.WebApp.Dto.UpdateBaseRequest`1.Data">
-            <summary>
-            The data to update
-            </summary>
-            
         </member>
     </members>
 </doc>

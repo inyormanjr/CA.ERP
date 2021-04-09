@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dto = CA.ERP.Shared.Dto;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
@@ -89,13 +90,13 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Brand.BrandView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.Brand.BrandView>>> Get(CancellationToken cancellationToken)
         {
             var query = new GetManyBrandQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
             var dtoBrands = _mapper.Map<List<Dto.Brand.BrandView>>(result.Data);
-            var response = new Dto.GetManyResponse<Dto.Brand.BrandView>()
+            var response = new Dto.PaginatedResponse<Dto.Brand.BrandView>()
             {
                 Data = dtoBrands,
                 TotalCount = result.TotalCount

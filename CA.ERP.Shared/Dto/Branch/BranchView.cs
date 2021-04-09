@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CA.ERP.WebApp.Dto.Branch
+namespace CA.ERP.Shared.Dto.Branch
 {
     public class BranchView: DtoViewBase
     {        public string Name { get; set; }
