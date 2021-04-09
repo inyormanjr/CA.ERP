@@ -13,6 +13,7 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public BranchMapping()
         {
             CreateMap<Branch, Dal.Branch>();
+            CreateMap<Dal.Branch, Branch>();
         }
     }
 }

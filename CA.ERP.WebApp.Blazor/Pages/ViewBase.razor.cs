@@ -22,6 +22,7 @@ namespace CA.ERP.WebApp.Blazor.Pages
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             StateHasChanged();
+
         }
 
         public void Dispose()

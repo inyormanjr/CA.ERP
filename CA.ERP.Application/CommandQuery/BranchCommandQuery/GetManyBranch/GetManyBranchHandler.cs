@@ -21,7 +21,7 @@ namespace CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch
         public async Task<PaginatedList<Branch>> Handle(GetManyBranchQuery request, CancellationToken cancellationToken)
         {
             var branches = await _branchRepository.GetManyAsync(request.Skip, request.Take, request.Status, cancellationToken: cancellationToken);
-            var total = await _branchRepository.Count(request.Status, cancellationToken: cancellationToken);
+            var total = await _branchRepository.GetCountAsync(request.Status, cancellationToken: cancellationToken);
             return new PaginatedList<Branch>(branches, total);
         }
     }

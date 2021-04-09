@@ -34,6 +34,8 @@ namespace CA.ERP.Lib.DAL.Repositories
         }
 
 
+
+
         public new async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var branch = await _context.Branches.FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
@@ -56,9 +58,6 @@ namespace CA.ERP.Lib.DAL.Repositories
             return ret;
         }
 
-        public Task<int> Count(Status status, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

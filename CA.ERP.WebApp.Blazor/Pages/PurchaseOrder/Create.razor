@@ -1,7 +1,47 @@
+@page "/purchase-order/create"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 
 
-<h3>Create</h3>
+
+@inherits ViewBase<PurchaseOrderCreateViewModel>
+
+<MudContainer>
+
+    <MudGrid>
+        <MudItem xs="10">
+            <MudText Typo="Typo.h6">New Purchase Orders</MudText>
+        </MudItem>
+        <MudItem xs="2" Class="d-flex flex-row-reverse">
+            <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" />
+        </MudItem>
+
+
+    </MudGrid>
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="4">
+                <MudSelect  Required="true" T="BranchView"  Label="@(ViewModel.BranchesIsLoading ? "Loading Branches" : "Branch")" Strict="true" Variant="Variant.Outlined" Format="F2" Disabled="@ViewModel.BranchesIsLoading">
+                    @foreach (var branch in ViewModel.Branches)
+                    {
+                        <MudSelectItem T="BranchView" Value="branch">@branch.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+       
+    </MudForm>
+
+
+</MudContainer>
 
 @code {
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+
+
 
 }

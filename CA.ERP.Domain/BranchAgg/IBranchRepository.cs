@@ -15,6 +15,6 @@ namespace CA.ERP.Domain.BranchAgg
     {
 
         Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken);
-        Task<int> Count(Status status, CancellationToken cancellationToken);
+
     }
 }

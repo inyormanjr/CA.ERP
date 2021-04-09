@@ -8,5 +8,6 @@ namespace CA.ERP.WebApp.Blazor.ViewModels
 {
     public class ViewModelBase : ObservableRecipient
     {
+        public string ErrorMessage { get; set; }
     }
 }

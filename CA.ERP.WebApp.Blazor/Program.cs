@@ -50,9 +50,11 @@ namespace CA.ERP.WebApp.Blazor
 
 
             builder.Services.AddScoped<PurchaseOrderService>();
+            builder.Services.AddScoped<BranchService>();
 
 
             builder.Services.AddScoped<PurchaseOrderIndexViewModel>();
+            builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             await builder.Build().RunAsync();
         }

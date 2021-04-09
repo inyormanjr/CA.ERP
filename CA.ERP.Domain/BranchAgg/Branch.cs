@@ -20,6 +20,10 @@ namespace CA.ERP.Domain.BranchAgg
 
         public Status Status { get; private set; }
 
+        public Branch()
+        {
+
+        }
         private Branch(string name, int branchNo, string code, string address, string contact)
         {
             Name = name;
