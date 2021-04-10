@@ -32,7 +32,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             Pagination pagination = new Pagination(page, size);
 
-            _logger.LogInformation("pagination", pagination);
+            _logger.LogDebug("pagination", pagination);
 
             var uri = new Uri(client.BaseAddress, GetPurchaseOrderEndpoint);
 
@@ -45,7 +45,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             if (startDate != null)
             {
                 uri = uri.AddQuery("startDate", startDate.Value.DateTime.ToString("o"));
-                _logger.LogInformation($"startDate : {startDate.Value.DateTime.ToString("o")}");
+                _logger.LogDebug($"startDate : {startDate.Value.DateTime.ToString("o")}");
             }
 
             if (endDate != null)

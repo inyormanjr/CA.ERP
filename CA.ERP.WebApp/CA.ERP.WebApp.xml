@@ -89,6 +89,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.GetSupplierBrands(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Get a lite version of supplier brands with master products and cost
+            </summary>
+            <param name="supplierId"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal">
             <summary>
             A custom principal for modified behavior.

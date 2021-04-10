@@ -153,6 +153,7 @@ namespace CA.ERP.WebApp
 
             services.AddHttpContextAccessor();
 
+
             //register repositories
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(MasterProductRepository))
@@ -162,14 +163,6 @@ namespace CA.ERP.WebApp
             );
 
 
-
-            ////register services
-            //services.Scan(scan =>
-            //    scan.FromAssembliesOf(typeof(UserService))
-            //    .AddClasses(classes => classes.AssignableTo<ServiceBase>())
-            //    .AsSelf()
-            //    .WithScopedLifetime()
-            //);
 
 
 

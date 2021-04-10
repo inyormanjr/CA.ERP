@@ -19,18 +19,16 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurcha
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IPurchaseOrderBarcodeGenerator _purchaseOrderBarcodeGenerator;
-        private readonly ISupplierMasterProductRepository _supplierMasterProductRepository;
         private readonly IEventBus _eventBus;
         private readonly IIdentityProvider _identityProvider;
 
-        public CreatePurchaseOrderHandler(IUnitOfWork unitOfWork, IIdentityProvider identityProvider, IPurchaseOrderRepository purchaseOrderRepository, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator, ISupplierMasterProductRepository supplierMasterProductRepository, IEventBus eventBus)
+        public CreatePurchaseOrderHandler(IUnitOfWork unitOfWork, IIdentityProvider identityProvider, IPurchaseOrderRepository purchaseOrderRepository, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator, IEventBus eventBus)
         {
             _unitOfWork = unitOfWork;
             _identityProvider = identityProvider;
             _purchaseOrderRepository = purchaseOrderRepository;
             _dateTimeProvider = dateTimeProvider;
             _purchaseOrderBarcodeGenerator = purchaseOrderBarcodeGenerator;
-            _supplierMasterProductRepository = supplierMasterProductRepository;
             _eventBus = eventBus;
         }
         public async Task<DomainResult<Guid>> Handle(CreatePurchaseOrderCommand request, CancellationToken cancellationToken)

@@ -1,13 +1,16 @@
 using AutoMapper;
 using CA.ERP.Application.CommandQuery.SupplierCommandQuery.GetManySupplier;
+using CA.ERP.Application.CommandQuery.SupplierCommandQuery.GetManySupplierBrand;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.SupplierAgg;
 using CA.ERP.Shared.Dto;
+using CA.ERP.Shared.Dto.Supplier;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -140,7 +143,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         /// <summary>
         /// Get single supplier
         /// </summary>
-        /// <param name="id">The id of suppler to get.</param>
+        /// <param name="supplierId">The id of suppler to get.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         //[HttpGet("{id}")]
@@ -183,7 +186,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         //            return BadRequest(response);
         //        }
         //    );
-            
+
         //}
 
         //[HttpPut("{id}/Brand")]
@@ -233,18 +236,20 @@ namespace CA.ERP.WebApp.Controllers.Api
         /// <summary>
         /// Get a lite version of supplier brands with master products and cost
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="supplierId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        //[HttpGet("{id}/Brands")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<ActionResult<PaginatedResponse<SupplierBrandLite>>> GetSupplierBrands(Guid id, CancellationToken cancellationToken)
-        //{
-        //    var supplierBrands = await _supplierService.GetSupplierBrandsAsync(id, cancellationToken: cancellationToken);
-        //    return Ok(new Dto.GetManyResponse<SupplierBrandLite>() {Data = supplierBrands });
-            
-        //}
+        [HttpGet("{supplierId}/Brand")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<SupplierBrandView>>> GetSupplierBrands(Guid supplierId, CancellationToken cancellationToken)
+        {
+            var query = new GetManySupplierBrandQuery(supplierId);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(_mapper.Map<List<SupplierBrandView>>(result));
+
+        }
 
     }
 }

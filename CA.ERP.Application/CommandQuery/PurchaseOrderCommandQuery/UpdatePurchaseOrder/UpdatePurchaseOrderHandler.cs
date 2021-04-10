@@ -18,15 +18,13 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.UpdatePurcha
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IIdentityProvider _identityProvider;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ISupplierMasterProductRepository _supplierMasterProductRepository;
 
-        public UpdatePurchaseOrderHandler(IUnitOfWork unitOfWork, IPurchaseOrderRepository purchaseOrderRepository, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider, ISupplierMasterProductRepository supplierMasterProductRepository)
+        public UpdatePurchaseOrderHandler(IUnitOfWork unitOfWork, IPurchaseOrderRepository purchaseOrderRepository, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider)
         {
             _unitOfWork = unitOfWork;
             _purchaseOrderRepository = purchaseOrderRepository;
             _identityProvider = identityProvider;
             _dateTimeProvider = dateTimeProvider;
-            _supplierMasterProductRepository = supplierMasterProductRepository;
         }
 
         public async Task<DomainResult> Handle(UpdatePurchaseOrderCommand request, CancellationToken cancellationToken)
@@ -46,16 +44,7 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.UpdatePurcha
             }
             await _purchaseOrderRepository.UpdateAsync(request.Id, purchaseOrder);
 
-            //update supplier prices
-            foreach (var item in purchaseOrder.PurchaseOrderItems)
-            {
-                var createSupplierMasterProduct = SupplierMasterProduct.Create(item.MasterProductId, request.SupplierId, item.CostPrice);
-                if (createSupplierMasterProduct.IsSuccess)
-                {
-                    await _supplierMasterProductRepository.AddOrUpdateAsync(createSupplierMasterProduct.Result, cancellationToken);
-                }
 
-            }
             await _unitOfWork.CommitAsync();
 
             return DomainResult.Success();

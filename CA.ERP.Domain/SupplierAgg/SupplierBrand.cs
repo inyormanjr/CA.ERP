@@ -12,5 +12,18 @@ namespace CA.ERP.Domain.SupplierAgg
     {
         public Guid SupplierId { get; set; }
         public Guid BrandId { get; set; }
+        public string BrandName { get; set; }
+
+        protected SupplierBrand(Guid supplierId, Guid brandId, string brandName)
+        {
+            SupplierId = supplierId;
+            BrandId = brandId;
+            BrandName = brandName;
+        }
+
+        public static SupplierBrand Create(Guid supplierId, Guid brandId, string brandName)
+        {
+            return new SupplierBrand(supplierId, brandId, brandName);
+        }
     }
 }

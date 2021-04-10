@@ -52,6 +52,7 @@
     <Compile Remove="Repositories\StockMoveRepository.cs" />
     <Compile Remove="Repositories\StockReceiveRepository.cs" />
     <Compile Remove="Repositories\StockRepository.cs" />
+    <Compile Remove="Repositories\SupplierMasterProductRepository.cs" />
     <Compile Remove="Repositories\TransactionRepository.cs" />
     <Compile Remove="Repositories\UserRepository.cs" />
   </ItemGroup>

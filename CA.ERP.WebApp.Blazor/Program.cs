@@ -20,6 +20,7 @@ namespace CA.ERP.WebApp.Blazor
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
@@ -62,6 +63,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             await builder.Build().RunAsync();
+                
+
         }
 
         private static IAsyncPolicy<HttpResponseMessage> BuildHttpErrorPolicy(PolicyBuilder<HttpResponseMessage> builder)

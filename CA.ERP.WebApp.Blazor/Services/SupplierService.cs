@@ -14,6 +14,7 @@ namespace CA.ERP.WebApp.Blazor.Services
     public class SupplierService
     {
         private const string GetSupplierEndpoint = "/api/Supplier";
+        private const string GetSupplierBrandsEndpoint = "/api/Supplier/{0}/Brand";
         private readonly IHttpClientFactory _httpClientFactory;
 
         public SupplierService(IHttpClientFactory httpClientFactory)
@@ -44,6 +45,21 @@ namespace CA.ERP.WebApp.Blazor.Services
             var paginatedSuppliers = await response.Content.ReadFromJsonAsync<PaginatedResponse<SupplierView>>();
 
             return paginatedSuppliers;
+        }
+
+        public async Task<List<SupplierBrandView>> GetSupplierBrandsAsync(Guid supplierId)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiErp);
+
+            var uri = new Uri(client.BaseAddress, string.Format(GetSupplierBrandsEndpoint, supplierId));
+
+            var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw await ApplicationBaseException.Create(response);
+            }
+            return await response.Content.ReadFromJsonAsync<List<SupplierBrandView>>();
+
         }
     }
 }

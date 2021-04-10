@@ -12,12 +12,12 @@ namespace CA.ERP.Application.DomainEventHandlers.Supplier
     public class PurchaseOrderCreatedHandler : IConsumer<PurchaseOrderCreated>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ISupplierMasterProductRepository _supplierMasterProductRepository;
+        private readonly ISupplierRepository _supplierRepository;
 
-        public PurchaseOrderCreatedHandler(IUnitOfWork unitOfWork,ISupplierMasterProductRepository supplierMasterProductRepository)
+        public PurchaseOrderCreatedHandler(IUnitOfWork unitOfWork, ISupplierRepository supplierRepository)
         {
             _unitOfWork = unitOfWork;
-            _supplierMasterProductRepository = supplierMasterProductRepository;
+            _supplierRepository = supplierRepository;
         }
         public async Task Consume(ConsumeContext<PurchaseOrderCreated> context)
         {
@@ -29,7 +29,7 @@ namespace CA.ERP.Application.DomainEventHandlers.Supplier
                 var createSupplierMasterProduct = SupplierMasterProduct.Create(item.MasterProductId, purchaseOrder.SupplierId, item.CostPrice);
                 if (createSupplierMasterProduct.IsSuccess)
                 {
-                    await _supplierMasterProductRepository.AddOrUpdateAsync(createSupplierMasterProduct.Result, context.CancellationToken);
+                    await _supplierRepository.AddOrUpdateAsync(createSupplierMasterProduct.Result, context.CancellationToken);
                 }
 
             }

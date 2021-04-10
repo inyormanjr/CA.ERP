@@ -186,6 +186,7 @@ namespace CA.Identity
                         context.Database.Migrate();
                     }
 
+
                 }
             }
         }

@@ -18,7 +18,10 @@ namespace CA.ERP.Domain.SupplierAgg
         Task<List<Supplier>> GetManySupplierAsync(string name, int skip, int take, CancellationToken cancellationToken);
         Task<int> GetCountSupplierAsync(string name, CancellationToken cancellationToken);
         Task AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken);
+        Task<List<SupplierBrand>> GetManySupplierBrandAsync(Guid supplierId, CancellationToken cancellationToken);
         Task DeleteSupplierBrandAsync(Guid id, Guid brandId, CancellationToken cancellationToken);
+
+        Task AddOrUpdateAsync(SupplierMasterProduct supplierMasterProduct, CancellationToken cancellationToken);
 
         Task AddOrUpdateSupplierMasterProductCostPriceAsync(Guid supplierId, Guid masterProductId, decimal costPrice , CancellationToken cancellationToken = default);
     }

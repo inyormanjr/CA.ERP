@@ -25,20 +25,16 @@
             <MudItem xs="12" sm="6">
                 <MudGrid>
                     <MudItem xs="6">
-
-
                         @if (ViewModel.BranchesIsLoading)
                         {
                             <MudField>
-                                <MudProgressCircular></MudProgressCircular>
-                                <MudText>Branches</MudText>
+                                <MudText>Loading Branches</MudText>
                             </MudField>
                         }
                         else
                         {
                             <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.Branch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
                         }
-
                     </MudItem>
                     <MudItem xs="12">
                         <MudGrid>
@@ -48,13 +44,13 @@
                                 {
                                     <MudField>
 
-                                        <MudText>Supplier</MudText>
-                                        <MudProgressCircular></MudProgressCircular>
+                                        <MudText>Loading Supplier</MudText>
+
                                     </MudField>
                                 }
                                 else
                                 {
-                                    <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.Supplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                                    <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
                                 }
 
                             </MudItem>
@@ -71,6 +67,26 @@
                         <MudDatePicker Label="Delivery Date"></MudDatePicker>
                     </MudItem>
                 </MudGrid>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                @if (ViewModel.SelectedSupplier == null)
+                {
+                    <MudField>
+                        <MudText>Please select a  supplier</MudText>
+                    </MudField>
+                }
+                else if (ViewModel.SupplierBrands.Count <= 0)
+                {
+                    <MudField>
+                        <MudText>Loading brands</MudText>
+                    </MudField>
+                }
+                else
+                {
+                    <MudAutocomplete T="SupplierBrandView" Label="Brand" @bind-Value="ViewModel.SelectedSupplierBrand" SearchFunc="@ViewModel.SearchSupplierBrand" ToStringFunc="@(b => b.BrandName)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                }
             </MudItem>
         </MudGrid>
 

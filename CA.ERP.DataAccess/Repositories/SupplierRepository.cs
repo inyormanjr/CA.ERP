@@ -119,5 +119,26 @@ namespace CA.ERP.DataAccess.Repositories
 
             return queryable.Where(s => s.Name.StartsWith(name)).CountAsync(cancellationToken: cancellationToken);
         }
+
+        public async Task<List<SupplierBrand>> GetManySupplierBrandAsync(Guid supplierId, CancellationToken cancellationToken)
+        {
+            var supplierBrands = await _context.SupplierBrands.Include(s=>s.Brand).Where(s => s.SupplierId == supplierId).ToListAsync();
+            return _mapper.Map<List<SupplierBrand>>(supplierBrands);
+        }
+
+        public async Task AddOrUpdateAsync(SupplierMasterProduct supplierMasterProduct, CancellationToken cancellationToken)
+        {
+            var dalSupplierMasterProduct = await _context.SupplierMasterProducts.FirstOrDefaultAsync(smp => smp.SupplierId == supplierMasterProduct.SupplierId && smp.MasterProductId == supplierMasterProduct.MasterProductId);
+            if (dalSupplierMasterProduct != null)
+            {
+                _mapper.Map(supplierMasterProduct, dalSupplierMasterProduct);
+
+            }
+            else
+            {
+                dalSupplierMasterProduct = _mapper.Map<Dal.SupplierMasterProduct>(supplierMasterProduct);
+                _context.SupplierMasterProducts.Add(dalSupplierMasterProduct);
+            }
+        }
     }
 }
