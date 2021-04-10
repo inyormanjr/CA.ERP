@@ -78,6 +78,17 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:CA.ERP.WebApp.Controllers.Api.SupplierController">
+            <summary>
+            Contains supplier and supllier brands related endpoints
+            </summary>
+        </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.SupplierController.Get(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Get multiple suppliers
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.CustomAuthentication.CustomClaimsPrincipal">
             <summary>
             A custom principal for modified behavior.

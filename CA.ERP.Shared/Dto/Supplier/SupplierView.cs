@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CA.ERP.WebApp.Dto.Supplier
+namespace CA.ERP.Shared.Dto.Supplier
 {
     /// <summary>
     /// Supplier Dto

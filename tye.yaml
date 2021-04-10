@@ -7,15 +7,12 @@
 name: ca.erp
 services:
 - name: ca-erp-webapp
-  dockerFile: CA.ERP.WebApp/Dockerfile
   project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
   bindings:
   - port: 80
-    containerPort: 80
     protocol: http
     name : http
   - port: 443
-    containerPort: 443
     protocol: https
     name : https
   env:

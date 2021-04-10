@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto.Supplier
+namespace CA.ERP.Shared.Dto.Supplier
 {
     public class SupplierCreate
     {

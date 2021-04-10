@@ -1,6 +1,7 @@
 @page "/purchase-order/create"
 
 @using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Supplier;
 @using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 
 
@@ -21,16 +22,58 @@
     </MudGrid>
     <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
         <MudGrid>
-            <MudItem xs="12" sm="6" md="4">
-                <MudSelect  Required="true" T="BranchView"  Label="@(ViewModel.BranchesIsLoading ? "Loading Branches" : "Branch")" Strict="true" Variant="Variant.Outlined" Format="F2" Disabled="@ViewModel.BranchesIsLoading">
-                    @foreach (var branch in ViewModel.Branches)
-                    {
-                        <MudSelectItem T="BranchView" Value="branch">@branch.Name</MudSelectItem>
-                    }
-                </MudSelect>
+            <MudItem xs="12" sm="6">
+                <MudGrid>
+                    <MudItem xs="6">
+
+
+                        @if (ViewModel.BranchesIsLoading)
+                        {
+                            <MudField>
+                                <MudProgressCircular></MudProgressCircular>
+                                <MudText>Branches</MudText>
+                            </MudField>
+                        }
+                        else
+                        {
+                            <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.Branch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                        }
+
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+
+                                @if (ViewModel.Suppliers.Count <= 0)
+                                {
+                                    <MudField>
+
+                                        <MudText>Supplier</MudText>
+                                        <MudProgressCircular></MudProgressCircular>
+                                    </MudField>
+                                }
+                                else
+                                {
+                                    <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.Supplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                                }
+
+                            </MudItem>
+                            <MudItem xs="12" md="2">
+
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudDatePicker Label="Delivery Date"></MudDatePicker>
+                    </MudItem>
+                </MudGrid>
             </MudItem>
         </MudGrid>
-       
+
     </MudForm>
 
 
@@ -42,6 +85,6 @@
     MudTextField<string> pwField1;
     MudForm form;
 
-
+    string sample = "weee";
 
 }

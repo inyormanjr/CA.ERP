@@ -16,6 +16,11 @@ namespace CA.ERP.Shared.Dto.PurchaseOrder
         public string SupplierName { get; set; }
         public string BranchName { get; set; }
 
+        public PurchaseOrderView()
+        {
+
+        }
+
 
         //public List<PurchaseOrderItemView> PurchaseOrderItems { get; set; }
     }

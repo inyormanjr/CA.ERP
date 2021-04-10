@@ -27,9 +27,16 @@ namespace CA.ERP.Lib.DAL.Repositories
 
         }
 
+        public override async Task<List<Branch>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            IQueryable<Dal.Branch> queryable = generateQuery(status);
+
+            return await queryable.OrderBy(b => b.Name).Select(e => _mapper.Map<Dal.Branch, Branch>(e)).ToListAsync(cancellationToken: cancellationToken);
+        }
+
         public async Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken = default)
         {
-            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == Status.Active).ToListAsync();
+            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == Status.Active).OrderBy(b => b.Name).ToListAsync();
             return _mapper.Map<List<Branch>>(branches);
         }
 

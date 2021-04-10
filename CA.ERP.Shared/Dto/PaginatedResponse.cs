@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,5 +17,7 @@ namespace CA.ERP.Shared.Dto
         /// A list of data
         /// </summary>
         public IEnumerable<T> Data { get; set; }
+
+
     }
 }

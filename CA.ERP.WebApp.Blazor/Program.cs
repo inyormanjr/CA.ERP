@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -25,19 +26,23 @@ namespace CA.ERP.WebApp.Blazor
 
             builder.Services.AddScoped<AuthorizationMessageHandler>();
 
+
+
             builder.Services.AddHttpClient(Constants.ApiErp, client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Erp").Value))
-                 .AddHttpMessageHandler(cfg => {
+                 .AddHttpMessageHandler(cfg =>
+                 {
                      var hadnler = cfg.GetRequiredService<AuthorizationMessageHandler>();
                      hadnler.ConfigureHandler(new List<string>() { builder.Configuration.GetSection("BaseAddress:Erp").Value, builder.Configuration.GetSection("BaseAddress:Erp").Value });
                      return hadnler;
-                 });
+                 }).AddTransientHttpErrorPolicy(BuildHttpErrorPolicy);
 
             builder.Services.AddHttpClient(Constants.ApiIdentity, client => client.BaseAddress = new Uri(builder.Configuration.GetSection("BaseAddress:Identity").Value))
-                .AddHttpMessageHandler(cfg => {
+                .AddHttpMessageHandler(cfg =>
+                {
                     var hadnler = cfg.GetRequiredService<AuthorizationMessageHandler>();
                     hadnler.ConfigureHandler(new List<string>() { builder.Configuration.GetSection("BaseAddress:Erp").Value, builder.Configuration.GetSection("BaseAddress:Identity").Value });
                     return hadnler;
-                });
+                }).AddTransientHttpErrorPolicy(BuildHttpErrorPolicy);
 
             builder.Services.AddMudServices();
 
@@ -50,13 +55,28 @@ namespace CA.ERP.WebApp.Blazor
 
 
             builder.Services.AddScoped<PurchaseOrderService>();
+            builder.Services.AddScoped<SupplierService>();
             builder.Services.AddScoped<BranchService>();
-
 
             builder.Services.AddScoped<PurchaseOrderIndexViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             await builder.Build().RunAsync();
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> BuildHttpErrorPolicy(PolicyBuilder<HttpResponseMessage> builder)
+        {
+            return builder.WaitAndRetryAsync(new[]
+                    {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(5),
+                        TimeSpan.FromSeconds(10)
+                    });
+        }
+
+        public static Policy GetRetryPolicy()
+        {
+            return Policy.Handle<HttpRequestException>().WaitAndRetry(3, count => TimeSpan.FromSeconds(count * 10));
         }
     }
 }

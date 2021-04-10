@@ -153,8 +153,6 @@ namespace CA.ERP.WebApp
 
             services.AddHttpContextAccessor();
 
-
-
             //register repositories
             services.Scan(scan =>
                 scan.FromAssembliesOf(typeof(MasterProductRepository))

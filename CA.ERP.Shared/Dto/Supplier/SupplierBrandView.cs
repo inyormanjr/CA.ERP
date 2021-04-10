@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CA.ERP.WebApp.Dto.Supplier
+namespace CA.ERP.Shared.Dto.Supplier
 {
     public class SupplierBrandView
     {
