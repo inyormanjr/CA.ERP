@@ -32,5 +32,11 @@ namespace CA.ERP.DataAccess.Repositories
             }
             return ret;
         }
+
+        public async Task<List<MasterProduct>> GetManyWithBrandAndSupplierAsync(Guid brandId, Guid supplierId, CancellationToken cancellationToken)
+        {
+            var masterProducts = await _context.SupplierMasterProducts.Where(smp => smp.MasterProduct.BrandId == brandId && smp.SupplierId == supplierId).Select(smp => smp.MasterProduct).ToListAsync();
+            return _mapper.Map<List<MasterProduct>>(masterProducts);
+        }
     }
 }

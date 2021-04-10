@@ -12,12 +12,10 @@ namespace CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMaste
 {
     public class GetManyMasterProductHandler : IRequestHandler<GetManyMasterProductQuery, PaginatedList<MasterProduct>>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMasterProductRepository _masterProductRepository;
 
-        public GetManyMasterProductHandler(IUnitOfWork unitOfWork, IMasterProductRepository masterProductRepository)
+        public GetManyMasterProductHandler(IMasterProductRepository masterProductRepository)
         {
-            _unitOfWork = unitOfWork;
             _masterProductRepository = masterProductRepository;
         }
 

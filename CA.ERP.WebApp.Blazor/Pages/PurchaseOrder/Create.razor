@@ -2,6 +2,7 @@
 
 @using CA.ERP.Shared.Dto.Branch;
 @using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
 @using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 
 
@@ -24,7 +25,7 @@
         <MudGrid>
             <MudItem xs="12" sm="6">
                 <MudGrid>
-                    <MudItem xs="6">
+                    <MudItem xs="10">
                         @if (ViewModel.BranchesIsLoading)
                         {
                             <MudField>
@@ -36,28 +37,19 @@
                             <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.Branch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
                         }
                     </MudItem>
-                    <MudItem xs="12">
-                        <MudGrid>
-                            <MudItem xs="12" md="6">
+                    <MudItem xs="10">
+                        @if (ViewModel.Suppliers.Count <= 0)
+                        {
+                            <MudField>
 
-                                @if (ViewModel.Suppliers.Count <= 0)
-                                {
-                                    <MudField>
+                                <MudText>Loading Supplier</MudText>
 
-                                        <MudText>Loading Supplier</MudText>
-
-                                    </MudField>
-                                }
-                                else
-                                {
-                                    <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
-                                }
-
-                            </MudItem>
-                            <MudItem xs="12" md="2">
-
-                            </MudItem>
-                        </MudGrid>
+                            </MudField>
+                        }
+                        else
+                        {
+                            <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                        }
                     </MudItem>
                 </MudGrid>
             </MudItem>
@@ -70,7 +62,7 @@
             </MudItem>
         </MudGrid>
         <MudGrid>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12" sm="5">
                 @if (ViewModel.SelectedSupplier == null)
                 {
                     <MudField>
@@ -86,6 +78,25 @@
                 else
                 {
                     <MudAutocomplete T="SupplierBrandView" Label="Brand" @bind-Value="ViewModel.SelectedSupplierBrand" SearchFunc="@ViewModel.SearchSupplierBrand" ToStringFunc="@(b => b.BrandName)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                }
+            </MudItem>
+            <MudItem xs="0" sm="1"></MudItem>
+            <MudItem xs="12" sm="5">
+                @if (ViewModel.SelectedSupplier == null)
+                {
+                    <MudField>
+                        <MudText>Please select a  brand</MudText>
+                    </MudField>
+                }
+                else if (ViewModel.SupplierBrands.Count <= 0)
+                {
+                    <MudField>
+                        <MudText>Loading models</MudText>
+                    </MudField>
+                }
+                else
+                {
+                    <MudAutocomplete T="MasterProductView" Label="Model" @bind-Value="ViewModel.SelectedMasterProduct" SearchFunc="@ViewModel.SearchMasterProducts" ToStringFunc="@(b => b.Model)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
                 }
             </MudItem>
         </MudGrid>

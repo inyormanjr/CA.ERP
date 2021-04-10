@@ -152,5 +152,30 @@ namespace CA.ERP.WebApp.Controllers.Api
             
         }
 
+        [HttpGet("{id}/MasterProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dto.Brand.BrandView>> GetMasterProducts(Guid id, CancellationToken cancellationToken)
+        {
+            var query = new GetOneBrandQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    return Ok(_mapper.Map<Dto.Brand.BrandView>(result.Result));
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+
+            return BadRequest(result);
+
+        }
+
     }
 }

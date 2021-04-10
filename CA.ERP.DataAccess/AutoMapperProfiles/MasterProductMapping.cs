@@ -13,6 +13,7 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
     {
         public MasterProductMapping()
         {
+            CreateMap<Dal.MasterProduct, MasterProduct>();
             CreateMap<MasterProduct, Dal.MasterProduct>();
         }
     }

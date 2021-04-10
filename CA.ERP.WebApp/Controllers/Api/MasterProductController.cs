@@ -1,6 +1,7 @@
 using AutoMapper;
 using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.CreateMasterProduct;
 using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProductByBrandAndSupplier;
 using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetOneMasterProduct;
 using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.UpdateMasterProduct;
 using CA.ERP.Domain.MasterProductAgg;
@@ -144,6 +145,19 @@ namespace CA.ERP.WebApp.Controllers.Api
             }
 
             return BadRequest(result);
+        }
+
+
+        [HttpGet("{brandId}/{supplierId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.MasterProduct.MasterProductView>> Get(Guid brandId, Guid supplierId, CancellationToken cancellationToken)
+        {
+            var query = new GetManyMasterProductByBrandAndSupplierQuery(brandId, supplierId);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok( _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result));
+            
         }
     }
 }

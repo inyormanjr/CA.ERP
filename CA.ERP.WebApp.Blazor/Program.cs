@@ -58,6 +58,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<PurchaseOrderService>();
             builder.Services.AddScoped<SupplierService>();
             builder.Services.AddScoped<BranchService>();
+            builder.Services.AddScoped<MasterProductService>();
 
             builder.Services.AddScoped<PurchaseOrderIndexViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();

@@ -1,4 +1,5 @@
 using CA.ERP.Shared.Dto.Branch;
+using CA.ERP.Shared.Dto.MasterProduct;
 using CA.ERP.Shared.Dto.Supplier;
 using CA.ERP.WebApp.Blazor.Pages.Supplier;
 using CA.ERP.WebApp.Blazor.Services;
@@ -18,13 +19,16 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
         private readonly IDialogService _dialogService;
         private readonly BranchService _branchService;
         private readonly SupplierService _supplierService;
+        private readonly MasterProductService _masterProductService;
         private List<BranchView> _branches = new List<BranchView>();
         private bool _branchesIsLoading = false;
-        private SupplierView _supplier;
+        private SupplierView _selectedSupplier;
         private List<SupplierView> _suppliers = new List<SupplierView>();
         private BranchView _branch;
         private List<SupplierBrandView> _supplierBrands = new List<SupplierBrandView>();
         private SupplierBrandView _selectedSupplierBrand;
+        private List<MasterProductView> _masterProducts = new List<MasterProductView>();
+        private MasterProductView _selectedMasterProduct;
 
         public List<BranchView> Branches
         {
@@ -55,11 +59,12 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 
         public SupplierView SelectedSupplier
         {
-            get => _supplier; set
+            get => _selectedSupplier; set
             {
-                _supplier = value;
+                _selectedSupplier = value;
                 OnPropertyChanged("Supplier");
                 LoadSupplierBrands().ConfigureAwait(false);
+                SelectedSupplierBrand = null;
             }
         }
 
@@ -88,18 +93,41 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             get => _selectedSupplierBrand; set
             {
                 _selectedSupplierBrand = value;
+
                 OnPropertyChanged("SelectedSupplierBrand");
+                SelectedMasterProduct = null;
+                LoadMasterProducts().ConfigureAwait(false);
+
             }
         }
 
 
+        public List<MasterProductView> MasterProducts
+        {
+            get => _masterProducts; set
+            {
+                _masterProducts = value;
+                OnPropertyChanged("MasterProducts");
+            }
+        }
 
-        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, IDialogService dialogService, BranchService branchService, SupplierService supplierService)
+        public MasterProductView SelectedMasterProduct
+        {
+            get => _selectedMasterProduct; set
+            {
+                _selectedMasterProduct = value;
+                OnPropertyChanged("SelectedMasterProduct");
+            }
+        }
+
+
+        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, IDialogService dialogService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
         {
             _logger = logger;
             _dialogService = dialogService;
             _branchService = branchService;
             _supplierService = supplierService;
+            _masterProductService = masterProductService;
             Init().ConfigureAwait(false);
 
         }
@@ -149,7 +177,18 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             if (SelectedSupplier != null)
             {
                 SupplierBrands = await _supplierService.GetSupplierBrandsAsync(SelectedSupplier.Id);
-                _logger.LogDebug("Supplier Brands Count {SupllierBrandCount}", SupplierBrands);
+                _logger.LogDebug("Supplier Brands Count {SupllierBrandCount}", SupplierBrands.Count);
+            }
+
+        }
+
+        private async Task LoadMasterProducts()
+        {
+            _logger.LogDebug("Loading  MasterProducts");
+            if (SelectedSupplierBrand != null)
+            {
+                MasterProducts = await _masterProductService.GetMasterProductsWithBrandAndSupplier(SelectedSupplierBrand.BrandId, SelectedSupplierBrand.SupplierId);
+                _logger.LogDebug("MasterProducts Count {MasterProductsCount}", MasterProducts.Count);
             }
 
         }
@@ -172,6 +211,12 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             var supplierBrands = SupplierBrands.Where(s => s.BrandName.Contains(brandName ?? "", StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.BrandName).ToList();
             return Task.FromResult<IEnumerable<SupplierBrandView>>(supplierBrands);
 
+        }
+
+        public Task<IEnumerable<MasterProductView>> SearchMasterProducts(string model)
+        {
+            var masterProducts = MasterProducts.Where(s => s.Model.Contains(model ?? "", StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.Model).ToList();
+            return Task.FromResult<IEnumerable<MasterProductView>>(masterProducts);
         }
     }
 }
