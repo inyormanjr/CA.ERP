@@ -5,33 +5,35 @@
 
 
 
-@inherits ViewBase<PurchaseOrderIndexViewModel>
+@inherits ViewBase<PurchaseOrderListViewModel>
 
 @attribute [Authorize]
 
 <MudContainer>
-    <MudText Typo="Typo.h6">Purchase Orders</MudText>
-    <MudGrid>
-        <MudItem xs="12" md="2">
-            <MudTextField @bind-Value="PoNumber" AdornmentIcon="@Icons.Material.Outlined.Receipt" Adornment="Adornment.Start" Placeholder="P.O. Number" Class="ml-4"></MudTextField>
-        </MudItem>
-        <MudItem xs="12" md="2">
-            <MudDatePicker Editable="true" Adornment="Adornment.Start" Class="ml-4" @ref="_picker">
+    <MudPaper Class="mt-4 pa-4">
+        <MudText Typo="Typo.h6">Purchase Orders</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="2">
+                <MudTextField @bind-Value="PoNumber" AdornmentIcon="@Icons.Material.Outlined.Receipt" Adornment="Adornment.Start" Placeholder="P.O. Number" Class="ml-4"></MudTextField>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudDatePicker Editable="true" Adornment="Adornment.Start" Class="ml-4" @ref="_picker">
 
-            </MudDatePicker>
-        </MudItem>
-        <MudItem xs="12" md="2">
-            <MudButton Class="mt-4" Variant="Variant.Filled" DisableElevation="true" Color="Color.Secondary" OnClick="Search">Search</MudButton>
-        </MudItem>
-        <MudItem xs="0" md="3">
+                </MudDatePicker>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudButton Class="mt-4" Variant="Variant.Filled" DisableElevation="true" Color="Color.Secondary" OnClick="Search">Search</MudButton>
+            </MudItem>
+            <MudItem xs="0" md="3">
 
-        </MudItem>
-        <MudItem xs="12" md="3" Class="d-flex flex-row-reverse ">
+            </MudItem>
+            <MudItem xs="12" md="3" Class="d-flex flex-row-reverse ">
 
-            <MudButton Class="mt-4 px-8" Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Link="/purchase-order/create">Create</MudButton>
-        </MudItem>
-    </MudGrid>
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<PurchaseOrderView>>>(ServerReload))" Hover="true" Striped="true" @ref="table">
+                <MudButton Class="mt-4 px-8" Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Link="/purchase-order/create">Create</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+    <MudTable Class="mt-8" ServerData="@(new Func<TableState, Task<TableData<PurchaseOrderView>>>(ServerReload))" Hover="true" Striped="true" @ref="table">
 
         <HeaderContent>
             <MudTh>P.O. #</MudTh>

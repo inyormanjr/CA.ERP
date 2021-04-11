@@ -1,4 +1,5 @@
 using CA.ERP.WebApp.Blazor.Services;
+using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -68,13 +69,16 @@ namespace CA.ERP.WebApp.Blazor
             });
 
 
+
             builder.Services.AddScoped<PurchaseOrderService>();
             builder.Services.AddScoped<SupplierService>();
             builder.Services.AddScoped<BranchService>();
             builder.Services.AddScoped<MasterProductService>();
 
-            builder.Services.AddScoped<PurchaseOrderIndexViewModel>();
+            builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
+
+            builder.Services.AddScoped<UserListViewModel>();
 
             await builder.Build().RunAsync();
                 

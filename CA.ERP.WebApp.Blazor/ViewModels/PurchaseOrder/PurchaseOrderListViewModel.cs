@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 {
-    public class PurchaseOrderIndexViewModel : ViewModelBase
+    public class PurchaseOrderListViewModel : ViewModelBase
     {
         private readonly PurchaseOrderService _purchaseOrderService;
 
-        public PurchaseOrderIndexViewModel(PurchaseOrderService purchaseOrderService)
+        public PurchaseOrderListViewModel(PurchaseOrderService purchaseOrderService)
         {
             _purchaseOrderService = purchaseOrderService;
         }
