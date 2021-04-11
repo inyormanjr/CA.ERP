@@ -1,4 +1,4 @@
-﻿using CA.Identity.Models;
+using CA.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -15,6 +15,9 @@ namespace CA.Identity.Data.Mapping
             builder.HasMany(t => t.UserBranches)
                 .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId);
+
+
+
         }
     }
 }

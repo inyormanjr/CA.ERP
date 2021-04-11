@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto.User
+namespace CA.ERP.Shared.Dto.User
 {
     public class UserBranchView
     {
-        public Guid UserId { get; set; }
-        public Guid BranchId { get; set; }
+        public string UserId { get; set; }
+        public string BranchId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         

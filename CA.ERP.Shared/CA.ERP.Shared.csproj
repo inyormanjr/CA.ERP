@@ -10,19 +10,16 @@
     <Compile Remove="Dto\StockReceive\**" />
     <Compile Remove="Dto\Stock\**" />
     <Compile Remove="Dto\Transaction\**" />
-    <Compile Remove="Dto\User\**" />
     <EmbeddedResource Remove="Dto\Customer\**" />
     <EmbeddedResource Remove="Dto\Payment\**" />
     <EmbeddedResource Remove="Dto\StockReceive\**" />
     <EmbeddedResource Remove="Dto\Stock\**" />
     <EmbeddedResource Remove="Dto\Transaction\**" />
-    <EmbeddedResource Remove="Dto\User\**" />
     <None Remove="Dto\Customer\**" />
     <None Remove="Dto\Payment\**" />
     <None Remove="Dto\StockReceive\**" />
     <None Remove="Dto\Stock\**" />
     <None Remove="Dto\Transaction\**" />
-    <None Remove="Dto\User\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -27,6 +27,12 @@ namespace CA.Identity.Data.Migrations
                     b.Property<string>("BranchId")
                         .HasColumnType("text");
 
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BranchName")
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "BranchId");
 
                     b.ToTable("UserBranches");
@@ -314,11 +320,17 @@ namespace CA.Identity.Data.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("text");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<string>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -340,6 +352,23 @@ namespace CA.Identity.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CA.Identity.Models.ApplicationUserRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleId1")
+                        .HasColumnType("text");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("RoleId1");
+
+                    b.HasDiscriminator().HasValue("ApplicationUserRole");
                 });
 
             modelBuilder.Entity("CA.Identity.Data.UserBranch", b =>
@@ -404,9 +433,24 @@ namespace CA.Identity.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CA.Identity.Models.ApplicationUserRole", b =>
+                {
+                    b.HasOne("CA.Identity.Models.ApplicationUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId1");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("CA.Identity.Models.ApplicationUser", b =>
                 {
                     b.Navigation("UserBranches");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }
