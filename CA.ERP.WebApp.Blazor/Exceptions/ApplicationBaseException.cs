@@ -1,3 +1,4 @@
+using CA.ERP.WebApp.Blazor.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,18 +16,17 @@ namespace CA.ERP.WebApp.Blazor.Exceptions
 
         public static async Task<ApplicationBaseException> Create(HttpResponseMessage httpResponseMessage)
         {
-            var httpErrorObject = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var anonymousErrorObject =  new { Message = "", ModelState = new Dictionary<string, string[]>() };
-
-            // Deserialize:
-            var deserializedErrorObject =
-                JsonConvert.DeserializeAnonymousType(httpErrorObject, anonymousErrorObject);
-
+           
             if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
+                var errorString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                return new ValidationException(anonymousErrorObject.Message, deserializedErrorObject.ModelState ?? new Dictionary<string, string[]>());
+                // Deserialize:
+                var error =
+                    JsonConvert.DeserializeObject<Error>(errorString);
+
+
+                return new ValidationException(error.Title, error.Errors ?? new Dictionary<string, string[]>());
 
             }
 

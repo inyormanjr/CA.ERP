@@ -18,7 +18,7 @@ namespace CA.ERP.WebApp.Blazor.Services
 {
     public class PurchaseOrderService
     {
-        private const string GetPurchaseOrderEndpoint = "/api/PurchaseOrder";
+        private const string PurchaseOrderEndpoint = "/api/PurchaseOrder";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PurchaseOrderService> _logger;
 
@@ -34,7 +34,7 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             _logger.LogDebug("pagination", pagination);
 
-            var uri = new Uri(client.BaseAddress, GetPurchaseOrderEndpoint);
+            var uri = new Uri(client.BaseAddress, PurchaseOrderEndpoint);
 
             uri = uri.AddQuery("skip", pagination.Skip.ToString());
             uri = uri.AddQuery("take", pagination.Take.ToString());
@@ -62,6 +62,27 @@ namespace CA.ERP.WebApp.Blazor.Services
             }
             var paginatedPurchaseOrders = await response.Content.ReadFromJsonAsync<PaginatedResponse<PurchaseOrderView>>();
             return paginatedPurchaseOrders;
+        }
+
+        public async Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiErp);
+
+
+
+            var uri = new Uri(client.BaseAddress, PurchaseOrderEndpoint);
+
+            var createRequest = new CreateBaseRequest<PurchaseOrderCreate>() { Data = purchaseOrder };
+
+            var response = await client.PostAsJsonAsync(uri, createRequest);
+            if (!response.IsSuccessStatusCode)
+            {
+                var exception = await ApplicationBaseException.Create(response);
+                throw exception;
+            }
+
+            var createResponse = await response.Content.ReadFromJsonAsync<CreateResponse>();
+            return createResponse.Id;
         }
     }
 }

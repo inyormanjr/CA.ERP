@@ -31,15 +31,14 @@ services:
     protocol: https
     name : https
 
+
 - name: ca-frontend
   project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
   bindings:
   - port: 6000
-    containerPort: 80
     protocol: http
     name : http
   - port: 6001
-    containerPort: 443
     protocol: https
     name : https
 

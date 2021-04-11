@@ -8,12 +8,12 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurcha
 {
     public class CreatePurchaseOrderCommand : IRequest<DomainResult<Guid>>
     {
-        public DateTime DeliveryDate { get; set; }
+        public DateTimeOffset DeliveryDate { get; set; }
         public Guid SupplierId { get; set; }
         public Guid DesntinationBranchId { get; set; }
         public List<CreatePurchaseOrderItem> PurchaseOrderItems { get; set; }
 
-        public CreatePurchaseOrderCommand(DateTime deliveryDate, Guid supplierId, Guid desntinationBranchId, List<CreatePurchaseOrderItem> purchaseOrderItems)
+        public CreatePurchaseOrderCommand(DateTimeOffset deliveryDate, Guid supplierId, Guid desntinationBranchId, List<CreatePurchaseOrderItem> purchaseOrderItems)
         {
             DeliveryDate = deliveryDate;
             SupplierId = supplierId;

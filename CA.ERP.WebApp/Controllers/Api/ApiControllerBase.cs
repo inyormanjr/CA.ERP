@@ -4,11 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
     public class ApiControllerBase : ControllerBase
     {
+
         protected ActionResult HandleDomainResult(DomainResult domainResult)
         {
             switch (domainResult.ErrorType)
@@ -21,7 +26,9 @@ namespace CA.ERP.WebApp.Controllers.Api
                 default:
                     break;
             }
-            return BadRequest(domainResult);
+            ModelState.AddModelError(domainResult.ErrorCode, domainResult.ErrorMessage);
+
+            return this.ValidationProblem();
         }
     }
 }

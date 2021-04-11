@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace CA.ERP.Shared.Dto.PurchaseOrder
             PurchaseOrderItems = new List<PurchaseOrderItemCreate>();
         }
         [Required]
-        public DateTime DeliveryDate { get; set; }
+        public DateTimeOffset DeliveryDate { get; set; }
         [Required]
         public Guid SupplierId { get; set; }
         [Required]

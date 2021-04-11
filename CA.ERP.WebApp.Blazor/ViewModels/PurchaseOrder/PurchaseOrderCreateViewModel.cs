@@ -1,6 +1,8 @@
 using CA.ERP.Shared.Dto.Branch;
 using CA.ERP.Shared.Dto.MasterProduct;
+using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.Shared.Dto.Supplier;
+using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Pages.Supplier;
 using CA.ERP.WebApp.Blazor.Services;
 using Microsoft.Extensions.Logging;
@@ -16,7 +18,8 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
     public class PurchaseOrderCreateViewModel : ViewModelBase
     {
         private readonly ILogger<PurchaseOrderCreateViewModel> _logger;
-        private readonly IDialogService _dialogService;
+        private readonly ISnackbar _snackbar;
+        private readonly PurchaseOrderService _purchaseOrderService;
         private readonly BranchService _branchService;
         private readonly SupplierService _supplierService;
         private readonly MasterProductService _masterProductService;
@@ -29,6 +32,8 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
         private SupplierBrandView _selectedSupplierBrand;
         private List<MasterProductView> _masterProducts = new List<MasterProductView>();
         private MasterProductView _selectedMasterProduct;
+        private DateTime? _deliveryDate;
+        private List<string> _errors;
 
         public List<BranchView> Branches
         {
@@ -39,7 +44,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             }
         }
 
-        public BranchView Branch
+        public BranchView SelectedBranch
         {
             get => _branch; set
             {
@@ -62,9 +67,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             get => _selectedSupplier; set
             {
                 _selectedSupplier = value;
-                OnPropertyChanged("Supplier");
                 LoadSupplierBrands().ConfigureAwait(false);
                 SelectedSupplierBrand = null;
+                OnPropertyChanged("Supplier");
+                
             }
         }
 
@@ -93,11 +99,15 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             get => _selectedSupplierBrand; set
             {
                 _selectedSupplierBrand = value;
+                SelectedMasterProduct = null;
+                if (_selectedSupplierBrand != null)
+                {
+                    LoadMasterProducts().ConfigureAwait(false);
+
+                }
+
 
                 OnPropertyChanged("SelectedSupplierBrand");
-                SelectedMasterProduct = null;
-                LoadMasterProducts().ConfigureAwait(false);
-
             }
         }
 
@@ -120,16 +130,108 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             }
         }
 
+        public PurchaseOrderCreate PurchaseOrderCreate { get; set; } = new PurchaseOrderCreate();
 
-        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, IDialogService dialogService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
+        public DateTime? DeliveryDate
+        {
+            get => _deliveryDate; set
+            {
+                _deliveryDate = value;
+                OnPropertyChanged("DeliveryDate");
+            }
+        }
+
+        public bool CanSave
+        {
+            get
+            {
+                return DeliveryDate != null && SelectedBranch != null && PurchaseOrderCreate.PurchaseOrderItems.Count > 0;
+            }
+        }
+
+        public List<string> Errors
+        {
+            get => _errors; set
+            {
+                _errors = value;
+                OnPropertyChanged("Errors");
+            }
+        }
+
+        public bool IsSaving { get; set; }
+
+        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, ISnackbar snackbar, PurchaseOrderService purchaseOrderService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
         {
             _logger = logger;
-            _dialogService = dialogService;
+            _snackbar = snackbar;
+            _purchaseOrderService = purchaseOrderService;
             _branchService = branchService;
             _supplierService = supplierService;
             _masterProductService = masterProductService;
             Init().ConfigureAwait(false);
 
+
+        }
+
+        public void AddPurchaseOrderItem()
+        {
+            if (SelectedMasterProduct != null && SelectedSupplierBrand != null)
+            {
+                var purchaseOrderItem = new PurchaseOrderItemCreate()
+                {
+                    BrandName = SelectedSupplierBrand.BrandName,
+                    Model = SelectedMasterProduct.Model,
+                    MasterProductId = SelectedMasterProduct.Id
+
+                };
+
+                PurchaseOrderCreate.PurchaseOrderItems.Add(purchaseOrderItem);
+                SelectedMasterProduct = null;
+                OnPropertyChanged("PurchaseOrderCreate");
+            }
+
+        }
+
+        public void RemovePurchaseOrderItem(PurchaseOrderItemCreate purchaseOrderItem)
+        {
+            PurchaseOrderCreate.PurchaseOrderItems.Remove(purchaseOrderItem);
+            OnPropertyChanged("PurchaseOrderCreate");
+        }
+
+
+
+        public async Task SaveAsync()
+        {
+            if (CanSave)
+            {
+                try
+                {
+                    IsSaving = true;
+                    OnPropertyChanged("IsSaving");
+
+                    PurchaseOrderCreate.DeliveryDate = DateTime.SpecifyKind(DeliveryDate.Value, DateTimeKind.Local);
+                    PurchaseOrderCreate.DestinationBranchId = SelectedBranch.Id;
+                    PurchaseOrderCreate.SupplierId = SelectedSupplier.Id;
+
+                    var id = await _purchaseOrderService.CreatePurchaseOrderAsync(PurchaseOrderCreate);
+                    _snackbar.Add("Saving successful");
+                }
+                catch (ValidationException ex)
+                {
+                    _snackbar.Add(ex.Message);
+                    Errors = ex.ValidationErrors.SelectMany(ve => ve.Value).ToList();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error saving purchase order", ex);
+                    _snackbar.Add(ex.Message, Severity.Error);
+                }
+                finally
+                {
+                    IsSaving = false;
+                    OnPropertyChanged("IsSaving");
+                }
+            }
         }
 
         public async Task Init()
@@ -193,10 +295,12 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 
         }
 
+
+
         public Task<IEnumerable<SupplierView>> SearchSuppliers(string name)
         {
-            var suppliers = Suppliers.Where(s => s.Name.Contains(name ?? "", StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.Name).ToList();
-            _logger.LogDebug("Supplier Count {Count}", suppliers.Count);
+            var suppliers = Suppliers.Where(s => s.Name.StartsWith(name ?? "", StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.Name).ToList();
+            
             return Task.FromResult<IEnumerable<SupplierView>>(suppliers);
         }
 

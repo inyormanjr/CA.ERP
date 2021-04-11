@@ -163,12 +163,6 @@ namespace CA.ERP.WebApp
             );
 
 
-
-
-
-
-
-
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 

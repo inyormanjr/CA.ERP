@@ -59,6 +59,7 @@ namespace CA.ERP.WebApp.Controllers.Api
 
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.PurchaseOrder.CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
         {
+
             var createPurchaseOrderItems = request.Data.PurchaseOrderItems.Select(poi => new CreatePurchaseOrderItem(poi.MasterProductId, poi.OrderedQuantity, poi.FreeQuantity, poi.CostPrice, poi.Discount, poi.TotalCostPrice, poi.DeliveredQuantity));
             var command = new CreatePurchaseOrderCommand(request.Data.DeliveryDate, request.Data.SupplierId, request.Data.DestinationBranchId, createPurchaseOrderItems.ToList());
 
