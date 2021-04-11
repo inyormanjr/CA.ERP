@@ -9,6 +9,8 @@
 
 @inherits ViewBase<PurchaseOrderCreateViewModel>
 
+@attribute [Authorize(Roles = "Admin, Manager")]
+
 <MudContainer>
 
     <MudGrid>

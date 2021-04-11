@@ -42,6 +42,7 @@ namespace CA.Identity.Services
                 foreach (var roleName in roles)
                 {
                     claims.Add(new Claim(JwtClaimTypes.Role, roleName));
+                    claims.Add(new Claim(ClaimTypes.Role, roleName));
                     if (_roleManager.SupportsRoleClaims)
                     {
                         IdentityRole role = await _roleManager.FindByNameAsync(roleName);

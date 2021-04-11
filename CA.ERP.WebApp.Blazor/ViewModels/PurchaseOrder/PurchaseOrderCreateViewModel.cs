@@ -10,6 +10,7 @@ using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
@@ -240,6 +241,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 
 
             var loadSuppliersTask = LoadSuppliers();
+
 
 
             await Task.WhenAll(loadBranchsTask, loadSuppliersTask);
