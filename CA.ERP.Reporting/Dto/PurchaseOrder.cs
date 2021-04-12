@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.ReportDto
+namespace CA.ERP.Reporting.Dto
 {
     public class PurchaseOrder
     {
         public string Number { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTimeOffset OrderedDate { get; set; }
+        public DateTimeOffset DeliveryDate { get; set; }
 
-        public DateTime DeliveryDate { get; set; }
 
         public decimal TotalCostPrice { get; set; }
 

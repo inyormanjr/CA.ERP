@@ -55,11 +55,15 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="Controllers\Report\**" />
+    <Compile Remove="Views\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="Controllers\Report\**" />
+    <Content Remove="Views\**" />
     <EmbeddedResource Remove="Controllers\Report\**" />
+    <EmbeddedResource Remove="Views\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="Controllers\Report\**" />
+    <None Remove="Views\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -91,6 +95,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Pages\Error.cshtml" />
+    <None Include="Pages\_ViewImports.cshtml" />
     <None Include="wwwroot\images\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -20,6 +20,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public string SupplierName { get; private set; }
         public string BranchName { get; private set; }
         public DateTimeOffset DeliveryDate { get; private set; }
+        public DateTimeOffset OrderedDate { get; set; }
 
         public Guid OrderedById { get; private set; }
         public Guid SupplierId { get; private set; }

@@ -1,8 +1,8 @@
-﻿@*
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    @model CA.ERP.WebApp.ReportDto.PurchaseOrder;
+    @model CA.ERP.Reporting.Dto.PurchaseOrder;
 }
 
 
@@ -30,7 +30,7 @@
         <div class="container column item">
             <dev class="container row space-between">
                 <p class="item text-align-left">PO Date:</p>
-                <p class="item text-align-right bold">@Model.Date.ToString(ViewBag.DateFormat)</p>
+                <p class="item text-align-right bold">@Model.OrderedDate.ToString(ViewBag.DateFormat)</p>
             </dev>
             <dev class="container row space-between">
                 <p class="item text-align-left">Delivery Date:</p>

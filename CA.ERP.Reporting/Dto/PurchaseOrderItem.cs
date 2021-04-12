@@ -1,4 +1,4 @@
-﻿namespace CA.ERP.WebApp.ReportDto
+namespace CA.ERP.Reporting.Dto
 {
     public class PurchaseOrderItem
     {

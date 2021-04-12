@@ -14,6 +14,7 @@ namespace CA.ERP.DataAccess.Entities
         }
         public string Barcode { get; set; }
         public DateTimeOffset DeliveryDate { get; set; }
+        public DateTimeOffset OrderedDate { get; set; }
         public decimal TotalCostPrice { get; set; }
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }

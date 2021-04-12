@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using CA.ERP.Domain.ReportAgg;
 using jsreport.AspNetCore;
 using jsreport.Types;
 
-namespace CA.ERP.WebApp.Controllers.Report
+namespace CA.ERP.Reporting.Controllers
 {
-    [Route("report/[controller]")]
+    [Route("[controller]")]
     public class BaseReportController : Controller
     {
         private IConfiguration _configuration;
@@ -31,23 +30,5 @@ namespace CA.ERP.WebApp.Controllers.Report
             ViewData.Add("QuantityFormat", "0.###");
         }
 
-        protected void SetFormat(FileFormat format)
-        {
-            switch (format)
-            {
-                case FileFormat.Pdf:
-                    HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
-                    break;
-                case FileFormat.Docx:
-                    HttpContext.JsReportFeature().Recipe(Recipe.Docx);
-                    break;
-                case FileFormat.Xlsx:
-                    HttpContext.JsReportFeature().Recipe(Recipe.Xlsx);
-                    break;
-                default:
-                    HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
-                    break;
-            }
-        }
     }
 }
