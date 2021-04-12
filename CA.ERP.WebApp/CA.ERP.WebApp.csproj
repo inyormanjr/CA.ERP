@@ -25,19 +25,25 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
     <PackageReference Include="jsreport.AspNetCore" Version="2.1.0" />
     <PackageReference Include="jsreport.Client" Version="3.1.0" />
+    <PackageReference Include="MassTransit" Version="7.1.7" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.1.7" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.1.7" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="7.1.7" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventSource" Version="5.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="NetBarcode" Version="1.4.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
@@ -48,9 +54,28 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="Controllers\Report\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Controllers\Report\**" />
+    <EmbeddedResource Remove="Controllers\Report\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="Controllers\Report\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\Api\AuthenticationController.cs" />
+    <Compile Remove="Controllers\Api\CustomerController.cs" />
+    <Compile Remove="Controllers\Api\PaymentController.cs" />
+    <Compile Remove="Controllers\Api\StockController.cs" />
+    <Compile Remove="Controllers\Api\StockReceiveController.cs" />
+    <Compile Remove="Controllers\Api\TransactionController.cs" />
+    <Compile Remove="Controllers\Api\UserController.cs" />
+    <Compile Remove="Mapping\CustomerMapping.cs" />
+    <Compile Remove="Mapping\StockMapping.cs" />
+    <Compile Remove="Mapping\StocReceiveMapping.cs" />
+    <Compile Remove="Mapping\UserMapping.cs" />
+    <Compile Remove="Mapping\ValidationErrorMapping.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,12 +83,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CA.ERP.Application\CA.ERP.Application.csproj" />
     <ProjectReference Include="..\CA.ERP.DataAccess\CA.ERP.DataAccess.csproj" />
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="logs\" />
+    <ProjectReference Include="..\CA.ERP.Infrastructure\CA.ERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

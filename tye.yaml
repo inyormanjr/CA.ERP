@@ -1,0 +1,72 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: ca.erp
+services:
+- name: ca-erp-webapp
+  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+  bindings:
+  - port: 80
+    protocol: http
+    name : http
+  - port: 443
+    protocol: https
+    name : https
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
+  - name: ASPNETCORE_URLS
+    value: http://+:80
+
+- name: ca-identity
+  project: CA.Identity/CA.Identity.csproj
+  bindings:
+  - port: 5000
+    protocol: http
+    name : http
+  - port: 5001
+    protocol: https
+    name : https
+
+
+- name: ca-frontend
+  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
+  bindings:
+  - port: 6000
+    protocol: http
+    name : http
+  - port: 6001
+    protocol: https
+    name : https
+
+- name: jsreportserver
+  image: jsreport/jsreport:2.11.0-full
+  bindings:
+  - port: 5488
+    containerPort: 5488
+    protocol: http
+    name : reporthttp
+
+
+- name: postgress
+  image: postgres:13.2
+  bindings:
+  - port: 5432
+    containerPort: 5432
+  env:
+  - name: POSTGRES_PASSWORD
+    value: DbPassword123@
+
+  volumes:
+   - source: ./data/postgresql
+     target: /var/lib/postgresql/data
+
+- name: rabbitmq
+  image: rabbitmq:3.8
+  bindings:
+  - port: 5672
+    containerPort: 5672
+

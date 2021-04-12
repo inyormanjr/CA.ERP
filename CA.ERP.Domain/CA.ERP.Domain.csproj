@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -10,7 +10,49 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BankAgg\**" />
+    <Compile Remove="CustomerAgg\**" />
+    <Compile Remove="PaymentAgg\**" />
+    <Compile Remove="RebateMonthlyAgg\**" />
+    <Compile Remove="ReportAgg\**" />
+    <Compile Remove="StockAgg\**" />
+    <Compile Remove="StockCounterAgg\**" />
+    <Compile Remove="StockInventoryAgg\**" />
+    <Compile Remove="StockMoveAgg\**" />
+    <Compile Remove="StockReceiveAgg\**" />
+    <Compile Remove="TransactionAgg\**" />
+    <EmbeddedResource Remove="BankAgg\**" />
+    <EmbeddedResource Remove="CustomerAgg\**" />
+    <EmbeddedResource Remove="PaymentAgg\**" />
+    <EmbeddedResource Remove="RebateMonthlyAgg\**" />
+    <EmbeddedResource Remove="ReportAgg\**" />
+    <EmbeddedResource Remove="StockAgg\**" />
+    <EmbeddedResource Remove="StockCounterAgg\**" />
+    <EmbeddedResource Remove="StockInventoryAgg\**" />
+    <EmbeddedResource Remove="StockMoveAgg\**" />
+    <EmbeddedResource Remove="StockReceiveAgg\**" />
+    <EmbeddedResource Remove="TransactionAgg\**" />
+    <None Remove="BankAgg\**" />
+    <None Remove="CustomerAgg\**" />
+    <None Remove="PaymentAgg\**" />
+    <None Remove="RebateMonthlyAgg\**" />
+    <None Remove="ReportAgg\**" />
+    <None Remove="StockAgg\**" />
+    <None Remove="StockCounterAgg\**" />
+    <None Remove="StockInventoryAgg\**" />
+    <None Remove="StockMoveAgg\**" />
+    <None Remove="StockReceiveAgg\**" />
+    <None Remove="TransactionAgg\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="PurchaseOrderAgg\PurchaseOrderService.cs" />
+    <Compile Remove="SupplierAgg\SupplierService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="9.3.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
@@ -20,6 +62,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CA.ERP.Common\CA.ERP.Common.csproj" />
+    <ProjectReference Include="..\CA.ERP.Domain.Core\CA.ERP.Domain.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

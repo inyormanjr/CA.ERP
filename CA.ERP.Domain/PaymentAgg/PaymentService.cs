@@ -1,5 +1,5 @@
 ﻿using CA.ERP.Domain.Base;
-using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Common.ResultTypes;
 using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation;

@@ -1,7 +1,6 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
-using CA.ERP.Domain.Common;
-using CA.ERP.Domain.Helpers;
+using CA.ERP.Domain.Common.ResultTypes;
 using CA.ERP.Domain.StockCounterAgg;
 using CA.ERP.Domain.StockReceiveAgg;
 using CA.ERP.Domain.UnitOfWorkAgg;
@@ -21,48 +20,44 @@ namespace CA.ERP.Domain.StockAgg
 {
     public class StockService : ServiceBase<Stock>
     {
-    private readonly IDateTimeHelper _dateTimeHelper;
-    private readonly IStockCounterFactory _stockCounterFactory;
+        private readonly IStockNumberGenerator _stockNumberGenerator;
+        private readonly IStockCounterFactory _stockCounterFactory;
         private readonly IBranchPermissionValidator<Branch> _branchBranchPermissionValidator;
         private readonly IBranchRepository _branchRepository;
         private readonly IStockCounterRepository _stockCounterRepository;
         private readonly IStockRepository _stockRepository;
 
-        public StockService(IUnitOfWork unitOfWork, IDateTimeHelper dateTimeHelper, IStockCounterFactory stockCounterFactory, IBranchPermissionValidator<Branch> branchBranchPermissionValidator, IBranchRepository branchRepository, IStockCounterRepository stockCounterRepository, IStockRepository repository, IValidator<Stock> validator, IUserHelper userHelper) : base(unitOfWork, repository, validator, userHelper)
+        public StockService(IUnitOfWork unitOfWork, IStockCounterFactory stockCounterFactory, IBranchPermissionValidator<Branch> branchBranchPermissionValidator, IBranchRepository branchRepository, IStockCounterRepository stockCounterRepository, IStockRepository repository, IValidator<Stock> validator, IUserHelper userHelper, IStockNumberGenerator stockNumberGenerator) : base(unitOfWork, repository, validator, userHelper)
         {
-      _dateTimeHelper = dateTimeHelper;
-      _stockCounterFactory = stockCounterFactory;
+            _stockNumberGenerator = stockNumberGenerator;
+            _stockCounterFactory = stockCounterFactory;
             _branchBranchPermissionValidator = branchBranchPermissionValidator;
             _branchRepository = branchRepository;
             _stockCounterRepository = stockCounterRepository;
             _stockRepository = repository;
         }
 
-        public async Task<StockNumberGenerator> GetStockNumberGenerator(Guid branchId)
+        public async Task<OneOf<IEnumerable<string>, NotFound, Forbidden>> GenerateStockNumbersAsync(Guid branchId, int count)
         {
-            var branchOption = await _branchRepository.GetByIdAsync(branchId);
-            return await branchOption.Match<Task<StockNumberGenerator>>(
-                f0: async branch => {
-                    var stockCounterOption = await _stockCounterRepository.GetStockCounterAsync(branch.Code);
-                    var stockCounter = stockCounterOption.Match(f0: st => st, f1: _ => _stockCounterFactory.CreateFresh(branch.Code));
-                    return new StockNumberGenerator(_dateTimeHelper, stockCounter);
+            throw new NotImplementedException();
+            //var branchOption = await _branchRepository.GetByIdAsync(branchId);
+            //return await branchOption.Match<Task<OneOf<IEnumerable<string>, NotFound, Forbidden>>>(
+            //    f0: async branch => {
+            //        OneOf<IEnumerable<string>, NotFound, Forbidden> ret;
+            //        if (await _branchBranchPermissionValidator.HasPermissionAsync(branch))
+            //        {
+            //            ret = default(Forbidden);
+            //        }
+            //        var stockCounterOption = await _stockCounterRepository.GetStockCounterAsync(branch.Code);
+            //        var stockCounter = stockCounterOption.Match(f0: st => st, f1: _ => _stockCounterFactory.CreateFresh(branch.Code));
+            //        IEnumerable<string> stockNumbers = await _stockNumberGenerator.GenerateStockNumberAsync(stockCounter, count);
 
-                        
-                },
-                f1: _ =>  throw new Exception("Branch Not Found")
-            );
+            //        ret = stockNumbers.ToList();
+            //        return ret;
+            //    },
+            //    f1: async _ => default(NotFound) );
             
             
-        }
-
-        public async Task<IEnumerable<string>> GenerateStockNumbersAsync(Guid branchId, int count, CancellationToken cancellationToken)
-        {
-            var stockNumberGenerator = await GetStockNumberGenerator(branchId);
-            var stockNumbers = await stockNumberGenerator.GenerateStockNumberAsync();
-            var ret = stockNumbers.Take(count).ToList();
-            await _stockCounterRepository.AddOrUpdateStockCounterAsync(stockNumberGenerator.StockCounter, cancellationToken);
-            await _unitOfWork.CommitAsync();
-            return ret;
         }
 
         public async Task<OneOf<Guid, List<ValidationFailure>, NotFound>> UpdateStockAsync(Guid id, Guid masterProductId, string serialNumber, decimal costPrice, CancellationToken cancellationToken)

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BranchAgg;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,24 +8,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using Dto = CA.ERP.WebApp.Dto;
+using Dto = CA.ERP.Shared.Dto;
 using Dom = CA.ERP.Domain.BranchAgg;
 using OneOf;
 using OneOf.Types;
 using Microsoft.AspNetCore.Authorization;
-using CA.ERP.WebApp.Dto;
+using CA.ERP.Shared.Dto;
+using CA.ERP.Domain.Core.DomainResullts;
+using MediatR;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.GetOneBranch;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.CreateBranch;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.UpdateBranch;
+using CA.ERP.Application.CommandQuery.BranchCommandQuery.DeleteBranch;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
+    [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
-    public class BranchController:BaseApiController
+    public class BranchController: ApiControllerBase
     {
-        private readonly BranchService _branchService;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public BranchController(IServiceProvider serviceProvider, BranchService branchService)
-            : base(serviceProvider)
+        public BranchController(IMediator mediator, IMapper mapper)
         {
-            _branchService = branchService;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
 
@@ -36,12 +46,15 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.Branch.BranchView>>> Get()
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.Branch.BranchView>>> Get(CancellationToken cancellationToken)
         {
-            var branches = await _branchService.GetManyAsync();
-            var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(branches);
-            var response = new Dto.GetManyResponse<Dto.Branch.BranchView>() {
-                Data = dtoBranches
+            var query = new GetManyBranchQuery();
+            var paginatedBranches = await _mediator.Send(query, cancellationToken);
+
+            var dtoBranches = _mapper.Map<List<Dto.Branch.BranchView>>(paginatedBranches.Data);
+            var response = new Dto.PaginatedResponse<Dto.Branch.BranchView>() {
+                Data = dtoBranches,
+                TotalCount = paginatedBranches.TotalCount
             };
             return Ok(response);
         }
@@ -51,14 +64,26 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Dto.Branch.BranchView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var branchOption = await _branchService.GetOneAsync(id, cancellationToken);
-            return branchOption.Match<ActionResult>(
-                f0: brand =>
-                {
-                    return Ok(_mapper.Map<Dto.Branch.BranchView>(brand));
-                },
-                f1: notfound => NotFound()
-            );
+            var query = new GetOneBranchQuery(id);
+
+            DomainResult<Branch> result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok(_mapper.Map<Dto.Branch.BranchView>(result.Result));
+            }
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    break;
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+            return BadRequest(result);
+
         }
 
         /// <summary>
@@ -70,29 +95,21 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> CreateBranch(Dto.Branch.CreateBranchRequest request, CancellationToken cancellationToken)
         {
+            var command = new CreateBranchCommand(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact);
 
-            var createResult = await _branchService.CreateBranchAsync(request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact, cancellationToken);
-
-            return createResult.Match<ActionResult>(
-                f0: (id) =>
+            DomainResult<Guid> createResult = await _mediator.Send(command, cancellationToken);
+            if (createResult.IsSuccess)
+            {
+                var response = new Dto.CreateResponse()
                 {
-                    var response = new Dto.CreateResponse()
-                    {
-                        Id = id
-                    };
-                    return Ok(response);
-                },
-                f1: (validationErrors) => {
-                    var error = new ErrorResponse(HttpContext.TraceIdentifier) { 
-                        GeneralError = "Validation Error", 
-                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors) 
-                    };
-                    return BadRequest(error); 
-                }
-             );
+                    Id = createResult.Result
+                };
+                return Ok(response);
+            }
+
+            return HandleDomainResult(createResult);
         }
 
         /// <summary>
@@ -108,21 +125,29 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBranch(Guid id, Dto.Branch.UpdateBranchRequest request, CancellationToken cancellationToken)
         {
-            var domBranch = _mapper.Map<Dom.Branch>(request.Data);
-            var result = await _branchService.UpdateAsync(id, domBranch, cancellationToken);
+            var command = new UpdateBranchCommand(id, request.Data.Name, request.Data.BranchNo, request.Data.Code, request.Data.Address, request.Data.Contact);
 
-            return result.Match<IActionResult>(
-                f0: (branch) => NoContent(),
-                f1: (validationErrors) => {
-                    var error = new ErrorResponse(HttpContext.TraceIdentifier)
-                    {
-                        GeneralError = "Validation Error",
-                        ValidationErrors = _mapper.Map<List<ValidationError>>(validationErrors)
-                    };
-                    return BadRequest(error);
-                },
-                f2: (error) => NotFound()
-            );
+            DomainResult result = await _mediator.Send(command, cancellationToken);
+
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    break;
+
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+
+            return BadRequest(result);
+
         }
 
         /// <summary>
@@ -138,11 +163,24 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBranch(Guid id, CancellationToken cancellationToken)
         {
-            OneOf<Success, NotFound> result = await _branchService.DeleteAsync(id, cancellationToken);
-            return result.Match<IActionResult>(
-                f0: (success) => NoContent(),
-                f1: (notFound) => NotFound()
-                );
+            var command = new DeleteBranchCommand(id);
+
+            DomainResult result = await _mediator.Send(command, cancellationToken);
+
+            switch (result.ErrorType)
+            {
+                case ErrorType.Success:
+                    return NoContent();
+
+                case ErrorType.Forbidden:
+                    return Forbid();
+                case ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+            return BadRequest(result);
+
         }
     }
 }

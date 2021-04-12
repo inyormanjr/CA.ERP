@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,12 +14,12 @@ namespace CA.ERP.DataAccess.EFMapping
         public void Configure(EntityTypeBuilder<PurchaseOrder> builder)
         {
             builder.HasKey(t => t.Id);
-            builder.Property(t => t.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
-            builder.HasIndex(t => new { t.BranchId, t.Barcode }).IsUnique(true);
+            builder.Property(t => t.Id);
+            builder.HasIndex(t => new { t.DestinationBranchId, t.Barcode }).IsUnique(true);
 
             builder.Property(t => t.Barcode).HasMaxLength(20);
-            builder.Property(t => t.TotalCostPrice).HasPrecision(10,2);
-            
+            builder.Property(t => t.TotalCostPrice).HasPrecision(10, 2);
+
 
             builder.HasOne(t => t.Supplier)
                 .WithMany(t => t.PurchaseOrders)
@@ -29,14 +29,10 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasOne(t => t.Branch)
                 .WithMany(t => t.PurchaseOrders)
-                .HasForeignKey(t => t.BranchId)
+                .HasForeignKey(t => t.DestinationBranchId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(t => t.ApprovedBy)
-                .WithMany()
-                .HasForeignKey(t => t.ApprovedById)
-                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

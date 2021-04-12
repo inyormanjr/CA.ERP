@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.BrandAgg;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public BrandMapping()
         {
             CreateMap<Brand, Dal.Brand>();
-            CreateMap<Dal.Brand, Brand>();
         }
     }
 }

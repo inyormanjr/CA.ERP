@@ -342,3 +342,6 @@ healthchecksdb
 #exlcude local setting file
 *.local.json
 mssql
+data/postgresql
+data/mssql
+.tye

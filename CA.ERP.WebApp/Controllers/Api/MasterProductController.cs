@@ -1,7 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.CreateMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProductByBrandAndSupplier;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetOneMasterProduct;
+using CA.ERP.Application.CommandQuery.MasterProductCommandQuery.UpdateMasterProduct;
 using CA.ERP.Domain.MasterProductAgg;
-using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dto = CA.ERP.Shared.Dto;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class MasterProductController : BaseApiController
+    public class MasterProductController : ControllerBase
     {
-        private readonly MasterProductService _masterProductService;
 
-        public MasterProductController(IServiceProvider serviceProvider, MasterProductService masterProductService)
-            :base(serviceProvider)
+        private readonly ILogger<MasterProductController> _logger;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+
+        public MasterProductController(ILogger<MasterProductController> logger, IMapper mapper, IMediator mediator)
         {
-            _masterProductService = masterProductService;
+            _logger = logger;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -38,32 +48,27 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> Create(Dto.MasterProduct.CreateMasterProductRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {0} creating masterproduct.", _userHelper.GetCurrentUserId());
-            var createResult = await _masterProductService.CreateMasterProduct(request.Data.Model, request.Data.Description, (ProductStatus)(int)request.Data.ProductStatus, request.Data.BrandId, cancellationToken: cancellationToken);
-            return createResult.Match<ActionResult>(
-            f0: (id) =>
+            var command = new CreateMasterProductCommand(request.Data.Model, request.Data.Description, request.Data.BrandId);
+            var createResult = await _mediator.Send(command, cancellationToken);
+
+
+            if (createResult.IsSuccess)
             {
                 var response = new Dto.CreateResponse()
                 {
-                    Id = id
-                };
-                _logger.LogInformation("User {0} masterproduct creation succeeded.", _userHelper.GetCurrentUserId());
-                return Ok(response);
-            },
-            f1: (validationErrors) =>
-            {
-                var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
-                {
-                    GeneralError = "Validation Error",
-                    ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
+                    Id = createResult.Result
                 };
 
-                _logger.LogInformation("User {0} supplier branch creation failed.", _userHelper.GetCurrentUserId());
-                return BadRequest(response);
-            });
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(createResult);
+            }
+
+
         }
 
         [HttpPut("{id}")]
@@ -72,23 +77,27 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, Dto.UpdateBaseRequest<Dto.MasterProduct.MasterProductUpdate> request, CancellationToken cancellationToken)
         {
-            var domData = _mapper.Map<MasterProduct>(request.Data);
-            OneOf<Guid, List<ValidationFailure>, NotFound> result = await _masterProductService.UpdateAsync(id, domData, cancellationToken);
+            var command = new UpdateMasterProductCommand(id, request.Data.Model, request.Data.Description, request.Data.BrandId, request.Data.ProductStatus);
+            var result = await _mediator.Send(command, cancellationToken);
+            
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+            else
+            {
+                switch (result.ErrorCode)
+                {
+                    case MasterProductErrorCodes.MasterProductNotFound:
+                        return NotFound();
+                    default:
+                        break;
+                }
+                _logger.LogError(result.ErrorCode, result);
+                return BadRequest(result);
+            }
 
-            return result.Match<IActionResult>(
-                f0: (masterProduct) => NoContent(),
-                f1: (validationErrors) => {
-                    var response = new Dto.ErrorResponse(HttpContext.TraceIdentifier)
-                    {
-                        GeneralError = "Validation Error",
-                        ValidationErrors = _mapper.Map<List<Dto.ValidationError>>(validationErrors)
-                    };
 
-                    _logger.LogInformation("User {0} brand update failed.", _userHelper.GetCurrentUserId());
-                    return BadRequest(response);
-                },
-                f2: (notFound) => NotFound()
-            );
         }
 
         /// <summary>
@@ -99,15 +108,19 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
         {
-            var masterProducts = await _masterProductService.GetManyAsync(cancellationToken);
-            var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(masterProducts);
-            var response = new Dto.GetManyResponse<Dto.MasterProduct.MasterProductView>()
+            var query = new GetManyMasterProductQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+
+            var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result.Data);
+            var response = new Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>()
             {
-                Data = dtoMasterProducts
+                Data = dtoMasterProducts,
+                TotalCount = result.TotalCount
             };
             return Ok(response);
+
         }
 
         [HttpGet("{id}")]
@@ -115,12 +128,36 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.MasterProduct.MasterProductView>> Get(Guid id, CancellationToken cancellationToken)
         {
-            var masterProductOption = await _masterProductService.GetOneAsync(id ,cancellationToken);
+            var query = new GetOneMasterProductQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            if (result.IsSuccess)
+            {
+
+                return Ok(result.Result);
+            }
+            switch (result.ErrorType)
+            {
+                case Domain.Core.DomainResullts.ErrorType.NotFound:
+                    return NotFound();
+                default:
+                    break;
+            }
+
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("{brandId}/{supplierId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.MasterProduct.MasterProductView>> Get(Guid brandId, Guid supplierId, CancellationToken cancellationToken)
+        {
+            var query = new GetManyMasterProductByBrandAndSupplierQuery(brandId, supplierId);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok( _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result));
             
-            return masterProductOption.Match<ActionResult>(
-                f0: masterProduct => Ok(masterProduct),
-                f1: notfound => NotFound()
-                );
         }
     }
 }

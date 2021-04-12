@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess;
+using CA.ERP.DataAccess;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +49,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                     {
                         SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder(configRoot.GetConnectionString("DefaultConnection"));
                         sqlConnectionStringBuilder.InitialCatalog = sqlConnectionStringBuilder.InitialCatalog + "-" + dbSuffix;
-                        options.UseSqlServer(sqlConnectionStringBuilder.ToString(), x => x.MigrationsAssembly("CA.ERP.DataAccess"));
+                        options.UseNpgsql(sqlConnectionStringBuilder.ToString(), x => x.MigrationsAssembly("CA.ERP.DataAccess"));
                     });
                 }
                 else
@@ -85,7 +85,7 @@ namespace CA.ERP.WebApp.Test.Integration.Fixtures
                             db.Database.EnsureCreated();
                         }
                         
-                        Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
+                        //Utilities.InitializeDbForTests(db, scopedServices.GetService<PasswordManagementHelper>());
 
 
                     }

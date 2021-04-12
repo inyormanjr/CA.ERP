@@ -1,6 +1,4 @@
-﻿using CA.ERP.Domain.UserAgg;
-using CA.ERP.WebApp.Dto;
-using CA.ERP.WebApp.Dto.User;
+using CA.ERP.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +45,7 @@ namespace CA.ERP.WebApp.CustomAuthentication
                 }
 
             }
-            return isInRole;
+            return true;
         }
     }
 }

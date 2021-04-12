@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.SupplierAgg;
 using System;
 using System.Collections.Generic;
@@ -14,14 +14,13 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public SupplierMapping()
         {
             CreateMap<Dal.Supplier, Supplier>();
-            CreateMap<Supplier, Dal.Supplier>();
 
-            CreateMap<Dal.SupplierBrand, SupplierBrand>();
-            CreateMap<SupplierBrand, Dal.SupplierBrand>();
 
-            CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>();
-            CreateMap<SupplierMasterProduct, Dal.SupplierMasterProduct>()
-                .ForMember(dalSmp => dalSmp.Id, option => option.Ignore());
+            CreateMap<Dal.SupplierBrand, SupplierBrand>()
+                .ForMember(dest =>dest.BrandName, cfg => cfg.MapFrom(src => src.Brand.Name));
+
+
+           // CreateMap<Dal.SupplierMasterProduct, SupplierMasterProduct>();
         }
     }
 }

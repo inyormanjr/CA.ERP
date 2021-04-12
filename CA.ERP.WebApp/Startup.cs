@@ -1,11 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.DataAccess;
-using CA.ERP.DataAccess.AutoMapperProfiles;
 using CA.ERP.DataAccess.Repositories;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Helpers;
-using CA.ERP.Domain.UserAgg;
-using DtoMapping = CA.ERP.WebApp.Mapping;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -20,8 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using CA.ERP.WebApp.Helpers;
-using CA.ERP.Domain.SupplierAgg;
 using FluentValidation;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -31,10 +26,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using CA.ERP.WebApp.CustomAuthentication;
 using CA.ERP.WebApp.Middlewares;
-using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Common.Rounding;
 using CA.ERP.WebApp.ActionFilters;
-using CA.ERP.Domain.UnitOfWorkAgg;
 using CA.ERP.WebApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using jsreport.AspNetCore;
@@ -44,12 +37,27 @@ using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using jsreport.Client;
 using System.Globalization;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.Repository;
+using MediatR;
+using MassTransit;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
+using CA.ERP.Application.DomainEventHandlers.Supplier;
+using DtoMapping = CA.ERP.WebApp.Mapping;
+using CA.ERP.WebApp.Mapping;
+using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurchaseOrder;
+using CA.ERP.Domain.IdentityAgg;
+using CA.ERP.WebApp.Infrastructure;
+using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Domain.Core.EventBus;
+using CA.ERP.Infrastructure.EventBus;
+using System.Diagnostics;
 
 namespace CA.ERP.WebApp
 {
     public class Startup
     {
-        private string _corsAllowAll = "AllowAll";
 
         public Startup(IConfiguration configuration)
         {
@@ -77,7 +85,7 @@ namespace CA.ERP.WebApp
 
             services.AddDbContext<CADataContext>(dbc =>
 
-                dbc.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
+                dbc.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -141,116 +149,49 @@ namespace CA.ERP.WebApp
             services.AddJsReport(new ReportingService(reportingServer));
 
 
-            services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(UserMapping).Assembly);
+            services.AddAutoMapper(typeof(DtoMapping.BranchMapping).Assembly, typeof(DataAccess.AutoMapperProfiles.BranchMapping).Assembly);
 
             services.AddHttpContextAccessor();
 
-            //register web api helpers
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-            );
 
             //register repositories
             services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserRepository))
+                scan.FromAssembliesOf(typeof(MasterProductRepository))
                 .AddClasses(classes => classes.AssignableTo<IRepository>())
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
             );
 
-            //register factories
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserFactory))
-                .AddClasses(classes => classes.AssignableTo<IFactory>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-            );
-
-            //register services
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(UserService))
-                .AddClasses(classes => classes.AssignableTo<ServiceBase>())
-                .AsSelf()
-                .WithScopedLifetime()
-            );
-
-            //register helpers
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsSelf()
-                .WithScopedLifetime()
-                );
-
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(TokenGenerator))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsSelf()
-                .WithScopedLifetime()
-                );
-
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PasswordManagementHelper))
-                .AddClasses(classes => classes.AssignableTo<IHelper>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
-
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(PurchaseOrderBarcodeGenerator))
-                .AddClasses(classes => classes.AssignableTo<IBusinessLogic>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
-
-            //register validators
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(SupplierValidator))
-                .AddClasses(classes => classes.AssignableTo<IValidator>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
-
-            //register validators
-            services.Scan(scan =>
-                scan.FromAssembliesOf(typeof(IBranchPermissionValidator))
-                .AddClasses(classes => classes.AssignableTo<IBranchPermissionValidator>())
-                .AsImplementedInterfaces()
-                .WithScopedLifetime()
-                );
 
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
-            services.AddAuthentication(options =>
+            services.AddAuthentication("Bearer").AddJwtBearer( options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer( options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("AppSettings:Token").Value)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                    
-                };
+              options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
-                options.Events = new JwtBearerEvents { 
+              options.TokenValidationParameters = new TokenValidationParameters
+              {
+                ValidateAudience = false
+              };
+
+
+              options.Events = new JwtBearerEvents { 
                     OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
-                        var path = context.HttpContext.Request.Path;
-                        context.Token = accessToken;
+                        if (accessToken.ToString() != null)
+                        {
+                            var path = context.HttpContext.Request.Path;
+                            context.Token = accessToken;
+                            
+                        }
                         return Task.CompletedTask;
                     }
                 };
             });
 
-            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme);
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -259,13 +200,30 @@ namespace CA.ERP.WebApp
 
             //override asp.net validation to nothing    
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+           
 
             //add principal/user tranformer
-            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+            //services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
+            //add mediator
+            services.AddMediatR(typeof(CreatePurchaseOrderCommand));
+
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) => cfg.Host("localhost", "/", h =>
+                {
+
+                }));
+                x.AddConsumersFromNamespaceContaining<PurchaseOrderCreatedHandler>();
+            });
+
+            services.AddMassTransitHostedService();
+
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddScoped<IIdentityProvider, IdentityProvider>();
+            services.AddScoped<IPurchaseOrderBarcodeGenerator, PurchaseOrderBarcodeGenerator>();
+            services.AddScoped<IEventBus, MassTransitEventBus>();
+
 
 
             //set culture info
@@ -286,6 +244,8 @@ namespace CA.ERP.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true;
             }
             else
             {
@@ -302,16 +262,9 @@ namespace CA.ERP.WebApp
             
             app.UseStaticFiles();
             
-            app.UseRouting();
-
-            app.UseCors();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             
 
-
+            app.UseCors();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -319,7 +272,13 @@ namespace CA.ERP.WebApp
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
-            app.UseMiddleware<ErrorLoggingMiddleware>();
+
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
+
+            
+            //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

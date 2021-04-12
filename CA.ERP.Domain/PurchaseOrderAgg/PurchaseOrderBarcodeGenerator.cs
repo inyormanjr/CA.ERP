@@ -1,5 +1,6 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
+using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,15 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public class PurchaseOrderBarcodeGenerator : IPurchaseOrderBarcodeGenerator
     {
-        private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public PurchaseOrderBarcodeGenerator(IDateTimeHelper dateTimeHelper)
+        public PurchaseOrderBarcodeGenerator(IDateTimeProvider dateTimeProvider)
         {
-            _dateTimeHelper = dateTimeHelper;
+            _dateTimeProvider = dateTimeProvider;
         }
         public string GenerateBarcode()
         {
-            var now = _dateTimeHelper.GetCurrentDateTimeOffset();
+            var now = _dateTimeProvider.GetCurrentDateTimeOffset();
             var nowUnix = now.ToUnixTimeSeconds();
             int year = now.Year;
             var epoch = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.FromSeconds(0)).ToUnixTimeSeconds();

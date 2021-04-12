@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.StockAgg;
+using CA.ERP.Domain.StockAgg;
 using CA.ERP.Domain.StockReceiveAgg;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +15,7 @@ namespace CA.ERP.WebApp.Controllers.Api
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class StockReceiveController : BaseApiController
+    public class StockReceiveController : ControllerBase
     {
         private readonly StockReceiveService _stockReceiveService;
 

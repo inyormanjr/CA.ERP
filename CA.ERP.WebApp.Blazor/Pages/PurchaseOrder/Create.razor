@@ -1,0 +1,211 @@
+@page "/purchase-order/create"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
+
+
+
+@inherits ViewBase<PurchaseOrderCreateViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+<MudContainer>
+
+    <MudGrid>
+        <MudItem xs="10">
+            <MudText Typo="Typo.h6">New Purchase Orders</MudText>
+        </MudItem>
+        <MudItem xs="2" Class="d-flex flex-row-reverse">
+            <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" />
+        </MudItem>
+
+
+    </MudGrid>
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudGrid>
+                    <MudItem xs="10">
+                        @if (ViewModel.BranchesIsLoading)
+                        {
+                            <MudField>
+                                <MudText>Loading Branches</MudText>
+                            </MudField>
+                        }
+                        else
+                        {
+                            <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                        }
+                    </MudItem>
+                    <MudItem xs="10">
+                        @if (ViewModel.Suppliers.Count <= 0)
+                        {
+                            <MudField>
+
+                                <MudText>Loading Supplier</MudText>
+
+                            </MudField>
+                        }
+                        else
+                        {
+                            <MudAutocomplete T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudDatePicker @bind-Date="@ViewModel.DeliveryDate" Label="Delivery Date"></MudDatePicker>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="12" sm="5">
+                @if (ViewModel.SelectedSupplier == null)
+                {
+                    <MudField>
+                        <MudText>Please select a  supplier</MudText>
+                    </MudField>
+                }
+                else if (ViewModel.SupplierBrands.Count <= 0)
+                {
+                    <MudField>
+                        <MudText>Loading brands</MudText>
+                    </MudField>
+                }
+                else
+                {
+                    <MudAutocomplete T="SupplierBrandView" Label="Brand" @bind-Value="ViewModel.SelectedSupplierBrand" SearchFunc="@ViewModel.SearchSupplierBrand" ToStringFunc="@(b => b.BrandName)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                }
+            </MudItem>
+            <MudItem xs="0" sm="1"></MudItem>
+            <MudItem xs="12" sm="5">
+                @if (ViewModel.SelectedSupplierBrand == null)
+                {
+                    <MudField>
+                        <MudText>Please select a  brand</MudText>
+                    </MudField>
+                }
+                else if (ViewModel.MasterProducts.Count <= 0)
+                {
+                    <MudField>
+                        <MudText>Loading models</MudText>
+                    </MudField>
+                }
+                else
+                {
+                    <MudAutocomplete T="MasterProductView" Label="Model" @bind-Value="@ViewModel.SelectedMasterProduct" SearchFunc="@ViewModel.SearchMasterProducts" ToStringFunc="@(b => b.Model)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" @ref="masterProductAutoComplete" />
+                }
+            </MudItem>
+            <MudItem xs="12" sm="1">
+                <MudButton DisableElevation="true" Variant="Variant.Filled" Color="Color.Secondary" Disabled="@(ViewModel.SelectedMasterProduct == null)" Class="mt-4" OnClick="ViewModel.AddPurchaseOrderItem">Include</MudButton>
+            </MudItem>
+        </MudGrid>
+        <MudTable Items="@ViewModel.PurchaseOrderCreate.PurchaseOrderItems" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>Brand</MudTh>
+                <MudTh>Model</MudTh>
+                <MudTh>Ordered Qty.</MudTh>
+                <MudTh>Free Qty.</MudTh>
+                <MudTh>Total Qty.</MudTh>
+                <MudTh>Cost</MudTh>
+                <MudTh>Discount</MudTh>
+                <MudTh>Sub-Total</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Brand">@context.BrandName</MudTd>
+                <MudTd DataLabel="Model">@context.Model</MudTd>
+                <MudTd DataLabel="Ordered Qty.">
+                    <MudTextField @bind-Value="@context.OrderedQuantity" InputType="InputType.Number" />
+                </MudTd>
+                <MudTd DataLabel="Free Qty.">
+                    <MudTextField @bind-Value="@context.FreeQuantity" InputType="InputType.Number" />
+                </MudTd>
+                <MudTd DataLabel="Total Qty.">@context.TotalQuantity</MudTd>
+                <MudTd DataLabel="Cost">
+                    <MudTextField @bind-Value="@context.CostPrice" Format="0.00" InputType="InputType.Number" AdornmentText="Php" Adornment="Adornment.Start" />
+                </MudTd>
+                <MudTd DataLabel="Discount">
+                    <MudTextField @bind-Value="@context.Discount" Format="0.00" InputType="InputType.Number" AdornmentText="Php" Adornment="Adornment.Start" />
+                </MudTd>
+                <MudTd DataLabel="Sub-Total">@context.TotalCostPrice.ToString("0.00")</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Outlined.Close" Color="Color.Error" OnClick="@(() => ViewModel.RemovePurchaseOrderItem(context))" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+        <MudGrid Class="mt-8">
+            @if (ViewModel.Errors != null && ViewModel.Errors.Count > 0)
+            {
+                @foreach (var error in ViewModel.Errors)
+                {
+                    <MudItem xs="12">
+                        <MudPaper Class="my-2 pa-4 mud-error-text">@error</MudPaper>
+                    </MudItem>
+                }
+            }
+
+
+        </MudGrid>
+        <MudGrid Class="mt-8">
+            <MudItem xs="12" sm="6">
+                <MudButton Variant="Variant.Outlined" Color="Color.Tertiary" Link="/purchase-order/">Back</MudButton>
+            </MudItem>
+            <MudItem xs="12" sm="6" Class="d-flex flex-row-reverse">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Disabled="@(!ViewModel.CanSave || ViewModel.IsSaving)" DisableElevation="true" OnClick="ViewModel.SaveAsync">
+                    @if (!ViewModel.IsSaving)
+                    {
+                        <MudText>Save</MudText>
+
+                    }
+                    else
+                    {
+                        <MudText>Saving...</MudText>
+                    }
+
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+
+
+    </MudForm>
+
+
+
+</MudContainer>
+
+@code {
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+    MudAutocomplete<MasterProductView> masterProductAutoComplete;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ViewModel.PropertyChanged += NewViewModel_PropertyChanged;
+    }
+
+    private void NewViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModel.SelectedMasterProduct) && ViewModel.SelectedMasterProduct == null && string.IsNullOrEmpty(masterProductAutoComplete?.Text))
+        {
+            masterProductAutoComplete?.Reset();
+        }
+    }
+
+    public void Dispose()
+    {
+        ViewModel.PropertyChanged -= NewViewModel_PropertyChanged;
+        base.Dispose();
+
+    }
+}

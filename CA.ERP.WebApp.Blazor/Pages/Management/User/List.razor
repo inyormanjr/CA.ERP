@@ -1,0 +1,41 @@
+@page "/management/user"
+
+
+@layout ManagementLayout
+
+
+
+@using CA.ERP.Shared.Dto.PurchaseOrder;
+@using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
+
+
+
+@inherits ViewBase<UserListViewModel>
+
+@attribute [Authorize]
+
+<MudContainer>
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Users</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="2">
+                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Frist Name" Class="ml-4"></MudTextField>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Last Name" Class="ml-4"></MudTextField>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudIconButton Class="mt-4" DisableElevation="true" Icon="@Icons.Outlined.Search" Color="Color.Default"></MudIconButton>
+                @*<MudButton Class="mt-4" Variant="Variant.Outlined" DisableElevation="true" StartIcon="@Icons.Outlined.Search" Color="Color.Secondary"></MudButton>*@
+            </MudItem>
+
+            <MudItem xs="12" md="6" Class="d-flex flex-row-reverse">
+                <MudButton Class="mt-4" Variant="Variant.Filled" DisableElevation="true" Color="Color.Secondary">New</MudButton>
+            </MudItem>
+        </MudGrid>
+
+    </MudPaper>
+
+</MudContainer>
+
+

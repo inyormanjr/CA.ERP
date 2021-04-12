@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -12,12 +12,10 @@ namespace CA.ERP.DataAccess.EFMapping
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()").ValueGeneratedOnAdd();
+      builder.Property(x => x.Id);
             builder.HasIndex(x => x.Name).IsUnique(true);
 
-            builder.HasMany(x => x.UserBranches)
-                .WithOne(x => x.Branch)
-                .HasForeignKey(x => x.BranchId);
+            
         }
     }
 }

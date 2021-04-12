@@ -1,5 +1,8 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Domain.Core.Repository;
 using FluentValidation.Results;
 using OneOf;
 using OneOf.Types;
@@ -12,9 +15,14 @@ namespace CA.ERP.Domain.SupplierAgg
 {
     public interface ISupplierRepository : IRepository<Supplier>
     {
-        Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken);
-        Task<OneOf<Success, None>> DeleteSupplierBrandAsync(Guid id, Guid brandId, CancellationToken cancellationToken);
-        Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, Status status = Status.Active, CancellationToken cancellationToken = default);
+        Task<List<Supplier>> GetManySupplierAsync(string name, int skip, int take, CancellationToken cancellationToken);
+        Task<int> GetCountSupplierAsync(string name, CancellationToken cancellationToken);
+        Task AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken);
+        Task<List<SupplierBrand>> GetManySupplierBrandAsync(Guid supplierId, CancellationToken cancellationToken);
+        Task DeleteSupplierBrandAsync(Guid id, Guid brandId, CancellationToken cancellationToken);
+
+        Task AddOrUpdateAsync(SupplierMasterProduct supplierMasterProduct, CancellationToken cancellationToken);
+
         Task AddOrUpdateSupplierMasterProductCostPriceAsync(Guid supplierId, Guid masterProductId, decimal costPrice , CancellationToken cancellationToken = default);
     }
 }

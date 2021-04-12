@@ -1,0 +1,63 @@
+@inherits LayoutComponentBase
+
+
+
+<MudThemeProvider Theme="@Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Class=" justify-center">
+        <MudText Typo="Typo.h6" >Citi Appliance</MudText>
+        <MudAppBarSpacer />
+        <LoginDisplay />
+
+    </MudAppBar>
+
+    <MudMainContent>
+        <MudContainer>
+
+
+            <MudPaper>
+                <MudGrid Justify="Justify.Center" Class="mt-4">
+
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Home" Color="Color.Primary" Class="pa-4" Link="/">Home</MudButton>
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.ReceiptLong" Color="Color.Primary" Class="pa-4" Link="/purchase-order">P.O.</MudButton>
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Storefront" Color="Color.Primary" Class="pa-4">Item Management</MudButton>
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Receipt" Color="Color.Primary" Class="pa-4">Delivery Receipt</MudButton>
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Print" Color="Color.Primary" Class="pa-4">Reports</MudButton>
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Settings" Color="Color.Primary" Class="pa-4" Link="/management/user">Management</MudButton>
+
+
+                </MudGrid>
+            </MudPaper>
+        </MudContainer>
+
+                @Body
+       
+    </MudMainContent>
+</MudLayout>
+
+@code{
+    MudTheme Theme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = "#42A5F5",
+            Background = "#FAF8F5",
+            Secondary = "#A5BBD9",
+            Tertiary = "#998091",
+            DarkContrastText = "#1F57A1",
+            AppbarText = "#FAF8F5",
+
+
+
+
+            AppbarBackground = "#42A5F5",
+
+
+        },
+
+
+    };
+}

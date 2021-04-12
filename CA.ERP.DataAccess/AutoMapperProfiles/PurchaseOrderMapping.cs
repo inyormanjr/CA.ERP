@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using System;
 using System.Collections.Generic;
@@ -15,9 +15,7 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         {
             CreateMap<Dal.PurchaseOrder, PurchaseOrder>()
                 .ForMember(po => po.SupplierName, opt => opt.MapFrom(po => po.Supplier.Name))
-                .ForMember(po => po.BranchName, opt => opt.MapFrom(po => po.Branch.Name))
-                .ForMember(po => po.BranchAddress, opt => opt.MapFrom(po => po.Branch.Address));
-
+                .ForMember(po => po.BranchName, opt => opt.MapFrom(po => po.Branch.Name));
             CreateMap<PurchaseOrder, Dal.PurchaseOrder>();
 
 

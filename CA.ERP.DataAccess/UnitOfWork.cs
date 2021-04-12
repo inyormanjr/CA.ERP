@@ -1,4 +1,4 @@
-﻿using CA.ERP.Domain.UnitOfWorkAgg;
+using CA.ERP.Domain.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,6 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.Repository;
 using OneOf;
 using OneOf.Types;
 using System;
@@ -11,7 +13,8 @@ namespace CA.ERP.Domain.BranchAgg
 {
     public interface IBranchRepository : IRepository<Branch>
     {
+
         Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken);
-        Task<List<Branch>> GetManyByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+
     }
 }

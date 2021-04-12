@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.DataAccess;
 using CA.ERP.Domain.BranchAgg;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,7 @@ using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
 using CA.ERP.DataAccess.Repositories;
+using CA.ERP.Domain.Core;
 
 namespace CA.ERP.Lib.DAL.Repositories
 {
@@ -26,17 +27,44 @@ namespace CA.ERP.Lib.DAL.Repositories
 
         }
 
+        public override async Task<List<Branch>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            IQueryable<Dal.Branch> queryable = generateQuery(status);
+
+            return await queryable.OrderBy(b => b.Name).Select(e => _mapper.Map<Dal.Branch, Branch>(e)).ToListAsync(cancellationToken: cancellationToken);
+        }
+
         public async Task<List<Branch>> GetBranchsAsync(List<Guid> branchIds, CancellationToken cancellationToken = default)
         {
-            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == Status.Active).ToListAsync();
+            var branches = await _context.Branches.Where(b => branchIds.Contains(b.Id) && b.Status == Status.Active).OrderBy(b => b.Name).ToListAsync();
             return _mapper.Map<List<Branch>>(branches);
         }
 
-        public async Task<List<Branch>> GetManyByUserIdAsync(Guid userId, CancellationToken cancellationToken)
-        {
-            var queryable = _context.Branches.AsQueryable().Where(e => e.UserBranches.Any(ub => ub.UserId == userId) &&  e.Status == Status.Active);
 
-            return await queryable.Select(e => _mapper.Map<Branch>(e)).ToListAsync(cancellationToken: cancellationToken);
+
+
+        public new async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var branch = await _context.Branches.FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+            if (branch != null)
+            {
+                _context.Entry(branch).State = EntityState.Deleted;
+
+            }
         }
+
+        public async Task<Branch> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            Branch ret = null;
+            var branch = await _context.Branches.FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+
+            if (branch != null)
+            {
+                ret = _mapper.Map<Branch>(branch);
+            }
+            return ret;
+        }
+
+        
     }
 }

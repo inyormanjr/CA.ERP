@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
 using CA.ERP.Domain.SupplierAgg;
@@ -13,6 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Common.Extensions;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.DomainResullts;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -23,85 +25,63 @@ namespace CA.ERP.DataAccess.Repositories
         {
 
         }
-        public async override Task<OneOf<Supplier, None>> GetByIdAsync(Guid id, Status status = Status.Active, CancellationToken cancellationToken = default)
+        
+
+        public async Task AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken)
         {
-            OneOf<Supplier, None> ret = default(None);
-
-            var queryable = _context.Suppliers.Include(s=>s.SupplierMasterProducts).Include(s=>s.SupplierBrands).ThenInclude(sb=>sb.Brand).AsQueryable();
-            if (status != Status.All)
-            {
-                queryable = queryable.Where(e => e.Status == status);
-            }
-
-            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
-            if (entity != null)
-            {
-                ret = _mapper.Map<Supplier>(entity);
-            }
-            return ret;
-        }
-
-
-        public async Task<OneOf<Success, None>> AddSupplierBrandAsync(Guid supplierId, SupplierBrand supplierBrand, CancellationToken cancellationToken)
-        {
-            OneOf<Success, None> ret = default(None);
             var supplierExist = await _context.Suppliers.AnyAsync(s => s.Id == supplierId, cancellationToken);
-            if (supplierExist)
-            {
-                var supplierBrandExist = _context.SupplierBrands.Any(sb =>sb.SupplierId == supplierId && sb.BrandId == supplierBrand.BrandId);
 
-                //if not exist add else do nothing and return success
-                if (!supplierBrandExist)
+            var supplierBrandExist = _context.SupplierBrands.Any(sb => sb.SupplierId == supplierId && sb.BrandId == supplierBrand.BrandId);
+
+            //if not exist add else do nothing and return success
+            if (!supplierBrandExist)
+            {
+                var dalSupplierBrand = new Dal.SupplierBrand()
                 {
-                    var dalSupplierBrand = new Dal.SupplierBrand()
-                    {
-                        BrandId = supplierBrand.BrandId,
-                        SupplierId = supplierId
-                    };
-                    await _context.SupplierBrands.AddAsync(dalSupplierBrand);
-                }
-                
-                ret = default(Success);
+                    BrandId = supplierBrand.BrandId,
+                    SupplierId = supplierId
+                };
+                await _context.SupplierBrands.AddAsync(dalSupplierBrand);
             }
-            return ret;
+
         }
 
-        public async Task<OneOf<Success, None>> DeleteSupplierBrandAsync(Guid supplierId, Guid brandId, CancellationToken cancellationToken)
+        public async Task DeleteSupplierBrandAsync(Guid supplierId, Guid brandId, CancellationToken cancellationToken)
         {
-            OneOf<Success, None> ret = default(None);
+
             var supplierBrand = await _context.SupplierBrands.FirstOrDefaultAsync(sb => sb.SupplierId == supplierId && sb.BrandId == brandId);
             if (supplierBrand != null)
             {
                 _context.Entry(supplierBrand).State = EntityState.Deleted;
-                ret = default(Success);
+
             }
-            return ret;
+
         }
 
-        public Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, Status status = Status.Active, CancellationToken cancellationToken = default)
-        {
-            var queryable = _context.SupplierBrands.AsQueryable();
-            if (status != Status.All)
-            {
-                queryable = queryable.Where(e => e.Status == status);
-            }
-            var supplierBrands = queryable.Where(sb => sb.SupplierId == supplierId)
-                .Select(sb => 
-                    new SupplierBrandLite() { 
-                        SupplierId = sb.SupplierId,
-                        BrandId = sb.BrandId, 
-                        BrandName = sb.Brand.Name, 
-                        MasterProducts = sb.Brand.MasterProducts.Select(
-                            mp => new SupplierMasterProductLite() { 
-                                SupplierId = sb.SupplierId,
-                                MasterProductId = mp.Id, 
-                                Model = mp.Model, 
-                                CostPrice = mp.SupplierMasterProducts.Where(smp=>smp.SupplierId == sb.SupplierId).Select(smp=>smp.CostPrice).FirstOrDefault() 
-                            })  
-                    }).ToListAsync();
+        //public Task<List<SupplierBrandLite>> GetSupplierBrandsAsync(Guid supplierId, Status status = Status.Active, CancellationToken cancellationToken = default)
+        //{
+        //    var queryable = _context.SupplierBrands.AsQueryable();
+        //    if (status != Status.All)
+        //    {
+        //        queryable = queryable.Where(e => e.Status == status);
+        //    }
+        //    var supplierBrands = queryable.Where(sb => sb.SupplierId == supplierId)
+        //        .Select(sb => 
+        //            new SupplierBrandLite() { 
+        //                SupplierId = sb.SupplierId,
+        //                BrandId = sb.BrandId, 
+        //                BrandName = sb.Brand.Name, 
+        //                MasterProducts = sb.Brand.MasterProducts.Select(
+        //                    mp => new SupplierMasterProductLite() { 
+        //                        SupplierId = sb.SupplierId,
+        //                        MasterProductId = mp.Id, 
+        //                        Model = mp.Model, 
+        //                        CostPrice = mp.SupplierMasterProducts.Where(smp=>smp.SupplierId == sb.SupplierId).Select(smp=>smp.CostPrice).FirstOrDefault() 
+        //                    })  
+        //            }).ToListAsync();
 
-            return supplierBrands;
-        }
+        //    return supplierBrands;
+        //}
 
         public async Task AddOrUpdateSupplierMasterProductCostPriceAsync(Guid supplierId, Guid masterProductId, decimal costPrice, CancellationToken cancellationToken = default)
         {
@@ -116,6 +96,49 @@ namespace CA.ERP.DataAccess.Repositories
             }
 
             supplierMasterProduct.CostPrice = costPrice;
+        }
+
+        public Task<List<Supplier>> GetManySupplierAsync(string name, int skip, int take, CancellationToken cancellationToken)
+        {
+            IQueryable<Dal.Supplier> queryable = generateQuery(Status.Active);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.ToLower();
+                queryable = queryable.Where(s => s.Name.ToLower().StartsWith(name));
+            }
+
+            return queryable.OrderBy(s => s.Name).Skip(skip).Take(take).Select(e => _mapper.Map<Dal.Supplier, Supplier>(e)).AsNoTracking().ToListAsync(cancellationToken: cancellationToken);
+            
+        }
+
+
+        public Task<int> GetCountSupplierAsync(string name, CancellationToken cancellationToken)
+        {
+            IQueryable<Dal.Supplier> queryable = generateQuery(Status.Active);
+
+            return queryable.Where(s => s.Name.StartsWith(name)).CountAsync(cancellationToken: cancellationToken);
+        }
+
+        public async Task<List<SupplierBrand>> GetManySupplierBrandAsync(Guid supplierId, CancellationToken cancellationToken)
+        {
+            var supplierBrands = await _context.SupplierBrands.Include(s=>s.Brand).Where(s => s.SupplierId == supplierId).ToListAsync();
+            return _mapper.Map<List<SupplierBrand>>(supplierBrands);
+        }
+
+        public async Task AddOrUpdateAsync(SupplierMasterProduct supplierMasterProduct, CancellationToken cancellationToken)
+        {
+            var dalSupplierMasterProduct = await _context.SupplierMasterProducts.FirstOrDefaultAsync(smp => smp.SupplierId == supplierMasterProduct.SupplierId && smp.MasterProductId == supplierMasterProduct.MasterProductId);
+            if (dalSupplierMasterProduct != null)
+            {
+                _mapper.Map(supplierMasterProduct, dalSupplierMasterProduct);
+
+            }
+            else
+            {
+                dalSupplierMasterProduct = _mapper.Map<Dal.SupplierMasterProduct>(supplierMasterProduct);
+                _context.SupplierMasterProducts.Add(dalSupplierMasterProduct);
+            }
         }
     }
 }

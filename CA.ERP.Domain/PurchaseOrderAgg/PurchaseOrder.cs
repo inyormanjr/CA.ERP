@@ -1,7 +1,8 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
-using CA.ERP.Domain.SupplierAgg;
-using CA.ERP.Domain.UserAgg;
+using CA.ERP.Domain.Core;
+using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Domain.Core.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +10,22 @@ using System.Text;
 
 namespace CA.ERP.Domain.PurchaseOrderAgg
 {
-    public class PurchaseOrder: ModelBase
+    public class PurchaseOrder : IEntity
     {
-        public PurchaseOrder()
-        {
-            PurchaseOrderItems = new List<PurchaseOrderItem>();
-        }
-        public string Barcode { get; set; }
-        public DateTime DeliveryDate { get; set; }
-        public decimal TotalCostPrice { get; set; }
-        public Guid ApprovedById { get; set; }
-        public Guid SupplierId { get; set; }
-        public Guid BranchId { get; set; }
 
-        public string SupplierName { get; set; }
-        public string BranchName { get; set; }
-        public string BranchAddress { get; set; }
-        public decimal TotalFreeQuantity
+        public Guid Id { get; private set; }
+
+        public Status Status { get; private set; }
+        public string Barcode { get; private set; }
+        public string SupplierName { get; private set; }
+        public string BranchName { get; private set; }
+        public DateTimeOffset DeliveryDate { get; private set; }
+
+        public Guid OrderedById { get; private set; }
+        public Guid SupplierId { get; private set; }
+        public Guid DestinationBranchId { get; private set; }
+
+        public decimal GetTotalFreeQuantity
         {
             get
             {
@@ -41,10 +41,71 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             }
         }
 
-        public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new List<PurchaseOrderItem>();
+        public decimal TotalCostPrice
+        {
+            get
+            {
+                return PurchaseOrderItems.Select(poi => poi.TotalCostPrice).DefaultIfEmpty(0).Sum();
+            }
+        }
 
-        public User ApprovedBy { get; set; }
-        public Supplier Supplier { get; set; }
-        public Branch Branch { get; set; }
+        public List<PurchaseOrderItem> PurchaseOrderItems { get; private set; }
+
+        public PurchaseOrder()
+        {
+
+        }
+
+        protected PurchaseOrder(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId)
+        {
+
+            Barcode = barcode;
+            DeliveryDate = deliveryDate;
+            OrderedById = orderedById;
+            SupplierId = supplierId;
+            DestinationBranchId = branchId;
+            PurchaseOrderItems = new List<PurchaseOrderItem>();
+        }
+
+        public DomainResult Update(DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider)
+        {
+            //only the creator can edit 
+            if (orderedById != OrderedById)
+            {
+                return DomainResult.Error(ErrorType.Forbidden, PurchaseOrderErrorCodes.DenyOtherUser, "Can't update other user's purchase order");
+            }
+
+            if (deliveryDate < dateTimeProvider.GetCurrentDateTimeOffset())
+            {
+                return DomainResult.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
+            }
+
+            DeliveryDate = deliveryDate;
+            SupplierId = supplierId;
+            DestinationBranchId = branchId;
+
+            return DomainResult.Success();
+        }
+
+        public void AddPurchaseOrderItem(PurchaseOrderItem purchaseOrderItem)
+        {
+            PurchaseOrderItems.Add(purchaseOrderItem);
+        }
+
+
+        public static DomainResult<PurchaseOrder> Create(DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator)
+        {
+            if (deliveryDate < dateTimeProvider.GetCurrentDateTimeOffset())
+            {
+               return  DomainResult<PurchaseOrder>.Error(PurchaseOrderErrorCodes.DeliveryDatePast, $"'{nameof(deliveryDate)}' is expired.");
+            }
+
+
+            var purchaseOrder = new PurchaseOrder(purchaseOrderBarcodeGenerator.GenerateBarcode(), deliveryDate, orderedById, supplierId, branchId);
+            return DomainResult<PurchaseOrder>.Success(purchaseOrder);
+        }
+
+
+
     }
 }

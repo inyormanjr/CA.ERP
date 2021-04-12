@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,6 @@ namespace CA.ERP.DataAccess.Entities
         public decimal CostPrice { get; set; }
 
         public MasterProduct MasterProduct { get; set; }
-        public Supplier Supplier { get; set; }
+        //public Supplier Supplier { get; set; }
     }
 }
