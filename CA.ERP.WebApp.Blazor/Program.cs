@@ -1,3 +1,4 @@
+using CA.ERP.WebApp.Blazor.Options;
 using CA.ERP.WebApp.Blazor.Services;
 using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+using Syncfusion.Blazor;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -61,6 +63,9 @@ namespace CA.ERP.WebApp.Blazor
 
             });
 
+            builder.Services.AddSyncfusionBlazor();
+
+
             builder.Services.AddOidcAuthentication(options =>
             {
                 // Configure your authentication provider options here.
@@ -79,6 +84,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             builder.Services.AddScoped<UserListViewModel>();
+
+            builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 
             await builder.Build().RunAsync();
                 

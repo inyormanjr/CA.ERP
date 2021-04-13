@@ -55,7 +55,7 @@ namespace CA.Identity
                       {
                           options.Clients.Add(new Client
                           {
-                              ClientId = "Erp",
+                              ClientId = "erp",
                               AllowedGrantTypes = GrantTypes.Code,
                               RequirePkce = true,
                               RequireClientSecret = false,
@@ -64,13 +64,15 @@ namespace CA.Identity
                                 {
                                     IdentityServerConstants.StandardScopes.OpenId,
                                     IdentityServerConstants.StandardScopes.Profile,
-                                    "Erp"
+                                    "erp", "report"
                                 },
                               RedirectUris = { "https://localhost:6001/authentication/login-callback" },
                               PostLogoutRedirectUris = { "https://localhost:6001/authentication/logout-callback" }
                           });
-                          options.ApiScopes.Add(new ApiScope("Erp"));
-                          options.ApiResources.AddApiResource("Erp", cfg => cfg.WithScopes("Erp").AllowAllClients());
+                          options.ApiScopes.Add(new ApiScope("erp"));
+                          options.ApiScopes.Add(new ApiScope("report"));
+                          options.ApiResources.AddApiResource("erp", cfg => cfg.WithScopes("erp").AllowAllClients());
+                          options.ApiResources.AddApiResource("report", cfg => cfg.WithScopes("report").AllowAllClients());
                       });
 
             services.AddAuthentication()

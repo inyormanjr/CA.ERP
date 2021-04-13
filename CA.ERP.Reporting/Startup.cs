@@ -39,6 +39,16 @@ namespace CA.ERP.Reporting
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddCors(option => {
+                option.AddDefaultPolicy(builder => {
+                    builder
+                    .SetIsOriginAllowed(origin => true)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             services.AddAuthentication("Bearer").AddJwtBearer(options =>
             {
                 options.Authority = Configuration.GetSection("Identity:Authority").Value;
@@ -65,15 +75,7 @@ namespace CA.ERP.Reporting
                 };
             });
 
-            services.AddCors(option => {
-                option.AddDefaultPolicy(builder => {
-                    builder
-                    .SetIsOriginAllowed(origin => true)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
-            });
+            
 
           
             string reportingServer = Configuration.GetSection("ReportServer")?.Value ?? "http://localhost:5488";
@@ -114,6 +116,7 @@ namespace CA.ERP.Reporting
                 app.UseHttpsRedirection();
             }
 
+            app.UseCors();
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -43,7 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{89FFEA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Report", "Report", "{B8DB73C2-85FC-4AB2-9100-BD32936391C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA.ERP.Reporting", "CA.ERP.Reporting\CA.ERP.Reporting.csproj", "{9129B7A8-5AF8-4707-9E98-BC90F7FB0660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CA.ERP.Reporting", "CA.ERP.Reporting\CA.ERP.Reporting.csproj", "{9129B7A8-5AF8-4707-9E98-BC90F7FB0660}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

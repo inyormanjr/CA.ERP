@@ -3,7 +3,9 @@ using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Extensions;
 using CA.ERP.WebApp.Blazor.Models;
+using CA.ERP.WebApp.Blazor.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -21,11 +23,13 @@ namespace CA.ERP.WebApp.Blazor.Services
         private const string PurchaseOrderEndpoint = "/api/PurchaseOrder";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PurchaseOrderService> _logger;
+        private readonly BaseAddresses _baseAddresses;
 
-        public PurchaseOrderService(IHttpClientFactory httpClientFactory, ILogger<PurchaseOrderService> logger)
+        public PurchaseOrderService(IHttpClientFactory httpClientFactory, ILogger<PurchaseOrderService> logger, IOptions<BaseAddresses> baseAddressesOptions)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _baseAddresses = baseAddressesOptions.Value;
         }
         public async Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size)
         {
@@ -83,6 +87,12 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             var createResponse = await response.Content.ReadFromJsonAsync<CreateResponse>();
             return createResponse.Id;
+        }
+
+        public string GetPurchaseOrderReportUrl(Guid purchaseOrderId)
+        {
+            var baseAddress = new Uri(_baseAddresses.Reporting);
+            return new Uri(baseAddress, $"/purchaseorder/{purchaseOrderId}").ToString();
         }
     }
 }

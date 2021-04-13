@@ -2,8 +2,10 @@
 
 @using CA.ERP.Shared.Dto.PurchaseOrder;
 @using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
+@using CA.ERP.WebApp.Blazor.Services;
 
-
+@inject IJSRuntime JSRuntime;
+@inject PurchaseOrderService purchaseOrderService;
 
 @inherits ViewBase<PurchaseOrderListViewModel>
 
@@ -47,7 +49,7 @@
             <MudTd DataLabel="Delivery Date">@context.DeliveryDate.Date.ToString("MMM dd, yyyy")</MudTd>
             <MudTd DataLabel="Supplier">@(context.SupplierName ?? "n/a") </MudTd>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
-            <MudTd DataLabel="Action"></MudTd>
+            <MudTd DataLabel="Action"><MudIconButton Icon="@Icons.Outlined.Print" Link="@(purchaseOrderService.GetPurchaseOrderReportUrl(context.Id))" /></MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />
@@ -82,7 +84,10 @@
     }
 
 
+    public async Task OpenReport(string reportUrl)
+    {
 
-
+        await JSRuntime.InvokeAsync<object>("open", reportUrl, "_blank");
+    }
 
 }
