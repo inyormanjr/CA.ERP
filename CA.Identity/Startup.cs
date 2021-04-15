@@ -198,6 +198,7 @@ namespace CA.Identity
                 TimeSpan.FromSeconds(10)
                });
 
+
             policy.Execute(() =>
             {
                 using (var serviceScope = app.ApplicationServices

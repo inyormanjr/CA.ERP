@@ -80,11 +80,13 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<BranchService>();
             builder.Services.AddScoped<MasterProductService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<IBranchService, BranchService>();
 
             builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             builder.Services.AddScoped<UserListViewModel>();
+            builder.Services.AddScoped<UserCreateViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 

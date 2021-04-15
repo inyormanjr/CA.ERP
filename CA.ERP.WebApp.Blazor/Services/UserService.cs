@@ -18,6 +18,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<UserService> _logger;
         private const string UserEndpoint = "/api/User";
+        private const string RoleEndpoint = "/api/Role";
 
         public UserService(IHttpClientFactory httpClientFactory, ILogger<UserService> logger)
         {
@@ -53,6 +54,24 @@ namespace CA.ERP.WebApp.Blazor.Services
                 throw await ApplicationBaseException.Create(response);
             }
             return await response.Content.ReadFromJsonAsync<PaginatedResponse<UserView>>();
+        }
+
+        public async Task<List<string>> GetRolesAsync()
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiIdentity);
+
+
+
+            var uri = new Uri(client.BaseAddress, RoleEndpoint);
+
+
+            var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+            return await response.Content.ReadFromJsonAsync<List<string>>();
         }
     }
 }
