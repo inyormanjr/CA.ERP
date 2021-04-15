@@ -10,12 +10,12 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
 {
     public class UserListViewModel : ViewModelBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
         public string FirsName { get; set; }
         public string LastName { get; set; }
 
-        public UserListViewModel(UserService userService)
+        public UserListViewModel(IUserService userService)
         {
             _userService = userService;
         }

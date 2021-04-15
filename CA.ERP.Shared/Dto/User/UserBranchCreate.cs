@@ -11,7 +11,6 @@ namespace CA.ERP.Shared.Dto.User
         public string Name { get; set; }
 
 
-
         public static UserBranchCreate Create(Guid branchId, string name)
         {
             return new UserBranchCreate() { BranchId = branchId, Name = name };

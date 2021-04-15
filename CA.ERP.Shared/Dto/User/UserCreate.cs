@@ -10,6 +10,7 @@ namespace CA.ERP.Shared.Dto.User
     {
 
         [Required]
+        [MinLength(3)]
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
@@ -22,9 +23,10 @@ namespace CA.ERP.Shared.Dto.User
         public string LastName { get; set; }
 
         [Required]
-        public HashSet<UserBranchCreate> Branches { get; set; } = new HashSet<UserBranchCreate>();
+        public List<UserBranchCreate> Branches { get; set; } = new List<UserBranchCreate>();
 
         [Required]
+        [MinLength(1)]
         public HashSet<string> Roles { get; set; } = new HashSet<string>();
     }
 }

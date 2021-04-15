@@ -13,7 +13,13 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public class UserService
+    public interface IUserService
+    {
+        Task<List<string>> GetRolesAsync();
+        Task<PaginatedResponse<UserView>> GetUsersAsync(string firstName, string lastName, int page, int size);
+        Task CreateUser(UserCreate user);
+    }
+    public class UserService : IUserService
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<UserService> _logger;
@@ -72,6 +78,23 @@ namespace CA.ERP.WebApp.Blazor.Services
                 throw await ApplicationBaseException.Create(response);
             }
             return await response.Content.ReadFromJsonAsync<List<string>>();
+        }
+
+        public async Task CreateUser(UserCreate user)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiIdentity);
+
+
+            var payload = new UserCreateRequest() { Data = user };
+
+            var response = await client.PostAsJsonAsync<UserCreateRequest>(UserEndpoint, payload);
+
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+
         }
     }
 }
