@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Reporting.Controllers
 {
-
+    [Authorize(Roles ="Admin")]
     public class PurchaseOrderController : BaseReportController
     {
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
@@ -44,9 +44,6 @@ namespace CA.ERP.Reporting.Controllers
             var reportDto = _mapper.Map<Dto.PurchaseOrder>(purchaseOrder);
             reportDto.Barcode = _barcodeService.GenerateBarcode(purchaseOrder.Barcode);
             return View(reportDto);
-
-
-
         }
     }
 }

@@ -49,7 +49,7 @@
             <MudTd DataLabel="Delivery Date">@context.DeliveryDate.Date.ToString("MMM dd, yyyy")</MudTd>
             <MudTd DataLabel="Supplier">@(context.SupplierName ?? "n/a") </MudTd>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
-            <MudTd DataLabel="Action"><MudIconButton Icon="@Icons.Outlined.Print" Link="@(purchaseOrderService.GetPurchaseOrderReportUrl(context.Id))" /></MudTd>
+            <MudTd DataLabel="Action"><MudIconButton Icon="@Icons.Outlined.Print" Link="@(purchaseOrderService.GetPurchaseOrderReportUrl(context.Id))" Target="_blank" /></MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />

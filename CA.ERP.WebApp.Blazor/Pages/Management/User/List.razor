@@ -5,7 +5,7 @@
 
 
 
-@using CA.ERP.Shared.Dto.PurchaseOrder;
+@using CA.ERP.Shared.Dto.User;
 @using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 
 
@@ -19,13 +19,13 @@
         <MudText Typo="Typo.h6">Users</MudText>
         <MudGrid>
             <MudItem xs="12" md="2">
-                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Frist Name" Class="ml-4"></MudTextField>
+                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Frist Name" Class="ml-4" @bind-Value="@ViewModel.FirsName"></MudTextField>
             </MudItem>
             <MudItem xs="12" md="2">
-                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Last Name" Class="ml-4"></MudTextField>
+                <MudTextField T="string" Adornment="Adornment.Start" Placeholder="Last Name" Class="ml-4" @bind-Value="@ViewModel.LastName"></MudTextField>
             </MudItem>
             <MudItem xs="12" md="2">
-                <MudIconButton Class="mt-4" DisableElevation="true" Icon="@Icons.Outlined.Search" Color="Color.Default"></MudIconButton>
+                <MudIconButton Class="mt-4" DisableElevation="true" Icon="@Icons.Outlined.Search" Color="Color.Default" OnClick="Search"></MudIconButton>
                 @*<MudButton Class="mt-4" Variant="Variant.Outlined" DisableElevation="true" StartIcon="@Icons.Outlined.Search" Color="Color.Secondary"></MudButton>*@
             </MudItem>
 
@@ -34,8 +34,43 @@
             </MudItem>
         </MudGrid>
 
+
+        <MudTable Elevation="0" Bordered="true" Outlined="true" Class="mt-8" ServerData="@(new Func<TableState, Task<TableData<UserView>>>(ServerReload))" Hover="true" Striped="true" @ref="table">
+
+            <HeaderContent>
+                <MudTh>First Name</MudTh>
+                <MudTh>Last Name</MudTh>
+                <MudTh>Roles</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+                <MudTd DataLabel="Roles">@(string.Join(' ', context.Roles)) </MudTd>
+                <MudTd DataLabel="Action"><MudIconButton Icon="@Icons.Outlined.Edit" Target="_blank" /></MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+
+            </PagerContent>
+        </MudTable>
     </MudPaper>
+
 
 </MudContainer>
 
 
+@code  {
+    private MudTable<UserView> table;
+
+    private async Task<TableData<UserView>> ServerReload(TableState state)
+    {
+        var paginatedPurchaseOrders = await ViewModel.GetUsersAsync(state.Page, state.PageSize);
+        return new TableData<UserView>() { TotalItems = paginatedPurchaseOrders.TotalCount, Items = paginatedPurchaseOrders.Data };
+    }
+
+    public  void Search()
+    {
+        table.ReloadServerData();
+    }
+}

@@ -11,14 +11,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static IdentityServer4.IdentityServerConstants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CA.Identity.Controllers
 {
+
+    [Authorize(LocalApi.PolicyName)]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
 
@@ -33,9 +36,9 @@ namespace CA.Identity.Controllers
         }
         //GET: api/<UserController>
         [HttpGet]
-        public async Task<PaginatedResponse<UserView>> Get(string firsName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
+        public async Task<PaginatedResponse<UserView>> Get(string firstName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
         {
-            var users = await _userRepository.GetUsers(firsName, lastName, userName, skip, take, cancellationToken);
+            var users = await _userRepository.GetUsers(firstName, lastName, userName, skip, take, cancellationToken);
             var ret = new List<UserView>();
 
             foreach (var user in users)

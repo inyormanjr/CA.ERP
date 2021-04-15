@@ -20,6 +20,9 @@ using CA.Identity.Services;
 using CA.Identity.Repository;
 using IdentityServer4;
 using System;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Polly;
 
 namespace CA.Identity
 {
@@ -64,19 +67,26 @@ namespace CA.Identity
                                 {
                                     IdentityServerConstants.StandardScopes.OpenId,
                                     IdentityServerConstants.StandardScopes.Profile,
+                                    IdentityServerConstants.LocalApi.ScopeName,
                                     "erp", "report"
                                 },
                               RedirectUris = { "https://localhost:6001/authentication/login-callback" },
                               PostLogoutRedirectUris = { "https://localhost:6001/authentication/logout-callback" }
                           });
+
                           options.ApiScopes.Add(new ApiScope("erp"));
                           options.ApiScopes.Add(new ApiScope("report"));
+                          options.ApiScopes.Add(new ApiScope(IdentityServerConstants.LocalApi.ScopeName));
                           options.ApiResources.AddApiResource("erp", cfg => cfg.WithScopes("erp").AllowAllClients());
                           options.ApiResources.AddApiResource("report", cfg => cfg.WithScopes("report").AllowAllClients());
+                          options.ApiResources.AddApiResource(IdentityServerConstants.LocalApi.ScopeName, cfg => cfg.WithScopes(IdentityServerConstants.LocalApi.ScopeName).AllowAllClients());
                       });
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+
+            services.AddLocalApiAuthentication();
 
 
             services.AddScoped<IProfileService, ProfileService>();
@@ -179,21 +189,33 @@ namespace CA.Identity
         }
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
+            var policy = Policy
+               .Handle<Exception>()
+               .WaitAndRetry(new[]
+               {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(10)
+               });
+
+            policy.Execute(() =>
             {
-                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                using (var serviceScope = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope())
                 {
-                    if (context.Database.IsRelational())
+                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                     {
-                        context.Database.Migrate();
+                        if (context.Database.IsRelational())
+                        {
+                            context.Database.Migrate();
+                        }
+
+
+
                     }
-
-
-
                 }
-            }
+            });
         }
     }
 }

@@ -53,6 +53,7 @@ using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Core.EventBus;
 using CA.ERP.Infrastructure.EventBus;
 using System.Diagnostics;
+using Polly;
 
 namespace CA.ERP.WebApp
 {
@@ -73,7 +74,7 @@ namespace CA.ERP.WebApp
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardLimit=2;  //Limit number of proxy hops trusted
+                options.ForwardLimit = 2;  //Limit number of proxy hops trusted
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
 
@@ -89,7 +90,8 @@ namespace CA.ERP.WebApp
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddSwaggerGen(setup => {
+            services.AddSwaggerGen(setup =>
+            {
                 //add xml for endpoint description.
                 var docs = Path.Combine(System.AppContext.BaseDirectory, "CA.ERP.WebApp.xml");
                 if (File.Exists(docs))
@@ -129,21 +131,24 @@ namespace CA.ERP.WebApp
             });
 
             services.AddControllersWithViews(
-                option => {
+                option =>
+                {
                     option.Filters.Add<RequestProcessingTimeFilter>();
                     option.Filters.Add<RequestTimestampSetter>();
                 }
                 )
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            
-            services.AddCors(option => {
-                option.AddDefaultPolicy(builder => {
+
+            services.AddCors(option =>
+            {
+                option.AddDefaultPolicy(builder =>
+                {
                     builder
                     .SetIsOriginAllowed(origin => true)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
-                } );
+                });
             });
             string reportingServer = Configuration.GetSection("ReportServer")?.Value ?? "http://jsreportserver:5488";
             services.AddJsReport(new ReportingService(reportingServer));
@@ -166,30 +171,32 @@ namespace CA.ERP.WebApp
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
-            services.AddAuthentication("Bearer").AddJwtBearer( options =>
-            {
-              options.Authority = Configuration.GetSection("Identity:Authority").Value;
+            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+           {
+               options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
-              options.TokenValidationParameters = new TokenValidationParameters
-              {
-                ValidateAudience = false
-              };
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateAudience = false
+               };
 
 
-              options.Events = new JwtBearerEvents { 
-                    OnMessageReceived = context =>
-                    {
-                        var accessToken = context.Request.Query["access_token"];
-                        if (accessToken.ToString() != null)
-                        {
-                            var path = context.HttpContext.Request.Path;
-                            context.Token = accessToken;
-                            
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+
+               options.Events = new JwtBearerEvents
+               {
+                   OnMessageReceived = context =>
+                   {
+                       var accessToken = context.Request.Query["access_token"];
+                       if (accessToken.ToString() != null)
+                       {
+                           var path = context.HttpContext.Request.Path;
+                           context.Token = accessToken;
+
+                       }
+                       return Task.CompletedTask;
+                   }
+               };
+           });
 
 
             // In production, the Angular files will be served from this directory
@@ -200,7 +207,7 @@ namespace CA.ERP.WebApp
 
             //override asp.net validation to nothing    
 
-           
+
 
             //add principal/user tranformer
             //services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
@@ -259,10 +266,10 @@ namespace CA.ERP.WebApp
             {
                 app.UseHttpsRedirection();
             }
-            
+
             app.UseStaticFiles();
-            
-            
+
+
 
             app.UseCors();
 
@@ -277,7 +284,7 @@ namespace CA.ERP.WebApp
             app.UseRouting();
             app.UseAuthorization();
 
-            
+
             //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
@@ -288,7 +295,7 @@ namespace CA.ERP.WebApp
                 endpoints.MapHealthChecks("/health");
             });
 
-            
+
 
 
             bool.TryParse(Environment.GetEnvironmentVariable("DISABLE_SPA"), out bool disbaleSpa);
@@ -312,25 +319,38 @@ namespace CA.ERP.WebApp
                     }
                 });
             }
-            
-            
+
+
         }
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
+            var policy = Policy
+               .Handle<Exception>()
+               .WaitAndRetry(new[]
+               {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(10)
+               });
+            policy.Execute(() =>
             {
-                using (var context = serviceScope.ServiceProvider.GetService<CADataContext>())
-                {
-                    if (context.Database.IsRelational())
-                    {
-                        context.Database.Migrate();
-                    }
 
+
+                using (var serviceScope = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope())
+                {
+                    using (var context = serviceScope.ServiceProvider.GetService<CADataContext>())
+                    {
+                        if (context.Database.IsRelational())
+                        {
+                            context.Database.Migrate();
+                        }
+
+                    }
                 }
-            }
+            });
         }
 
 
