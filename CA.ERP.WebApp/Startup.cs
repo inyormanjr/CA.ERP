@@ -217,7 +217,7 @@ namespace CA.ERP.WebApp
 
             services.AddMassTransit(x =>
             {
-                x.UsingRabbitMq((context, cfg) => cfg.Host("localhost", "/", h =>
+                x.UsingRabbitMq((context, cfg) => cfg.Host(Configuration.GetSection("RabbitMQ:Host").Value, "/", h =>
                 {
 
                 }));
