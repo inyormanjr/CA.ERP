@@ -154,6 +154,9 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Property<Guid>("DestinationBranchId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("OrderedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 

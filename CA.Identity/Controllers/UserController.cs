@@ -1,41 +1,49 @@
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.User;
+using CA.Identity.Data;
 using CA.Identity.Models;
 using CA.Identity.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static IdentityServer4.IdentityServerConstants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CA.Identity.Controllers
 {
+
+    [Authorize(LocalApi.PolicyName)]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserRepository _userRepository;
+        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly ILogger<UserController> _logger;
 
-
-        public UserController(UserManager<ApplicationUser> userManager, IUserRepository userRepository)
+        public UserController(UserManager<ApplicationUser> userManager, IUserRepository userRepository, ApplicationDbContext applicationDbContext, ILogger<UserController> logger)
         {
             _userManager = userManager;
             _userRepository = userRepository;
+            _applicationDbContext = applicationDbContext;
+            _logger = logger;
         }
         //GET: api/<UserController>
         [HttpGet]
-        public async Task<PaginatedResponse<UserView>> Get(string firsName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
+        public async Task<PaginatedResponse<UserView>> Get(string firstName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
         {
-            var users = await _userRepository.GetUsers(firsName, lastName, userName, skip, take, cancellationToken);
+            var users = await _userRepository.GetUsers(firstName, lastName, userName, skip, take, cancellationToken);
             var ret = new List<UserView>();
 
             foreach (var user in users)
@@ -76,20 +84,66 @@ namespace CA.Identity.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(UserCreateRequest userCreateRequest, CancellationToken cancellationToken)
         {
-            var user = new ApplicationUser()
+            using (var transaction = _applicationDbContext.Database.BeginTransaction())
             {
-                UserName = userCreateRequest.Data.UserName,
-                FirstName = userCreateRequest.Data.FirstName,
-                LastName = userCreateRequest.Data.LastName,
-            };
-            var result = await _userManager.CreateAsync(user, userCreateRequest.Data.Password);
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest(result.Errors);
+
+                try
+                {
+                    var user = new ApplicationUser()
+                    {
+                        UserName = userCreateRequest.Data.UserName,
+                        FirstName = userCreateRequest.Data.FirstName,
+                        LastName = userCreateRequest.Data.LastName,
+                        Roles = userCreateRequest.Data.Roles.ToList(),
+                        UserBranches = userCreateRequest.Data.Branches.Select(b => new UserBranch() { BranchId = b.BranchId.ToString(), BranchName = b.Name }).ToList()
+                    };
+                    var result = await _userManager.CreateAsync(user, userCreateRequest.Data.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        _logger.LogError("Saving user failed. Errors : {Errors}", result.Errors.Select(ie => ie.Code));
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(error.Code, error.Description);
+                        }
+                        
+                        return this.ValidationProblem();
+                    }
+
+                    foreach (var role in user.Roles)
+                    {
+                        var addRoleResult = await _userManager.AddToRoleAsync(user, role);
+                        if (!addRoleResult.Succeeded)
+                        {
+                            _logger.LogError("Failed adding role. Errors : {Errors}", addRoleResult.Errors);
+                            foreach (var error in addRoleResult.Errors)
+                            {
+                                ModelState.AddModelError(error.Code, error.Description);
+                            }
+
+                            return this.ValidationProblem();
+                        }
+                    }
+
+
+
+                    await transaction.CommitAsync();
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest(result.Errors);
+                    }
+
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+                
             }
         }
 

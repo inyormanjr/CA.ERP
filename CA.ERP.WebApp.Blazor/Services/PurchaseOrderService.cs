@@ -3,7 +3,10 @@ using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Extensions;
 using CA.ERP.WebApp.Blazor.Models;
+using CA.ERP.WebApp.Blazor.Options;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -21,11 +24,26 @@ namespace CA.ERP.WebApp.Blazor.Services
         private const string PurchaseOrderEndpoint = "/api/PurchaseOrder";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PurchaseOrderService> _logger;
+        private readonly IAccessTokenProvider _accessTokenProvider;
+        private readonly BaseAddresses _baseAddresses;
+        private  string _accessToken = string.Empty;
 
-        public PurchaseOrderService(IHttpClientFactory httpClientFactory, ILogger<PurchaseOrderService> logger)
+        public PurchaseOrderService(IHttpClientFactory httpClientFactory, ILogger<PurchaseOrderService> logger, IOptions<BaseAddresses> baseAddressesOptions, IAccessTokenProvider accessTokenProvider)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _accessTokenProvider = accessTokenProvider;
+            _baseAddresses = baseAddressesOptions.Value;
+            Init().ConfigureAwait(false);
+        }
+
+        public async Task Init()
+        {
+            var accessTokenResult = await _accessTokenProvider.RequestAccessToken();
+            if (accessTokenResult.TryGetToken(out AccessToken accessToken))
+            {
+                _accessToken = accessToken.Value;
+            }
         }
         public async Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size)
         {
@@ -60,8 +78,7 @@ namespace CA.ERP.WebApp.Blazor.Services
                 
                 throw await ApplicationBaseException.Create(response);
             }
-            var paginatedPurchaseOrders = await response.Content.ReadFromJsonAsync<PaginatedResponse<PurchaseOrderView>>();
-            return paginatedPurchaseOrders;
+            return await response.Content.ReadFromJsonAsync<PaginatedResponse<PurchaseOrderView>>();
         }
 
         public async Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder)
@@ -83,6 +100,17 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             var createResponse = await response.Content.ReadFromJsonAsync<CreateResponse>();
             return createResponse.Id;
+        }
+
+        public  string GetPurchaseOrderReportUrl(Guid purchaseOrderId)
+        {
+            var baseAddress = new Uri(_baseAddresses.Report);
+            var uri = new Uri(baseAddress, $"/purchaseorder/{purchaseOrderId}");
+
+
+            uri = uri.AddQuery("access_token", _accessToken);
+
+            return uri.ToString();
         }
     }
 }

@@ -11,7 +11,11 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public class BranchService
+    public interface IBranchService
+    {
+        Task<PaginatedResponse<BranchView>> GetBranchesAsync();
+    }
+    public class BranchService : IBranchService
     {
         private const string GetBranchEndpoint = "/api/Branch";
         private readonly IHttpClientFactory _httpClientFactory;

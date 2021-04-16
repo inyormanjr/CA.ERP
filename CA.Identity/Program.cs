@@ -18,6 +18,12 @@ namespace CA.Identity
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+          .ConfigureLogging((hostingContext, builder) =>
+          {
+              builder.AddConsole();
+              builder.AddFile("logs/ca-identity-2-{Date}.log");
+              builder.AddEventSourceLogger();
+          })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

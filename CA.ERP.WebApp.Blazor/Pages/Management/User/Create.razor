@@ -1,0 +1,86 @@
+@page "/management/user/create"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.User;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
+
+@layout ManagementLayout
+
+
+
+
+@inherits ViewBase<UserCreateViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+<MudContainer>
+    <MudPaper Class="pa-4">
+        <MudGrid>
+            <MudItem xs="10">
+                <MudText Typo="Typo.h6">New User</MudText>
+            </MudItem>
+
+        </MudGrid>
+        @if ((ViewModel.Errors?.Length ?? 0) > 0)
+        {
+            @foreach (var error in ViewModel.Errors)
+            {
+                <MudAlert Severity="Severity.Error">@error</MudAlert>
+            }
+        }
+    <EditForm Model="@ViewModel.User" OnValidSubmit="@OnValidSubmit" >
+        <DataAnnotationsValidator />
+        <MudTextField T="string" Label="First Name" @bind-Value="ViewModel.User.FirstName" For="@(() => ViewModel.User.FirstName)" />
+        <MudTextField T="string" Label="Last Name" Required="true" RequiredError="Last name is required!" @bind-Value="ViewModel.User.LastName" For="@(() => ViewModel.User.LastName)" />
+
+        <MudTextField T="string" Label="Username" @bind-Value="ViewModel.User.UserName" For="@(() => ViewModel.User.UserName)" />
+        <MudTextField T="string" Label="Password" HelperText="Choose a strong password"
+                      InputType="InputType.Password"
+                      @bind-Value="ViewModel.User.Password" For="@(() => ViewModel.User.Password)" />
+        <MudTextField T="string"
+                      Label="Confirm Password" HelperText="Repeat the password" InputType="InputType.Password" @bind-Value="ViewModel.User.ConfirmPassword" For="@(() => ViewModel.User.ConfirmPassword)" />
+
+
+        <MudSelect T="string" Label="Roles" HelperText="Pick user roles" MultiSelection="true" @bind-SelectedValues="ViewModel.User.Roles">
+            @foreach (var role in ViewModel.Roles)
+            {
+                <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSelect T="BranchView" Label="Assigned Branches" HelperText="Pick user branches" MultiSelection="true" @bind-SelectedValues="ViewModel.SelectedBranches" ToStringFunc="(b => b.Name)">
+            @foreach (var branch in ViewModel.Branches)
+            {
+                <MudSelectItem T="BranchView" Value="branch">@branch.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Submit</MudButton>
+
+    </EditForm>
+
+
+    </MudPaper>
+</MudContainer>
+
+@code {
+    bool success;
+
+
+
+    private void OnValidSubmit(EditContext context)
+    {
+
+
+        success = true;
+        StateHasChanged();
+
+        ViewModel.Submit().ConfigureAwait(false);
+
+
+    }
+
+
+
+}

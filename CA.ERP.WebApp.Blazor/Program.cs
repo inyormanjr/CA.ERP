@@ -1,3 +1,4 @@
+using CA.ERP.WebApp.Blazor.Options;
 using CA.ERP.WebApp.Blazor.Services;
 using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+using Serilog;
+using Syncfusion.Blazor;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -21,7 +24,16 @@ namespace CA.ERP.WebApp.Blazor
     {
         public static async Task Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
+
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            builder.Logging.AddSerilog();
+
             //builder.Logging.SetMinimumLevel(LogLevel.Debug);
             builder.RootComponents.Add<App>("#app");
 
@@ -61,6 +73,9 @@ namespace CA.ERP.WebApp.Blazor
 
             });
 
+            builder.Services.AddSyncfusionBlazor();
+
+
             builder.Services.AddOidcAuthentication(options =>
             {
                 // Configure your authentication provider options here.
@@ -74,11 +89,16 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<SupplierService>();
             builder.Services.AddScoped<BranchService>();
             builder.Services.AddScoped<MasterProductService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IBranchService, BranchService>();
 
             builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             builder.Services.AddScoped<UserListViewModel>();
+            builder.Services.AddScoped<UserCreateViewModel>();
+
+            builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 
             await builder.Build().RunAsync();
                 

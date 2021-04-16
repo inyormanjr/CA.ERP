@@ -40,15 +40,15 @@ namespace CA.Identity.Repository
             var query = _applicationDbContext.Users.Include(u=>u.UserBranches).AsQueryable();
             if (!string.IsNullOrEmpty(firstName))
             {
-                query = query.Where(u => u.FirstName.StartsWith(firstName));
+                query = query.Where(u => u.FirstName.ToLower().StartsWith(firstName.ToLower()));
             }
             if (!string.IsNullOrEmpty(lastName))
             {
-                query = query.Where(u => u.LastName.StartsWith(lastName));
+                query = query.Where(u => u.LastName.ToLower().StartsWith(lastName.ToLower()));
             }
             if (!string.IsNullOrEmpty(userName))
             {
-                query = query.Where(u => u.UserName.StartsWith(userName));
+                query = query.Where(u => u.UserName.ToLower().StartsWith(userName.ToLower()));
             }
 
 
