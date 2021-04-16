@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+using Serilog;
 using Syncfusion.Blazor;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,16 @@ namespace CA.ERP.WebApp.Blazor
     {
         public static async Task Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
+
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            builder.Logging.AddSerilog();
+
             //builder.Logging.SetMinimumLevel(LogLevel.Debug);
             builder.RootComponents.Add<App>("#app");
 
