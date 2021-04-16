@@ -104,7 +104,7 @@ namespace CA.ERP.WebApp.Blazor.Services
 
         public  string GetPurchaseOrderReportUrl(Guid purchaseOrderId)
         {
-            var baseAddress = new Uri(_baseAddresses.Reporting);
+            var baseAddress = new Uri(_baseAddresses.Report);
             var uri = new Uri(baseAddress, $"/purchaseorder/{purchaseOrderId}");
 
 

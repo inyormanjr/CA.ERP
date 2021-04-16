@@ -9,6 +9,6 @@ namespace CA.ERP.WebApp.Blazor.Options
     {
         public string Identity { get; set; }
         public string Erp { get; set; }
-        public string Reporting { get; set; }
+        public string Report { get; set; }
     }
 }
