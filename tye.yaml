@@ -21,15 +21,15 @@ services:
   - name: ASPNETCORE_URLS
     value: http://+:80
 
-- name: ca-identity
-  project: CA.Identity/CA.Identity.csproj
-  bindings:
-  - port: 5000
-    protocol: http
-    name : http
-  - port: 5001
-    protocol: https
-    name : https
+#- name: ca-identity
+#  project: CA.Identity/CA.Identity.csproj
+#  bindings:
+#  - port: 5000
+#    protocol: http
+#    name : http
+#  - port: 5001
+#    protocol: https
+#    name : https
 
 
 - name: ca-frontend
