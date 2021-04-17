@@ -171,33 +171,33 @@ namespace CA.ERP.WebApp
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
-            services.AddAuthentication("Bearer")
-                .AddCertificate(options => options.AllowedCertificateTypes = CertificateTypes.All).AddJwtBearer(options =>
-           {
-               options.Authority = Configuration.GetSection("Identity:Authority").Value;
+            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+            {
+                Debugger.Launch();
+                options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateAudience = false
-               };
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
 
 
 
-               options.Events = new JwtBearerEvents
-               {
-                   OnMessageReceived = context =>
-                   {
-                       var accessToken = context.Request.Query["access_token"];
-                       if (accessToken.ToString() != null)
-                       {
-                           var path = context.HttpContext.Request.Path;
-                           context.Token = accessToken;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (accessToken.ToString() != null)
+                        {
+                            var path = context.HttpContext.Request.Path;
+                            context.Token = accessToken;
 
-                       }
-                       return Task.CompletedTask;
-                   }
-               };
-           });
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
 
             // In production, the Angular files will be served from this directory
@@ -252,6 +252,7 @@ namespace CA.ERP.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
             }
             else
             {
@@ -259,31 +260,32 @@ namespace CA.ERP.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true;
 
             //temp disable
-            //if (env.IsProduction())
-            //{
-            //    app.UseHttpsRedirection();
-            //}
+            if (env.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseStaticFiles();
 
 
-            app.UseRouting();
 
             app.UseCors();
 
-
-            app.UseAuthentication();
-            
-            app.UseAuthorization();
-
             app.UseSwagger();
-
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
+
+
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
+
 
             //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
@@ -294,6 +296,32 @@ namespace CA.ERP.WebApp
 
                 endpoints.MapHealthChecks("/health");
             });
+
+
+
+
+            bool.TryParse(Environment.GetEnvironmentVariable("DISABLE_SPA"), out bool disbaleSpa);
+            if (!disbaleSpa)
+            {
+                if (!env.IsDevelopment())
+                {
+                    app.UseSpaStaticFiles();
+                }
+
+                app.UseSpa(spa =>
+                {
+                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                    // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                    spa.Options.SourcePath = "ClientApp";
+
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseAngularCliServer(npmScript: "start");
+                    }
+                });
+            }
+
 
         }
 

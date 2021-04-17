@@ -6,20 +6,18 @@
 #
 name: ca.erp
 services:
-- name: ca-erp-webapp
-  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
-  bindings:
-  - port: 80
-    protocol: http
-    name : http
-  - port: 443
-    protocol: https
-    name : https
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
-  - name: ASPNETCORE_URLS
-    value: http://+:80
+#- name: ca-erp-webapp
+#  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+#  bindings:
+#  - port: 6000
+#    protocol: http
+#    name : http
+#  - port: 6001
+#    protocol: https
+#    name : https
+#  env:
+#  - name: ASPNETCORE_ENVIRONMENT
+#    value: Development
 
 
 #- name: ca-identity
@@ -36,10 +34,10 @@ services:
 - name: ca-frontend
   project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
   bindings:
-  - port: 6000
+  - port: 80
     protocol: http
     name : http
-  - port: 6001
+  - port: 443
     protocol: https
     name : https
 
