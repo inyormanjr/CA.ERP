@@ -144,7 +144,7 @@ namespace CA.ERP.WebApp
                 option.AddDefaultPolicy(builder =>
                 {
                     builder
-                    .SetIsOriginAllowed(origin => true)
+                    .WithOrigins("https://localhost", "https://erp.dev.citi-appliance.co")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
