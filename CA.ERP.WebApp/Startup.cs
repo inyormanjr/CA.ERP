@@ -251,8 +251,6 @@ namespace CA.ERP.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                    (sender, certificate, chain, sslPolicyErrors) => true;
             }
             else
             {
@@ -262,21 +260,13 @@ namespace CA.ERP.WebApp
             }
 
             //temp disable
-            if (env.IsProduction())
-            {
-                app.UseHttpsRedirection();
-            }
+            //if (env.IsProduction())
+            //{
+            //    app.UseHttpsRedirection();
+            //}
 
             app.UseStaticFiles();
 
-
-
-            
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
-            });
 
             app.UseRouting();
 
@@ -287,6 +277,12 @@ namespace CA.ERP.WebApp
             
             app.UseAuthorization();
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
+            });
 
             //app.UseMiddleware<ErrorLoggingMiddleware>();
             app.UseEndpoints(endpoints =>
