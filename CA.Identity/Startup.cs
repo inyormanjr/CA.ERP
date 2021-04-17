@@ -23,6 +23,8 @@ using System;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Polly;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace CA.Identity
 {
@@ -64,7 +66,7 @@ namespace CA.Identity
                               AllowedGrantTypes = GrantTypes.Code,
                               RequirePkce = true,
                               RequireClientSecret = false,
-                              AllowedCorsOrigins = { "https://localhost:6001" },
+                              AllowedCorsOrigins = Configuration.GetSection("ErpClient:AllowedCorsOrigins").Get<string[]>(),
                               AllowedScopes =
                                 {
                                     IdentityServerConstants.StandardScopes.OpenId,
@@ -72,8 +74,8 @@ namespace CA.Identity
                                     IdentityServerConstants.LocalApi.ScopeName,
                                     "erp", "report"
                                 },
-                              RedirectUris = { "https://localhost:6001/authentication/login-callback" },
-                              PostLogoutRedirectUris = { "https://localhost:6001/authentication/logout-callback" }
+                              RedirectUris = Configuration.GetSection("ErpClient:RedirectUris").Get<string[]>(),
+                              PostLogoutRedirectUris = Configuration.GetSection("ErpClient:PostLogoutRedirectUris").Get<string[]>(),
                           });
 
                           options.ApiScopes.Add(new ApiScope("erp"));
@@ -121,10 +123,12 @@ namespace CA.Identity
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             UpdateDatabase(app);
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.None });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+
             }
             else
             {

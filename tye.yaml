@@ -21,6 +21,7 @@ services:
   - name: ASPNETCORE_URLS
     value: http://+:80
 
+
 #- name: ca-identity
 #  project: CA.Identity/CA.Identity.csproj
 #  bindings:
@@ -73,6 +74,8 @@ services:
   volumes:
    - source: ./data/postgresql
      target: /var/lib/postgresql/data
+  tags:
+   - be
 
 - name: rabbitmq
   image: rabbitmq:3.8
