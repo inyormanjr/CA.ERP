@@ -1,12 +1,11 @@
-﻿using CA.ERP.Domain.StockReceiveAgg;
-using CA.ERP.WebApp.CustomAuthentication;
-using CA.ERP.WebApp.Dto.Stock;
+using CA.ERP.Common.Types;
+using CA.ERP.Shared.Dto.Stock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto.StockReceive
+namespace CA.ERP.Shared.Dto.StockReceive
 {
     public class StockReceiveCreate 
     {

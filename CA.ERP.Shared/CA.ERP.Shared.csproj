@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -7,18 +7,12 @@
   <ItemGroup>
     <Compile Remove="Dto\Customer\**" />
     <Compile Remove="Dto\Payment\**" />
-    <Compile Remove="Dto\StockReceive\**" />
-    <Compile Remove="Dto\Stock\**" />
     <Compile Remove="Dto\Transaction\**" />
     <EmbeddedResource Remove="Dto\Customer\**" />
     <EmbeddedResource Remove="Dto\Payment\**" />
-    <EmbeddedResource Remove="Dto\StockReceive\**" />
-    <EmbeddedResource Remove="Dto\Stock\**" />
     <EmbeddedResource Remove="Dto\Transaction\**" />
     <None Remove="Dto\Customer\**" />
     <None Remove="Dto\Payment\**" />
-    <None Remove="Dto\StockReceive\**" />
-    <None Remove="Dto\Stock\**" />
     <None Remove="Dto\Transaction\**" />
   </ItemGroup>
 

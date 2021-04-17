@@ -1,10 +1,10 @@
-﻿using CA.ERP.Domain.StockAgg;
+using CA.ERP.Common.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto.Stock
+namespace CA.ERP.Shared.Dto.Stock
 {
     public class StockView : DtoViewBase
     {

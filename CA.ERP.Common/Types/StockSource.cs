@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CA.ERP.Domain.StockReceiveAgg
+namespace CA.ERP.Common.Types
 {
     [Flags]
     public enum StockSource
