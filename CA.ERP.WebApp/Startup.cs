@@ -144,7 +144,7 @@ namespace CA.ERP.WebApp
                 option.AddDefaultPolicy(builder =>
                 {
                     builder
-                    .WithOrigins("https://localhost", "https://erp.dev.citi-appliance.co")
+                    .SetIsOriginAllowed(origin => true)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -261,27 +261,30 @@ namespace CA.ERP.WebApp
                 app.UseHsts();
             }
 
-            //disable when using nginx or any reverse proxy 
-            //if (env.IsProduction())
-            //{
-            //    app.UseHttpsRedirection();
-            //}
+            //temp disable
+            if (env.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseStaticFiles();
 
 
 
-            app.UseCors();
-
+            
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citi App API V1");
             });
 
+            app.UseRouting();
+
+            app.UseCors();
+
 
             app.UseAuthentication();
-            app.UseRouting();
+            
             app.UseAuthorization();
 
 
@@ -294,32 +297,6 @@ namespace CA.ERP.WebApp
 
                 endpoints.MapHealthChecks("/health");
             });
-
-
-
-
-            bool.TryParse(Environment.GetEnvironmentVariable("DISABLE_SPA"), out bool disbaleSpa);
-            if (!disbaleSpa)
-            {
-                if (!env.IsDevelopment())
-                {
-                    app.UseSpaStaticFiles();
-                }
-
-                app.UseSpa(spa =>
-                {
-                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                    // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                    spa.Options.SourcePath = "ClientApp";
-
-                    if (env.IsDevelopment())
-                    {
-                        spa.UseAngularCliServer(npmScript: "start");
-                    }
-                });
-            }
-
 
         }
 
