@@ -261,11 +261,11 @@ namespace CA.ERP.WebApp
                 app.UseHsts();
             }
 
-            //temp disable
-            if (env.IsProduction())
-            {
-                app.UseHttpsRedirection();
-            }
+            //disable when using nginx or any reverse proxy 
+            //if (env.IsProduction())
+            //{
+            //    app.UseHttpsRedirection();
+            //}
 
             app.UseStaticFiles();
 
