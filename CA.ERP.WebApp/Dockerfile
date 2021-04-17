@@ -21,11 +21,12 @@ WORKDIR "/src/CA.ERP.WebApp"
 RUN dotnet build "CA.ERP.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-COPY ["certs/dev.citi-appliance.co.crt", "/usr/local/share/ca-certificates/"]
-RUN update-ca-certificates
+
 RUN dotnet publish "CA.ERP.WebApp.csproj" -c Release -o /app/publish
 
 FROM base AS final
+COPY ["certs/dev.citi-appliance.co.crt", "/usr/local/share/ca-certificates/"]
+RUN update-ca-certificates
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "CA.ERP.WebApp.dll"]
