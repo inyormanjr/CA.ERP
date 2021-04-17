@@ -171,7 +171,8 @@ namespace CA.ERP.WebApp
             //manual
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
-            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+            services.AddAuthentication("Bearer")
+                .AddCertificate(options => options.AllowedCertificateTypes = CertificateTypes.All).AddJwtBearer(options =>
            {
                options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
