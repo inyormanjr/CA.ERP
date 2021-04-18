@@ -172,31 +172,32 @@ namespace CA.ERP.WebApp
             services.AddScoped<IRoundingCalculator, NearestFiveCentRoundingCalculator>();
 
             services.AddAuthentication("Bearer").AddJwtBearer(options =>
-           {
-               options.Authority = Configuration.GetSection("Identity:Authority").Value;
+            {
+                Debugger.Launch();
+                options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateAudience = false
-               };
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
 
 
 
-               options.Events = new JwtBearerEvents
-               {
-                   OnMessageReceived = context =>
-                   {
-                       var accessToken = context.Request.Query["access_token"];
-                       if (accessToken.ToString() != null)
-                       {
-                           var path = context.HttpContext.Request.Path;
-                           context.Token = accessToken;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (accessToken.ToString() != null)
+                        {
+                            var path = context.HttpContext.Request.Path;
+                            context.Token = accessToken;
 
-                       }
-                       return Task.CompletedTask;
-                   }
-               };
-           });
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
 
             // In production, the Angular files will be served from this directory
@@ -217,7 +218,7 @@ namespace CA.ERP.WebApp
 
             services.AddMassTransit(x =>
             {
-                x.UsingRabbitMq((context, cfg) => cfg.Host("localhost", "/", h =>
+                x.UsingRabbitMq((context, cfg) => cfg.Host(Configuration.GetSection("RabbitMQ:Host").Value, "/", h =>
                 {
 
                 }));
@@ -251,8 +252,7 @@ namespace CA.ERP.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                    (sender, certificate, chain, sslPolicyErrors) => true;
+                
             }
             else
             {
@@ -260,6 +260,8 @@ namespace CA.ERP.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true;
 
             //temp disable
             if (env.IsProduction())

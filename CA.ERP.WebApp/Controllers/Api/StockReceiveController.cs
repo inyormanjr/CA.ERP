@@ -57,5 +57,27 @@ namespace CA.ERP.WebApp.Controllers.Api
             f2: _ => Forbid()
          );
         }
+
+        [HttpGet("GenerateStocks/{purchaseOrderBarcode}/")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Dto.CreateResponse>> Generate(string purchaseOrderBarcode, CancellationToken cancellationToken)
+        {
+            var result = await _stockReceiveService.GenerateStocks(purchaseOrderBarcode, cancellationToken: cancellationToken);
+            return result.Match<ActionResult>(
+            f0: (stocks) =>
+            {
+                var response = new Dto.StockReceive.GenerateStockReceiveResponse()
+                {
+                    Data = stocks.Select(s => _mapper.Map<Dto.Stock.StockView>(s)).ToList()
+                };
+                
+                return Ok(response);
+            },
+            f1: _ => NotFound(),
+            f2: _ => Forbid()
+         );
+        }
     }
 }

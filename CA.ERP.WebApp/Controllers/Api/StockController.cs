@@ -63,12 +63,8 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.GetManyResponse<string>>> Get(Guid branchId, int count, CancellationToken cancellationToken)
         {
-            var stockNumbersOption = await _stockService.GenerateStockNumbersAsync(branchId, count);
-            return stockNumbersOption.Match<ActionResult>(
-                f0: stockNumbers => Ok(new Dto.GetManyResponse<string>() { Data = stockNumbers.ToList() }),
-                f1: _ => NotFound(),
-                f2: _ => Forbid()
-                );
+            var stockNumbers = await _stockService.GenerateStockNumbersAsync(branchId, count, cancellationToken);
+            return Ok(new Dto.GetManyResponse<string>() { Data = stockNumbers.ToList() });
         }
 
         [HttpPut("{id}")]

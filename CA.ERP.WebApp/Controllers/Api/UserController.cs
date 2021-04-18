@@ -43,7 +43,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         public async Task<ActionResult<Dto.CreateResponse>> Register(Dto.User.UserCreateRequest request, CancellationToken cancellationToken)
         {
 
-            var result = await _userService.CreateUserAsync(request.Data.UserName, request.Data.Password, (UserRole)(int)request.Data.Role, request.Data.FirstName, request.Data.LastName, request.Data.Branches.Select(ub => ub.BranchId).ToList(), cancellationToken: cancellationToken);
+            var result = await _userService.CreateUserAsync(request.Data.Username, request.Data.Password, (UserRole)(int)request.Data.Role, request.Data.FirstName, request.Data.LastName, request.Data.Branches.Select(ub => ub.BranchId).ToList(), cancellationToken: cancellationToken);
 
             //change to proper dto 
             return result.Match<ActionResult>(
@@ -138,10 +138,10 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.GetManyResponse<Dto.User.UserView>>> Get(string primaryField = null, string username = null, string firstName = null, string lastName = null, UserRole userRole = UserRole.All, int pageSize = 10, int currentPage = 1 , CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.GetManyResponse<Dto.User.UserView>>> Get(string primaryField = null, string username = null, string firstName = null, string lastName = null, UserRole userRole = UserRole.All, int pageSize = 10, int page = 1 , CancellationToken cancellationToken = default)
         {
             username = username ?? primaryField;
-            var paginateUsers = await _userService.GetManyAsync(username, firstName, lastName, userRole, pageSize, currentPage , cancellationToken: cancellationToken);
+            var paginateUsers = await _userService.GetManyAsync(username, firstName, lastName, userRole, pageSize, page , cancellationToken: cancellationToken);
             var dtoUsers = _mapper.Map<List<Dto.User.UserView>>(paginateUsers.Data);
             var response = new Dto.GetManyResponse<Dto.User.UserView>()
             {
@@ -151,7 +151,6 @@ namespace CA.ERP.WebApp.Controllers.Api
                 TotalCount = paginateUsers.TotalCount,
                 Data = dtoUsers
             };
-            return Ok(response);
             return Ok(response);
         }
 

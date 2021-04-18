@@ -14,5 +14,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         Task<OneOf<StockCounter, None>> GetStockCounterAsync(string code, CancellationToken cancellationToken = default);
 
         Task AddOrUpdateStockCounterAsync(StockCounter stockCounter, CancellationToken cancellationToken = default);
+
+        void AddOrUpdateStockCounter(StockCounter stockCounter);
     }
 }

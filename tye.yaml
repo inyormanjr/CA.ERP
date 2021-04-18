@@ -6,41 +6,40 @@
 #
 name: ca.erp
 services:
-- name: ca-erp-webapp
-  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
-  bindings:
-  - port: 80
-    protocol: http
-    name : http
-  - port: 443
-    protocol: https
-    name : https
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
-  - name: ASPNETCORE_URLS
-    value: http://+:80
-
-- name: ca-identity
-  project: CA.Identity/CA.Identity.csproj
-  bindings:
-  - port: 5000
-    protocol: http
-    name : http
-  - port: 5001
-    protocol: https
-    name : https
+#- name: ca-erp-webapp
+#  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+#  bindings:
+#  - port: 6000
+#    protocol: http
+#    name : http
+#  - port: 6001
+#    protocol: https
+#    name : https
+#  env:
+#  - name: ASPNETCORE_ENVIRONMENT
+#    value: Development
 
 
-- name: ca-frontend
-  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
-  bindings:
-  - port: 6000
-    protocol: http
-    name : http
-  - port: 6001
-    protocol: https
-    name : https
+#- name: ca-identity
+#  project: CA.Identity/CA.Identity.csproj
+#  bindings:
+#  - port: 5000
+#    protocol: http
+#    name : http
+#  - port: 5001
+#    protocol: https
+#    name : https
+
+
+#- name: ca-frontend
+#  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
+#  bindings:
+#  - port: 80
+#    protocol: http
+#    name : http
+#  - port: 443
+#    protocol: https
+#    name : https
 
 - name: ca-reporting
   project: CA.ERP.Reporting/CA.ERP.Reporting.csproj
@@ -73,6 +72,8 @@ services:
   volumes:
    - source: ./data/postgresql
      target: /var/lib/postgresql/data
+  tags:
+   - be
 
 - name: rabbitmq
   image: rabbitmq:3.8
