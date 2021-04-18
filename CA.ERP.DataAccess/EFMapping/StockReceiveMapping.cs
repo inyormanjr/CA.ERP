@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -30,7 +30,7 @@ namespace CA.ERP.DataAccess.EFMapping
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.HasMany(t => t.Stocks)
+            builder.HasMany(t => t.Items)
                 .WithOne(t => t.StockReceive)
                 .HasForeignKey(t => t.StockReceiveId)
                 .OnDelete(DeleteBehavior.NoAction);

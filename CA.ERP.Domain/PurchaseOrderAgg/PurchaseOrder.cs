@@ -59,7 +59,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         protected PurchaseOrder(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId)
         {
-
+            Id = Guid.NewGuid();
+            Status = Status.Active;
             Barcode = barcode;
             DeliveryDate = deliveryDate;
             OrderedById = orderedById;

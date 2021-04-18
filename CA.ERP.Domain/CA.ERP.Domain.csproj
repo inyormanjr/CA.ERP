@@ -16,7 +16,6 @@
     <Compile Remove="RebateMonthlyAgg\**" />
     <Compile Remove="ReportAgg\**" />
     <Compile Remove="StockAgg\**" />
-    <Compile Remove="StockCounterAgg\**" />
     <Compile Remove="StockInventoryAgg\**" />
     <Compile Remove="StockMoveAgg\**" />
     <Compile Remove="TransactionAgg\**" />
@@ -26,7 +25,6 @@
     <EmbeddedResource Remove="RebateMonthlyAgg\**" />
     <EmbeddedResource Remove="ReportAgg\**" />
     <EmbeddedResource Remove="StockAgg\**" />
-    <EmbeddedResource Remove="StockCounterAgg\**" />
     <EmbeddedResource Remove="StockInventoryAgg\**" />
     <EmbeddedResource Remove="StockMoveAgg\**" />
     <EmbeddedResource Remove="TransactionAgg\**" />
@@ -36,7 +34,6 @@
     <None Remove="RebateMonthlyAgg\**" />
     <None Remove="ReportAgg\**" />
     <None Remove="StockAgg\**" />
-    <None Remove="StockCounterAgg\**" />
     <None Remove="StockInventoryAgg\**" />
     <None Remove="StockMoveAgg\**" />
     <None Remove="TransactionAgg\**" />

@@ -8,13 +8,14 @@ using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.SupplierAgg;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace CA.ERP.Domain.StockReceiveAgg
 {
     public class StockReceive : IEntity
     {
-        private List<StockReceiveItem> _items = new List<StockReceiveItem>();
+
 
         public Guid Id { get; private set; }
         public Status Status { get; private set; }
@@ -22,16 +23,17 @@ namespace CA.ERP.Domain.StockReceiveAgg
         public Guid? PurchaseOrderId { get; private set; }
         public Guid BranchId { get; private set; }
         public StockSource StockSouce { get; private set; }
+        public StockReceiveStage Stage { get; private set; }
         public string DeliveryReference { get; private set; }
         public Guid SupplierId { get; private set; }
 
-        public IReadOnlyCollection<StockReceiveItem> Items { get => _items.AsReadOnly();  }
+        public List<StockReceiveItem> Items { get; set; } = new List<StockReceiveItem>();
         public StockReceive()
         {
 
         }
 
-        protected StockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateReceived)
+        protected StockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateReceived, StockReceiveStage stage)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
@@ -40,11 +42,12 @@ namespace CA.ERP.Domain.StockReceiveAgg
             StockSouce = stockSource;
             SupplierId = supplierId;
             DateReceived = dateReceived;
+            Stage = stage;
         }
 
         public void AddItem(StockReceiveItem item)
         {
-            _items.Add(item);
+            Items.Add(item);
         }
 
         public static DomainResult<StockReceive> Create(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, IDateTimeProvider dateTimeProvider)
@@ -65,7 +68,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             {
                 return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
             }
-            var ret = new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset());
+            var ret = new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Intial);
             return DomainResult<StockReceive>.Success(ret);
         }
 

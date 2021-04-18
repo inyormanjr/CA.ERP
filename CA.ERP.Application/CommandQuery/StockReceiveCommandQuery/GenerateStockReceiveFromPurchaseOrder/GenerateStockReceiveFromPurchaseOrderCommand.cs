@@ -10,5 +10,10 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
     public class GenerateStockReceiveFromPurchaseOrderCommand : IRequest<DomainResult<Guid>>
     {
         public Guid PurchaseOrderId { get; set; }
+
+        public GenerateStockReceiveFromPurchaseOrderCommand(Guid purchaseOrderId)
+        {
+            PurchaseOrderId = purchaseOrderId;
+        }
     }
 }

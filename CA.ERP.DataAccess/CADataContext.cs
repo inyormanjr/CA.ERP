@@ -8,27 +8,28 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.DataAccess
 {
-    public class CADataContext: DbContext
+    public class CADataContext : DbContext
     {
-       public CADataContext(DbContextOptions<CADataContext> options): base(options)
+        public CADataContext(DbContextOptions<CADataContext> options) : base(options)
         {
         }
 
-       public  DbSet<Branch> Branches { get; set; }
+        public DbSet<Branch> Branches { get; set; }
         //public  DbSet<User> Users { get; set; }
         //public  DbSet<UserBranch> UserBranches { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<SupplierBrand> SupplierBrands { get; set; }
-        public  DbSet<Brand> Brands { get; set; }
-       public  DbSet<MasterProduct> MasterProducts { get; set; }
-       public  DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-       public  DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
-       public  DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
-       // public DbSet<StockReceive> StockReceives { get; set; }
-       // public DbSet<Stock> Stocks { get; set; }
-       // public DbSet<StockInventory> StockInventories { get; set; }
-       // public DbSet<StockMove> StockMoves { get; set; }
-       // public DbSet<StockCounter> StockCounters { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<MasterProduct> MasterProducts { get; set; }
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
+        public DbSet<StockReceive> StockReceives { get; set; }
+        public DbSet<StockReceiveItem> StockReceiveItems { get; set; }
+        // public DbSet<Stock> Stocks { get; set; }
+        // public DbSet<StockInventory> StockInventories { get; set; }
+        // public DbSet<StockMove> StockMoves { get; set; }
+        public DbSet<StockCounter> StockCounters { get; set; }
         public DbSet<Bank> Banks { get; set; }
         //public DbSet<Transaction> Transactions { get; set; }
         //public DbSet<Payment> Payments { get; set; }
@@ -47,11 +48,12 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new PurchaseOrderMapping());
             builder.ApplyConfiguration(new PurchaseOrderItemMapping());
             builder.ApplyConfiguration(new SupplierMasterProductMapping());
-            //builder.ApplyConfiguration(new StockReceiveMapping());
+            builder.ApplyConfiguration(new StockReceiveMapping());
+            builder.ApplyConfiguration(new StockReceiveItemMapping());
             //builder.ApplyConfiguration(new StockMapping());
             //builder.ApplyConfiguration(new StockInventoryMapping());
             //builder.ApplyConfiguration(new StockMoveMapping());
-            //builder.ApplyConfiguration(new StockCounterMapping());
+            builder.ApplyConfiguration(new StockCounterMapping());
             builder.ApplyConfiguration(new BankMapping());
             //builder.ApplyConfiguration(new TransactionMapping());
             //builder.ApplyConfiguration(new PaymentMapping());
@@ -61,7 +63,7 @@ namespace CA.ERP.DataAccess
             //builder.ApplyConfiguration(new CustomerMapping());
             //builder.ApplyConfiguration(new UserMapping());
             //builder.ApplyConfiguration(new UserBranchMapping());
-      base.OnModelCreating(builder);
+            base.OnModelCreating(builder);
         }
 
 

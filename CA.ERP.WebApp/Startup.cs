@@ -54,6 +54,7 @@ using CA.ERP.Domain.Core.EventBus;
 using CA.ERP.Infrastructure.EventBus;
 using System.Diagnostics;
 using Polly;
+using CA.ERP.Domain.Services;
 
 namespace CA.ERP.WebApp
 {
@@ -231,6 +232,8 @@ namespace CA.ERP.WebApp
             services.AddScoped<IIdentityProvider, IdentityProvider>();
             services.AddScoped<IPurchaseOrderBarcodeGenerator, PurchaseOrderBarcodeGenerator>();
             services.AddScoped<IEventBus, MassTransitEventBus>();
+            services.AddScoped<IStockReceiveGeneratorService, StockReceiveGeneratorService>();
+            services.AddScoped<IStockNumberService, StockNumberService>();
 
 
 

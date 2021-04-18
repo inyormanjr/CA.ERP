@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
@@ -18,6 +19,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         public Guid? PurchaseOrderItemId { get; private set; }
         public Guid BranchId { get; private set; }
         public string StockNumber { get; private set; }
+        public StockStatus StockStatus { get; private set; }
         public string SerialNumber { get; private set; }
         public decimal CostPrice { get; private set; }
 
@@ -27,7 +29,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
         {
 
         }
-        protected StockReceiveItem(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string brandName, string model)
+        protected StockReceiveItem(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string brandName, string model, StockStatus stockStatus)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
@@ -40,8 +42,9 @@ namespace CA.ERP.Domain.StockReceiveAgg
             CostPrice = costPrice;
             BrandName = brandName;
             Model = model;
+            StockStatus = stockStatus;
         }
-        public static DomainResult<StockReceiveItem> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string brandName, string model)
+        public static DomainResult<StockReceiveItem> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string brandName, string model)
         {
             if (masterProductId == Guid.Empty)
             {
@@ -59,9 +62,13 @@ namespace CA.ERP.Domain.StockReceiveAgg
             {
                 return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvaliBranchId, "Stock Receive Item Invalid Branch Id");
             }
+            if (string.IsNullOrEmpty(stockNumber))
+            {
+                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.EmptyStockNumber, "Stock Receive Item stock number is empty");
+            }
 
 
-            var item = new StockReceiveItem(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, string.Empty, string.Empty, 0, brandName, model);
+            var item = new StockReceiveItem(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, string.Empty, 0, brandName, model, StockStatus.Unknown);
             return DomainResult<StockReceiveItem>.Success(item);
         }
 

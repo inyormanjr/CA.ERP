@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.StockReceiveAgg;
 using System;
 using System.Collections.Generic;

@@ -4,11 +4,10 @@ using System.Text;
 
 namespace CA.ERP.Common.Types
 {
-    public enum StockStatus : int
+    public enum StockReceiveStage : int
     {
-        Unknown = 0,
-        Available = 1,
-        Free = 2,
-        Sold = 3
+        Intial = 0,
+        Commited = 1,
+        Cancelled = 2,
     }
 }

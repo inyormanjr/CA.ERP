@@ -11,6 +11,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
     public interface IPurchaseOrderRepository : IRepository<PurchaseOrder>
     {
         Task<int> CountAsync(string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken = default);
+        Task<PurchaseOrder> GetByIdWithPurchaseOrderItemsAsync(Guid id, CancellationToken cancellationToken = default);
         Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, int skip, int take, CancellationToken cancellationToken = default);
     }
 }
