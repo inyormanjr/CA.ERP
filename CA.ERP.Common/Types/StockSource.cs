@@ -10,5 +10,6 @@ namespace CA.ERP.Common.Types
         Unknown = 0,
         Direct = 1,
         PurchaseOrder = 2,
+        StockTransfer = 4,
     }
 }

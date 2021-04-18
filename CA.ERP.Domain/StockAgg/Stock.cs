@@ -54,11 +54,11 @@ namespace CA.ERP.Domain.StockAgg
         {
             if (masterProductId == Guid.Empty)
             {
-                return DomainResult<Stock>.Error(StockReceiveErrorCodes.InvaliMasterProductId, "Stock Invalid Master Product Id");
+                return DomainResult<Stock>.Error(StockErrorCodes.InvaliMasterProductId, "Stock Invalid Master Product Id");
             }
             if (stockReceiveId == Guid.Empty)
             {
-                return DomainResult<Stock>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
+                return DomainResult<Stock>.Error(StockErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
             }
             if (purchaseOrderItemId != null && purchaseOrderItemId.Value == Guid.Empty)
             {
