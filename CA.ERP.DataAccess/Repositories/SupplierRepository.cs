@@ -15,6 +15,7 @@ using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Common.Types;
 
 namespace CA.ERP.DataAccess.Repositories
 {

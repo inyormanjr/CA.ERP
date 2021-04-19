@@ -17,6 +17,7 @@ using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Common;
 using CA.ERP.DataAccess.Repositories;
 using CA.ERP.Domain.Core;
+using CA.ERP.Common.Types;
 
 namespace CA.ERP.Lib.DAL.Repositories
 {

@@ -70,7 +70,6 @@
     <Compile Remove="Controllers\Api\UserController.cs" />
     <Compile Remove="Mapping\CustomerMapping.cs" />
     <Compile Remove="Mapping\StockMapping.cs" />
-    <Compile Remove="Mapping\StocReceiveMapping.cs" />
     <Compile Remove="Mapping\UserMapping.cs" />
     <Compile Remove="Mapping\ValidationErrorMapping.cs" />
   </ItemGroup>

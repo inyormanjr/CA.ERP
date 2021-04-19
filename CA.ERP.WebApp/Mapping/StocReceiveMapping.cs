@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using CA.ERP.Domain.StockAgg;
+using AutoMapper;
 using CA.ERP.Domain.StockReceiveAgg;
-using CA.ERP.WebApp.Dto.Stock;
-using CA.ERP.WebApp.Dto.StockReceive;
+using CA.ERP.Shared.Dto.StockReceive;
 
 namespace CA.ERP.WebApp.Mapping
 {
@@ -11,7 +9,8 @@ namespace CA.ERP.WebApp.Mapping
         public StocReceiveMapping()
         {
             
-            CreateMap<StockReceiveCreate, StockReceive>();
+            CreateMap<StockReceive, StockReceiveView>();
+            CreateMap<StockReceiveItem, StockReceiveItemView>();
         }
     }
 }

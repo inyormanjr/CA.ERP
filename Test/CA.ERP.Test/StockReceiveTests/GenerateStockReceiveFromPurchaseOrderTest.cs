@@ -3,6 +3,7 @@ using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockRece
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
+using CA.ERP.Domain.IdentityAgg;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.Services;
 using CA.ERP.Domain.StockCounterAgg;
@@ -73,8 +74,14 @@ namespace CA.ERP.Test.StockReceiveTests
             IStockReceiveRepository stockReceiveRepository = A.Fake<IStockReceiveRepository>();
             A.CallTo(() => stockReceiveRepository.AddAsync(stockReceive, cancellationToken)).Returns(Task.FromResult(Guid.NewGuid()));
 
+            IIdentityProvider identityProvider = A.Fake<IIdentityProvider>();
 
-            var sut = new GenerateStockReceiveFromPurchaseOrderHandler(unitOfWork, _dateTimeProviderFixture.GetDateTimeProvider(), branchRepository, purchaseOrderRepository, stockReceiveGeneratorService, stockReceiveRepository, stockCounterRepository);
+            var identity = Identity.Create(Guid.NewGuid(),new Guid[] { purchaseOrder.DestinationBranchId}, new string[] { "Admin" }).Result;
+
+            A.CallTo(() => identityProvider.GetCurrentIdentity()).Returns(Task.FromResult(identity));
+
+
+            var sut = new GenerateStockReceiveFromPurchaseOrderHandler(unitOfWork, identityProvider, _dateTimeProviderFixture.GetDateTimeProvider(), branchRepository, purchaseOrderRepository, stockReceiveGeneratorService, stockReceiveRepository, stockCounterRepository);
             var command = new GenerateStockReceiveFromPurchaseOrderCommand(purchaseOrderId);
 
 

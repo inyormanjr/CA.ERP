@@ -6,6 +6,7 @@ using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.SupplierAgg;
+using CA.ERP.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
         public Guid Id { get; private set; }
         public Status Status { get; private set; }
-        public DateTimeOffset DateReceived { get; set; }
+        public DateTimeOffset? DateReceived { get; set; }
+        public DateTimeOffset DateCreated { get; set; }
         public Guid? PurchaseOrderId { get; private set; }
         public Guid BranchId { get; private set; }
         public StockSource StockSouce { get; private set; }
@@ -27,13 +29,16 @@ namespace CA.ERP.Domain.StockReceiveAgg
         public string DeliveryReference { get; private set; }
         public Guid SupplierId { get; private set; }
 
+        public string SupplierName { get; set; }
+        public string BranchName { get; set; }
+
         public List<StockReceiveItem> Items { get; set; } = new List<StockReceiveItem>();
         public StockReceive()
         {
 
         }
 
-        protected StockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateReceived, StockReceiveStage stage)
+        protected StockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateCreated, StockReceiveStage stage)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
@@ -41,7 +46,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             BranchId = branchId;
             StockSouce = stockSource;
             SupplierId = supplierId;
-            DateReceived = dateReceived;
+            DateCreated = dateCreated;
             Stage = stage;
         }
 

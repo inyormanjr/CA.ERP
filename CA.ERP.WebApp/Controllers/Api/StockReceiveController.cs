@@ -1,5 +1,6 @@
 using AutoMapper;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromPurchaseOrder;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockReceive;
 using CA.ERP.Domain.StockReceiveAgg;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,7 @@ namespace CA.ERP.WebApp.Controllers.Api
 
         [HttpPost("GenerateFromPurchaseOrder")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "Admin. Manager")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<ActionResult<Dto.CreateResponse>> GenerateFromPurchaseOrder(Dto.StockReceive.StockReceiveGenerateFromPurchaseOrder request, CancellationToken cancellationToken)
         {
 
@@ -50,6 +51,19 @@ namespace CA.ERP.WebApp.Controllers.Api
             return HandleDomainResult(createResult);
         }
 
+        [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateReceived, int skip = 0, int take = 20 ,CancellationToken cancellationToken = default)
+        {
+
+            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateReceived, skip, take);
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+
+
         //[HttpGet("GenerateStocks/{purchaseOrderBarcode}/")]
         //[ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -64,7 +78,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         //        {
         //            Data = stocks.Select(s => _mapper.Map<Dto.Stock.StockView>(s)).ToList()
         //        };
-                
+
         //        return Ok(response);
         //    },
         //    f1: _ => NotFound(),

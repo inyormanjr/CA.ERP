@@ -4,6 +4,7 @@ using CA.ERP.Domain.BrandAgg;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
+using CA.ERP.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;

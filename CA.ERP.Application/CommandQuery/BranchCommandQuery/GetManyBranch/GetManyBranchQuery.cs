@@ -1,5 +1,8 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Core;
+using CA.ERP.Shared.Dto;
+using CA.ERP.Shared.Dto.Branch;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,7 @@ using System.Text;
 
 namespace CA.ERP.Application.CommandQuery.BranchCommandQuery.GetManyBranch
 {
-    public class GetManyBranchQuery : IRequest<PaginatedList<Branch>>
+    public class GetManyBranchQuery : IRequest<PaginatedResponse<BranchView>>
     {
         public int Skip { get; set; }
         public int Take { get; set; }
