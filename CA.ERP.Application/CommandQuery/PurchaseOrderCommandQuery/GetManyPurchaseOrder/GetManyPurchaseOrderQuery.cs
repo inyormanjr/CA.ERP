@@ -1,6 +1,9 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.PurchaseOrderAgg;
+using CA.ERP.Shared.Dto;
+using CA.ERP.Shared.Dto.PurchaseOrder;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +11,7 @@ using System.Text;
 
 namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurchaseOrder
 {
-    public class GetManyPurchaseOrderQuery : IRequest<DomainResult<PaginatedList<PurchaseOrder>>>
+    public class GetManyPurchaseOrderQuery : IRequest<DomainResult<PaginatedResponse<PurchaseOrderView>>>
     {
         public int Skip { get; private set; }
         public int Take { get; private set; }

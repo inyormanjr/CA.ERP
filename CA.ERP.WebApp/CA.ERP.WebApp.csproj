@@ -66,12 +66,10 @@
     <Compile Remove="Controllers\Api\CustomerController.cs" />
     <Compile Remove="Controllers\Api\PaymentController.cs" />
     <Compile Remove="Controllers\Api\StockController.cs" />
-    <Compile Remove="Controllers\Api\StockReceiveController.cs" />
     <Compile Remove="Controllers\Api\TransactionController.cs" />
     <Compile Remove="Controllers\Api\UserController.cs" />
     <Compile Remove="Mapping\CustomerMapping.cs" />
     <Compile Remove="Mapping\StockMapping.cs" />
-    <Compile Remove="Mapping\StocReceiveMapping.cs" />
     <Compile Remove="Mapping\UserMapping.cs" />
     <Compile Remove="Mapping\ValidationErrorMapping.cs" />
   </ItemGroup>

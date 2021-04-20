@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using CA.ERP.Domain.StockReceiveAgg;
+using AutoMapper;
+using CA.ERP.Domain.StockCounterAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;

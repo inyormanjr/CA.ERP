@@ -22,9 +22,21 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
+        public async Task<PurchaseOrder> GetByIdWithPurchaseOrderItemsAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            PurchaseOrder ret = null;
+
+            var queryable = _context.Set<Dal.PurchaseOrder>().Include(po =>po.PurchaseOrderItems).AsQueryable().AsNoTracking();
+
+            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+            if (entity != null)
+            {
+                ret = _mapper.Map<PurchaseOrder>(entity);
+            }
+            return ret;
+        }
 
 
-        
 
         public async Task<int> CountAsync(string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken)
         {

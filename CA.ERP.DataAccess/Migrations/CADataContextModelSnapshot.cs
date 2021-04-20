@@ -232,6 +232,118 @@ namespace CA.ERP.DataAccess.Migrations
                     b.ToTable("PurchaseOrderItems");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockCounter", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
+
+                    b.Property<int>("Counter")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("StockCounters");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("DateCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DateReceived")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeliveryReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("PurchaseOrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockSouce")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("DateCreated");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("StockReceives");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceiveItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("CostPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("MasterProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PurchaseOrderItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("SerialNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StockNumber")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("StockReceiveId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("StockStatus")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("MasterProductId");
+
+                    b.HasIndex("PurchaseOrderItemId");
+
+                    b.HasIndex("StockReceiveId");
+
+                    b.ToTable("StockReceiveItems");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
                     b.Property<Guid>("Id")
@@ -347,6 +459,66 @@ namespace CA.ERP.DataAccess.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
+                        .WithMany("StockReceives")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrder", "PurchaseOrder")
+                        .WithMany("StockReceives")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.Supplier", "Supplier")
+                        .WithMany("StockReceives")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("PurchaseOrder");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceiveItem", b =>
+                {
+                    b.HasOne("CA.ERP.DataAccess.Entities.Branch", "Branch")
+                        .WithMany("StockReceiveItems")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.MasterProduct", "MasterProduct")
+                        .WithMany("StockReceiveItems")
+                        .HasForeignKey("MasterProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.PurchaseOrderItem", "PurchaseOrderItem")
+                        .WithMany("StockReceiveItems")
+                        .HasForeignKey("PurchaseOrderItemId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CA.ERP.DataAccess.Entities.StockReceive", "StockReceive")
+                        .WithMany("Items")
+                        .HasForeignKey("StockReceiveId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("MasterProduct");
+
+                    b.Navigation("PurchaseOrderItem");
+
+                    b.Navigation("StockReceive");
+                });
+
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.SupplierBrand", b =>
                 {
                     b.HasOne("CA.ERP.DataAccess.Entities.Brand", "Brand")
@@ -386,6 +558,10 @@ namespace CA.ERP.DataAccess.Migrations
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Branch", b =>
                 {
                     b.Navigation("PurchaseOrders");
+
+                    b.Navigation("StockReceiveItems");
+
+                    b.Navigation("StockReceives");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Brand", b =>
@@ -397,17 +573,33 @@ namespace CA.ERP.DataAccess.Migrations
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.MasterProduct", b =>
                 {
+                    b.Navigation("StockReceiveItems");
+
                     b.Navigation("SupplierMasterProducts");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrder", b =>
                 {
                     b.Navigation("PurchaseOrderItems");
+
+                    b.Navigation("StockReceives");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.PurchaseOrderItem", b =>
+                {
+                    b.Navigation("StockReceiveItems");
+                });
+
+            modelBuilder.Entity("CA.ERP.DataAccess.Entities.StockReceive", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("CA.ERP.DataAccess.Entities.Supplier", b =>
                 {
                     b.Navigation("PurchaseOrders");
+
+                    b.Navigation("StockReceives");
 
                     b.Navigation("SupplierBrands");
 

@@ -1,6 +1,8 @@
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.SupplierAgg;
+using CA.ERP.Shared.Dto;
+using CA.ERP.Shared.Dto.Supplier;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Text;
 
 namespace CA.ERP.Application.CommandQuery.SupplierCommandQuery.GetManySupplier
 {
-    public class GetManySupplierQuery : IRequest<PaginatedList<Supplier>>
+    public class GetManySupplierQuery : IRequest<PaginatedResponse<SupplierView>>
     {
         public int Skip { get; private set; }
         public int Take { get; private set; }

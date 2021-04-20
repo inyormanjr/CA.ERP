@@ -8,4 +8,9 @@
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CA.ERP.Common\CA.ERP.Common.csproj" />
+    <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

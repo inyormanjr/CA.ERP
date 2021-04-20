@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.StockReceiveAgg;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CA.ERP.Common.Extensions;
+using CA.ERP.Domain.StockCounterAgg;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -52,11 +53,12 @@ namespace CA.ERP.DataAccess.Repositories
                 dalStockCounter = _mapper.Map<Entities.StockCounter>(stockCounter);
                 _context.StockCounters.Add(dalStockCounter);
             }
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<OneOf<StockCounter, None>> GetStockCounterAsync(string code, CancellationToken cancellationToken)
+        public async Task<StockCounter> GetStockCounterAsync(string code, CancellationToken cancellationToken)
         {
-            OneOf<StockCounter, None> ret = default(None);
+            StockCounter ret = null;
             var stockCounter = await _context.StockCounters.AsNoTracking().FirstOrDefaultAsync(sc => sc.Code == code,cancellationToken);
             if (stockCounter != null)
             {

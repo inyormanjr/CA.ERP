@@ -1,8 +1,10 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
+using CA.ERP.Shared.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +61,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
         protected PurchaseOrder(string barcode, DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId)
         {
-
+            Id = Guid.NewGuid();
+            Status = Status.Active;
             Barcode = barcode;
             DeliveryDate = deliveryDate;
             OrderedById = orderedById;

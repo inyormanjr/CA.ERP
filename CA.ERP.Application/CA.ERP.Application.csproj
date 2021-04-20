@@ -1,16 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MassTransit" Version="7.1.7" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CA.ERP.Domain\CA.ERP.Domain.csproj" />
+    <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

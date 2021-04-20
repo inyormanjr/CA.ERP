@@ -1,4 +1,6 @@
-﻿using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core.Repository;
+using CA.ERP.Domain.StockCounterAgg;
 using OneOf;
 using OneOf.Types;
 using System;
@@ -11,10 +13,9 @@ namespace CA.ERP.Domain.StockReceiveAgg
 {
     public interface IStockCounterRepository : IRepository
     {
-        Task<OneOf<StockCounter, None>> GetStockCounterAsync(string code, CancellationToken cancellationToken = default);
+        Task<StockCounter> GetStockCounterAsync(string code, CancellationToken cancellationToken = default);
 
         Task AddOrUpdateStockCounterAsync(StockCounter stockCounter, CancellationToken cancellationToken = default);
 
-        void AddOrUpdateStockCounter(StockCounter stockCounter);
     }
 }

@@ -1,6 +1,8 @@
+using CA.ERP.Common.ErrorCodes;
 using CA.ERP.Domain.Core.DomainResullts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CA.ERP.Domain.IdentityAgg
@@ -28,6 +30,11 @@ namespace CA.ERP.Domain.IdentityAgg
             }
             var identity = new Identity(id, branches, roles);
             return DomainResult<Identity>.Success(identity);
+        }
+
+        public bool BelongsToBranch(Guid branchIdToCheck)
+        {
+            return Branches.Any(brandId => brandId == branchIdToCheck);
         }
     }
 }

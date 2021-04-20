@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -17,7 +17,10 @@ namespace CA.ERP.DataAccess.EFMapping
         {
             builder.HasKey(t => t.Id);
 
+            builder.HasIndex(t => t.DateCreated);
+
             builder.Property(t => t.DeliveryReference).HasMaxLength(50);
+            
 
             builder.HasOne(t => t.PurchaseOrder)
                 .WithMany(t => t.StockReceives)
@@ -30,7 +33,7 @@ namespace CA.ERP.DataAccess.EFMapping
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.HasMany(t => t.Stocks)
+            builder.HasMany(t => t.Items)
                 .WithOne(t => t.StockReceive)
                 .HasForeignKey(t => t.StockReceiveId)
                 .OnDelete(DeleteBehavior.NoAction);

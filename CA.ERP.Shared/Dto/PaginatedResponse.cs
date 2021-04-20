@@ -12,6 +12,18 @@ namespace CA.ERP.Shared.Dto
     /// <typeparam name="T"></typeparam>
     public class PaginatedResponse<T> where T:class
     {
+
+        public PaginatedResponse(IEnumerable<T> data, int totalCount)
+        {
+            Data = data;
+            TotalCount = totalCount;
+        }
+
+        public PaginatedResponse()
+        {
+
+        }
+
         public int TotalCount { get; set; }
         /// <summary>
         /// A list of data

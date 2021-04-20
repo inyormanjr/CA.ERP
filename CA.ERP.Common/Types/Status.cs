@@ -1,15 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace CA.ERP.Shared.Dto
+namespace CA.ERP.Common.Types
 {
-    /// <summary>
-    /// Enum status for dto
-    /// </summary>
     [Flags]
-    public enum Status:int
+    public enum Status : int
     {
         /// <summary>
         /// Consider the item deleted
@@ -18,6 +14,8 @@ namespace CA.ERP.Shared.Dto
         /// <summary>
         /// Should be the default status
         /// </summary>
-        Active = 1
+        Active = 1,
+
+        All = ~0,
     }
 }

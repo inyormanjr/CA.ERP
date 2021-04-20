@@ -1,10 +1,9 @@
-﻿using CA.ERP.Domain.StockAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CA.ERP.WebApp.Dto.Stock
+namespace CA.ERP.Shared.Dto.Stock
 {
     /// <summary>
     /// Contract to update stock
