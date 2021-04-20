@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.DataAccess;
 using CA.ERP.DataAccess.Entities;
 using CA.ERP.Domain.Core;
