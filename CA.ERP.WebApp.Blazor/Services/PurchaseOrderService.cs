@@ -19,7 +19,13 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public class PurchaseOrderService
+    public interface IPurchaseOrderService
+    {
+        Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder);
+        string GetPurchaseOrderReportUrl(Guid purchaseOrderId);
+        Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size);
+    }
+    public class PurchaseOrderService : IPurchaseOrderService
     {
         private const string PurchaseOrderEndpoint = "/api/PurchaseOrder";
         private readonly IHttpClientFactory _httpClientFactory;

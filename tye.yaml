@@ -31,15 +31,15 @@ services:
 #    name : https
 
 
-#- name: ca-frontend
-#  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
-#  bindings:
-#  - port: 80
-#    protocol: http
-#    name : http
-#  - port: 443
-#    protocol: https
-#    name : https
+- name: ca-frontend
+  project: CA.ERP.WebApp.Blazor/CA.ERP.WebApp.Blazor.csproj
+  bindings:
+  - port: 80
+    protocol: http
+    name : http
+  - port: 443
+    protocol: https
+    name : https
 
 #- name: ca-reporting
 #  project: CA.ERP.Reporting/CA.ERP.Reporting.csproj

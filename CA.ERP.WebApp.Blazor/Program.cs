@@ -2,6 +2,7 @@ using CA.ERP.WebApp.Blazor.Options;
 using CA.ERP.WebApp.Blazor.Services;
 using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
+using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -85,18 +86,21 @@ namespace CA.ERP.WebApp.Blazor
 
 
 
-            builder.Services.AddScoped<PurchaseOrderService>();
+            builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
             builder.Services.AddScoped<SupplierService>();
             builder.Services.AddScoped<BranchService>();
             builder.Services.AddScoped<MasterProductService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IBranchService, BranchService>();
+            builder.Services.AddScoped<IStockReceiveService, StockReceiveService>();
 
             builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
 
             builder.Services.AddScoped<UserListViewModel>();
             builder.Services.AddScoped<UserCreateViewModel>();
+
+            builder.Services.AddScoped<GenerateFromPurchaseOrderDialogViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 
