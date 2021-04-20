@@ -35,7 +35,7 @@ namespace CA.ERP.WebApp.Controllers.Api
 
         [HttpPost("GenerateFromPurchaseOrder")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Dto.CreateResponse>> GenerateFromPurchaseOrder(Dto.StockReceive.StockReceiveGenerateFromPurchaseOrder request, CancellationToken cancellationToken)
         {
 

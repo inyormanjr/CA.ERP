@@ -19,7 +19,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
     {
         private readonly ILogger<PurchaseOrderCreateViewModel> _logger;
         private readonly ISnackbar _snackbar;
-        private readonly PurchaseOrderService _purchaseOrderService;
+        private readonly IPurchaseOrderService _purchaseOrderService;
         private readonly BranchService _branchService;
         private readonly SupplierService _supplierService;
         private readonly MasterProductService _masterProductService;
@@ -160,7 +160,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 
         public bool IsSaving { get; set; }
 
-        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, ISnackbar snackbar, PurchaseOrderService purchaseOrderService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
+        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, ISnackbar snackbar, IPurchaseOrderService purchaseOrderService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
         {
             _logger = logger;
             _snackbar = snackbar;

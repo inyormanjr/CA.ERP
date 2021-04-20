@@ -10,9 +10,9 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 {
     public class PurchaseOrderListViewModel : ViewModelBase
     {
-        private readonly PurchaseOrderService _purchaseOrderService;
+        private readonly IPurchaseOrderService _purchaseOrderService;
 
-        public PurchaseOrderListViewModel(PurchaseOrderService purchaseOrderService)
+        public PurchaseOrderListViewModel(IPurchaseOrderService purchaseOrderService)
         {
             _purchaseOrderService = purchaseOrderService;
         }

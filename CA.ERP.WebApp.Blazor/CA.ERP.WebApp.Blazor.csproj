@@ -29,8 +29,4 @@
     <ProjectReference Include="..\CA.ERP.Shared\CA.ERP.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dialogs\" />
-  </ItemGroup>
-
 </Project>

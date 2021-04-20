@@ -1,0 +1,26 @@
+
+@using CA.ERP.Shared.Dto.StockReceive;
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.PurchaseOrder;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+
+@inherits ViewBase<GenerateFromPurchaseOrderDialogViewModel>
+
+@attribute [Authorize]
+<MudDialog>
+    <DialogContent>
+        <MudContainer>
+            <MudText Typo="Typo.h6">Purchase Orders</MudText>
+            <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            <MudAutocomplete T="PurchaseOrderView" Label="Branch" @bind-Value="ViewModel.SelectedPurchaseOrder" SearchFunc="@ViewModel.SearchPurchaseOrders" ToStringFunc="@(b => b.Barcode)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            <MudButton OnClick="@ViewModel.GenerateAsync" >Generate</MudButton>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+}
