@@ -35,7 +35,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
                 return (CostPrice - Discount) * OrderedQuantity;
             }
         }
-        public decimal DeliveredQuantity { get; private set; }
+        public int DeliveredQuantity { get; private set; }
         public PurchaseOrderItemStatus PurchaseOrderItemStatus { get; private set; }
 
         public string BrandName { get; private set; }
@@ -53,6 +53,15 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             Discount = discount;
         }
 
+        public DomainResult ChangeDeliveredQuantity(int newDeliveredQuantity)
+        {
+            if (newDeliveredQuantity < 0)
+            {
+                return DomainResult.Error(PurchaseOrderErrorCodes.ItemInvalidDeliveredQuantity, "Delivered quantity must not be less that zero.");
+            }
+            DeliveredQuantity = newDeliveredQuantity;
+            return DomainResult.Success();
+        }
 
         public static DomainResult<PurchaseOrderItem> Create(Guid purchaseOrderId, Guid masterProductId, decimal orderedQuantity, decimal freeQuantity, decimal costPrice, decimal discount)
         {

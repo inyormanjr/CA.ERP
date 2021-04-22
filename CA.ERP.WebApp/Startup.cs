@@ -234,7 +234,7 @@ namespace CA.ERP.WebApp
             services.AddScoped<IEventBus, MassTransitEventBus>();
             services.AddScoped<IStockReceiveGeneratorService, StockReceiveGeneratorService>();
             services.AddScoped<IStockNumberService, StockNumberService>();
-
+            services.AddScoped<ICommitStockReceiveFromPurchaseOrderService, CommitStockReceiveFromPurchaseOrderService>();
 
 
             //set culture info

@@ -7,6 +7,7 @@ namespace CA.ERP.Shared.Dto.StockReceive
 {
     public class StockReceiveView
     {
+        public Guid Id { get; set; }
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSource { get; set; }
@@ -18,6 +19,6 @@ namespace CA.ERP.Shared.Dto.StockReceive
 
 
         public string DeliveryReference { get; set; }
-        //public List<StockReceiveItemView> Stocks { get; set; } = new List<StockReceiveItemView>();
+        public List<StockReceiveItemView> Items { get; set; } = new List<StockReceiveItemView>();
     }
 }

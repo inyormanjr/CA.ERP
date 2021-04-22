@@ -50,5 +50,23 @@ namespace CA.ERP.DataAccess.Repositories
             IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateReceived);
             return queryable.CountAsync(cancellationToken);
         }
+
+        public async Task<StockReceive> GetByIdWithItemsAsync(Guid id, CancellationToken cancellationToken)
+        {
+            StockReceive ret = null;
+
+            var queryable = _context.Set<Dal.StockReceive>().AsQueryable()
+                .Include(sr =>sr.Supplier).Include(sr => sr.Branch).Include(sr => sr.Items)
+                .Include(sr => sr.Items).ThenInclude(i => i.Branch)
+                .Include(sr => sr.Items).ThenInclude(i => i.MasterProduct)
+                .AsNoTracking();
+
+            var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+            if (entity != null)
+            {
+                ret = _mapper.Map<StockReceive>(entity);
+            }
+            return ret;
+        }
     }
 }

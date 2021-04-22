@@ -14,7 +14,9 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         public StockReceiveItemMapping()
         {
             CreateMap<StockReceiveItem, Dal.StockReceiveItem>();
-            CreateMap<Dal.StockReceiveItem, StockReceive>();
+            CreateMap<Dal.StockReceiveItem, StockReceiveItem>()
+                .ForMember(dest => dest.BrandName, cfg => cfg.MapFrom(src => src.Branch.Name))
+                .ForMember(dest => dest.Model, cfg => cfg.MapFrom(src => src.MasterProduct.Model));
         }
     }
 }

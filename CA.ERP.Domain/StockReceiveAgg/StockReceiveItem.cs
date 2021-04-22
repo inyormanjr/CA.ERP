@@ -1,3 +1,4 @@
+using CA.ERP.Common.ErrorCodes;
 using CA.ERP.Common.Types;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
@@ -45,6 +46,23 @@ namespace CA.ERP.Domain.StockReceiveAgg
             Model = model;
             StockStatus = stockStatus;
         }
+
+        public DomainResult Commit(StockStatus stockStatus, string serialNumber = null)
+        {
+            if (stockStatus == StockStatus.Unknown)
+            {
+                return DomainResult.Error(StockReceiveErrorCodes.UnknownStockSource, "Unknown stock source is not allowed.");
+            }
+            if (serialNumber == string.Empty)
+            {
+                serialNumber = null;
+            }
+            StockStatus = stockStatus;
+            SerialNumber = serialNumber;
+            return DomainResult.Success();
+        }
+
+
         public static DomainResult<StockReceiveItem> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string brandName, string model)
         {
             if (masterProductId == Guid.Empty)

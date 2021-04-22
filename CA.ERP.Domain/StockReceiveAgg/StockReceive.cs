@@ -1,3 +1,4 @@
+using CA.ERP.Common.ErrorCodes;
 using CA.ERP.Common.Types;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.BranchAgg;
@@ -75,6 +76,12 @@ namespace CA.ERP.Domain.StockReceiveAgg
             }
             var ret = new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Intial);
             return DomainResult<StockReceive>.Success(ret);
+        }
+
+        public void Commit(IDateTimeProvider dateTimeProvider)
+        {
+            Stage = StockReceiveStage.Commited;
+            DateReceived = dateTimeProvider.GetCurrentDateTimeOffset();
         }
 
 
