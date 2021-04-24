@@ -13,6 +13,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public const string IdentityNotFound = "purchase-order-identity-not-found";
         public const string NotFound = "purchase-order-not-found";
         public const string DenyOtherUser = "purchase-order-deny-other-users";
+        public const string ItemInvalidDeliveredQuantity = "purchase-order-item-invalid-delivered-quantity";
 
     }
 }

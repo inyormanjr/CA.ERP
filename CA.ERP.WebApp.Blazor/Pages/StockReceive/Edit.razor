@@ -1,0 +1,154 @@
+@page "/stock-receive/edit/{Id}"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+@using CA.ERP.Common.Types;
+
+
+
+@inherits ViewBase<StockReceiveEditViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+
+
+<MudContainer>
+    @if (ViewModel.StockReceive != null)
+    {
+        if (ViewModel.StockReceive.Stage == StockReceiveStage.Commited)
+        {
+            <MudPaper Class="pa-8">
+                <MudText Align="Align.Center" Color="Color.Info" Typo="Typo.h3"> Stock Receive Already Committed </MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudForm @ref="Form">
+                <MudPaper Class="pa-4">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6">Fill Up Stock Receive</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+
+                            <MudText>Branch: @(ViewModel.StockReceive?.BranchName ?? "Loading")</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText>Supplier: @(ViewModel.StockReceive?.SupplierName ?? "Loading")</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText>Date Ordered: @(ViewModel.StockReceive?.DateCreated.ToString("MMM dd, yyyy") ?? "Loading")</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText>Date Received: @(ViewModel.StockReceive?.DateReceived?.ToString("MMM dd, yyyy") ?? "Today")</MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+
+                <MudGrid Class="mt-8">
+                    @if (ViewModel.Errors != null && ViewModel.Errors.Count() > 0)
+                    {
+                        @foreach (var error in ViewModel.Errors)
+                        {
+                            <MudItem xs="12">
+                                <MudPaper Class="my-2 pa-4 mud-error-text">@error</MudPaper>
+                            </MudItem>
+                        }
+                    }
+
+                </MudGrid>
+
+                @if (ViewModel.StockReceive != null)
+                {
+
+
+                    <MudTable Items="@ViewModel.StockReceive.Items" Hover="true" Breakpoint="Breakpoint.Sm">
+                        <HeaderContent>
+                            <MudTh>Brand</MudTh>
+                            <MudTh>Model</MudTh>
+                            <MudTh>Stock Number</MudTh>
+                            <MudTh>Cost</MudTh>
+                            <MudTh>Serial</MudTh>
+                            <MudTh>Status</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="item">
+                            <MudTd DataLabel="Brand">@item.BrandName </MudTd>
+                            <MudTd DataLabel="Model">@item.Model</MudTd>
+                            <MudTd DataLabel="Stock Number">@item.StockNumber</MudTd>
+                            <MudTd DataLabel="Cost Price">@item.CostPrice</MudTd>
+                            <MudTd DataLabel="Serial Number">
+                                <MudTextField @bind-Value="@item.SerialNumber" InputType="InputType.Text" T="string" />
+                            </MudTd>
+                            <MudTd DataLabel="Status">
+                                <MudSelect T="StockReceiveItemStatus" Variant="Variant.Outlined" @bind-Value="@item.Status" Validation="@ValidateStatus">
+                                    @foreach (var status in Enum.GetValues<StockReceiveItemStatus>())
+                                                {
+                                        <MudSelectItem Value="@status"> @status.ToString() </MudSelectItem>
+                                                }
+                                </MudSelect>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+                <MudGrid Class="mt-8">
+                    <MudItem xs="12" sm="6">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Tertiary" Link="/purchase-order/">Back</MudButton>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" Class="d-flex flex-row-reverse">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" DisableElevation="true" OnClick="@Submit" Disabled="@ViewModel.IsSaving">
+                            @if (!ViewModel.IsSaving)
+                            {
+                                <MudText>Save</MudText>
+
+                            }
+                            else
+                            {
+                                <MudText>Saving...</MudText>
+                            }
+
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+
+            </MudForm>
+        }
+    }
+
+
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    public MudForm Form { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        await this.ViewModel.PopulateStockReceive(Guid.Parse(Id));
+
+
+    }
+
+    private async Task Submit()
+    {
+        Form.Validate();
+        if (Form.IsValid)
+        {
+            await ViewModel.Submit();
+        }
+
+    }
+
+    private Func<StockReceiveItemStatus, string> ValidateStatus = (status) =>
+    {
+        return status == StockReceiveItemStatus.Unknown ? "Required" : null;
+    };
+
+
+
+}

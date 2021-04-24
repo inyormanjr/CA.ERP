@@ -27,6 +27,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public Guid OrderedById { get; private set; }
         public Guid SupplierId { get; private set; }
         public Guid DestinationBranchId { get; private set; }
+        public PurchaseOrderStatus PurchaseOrderStatus { get; private set; }
 
         public decimal GetTotalFreeQuantity
         {
@@ -112,4 +113,6 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 
 
     }
+
+    
 }

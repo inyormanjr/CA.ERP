@@ -59,7 +59,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
 
         public async Task<IEnumerable<PurchaseOrderView>> SearchPurchaseOrders(string purchaseOrderNumber)
         {
-            var purchaseOrders = await _purchaseOrderService.GetPurchaseOrdersAsync(purchaseOrderNumber, null, null, 0, 10);
+            var purchaseOrders = await _purchaseOrderService.GetPurchaseOrdersAsync(SelectedBranch?.Id, purchaseOrderNumber, null, null, 0, 10);
             return purchaseOrders.Data;
         }
 

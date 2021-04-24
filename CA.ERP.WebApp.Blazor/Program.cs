@@ -101,6 +101,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<UserCreateViewModel>();
 
             builder.Services.AddScoped<GenerateFromPurchaseOrderDialogViewModel>();
+            builder.Services.AddScoped<StockReceiveListViewModel>();
+            builder.Services.AddScoped<StockReceiveEditViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 

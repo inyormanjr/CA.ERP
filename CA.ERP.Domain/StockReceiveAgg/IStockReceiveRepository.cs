@@ -12,5 +12,6 @@ namespace CA.ERP.Domain.StockReceiveAgg
     {
         Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateReceived, int skip, int take, CancellationToken cancellationToken);
         Task<int> GetManyStockReceiveCountAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateReceived, CancellationToken cancellationToken);
+        Task<StockReceive> GetByIdWithItemsAsync(Guid id, CancellationToken cancellationToken);
     }
 }

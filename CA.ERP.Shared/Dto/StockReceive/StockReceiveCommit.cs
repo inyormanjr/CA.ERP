@@ -1,17 +1,18 @@
 using CA.ERP.Common.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CA.ERP.Shared.Dto.StockReceive
 {
-    public class StockReceiveView
+    public class StockReceiveCommit
     {
         public Guid Id { get; set; }
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSource { get; set; }
-        public StockReceiveStage Stage { get;  set; }
+        public StockReceiveStage Stage { get; set; }
         public Guid SupplierId { get; set; }
         public DateTimeOffset? DateReceived { get; set; }
         public DateTimeOffset DateCreated { get; set; }
@@ -20,6 +21,7 @@ namespace CA.ERP.Shared.Dto.StockReceive
 
 
         public string DeliveryReference { get; set; }
-        public ICollection<StockReceiveItemView> Items { get; set; } = new List<StockReceiveItemView>();
+        [ValidateComplexType]
+        public List<StockReceiveItemCommit> Items { get; set; } = new List<StockReceiveItemCommit>();
     }
 }

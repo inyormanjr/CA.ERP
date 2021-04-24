@@ -1,7 +1,10 @@
 using AutoMapper;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockReceive;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetOneStockReceive;
 using CA.ERP.Domain.StockReceiveAgg;
+using CA.ERP.Shared.Dto.StockReceive;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -62,28 +65,36 @@ namespace CA.ERP.WebApp.Controllers.Api
             return Ok(result);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Dto.StockReceive.StockReceiveView>> GeOne(Guid id, CancellationToken cancellationToken = default)
+        {
 
+            var query = new GetOneStockReceiveQuery(id);
 
-        //[HttpGet("GenerateStocks/{purchaseOrderBarcode}/")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<ActionResult<Dto.CreateResponse>> Generate(string purchaseOrderBarcode, CancellationToken cancellationToken)
-        //{
-        //    var result = await _stockReceiveService.GenerateStocks(purchaseOrderBarcode, cancellationToken: cancellationToken);
-        //    return result.Match<ActionResult>(
-        //    f0: (stocks) =>
-        //    {
-        //        var response = new Dto.StockReceive.GenerateStockReceiveResponse()
-        //        {
-        //            Data = stocks.Select(s => _mapper.Map<Dto.Stock.StockView>(s)).ToList()
-        //        };
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Result);
+            }
+            return HandleDomainResult(result);
+        }
 
-        //        return Ok(response);
-        //    },
-        //    f1: _ => NotFound(),
-        //    f2: _ => Forbid()
-        // );
-        //}
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Commit(Guid id, StockReceiveCommit stockReceiveCommit, CancellationToken cancellationToken = default)
+        {
+
+            var query = new CommitStockReceiveCommand(id, stockReceiveCommit);
+
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+            return HandleDomainResult(result);
+        }
     }
 }

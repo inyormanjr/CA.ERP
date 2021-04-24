@@ -50,7 +50,7 @@ namespace CA.ERP.Domain.StockAgg
             BranchId = branchId;
         }
 
-        public static DomainResult<Stock> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string brandName, string model)
+        public static DomainResult<Stock> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber,  decimal costPrice, string brandName, string model)
         {
             if (masterProductId == Guid.Empty)
             {
@@ -77,7 +77,7 @@ namespace CA.ERP.Domain.StockAgg
                 return DomainResult<Stock>.Error(StockErrorCodes.EmptySerialNumber, "Stock empty serial number");
             }
 
-            var ret = new Stock(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, serialNumber, stockStatus, costPrice, brandName, model);
+            var ret = new Stock(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, brandName, model);
             return DomainResult<Stock>.Success(ret);
         }
     }

@@ -36,7 +36,7 @@ namespace CA.ERP.Test.StockReceiveTests
 
             IStockReceiveGeneratorService sut = new StockReceiveGeneratorService(_dateTimeProviderFixture.GetDateTimeProvider(), stockNumberService);
             PurchaseOrder purchaseOrder = _purchaseOrderFixture.GetPurchaseOrder(_dateTimeProviderFixture.GetDateTimeProvider());
-
+            var itemCostPrice = purchaseOrder.PurchaseOrderItems.FirstOrDefault().CostPrice;
 
             //act
 
@@ -47,6 +47,8 @@ namespace CA.ERP.Test.StockReceiveTests
             //assert
             generateStockReceiveResult.IsSuccess.Should().BeTrue();
             generateStockReceiveResult.Result.Items.Count.Should().Be(15);
+            generateStockReceiveResult.Result.Items.Count(i => i.CostPrice == itemCostPrice).Should().Be(10);
+            generateStockReceiveResult.Result.Items.Count(i => i.CostPrice == 0).Should().Be(5);
 
         }
     }

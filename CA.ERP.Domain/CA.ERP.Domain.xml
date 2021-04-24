@@ -9,5 +9,11 @@
             Interface flag to identify business logic interface/classes
             </summary>
         </member>
+        <member name="M:CA.ERP.Domain.StockAgg.IStockNumberGenerator.GenerateStockNumberAsync">
+            <summary>
+            Generate stock number for given branch
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>

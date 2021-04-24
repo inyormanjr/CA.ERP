@@ -9,7 +9,7 @@ namespace CA.ERP.WebApp.Mapping
         public StocReceiveMapping()
         {
             
-            CreateMap<StockReceive, StockReceiveView>();
+            CreateMap<StockReceive, StockReceiveView>().ForMember(dest => dest.StockSource, cfg => cfg.MapFrom(src => src.StockSouce));
             CreateMap<StockReceiveItem, StockReceiveItemView>();
         }
     }

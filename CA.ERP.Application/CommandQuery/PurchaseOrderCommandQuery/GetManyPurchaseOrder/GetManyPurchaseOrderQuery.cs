@@ -17,10 +17,11 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurch
         public int Take { get; private set; }
         public Status Status { get; private  set; }
         public string Barcode { get; set; }
+        public Guid? BranchId { get; set; }
         public DateTimeOffset? StartDate { get; internal set; }
         public DateTimeOffset? EndDate { get; internal set; }
 
-        public GetManyPurchaseOrderQuery(int skip = 0, int take = int.MaxValue, Status status = Status.Active, string barcode = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
+        public GetManyPurchaseOrderQuery(int skip = 0, int take = int.MaxValue, Status status = Status.Active, string barcode = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, Guid? branchId = null)
         {
             Skip = skip;
             Take = take;
@@ -28,6 +29,7 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurch
             Barcode = barcode;
             StartDate = startDate;
             EndDate = endDate;
+            BranchId = branchId;
         }
     }
 }
