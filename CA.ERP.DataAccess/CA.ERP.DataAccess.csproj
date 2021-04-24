@@ -8,7 +8,6 @@
     <Compile Remove="AutoMapperProfiles\CustomerMapping.cs" />
     <Compile Remove="AutoMapperProfiles\PaymentMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockInventoryMapping.cs" />
-    <Compile Remove="AutoMapperProfiles\StockMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockMoveMapping.cs" />
     <Compile Remove="AutoMapperProfiles\UserBranchMapping.cs" />
     <Compile Remove="AutoMapperProfiles\UserMapping.cs" />
@@ -18,7 +17,6 @@
     <Compile Remove="EFMapping\CustomerMapping.cs" />
     <Compile Remove="EFMapping\PaymentMapping.cs" />
     <Compile Remove="EFMapping\StockInventoryMapping.cs" />
-    <Compile Remove="EFMapping\StockMapping.cs" />
     <Compile Remove="EFMapping\StockMoveMapping.cs" />
     <Compile Remove="EFMapping\TransactionMapping.cs" />
     <Compile Remove="EFMapping\UserBranchMapping.cs" />
@@ -29,7 +27,6 @@
     <Compile Remove="Entities\Customer.cs" />
     <Compile Remove="Entities\Payment.cs" />
     <Compile Remove="Entities\PurchaseOrderItemStatus.cs" />
-    <Compile Remove="Entities\Stock.cs" />
     <Compile Remove="Entities\StockInventory.cs" />
     <Compile Remove="Entities\StockMove.cs" />
     <Compile Remove="Entities\Transaction.cs" />
@@ -43,7 +40,6 @@
     <Compile Remove="Repositories\RebateMonthlyRepository.cs" />
     <Compile Remove="Repositories\StockInventoryRepository.cs" />
     <Compile Remove="Repositories\StockMoveRepository.cs" />
-    <Compile Remove="Repositories\StockRepository.cs" />
     <Compile Remove="Repositories\SupplierMasterProductRepository.cs" />
     <Compile Remove="Repositories\TransactionRepository.cs" />
     <Compile Remove="Repositories\UserRepository.cs" />

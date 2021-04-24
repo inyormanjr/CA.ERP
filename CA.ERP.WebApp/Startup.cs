@@ -85,6 +85,7 @@ namespace CA.ERP.WebApp
 
 
 
+
             services.AddDbContext<CADataContext>(dbc =>
 
                 dbc.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("CA.ERP.DataAccess")));
@@ -174,7 +175,7 @@ namespace CA.ERP.WebApp
 
             services.AddAuthentication("Bearer").AddJwtBearer(options =>
             {
-                Debugger.Launch();
+
                 options.Authority = Configuration.GetSection("Identity:Authority").Value;
 
                 options.TokenValidationParameters = new TokenValidationParameters

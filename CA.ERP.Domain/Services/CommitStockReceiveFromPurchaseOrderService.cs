@@ -34,10 +34,10 @@ namespace CA.ERP.Domain.Services
                 throw new ArgumentException(nameof(stockReceive));
             }
             List<Stock> stocks = new List<Stock>();
-            foreach (var item in stockReceive.Items)
+            foreach (var item in stockReceive.Items.Where(i => i.Status == ERP.Common.Types.StockReceiveItemStatus.Received))
             {
                 var purchaseOrderItem = purchaseOrder.PurchaseOrderItems.FirstOrDefault(poi => poi.Id == item.PurchaseOrderItemId);
-                var stockCreateResult = Stock.Create(item.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, stockReceive.BranchId, item.StockNumber, item.SerialNumber, item.StockStatus, purchaseOrderItem.CostPrice, item.BrandName, item.Model );
+                var stockCreateResult = Stock.Create(item.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, stockReceive.BranchId, item.StockNumber, item.SerialNumber, purchaseOrderItem.CostPrice, item.BrandName, item.Model );
                 if (!stockCreateResult.IsSuccess)
                 {
                     return stockCreateResult.ConvertTo<List<Stock>>();

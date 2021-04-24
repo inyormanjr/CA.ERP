@@ -38,9 +38,13 @@ namespace CA.ERP.DataAccess.Repositories
 
 
 
-        public async Task<int> CountAsync(string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken)
+        public async Task<int> CountAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken)
         {
             var query = _context.PurchaseOrders.AsQueryable();
+            if (branchId != null)
+            {
+                query = query.Where(po => po.DestinationBranchId == branchId);
+            }
             if (!string.IsNullOrEmpty(barcode))
             {
                 query = query.Where(po => po.Barcode.StartsWith(barcode));
@@ -58,9 +62,13 @@ namespace CA.ERP.DataAccess.Repositories
             return await query.CountAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, int skip, int take, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, int skip, int take, CancellationToken cancellationToken)
         {
             var query = _context.PurchaseOrders.Include(po => po.Supplier).Include(po => po.Branch).AsQueryable();
+            if (branchId != null)
+            {
+                query = query.Where(po => po.DestinationBranchId == branchId);
+            }
             if (!string.IsNullOrEmpty(barcode))
             {
                 query = query.Where(po => po.Barcode.StartsWith(barcode));

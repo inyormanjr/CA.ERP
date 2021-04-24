@@ -4,12 +4,10 @@ using System.Text;
 
 namespace CA.ERP.Common.Types
 {
-    [Flags]
-    public enum StockSource : int
+    public enum StockReceiveItemStatus : int
     {
         Unknown = 0,
-        Direct = 1,
-        PurchaseOrder = 2,
-        StockTransfer = 4,
+        Received = 1,
+        Missing = 2
     }
 }

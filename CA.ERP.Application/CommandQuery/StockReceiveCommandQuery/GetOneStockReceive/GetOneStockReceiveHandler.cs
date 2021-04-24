@@ -33,11 +33,11 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetOneStockRe
             {
                 return DomainResult<StockReceiveView>.Error(ErrorType.NotFound, StockReceiveErrorCodes.NotFound, "Stock Receive not found");
             }
-            var identity = await _identityProvider.GetCurrentIdentity();
-            if (!identity.BelongsToBranch(stockReceive.BranchId))
-            {
-                return DomainResult<StockReceiveView>.Error(ErrorType.Forbidden, IdentityErrorCodes.Forbidden, "Your are not assigned to this branch.");
-            }
+            //var identity = await _identityProvider.GetCurrentIdentity();
+            //if (!identity.BelongsToBranch(stockReceive.BranchId))
+            //{
+            //    return DomainResult<StockReceiveView>.Error(ErrorType.Forbidden, IdentityErrorCodes.Forbidden, "Your are not assigned to this branch.");
+            //}
 
             var stockReceiveView = _mapper.Map<StockReceiveView>(stockReceive);
             return DomainResult<StockReceiveView>.Success(stockReceiveView);

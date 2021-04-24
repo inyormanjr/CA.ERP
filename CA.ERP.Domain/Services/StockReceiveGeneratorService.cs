@@ -36,10 +36,21 @@ namespace CA.ERP.Domain.Services
             var stockNumbers = _stockNumberService.GenerateStockNumbers(stockCounter);
             foreach (var purchaseOrderItem in purchaseOrder.PurchaseOrderItems)
             {
-                for (int i = 0; i < purchaseOrderItem.TotalQuantity; i++)
+                for (int i = 0; i < purchaseOrderItem.OrderedQuantity; i++)
                 {
 
-                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, purchaseOrderItem.CostPrice, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    if (!stockReceiveItemResult.IsSuccess)
+                    {
+                        return stockReceiveItemResult.ConvertTo<StockReceive>();
+                    }
+                    stockReceive.AddItem(stockReceiveItemResult.Result);
+                }
+
+                for (int i = 0; i < purchaseOrderItem.FreeQuantity; i++)
+                {
+
+                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, 0, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
                     if (!stockReceiveItemResult.IsSuccess)
                     {
                         return stockReceiveItemResult.ConvertTo<StockReceive>();

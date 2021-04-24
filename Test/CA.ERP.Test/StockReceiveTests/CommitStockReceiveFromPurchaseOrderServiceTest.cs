@@ -33,7 +33,7 @@ namespace CA.ERP.Test.StockReceiveTests
             var stockReceive = _stockReceiveFixture.GetStockReceive(purchaseOrder, _dateTimeProviderFixture.GetDateTimeProvider());
             foreach (StockReceiveItem item in stockReceive.Items)
             {
-                item.Commit(StockStatus.Available);
+                item.Commit(StockReceiveItemStatus.Received);
             }
             ICommitStockReceiveFromPurchaseOrderService commitStockReceiveFromPurchaseOrderService = new CommitStockReceiveFromPurchaseOrderService(_dateTimeProviderFixture.GetDateTimeProvider());
 

@@ -15,7 +15,7 @@ namespace CA.ERP.DataAccess.Entities
         public Guid BranchId { get; private set; }
         public string StockNumber { get; private set; }
         public string SerialNumber { get; private set; }
-        public StockStatus StockStatus { get; private set; }
+        public StockReceiveItemStatus StockStatus { get; private set; }
         public decimal CostPrice { get; private set; }
         public StockReceive StockReceive { get; set; }
         public MasterProduct MasterProduct { get; set; }

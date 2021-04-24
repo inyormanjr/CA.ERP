@@ -78,6 +78,11 @@ namespace CA.ERP.Domain.StockReceiveAgg
             return DomainResult<StockReceive>.Success(ret);
         }
 
+        public bool IsCommitted()
+        {
+            return Stage == StockReceiveStage.Commited;
+        }
+
         public void Commit(IDateTimeProvider dateTimeProvider)
         {
             Stage = StockReceiveStage.Commited;

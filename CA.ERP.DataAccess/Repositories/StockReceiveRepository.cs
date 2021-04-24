@@ -17,6 +17,21 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
+        public override async Task UpdateAsync(Guid id, StockReceive entity, CancellationToken cancellationToken = default)
+        {
+            var dalEntity = await _context.Set<Dal.StockReceive>().FirstOrDefaultAsync(b => b.Id == id, cancellationToken: cancellationToken);
+            if (dalEntity != null)
+            {
+                _mapper.Map(entity, dalEntity);
+
+                _context.Entry(dalEntity).State = EntityState.Modified;
+                foreach (var item in dalEntity.Items)
+                {
+                    _context.Entry(item).State = EntityState.Modified;
+                }
+            }
+        }
+
         public async Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateReceived, int skip, int take, CancellationToken cancellationToken)
         {
             IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateReceived);
@@ -56,9 +71,8 @@ namespace CA.ERP.DataAccess.Repositories
             StockReceive ret = null;
 
             var queryable = _context.Set<Dal.StockReceive>().AsQueryable()
-                .Include(sr =>sr.Supplier).Include(sr => sr.Branch).Include(sr => sr.Items)
-                .Include(sr => sr.Items).ThenInclude(i => i.Branch)
-                .Include(sr => sr.Items).ThenInclude(i => i.MasterProduct)
+                .Include(sr =>sr.Supplier).Include(sr => sr.Branch)
+                .Include(sr => sr.Items).ThenInclude(i => i.MasterProduct).ThenInclude(i => i.Brand)
                 .AsNoTracking();
 
             var entity = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);

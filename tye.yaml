@@ -6,18 +6,18 @@
 #
 name: ca.erp
 services:
-#- name: ca-erp-webapp
-#  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
-#  bindings:
-#  - port: 6000
-#    protocol: http
-#    name : http
-#  - port: 6001
-#    protocol: https
-#    name : https
-#  env:
-#  - name: ASPNETCORE_ENVIRONMENT
-#    value: Development
+- name: ca-erp-webapp
+  project: CA.ERP.WebApp/CA.ERP.WebApp.csproj
+  bindings:
+  - port: 6000
+    protocol: http
+    name : http
+  - port: 6001
+    protocol: https
+    name : https
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
 
 
 #- name: ca-identity

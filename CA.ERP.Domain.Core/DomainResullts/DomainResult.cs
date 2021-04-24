@@ -9,6 +9,7 @@ namespace CA.ERP.Domain.Core.DomainResullts
         Success,
         Error,
         Forbidden,
+        NotAllowed,
         NotFound
     }
     public class DomainResult

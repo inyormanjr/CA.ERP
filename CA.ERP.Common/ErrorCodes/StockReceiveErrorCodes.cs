@@ -15,5 +15,7 @@ namespace CA.ERP.Common.ErrorCodes
         public const string EmptySerialNumber = "stock-receive-empty-serial-number";
         public const string InvaliMasterProductId = "stock-receive-invalid-master-product";
         public const string NotFound = "stock-receive-not-found";
+        public const string CostPriceLessThanZero = "stock-receive-item-cost-price-less-than-zero";
+        public const string AlreadyCommitted = "stock-receive-already-committed";
     }
 }

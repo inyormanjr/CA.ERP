@@ -68,7 +68,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GeOne(Guid id, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.StockReceive.StockReceiveView>> GeOne(Guid id, CancellationToken cancellationToken = default)
         {
 
             var query = new GetOneStockReceiveQuery(id);

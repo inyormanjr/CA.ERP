@@ -11,6 +11,7 @@ namespace CA.ERP.Shared.Dto.StockReceive
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSource { get; set; }
+        public StockReceiveStage Stage { get;  set; }
         public Guid SupplierId { get; set; }
         public DateTimeOffset? DateReceived { get; set; }
         public DateTimeOffset DateCreated { get; set; }
@@ -19,6 +20,6 @@ namespace CA.ERP.Shared.Dto.StockReceive
 
 
         public string DeliveryReference { get; set; }
-        public List<StockReceiveItemView> Items { get; set; } = new List<StockReceiveItemView>();
+        public ICollection<StockReceiveItemView> Items { get; set; } = new List<StockReceiveItemView>();
     }
 }

@@ -1,4 +1,5 @@
-﻿using CA.ERP.Domain.StockAgg;
+using CA.ERP.Common.Types;
+using CA.ERP.Domain.StockAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;

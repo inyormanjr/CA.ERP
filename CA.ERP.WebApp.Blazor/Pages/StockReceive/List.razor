@@ -1,9 +1,11 @@
 @page "/stock-receive/"
 
 @using CA.ERP.Shared.Dto.StockReceive;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+
+@inherits ViewBase<StockReceiveListViewModel>
 
 @inject IDialogService DialogService;
-
 
 
 @attribute [Authorize]
@@ -24,33 +26,42 @@
             </MudItem>
         </MudGrid>
     </MudPaper>
-    @*<MudTable Class="mt-8" ServerData="@(new Func<TableState, Task<TableData<StockReceiveView>>>(ServerReload))" Hover="true" Striped="true" @ref="table">
+    <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true"  >
 
-            <HeaderContent>
-                <MudTh>P.O. #</MudTh>
-                <MudTh>Delivery Date</MudTh>
-                <MudTh>Supplier</MudTh>
-                <MudTh>Branch</MudTh>
-                <MudTh>Actions</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="PO">@context.Barcode</MudTd>
-                <MudTd DataLabel="Delivery Date">@context.DeliveryDate.Date.ToString("MMM dd, yyyy")</MudTd>
-                <MudTd DataLabel="Supplier">@(context.SupplierName ?? "n/a") </MudTd>
-                <MudTd DataLabel="Branch">@context.BranchName</MudTd>
-                <MudTd DataLabel="Action"><MudIconButton Icon="@Icons.Outlined.Print" Link="@(purchaseOrderService.GetPurchaseOrderReportUrl(context.Id))" Target="_blank" /></MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
+        <HeaderContent>
+            <MudTh>Branch</MudTh>
+            <MudTh>Supplier</MudTh>
+            <MudTh>Source</MudTh>
+            <MudTh>Date Receive</MudTh>
+            <MudTh>Delivery Reference</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Branch">@context.BranchName</MudTd>
+            <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
+            <MudTd DataLabel="Source">@context.StockSource</MudTd>
+            <MudTd DataLabel="Delivery Date">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
+            <MudTd DataLabel="Delivery Reference">@(context.SupplierName ?? "n/a") </MudTd>
+            <MudTd DataLabel="Action">
+                <MudIconButton Icon="@Icons.Outlined.Edit" Link="@("/stock-receive/edit/" + context.Id)" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
 
-            </PagerContent>
-        </MudTable>*@
-
+        </PagerContent>
+    </MudTable>
 </MudContainer>
 
 @code {
     public void ShowGenerateFromPurchaseOrder()
     {
         DialogService.Show<CA.ERP.WebApp.Blazor.Pages.StockReceive.GenerateFromPurchaseOrderDialog>();
+    }
+
+    private async Task<TableData<StockReceiveView>> ServerReload(TableState state)
+    {
+        var paginatedStockRecieves = await ViewModel.SearchStockReceivesAsync(state.Page, state.PageSize);
+        return new TableData<StockReceiveView>() { TotalItems = paginatedStockRecieves.TotalCount, Items = paginatedStockRecieves.Data };
     }
 }
