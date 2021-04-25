@@ -87,7 +87,7 @@ namespace CA.ERP.WebApp.Blazor
 
 
             builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
-            builder.Services.AddScoped<SupplierService>();
+            builder.Services.AddScoped<ISupplierService, SupplierService>();
             builder.Services.AddScoped<BranchService>();
             builder.Services.AddScoped<MasterProductService>();
             builder.Services.AddScoped<IUserService, UserService>();

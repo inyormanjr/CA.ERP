@@ -18,7 +18,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         StockReceiveCommit ConvertStockReceiveViewToCommit(StockReceiveView stockReceiveView);
         Task<Guid> GenerateStockReceiveFromPurchaseOrderAsync(PurchaseOrderView purchaseOrderView);
         Task<StockReceiveView> GetStockReceiveByIdWithItems(Guid id);
-        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateReceive, int page, int size);
+        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int page, int size);
         Task Commit(StockReceiveCommit stockReceive);
     }
     public class StockReceiveService : IStockReceiveService
@@ -45,7 +45,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             return (await response.Content.ReadFromJsonAsync<CreateResponse>()).Id;
         }
 
-        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateReceive, int page, int size)
+        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             var uri = new Uri(client.BaseAddress, StockReceiveEndpoint);
@@ -65,9 +65,14 @@ namespace CA.ERP.WebApp.Blazor.Services
                 uri = uri.AddQuery("supplierId", supplierId.ToString());
             }
 
-            if (dateReceive != null)
+            if (dateCreated != null)
             {
-                uri = uri.AddQuery("dateReceive", dateReceive.Value.DateTime.ToString("o"));
+                uri = uri.AddQuery("dateCreated", dateCreated.Value.DateTime.ToString("o"));
+            }
+
+            if (dateReceived != null)
+            {
+                uri = uri.AddQuery("dateReceived", dateReceived.Value.DateTime.ToString("o"));
             }
 
             var response = await client.GetAsync(uri);

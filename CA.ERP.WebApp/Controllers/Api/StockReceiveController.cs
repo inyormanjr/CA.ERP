@@ -56,10 +56,10 @@ namespace CA.ERP.WebApp.Controllers.Api
 
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateReceived, int skip = 0, int take = 20 ,CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int skip = 0, int take = 20 ,CancellationToken cancellationToken = default)
         {
 
-            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateReceived, skip, take);
+            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateCreated, dateReceived, skip, take);
 
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
