@@ -23,5 +23,10 @@ namespace CA.ERP.Shared.Dto.StockReceive
         public string DeliveryReference { get; set; }
         [ValidateComplexType]
         public List<StockReceiveItemCommit> Items { get; set; } = new List<StockReceiveItemCommit>();
+
+        public bool IsCommitted()
+        {
+            return Stage == StockReceiveStage.Commited;
+        }
     }
 }

@@ -1,14 +1,17 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto.Branch;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Mvvm.Input;
 using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
 {
@@ -21,6 +24,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
         private readonly ISnackbar _snackbar;
         private readonly ILogger<GenerateFromPurchaseOrderDialogViewModel> _logger;
         private BranchView _selectedBranch;
+        private PurchaseOrderView _selectedPurchaseOrder;
+        private bool _isSaving;
+
+        public ICommand GenerateAsyncCommand { get; private set; }
 
         public List<BranchView> Branches { get; set; } = new List<BranchView>();
         public BranchView SelectedBranch
@@ -28,12 +35,29 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
             get => _selectedBranch; set
             {
                 _selectedBranch = value;
+                SelectedPurchaseOrder = null;
                 OnPropertyChanged(nameof(SelectedBranch));
             }
         }
-        public PurchaseOrderView SelectedPurchaseOrder { get; set; }
+        public PurchaseOrderView SelectedPurchaseOrder
+        {
+            get => _selectedPurchaseOrder; set
+            {
+                _selectedPurchaseOrder = value;
+                OnPropertyChanged(nameof(SelectedPurchaseOrder));
+            }
+        }
 
-        public GenerateFromPurchaseOrderDialogViewModel(IBranchService branchService, IPurchaseOrderService purchaseOrderService, IStockReceiveService stockReceiveService, NavigationManager  navigationManager, ISnackbar snackbar, ILogger<GenerateFromPurchaseOrderDialogViewModel> logger)
+        public bool IsSaving
+        {
+            get => _isSaving; set
+            {
+                _isSaving = value;
+                OnPropertyChanged(nameof(IsSaving));
+            }
+        }
+
+        public GenerateFromPurchaseOrderDialogViewModel(IBranchService branchService, IPurchaseOrderService purchaseOrderService, IStockReceiveService stockReceiveService, NavigationManager navigationManager, ISnackbar snackbar, ILogger<GenerateFromPurchaseOrderDialogViewModel> logger)
         {
             _branchService = branchService;
             _purchaseOrderService = purchaseOrderService;
@@ -41,6 +65,9 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
             _navigationManager = navigationManager;
             _snackbar = snackbar;
             _logger = logger;
+
+            GenerateAsyncCommand = new AsyncRelayCommand(generateAsync, canGenerate);
+
             LoadBranches().ConfigureAwait(false);
         }
 
@@ -59,18 +86,29 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
 
         public async Task<IEnumerable<PurchaseOrderView>> SearchPurchaseOrders(string purchaseOrderNumber)
         {
-            var purchaseOrders = await _purchaseOrderService.GetPurchaseOrdersAsync(SelectedBranch?.Id, purchaseOrderNumber, null, null, 0, 10);
+            var purchaseOrders = await _purchaseOrderService.GetPurchaseOrdersAsync(SelectedBranch?.Id, purchaseOrderNumber, null, null, PurchaseOrderStatus.Pending, 0, 10);
             return purchaseOrders.Data;
         }
 
-        public async Task GenerateAsync()
+
+        private bool canGenerate()
+        {
+
+            var canExecute = !IsSaving && SelectedPurchaseOrder != null && SelectedBranch != null && SelectedPurchaseOrder.DestinationBranchId == SelectedBranch.Id;
+            _logger.LogInformation("Can Execute {canExecute}, Purchase Order {SelectedPurchaseOrder}, Branch {SelectedBranch},", canExecute, SelectedPurchaseOrder?.DestinationBranchId, SelectedBranch?.Id);
+            return canExecute;
+        }
+
+        private async Task generateAsync()
         {
             if (SelectedPurchaseOrder != null)
             {
                 try
                 {
+                    IsSaving = true;
                     var stockReceiveId = await _stockReceiveService.GenerateStockReceiveFromPurchaseOrderAsync(SelectedPurchaseOrder);
-                    _navigationManager.NavigateTo($"/stock-receive/{stockReceiveId}");
+
+                    _navigationManager.NavigateTo($"/stock-receive/edit/{stockReceiveId}");
                 }
                 catch (ValidationException ex)
                 {
@@ -82,9 +120,13 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
                     _logger.LogError("Error generating stock receive from purchase order", ex);
                     _snackbar.Add(ex.Message, Severity.Error);
                 }
+                finally
+                {
+                    IsSaving = false;
+                }
 
             }
-            
+
         }
     }
 }

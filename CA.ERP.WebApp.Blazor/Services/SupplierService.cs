@@ -11,7 +11,12 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public class SupplierService
+    public interface ISupplierService
+    {
+        Task<List<SupplierBrandView>> GetSupplierBrandsAsync(Guid supplierId);
+        Task<PaginatedResponse<SupplierView>> GetSuppliersAsync(string name, int skip, int take);
+    }
+    public class SupplierService : ISupplierService
     {
         private const string GetSupplierEndpoint = "/api/Supplier";
         private const string GetSupplierBrandsEndpoint = "/api/Supplier/{0}/Brand";

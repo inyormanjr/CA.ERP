@@ -1,6 +1,8 @@
 @page "/stock-receive/"
 
 @using CA.ERP.Shared.Dto.StockReceive;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.Branch;
 @using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
 
 @inherits ViewBase<StockReceiveListViewModel>
@@ -11,37 +13,38 @@
 @attribute [Authorize]
 
 <MudContainer>
-    <MudPaper Class="mt-4 pa-4">
-        <MudText Typo="Typo.h6">Stock Receivces</MudText>
-        <MudGrid>
-            <MudItem xs="12" md="6">
-                <MudGrid>
-
-                </MudGrid>
-            </MudItem>
-            <MudItem xs="12" md="6">
-                <MudGrid>
-                    <MudItem xs="12"><MudButton OnClick="@ShowGenerateFromPurchaseOrder">Generate</MudButton></MudItem>
-                </MudGrid>
-            </MudItem>
-        </MudGrid>
+    <MudPaper Class="d-flex justify-space-between mt-4 pa-4">
+        <MudText Typo="Typo.h6">Stock Receive List</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@ShowGenerateFromPurchaseOrder" DisableElevation="true">Generate</MudButton>
     </MudPaper>
-    <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true"  >
-
+    <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true" @ref="table">
+        <ToolBarContent>
+            <MudAutocomplete Class="mx-4" T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            <MudAutocomplete Class="mx-4" T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            <MudDatePicker Class="mx-4" Label="Date Created" @bind-Date="ViewModel.DateCreated" />
+            <MudDatePicker Class="mx-4" Label="Date Received" @bind-Date="ViewModel.DateReceive" />
+            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary"  StartIcon="@Icons.Filled.Search" OnClick="Search" DisableElevation="true">
+                Search
+            </MudButton>
+        </ToolBarContent>
         <HeaderContent>
             <MudTh>Branch</MudTh>
             <MudTh>Supplier</MudTh>
             <MudTh>Source</MudTh>
-            <MudTh>Date Receive</MudTh>
+            <MudTh>Created At</MudTh>
+            <MudTh>Received At</MudTh>
             <MudTh>Delivery Reference</MudTh>
+            <MudTh>Status</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
             <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
             <MudTd DataLabel="Source">@context.StockSource</MudTd>
-            <MudTd DataLabel="Delivery Date">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
-            <MudTd DataLabel="Delivery Reference">@(context.SupplierName ?? "n/a") </MudTd>
+            <MudTd DataLabel="Created At">@(context.DateCreated.ToString("MMM dd, yyyy")) </MudTd>
+            <MudTd DataLabel="Received At">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
+            <MudTd DataLabel="Delivery Reference">@(context.DeliveryReference ?? "n/a") </MudTd>
+            <MudTd DataLabel="Delivery Reference">@context.Stage </MudTd>
             <MudTd DataLabel="Action">
                 <MudIconButton Icon="@Icons.Outlined.Edit" Link="@("/stock-receive/edit/" + context.Id)" />
             </MudTd>
@@ -54,9 +57,17 @@
 </MudContainer>
 
 @code {
+    MudTable<StockReceiveView> table;
+
     public void ShowGenerateFromPurchaseOrder()
     {
         DialogService.Show<CA.ERP.WebApp.Blazor.Pages.StockReceive.GenerateFromPurchaseOrderDialog>();
+    }
+
+    public async Task Search()
+    {
+        table.CurrentPage = 0;
+        await table.ReloadServerData();
     }
 
     private async Task<TableData<StockReceiveView>> ServerReload(TableState state)
@@ -64,4 +75,6 @@
         var paginatedStockRecieves = await ViewModel.SearchStockReceivesAsync(state.Page, state.PageSize);
         return new TableData<StockReceiveView>() { TotalItems = paginatedStockRecieves.TotalCount, Items = paginatedStockRecieves.Data };
     }
+
+
 }

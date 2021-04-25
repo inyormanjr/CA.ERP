@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace CA.ERP.DataAccess.Entities
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }
         public Guid DestinationBranchId { get; set; }
+        public PurchaseOrderStatus PurchaseOrderStatus { get; set; }
 
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 

@@ -11,8 +11,8 @@ namespace CA.ERP.Shared.Dto.StockReceive
         public Guid? PurchaseOrderId { get; set; }
         public Guid BranchId { get; set; }
         public StockSource StockSource { get; set; }
-        public StockReceiveStage Stage { get;  set; }
         public Guid SupplierId { get; set; }
+        public StockReceiveStage Stage { get;  set; }
         public DateTimeOffset? DateReceived { get; set; }
         public DateTimeOffset DateCreated { get; set; }
         public string SupplierName { get; set; }

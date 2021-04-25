@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Exceptions;
@@ -23,7 +24,7 @@ namespace CA.ERP.WebApp.Blazor.Services
     {
         Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder);
         string GetPurchaseOrderReportUrl(Guid purchaseOrderId);
-        Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId, string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size);
+        Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId, string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int page, int size);
     }
     public class PurchaseOrderService : IPurchaseOrderService
     {
@@ -51,7 +52,7 @@ namespace CA.ERP.WebApp.Blazor.Services
                 _accessToken = accessToken.Value;
             }
         }
-        public async Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId,string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size)
+        public async Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId,string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             Pagination pagination = new Pagination(page, size);
@@ -65,6 +66,11 @@ namespace CA.ERP.WebApp.Blazor.Services
             if (branchId != null)
             {
                 uri = uri.AddQuery("branchId", branchId.Value.ToString());
+
+            }
+            if (purchaseOrderStatus != null)
+            {
+                uri = uri.AddQuery("purchaseOrderStatus", purchaseOrderStatus.Value.ToString());
 
             }
             if (!string.IsNullOrEmpty(purchaseOrderNumber))

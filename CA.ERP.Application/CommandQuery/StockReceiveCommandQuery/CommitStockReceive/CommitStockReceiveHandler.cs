@@ -92,6 +92,10 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockRe
             {
                 await _stockRepository.AddAsync(stock);
             }
+
+            purchaseOrder.Received();
+
+            await _purchaseOrderRepository.UpdateAsync(stockReceive.PurchaseOrderId.Value, purchaseOrder, cancellationToken);
             return DomainResult.Success();
         }
     }

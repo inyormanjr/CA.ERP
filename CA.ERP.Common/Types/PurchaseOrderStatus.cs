@@ -7,6 +7,8 @@ namespace CA.ERP.Common.Types
     public enum PurchaseOrderStatus : int
     {
         Pending = 0,
-        Receive = 1
+        Received = 1,
+        Cancelled = 2,
+        Generated = 4
     }
 }

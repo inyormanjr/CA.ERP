@@ -23,8 +23,8 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockR
         }
         public async Task<PaginatedResponse<StockReceiveView>> Handle(GetManyStockReceiveQuery request, CancellationToken cancellationToken)
         {
-            List<StockReceive> stockReceives = await _stockReceiveRepository.GetManyStockReceiveAsync(request.Branch, request.SupplierId, request.DateReceived, request.Skip, request.Take, cancellationToken);
-            int totalCount = await _stockReceiveRepository.GetManyStockReceiveCountAsync(request.Branch, request.SupplierId, request.DateReceived, cancellationToken);
+            List<StockReceive> stockReceives = await _stockReceiveRepository.GetManyStockReceiveAsync(request.Branch, request.SupplierId, request.DateCreated, request.DateReceived, request.Skip, request.Take, cancellationToken);
+            int totalCount = await _stockReceiveRepository.GetManyStockReceiveCountAsync(request.Branch, request.SupplierId, request.DateCreated, request.DateReceived, cancellationToken);
 
             var list = _mapper.Map<List<StockReceiveView>>(stockReceives);
 
