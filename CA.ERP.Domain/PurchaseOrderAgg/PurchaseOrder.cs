@@ -96,7 +96,15 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         {
             PurchaseOrderItems.Add(purchaseOrderItem);
         }
+        public void Received()
+        {
+            PurchaseOrderStatus = PurchaseOrderStatus.Received;
+        }
 
+        public void Generated()
+        {
+            PurchaseOrderStatus = PurchaseOrderStatus.Generated;
+        }
 
         public static DomainResult<PurchaseOrder> Create(DateTimeOffset deliveryDate, Guid orderedById, Guid supplierId, Guid branchId, IDateTimeProvider dateTimeProvider, IPurchaseOrderBarcodeGenerator purchaseOrderBarcodeGenerator)
         {
@@ -110,8 +118,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
             return DomainResult<PurchaseOrder>.Success(purchaseOrder);
         }
 
-
-
+        
     }
 
     

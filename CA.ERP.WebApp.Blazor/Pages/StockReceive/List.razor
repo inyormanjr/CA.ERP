@@ -41,7 +41,7 @@
             <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
             <MudTd DataLabel="Source">@context.StockSource</MudTd>
             <MudTd DataLabel="Delivery Date">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
-            <MudTd DataLabel="Delivery Reference">@(context.SupplierName ?? "n/a") </MudTd>
+            <MudTd DataLabel="Delivery Reference">@(context.DeliveryReference ?? "n/a") </MudTd>
             <MudTd DataLabel="Action">
                 <MudIconButton Icon="@Icons.Outlined.Edit" Link="@("/stock-receive/edit/" + context.Id)" />
             </MudTd>

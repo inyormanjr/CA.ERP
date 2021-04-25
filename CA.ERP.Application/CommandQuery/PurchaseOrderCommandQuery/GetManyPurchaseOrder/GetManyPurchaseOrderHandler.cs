@@ -30,8 +30,8 @@ namespace CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurch
         public async Task<DomainResult<PaginatedResponse<PurchaseOrderView>>> Handle(GetManyPurchaseOrderQuery request, CancellationToken cancellationToken)
         {
 
-            int count = await _purchaseOrderRepository.CountAsync(request.BranchId, request.Barcode, request.StartDate, request.EndDate, cancellationToken);
-            IEnumerable<PurchaseOrder> purchaseOrders = await _purchaseOrderRepository.GetManyAsync(request.BranchId, request.Barcode, request.StartDate, request.EndDate, request.Skip, request.Take, cancellationToken);
+            int count = await _purchaseOrderRepository.CountAsync(request.BranchId, request.Barcode, request.StartDate, request.EndDate, request.PurchaseOrderStatus, cancellationToken);
+            IEnumerable<PurchaseOrder> purchaseOrders = await _purchaseOrderRepository.GetManyAsync(request.BranchId, request.Barcode, request.StartDate, request.EndDate, request.PurchaseOrderStatus, request.Skip, request.Take, cancellationToken);
 
             var list = new PaginatedResponse<PurchaseOrderView>() {
                 Data = _mapper.Map<List<PurchaseOrderView>>(purchaseOrders),

@@ -112,7 +112,7 @@ namespace CA.ERP.WebApp.Blazor.Services
                     Model = item.Model,
                     PurchaseOrderItemId = item.PurchaseOrderItemId,
                     CostPrice = item.CostPrice,
-                    Status = item.StockStatus,
+                    Status = item.Status,
                     StockNumber = item.StockNumber,
                     SerialNumber = item.SerialNumber
                 };

@@ -18,7 +18,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
         }
         public Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, int page, int size)
         {
-            return _purchaseOrderService.GetPurchaseOrdersAsync(null, purchaseOrderNumber,  startDate,  endDate, page, size);
+            return _purchaseOrderService.GetPurchaseOrdersAsync(null, purchaseOrderNumber,  startDate,  endDate, null, page, size);
         }
     }
 }

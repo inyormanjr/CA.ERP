@@ -12,8 +12,22 @@
         <MudContainer>
             <MudText Typo="Typo.h6">Purchase Orders</MudText>
             <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
-            <MudAutocomplete T="PurchaseOrderView" Label="Branch" @bind-Value="ViewModel.SelectedPurchaseOrder" SearchFunc="@ViewModel.SearchPurchaseOrders" ToStringFunc="@(b => b.Barcode)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
-            <MudButton OnClick="@ViewModel.GenerateAsync" >Generate</MudButton>
+            <MudAutocomplete @ref="purchaseOrderAutoComplete" T="PurchaseOrderView" Label="Purchase Order" @bind-Value="ViewModel.SelectedPurchaseOrder" SearchFunc="@ViewModel.SearchPurchaseOrders" ToStringFunc="@(b => b.Barcode)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+
+            @if (ViewModel.IsSaving)
+            {
+                <div class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+
+            }
+            else
+            {
+                <MudButton Class="mt-4" FullWidth="true" Color="Color.Primary" Variant="Variant.Filled" Command="@ViewModel.GenerateAsyncCommand" Disabled="@(!ViewModel.GenerateAsyncCommand.CanExecute(ViewModel.SelectedPurchaseOrder))">
+                    <MudText>Generate</MudText>
+                </MudButton>
+            }
+
         </MudContainer>
     </DialogContent>
     <DialogActions>
@@ -22,5 +36,13 @@
 </MudDialog>
 
 @code {
+    MudAutocomplete<PurchaseOrderView> purchaseOrderAutoComplete;
 
+    public override void PropertyChanged(string propertyName)
+    {
+        if (nameof(ViewModel.SelectedBranch) == propertyName)
+        {
+            purchaseOrderAutoComplete.Reset();
+        }
+    }
 }

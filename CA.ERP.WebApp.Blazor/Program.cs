@@ -121,6 +121,7 @@ namespace CA.ERP.WebApp.Blazor
                     });
         }
 
+
         public static Policy GetRetryPolicy()
         {
             return Policy.Handle<HttpRequestException>().WaitAndRetry(3, count => TimeSpan.FromSeconds(count * 10));

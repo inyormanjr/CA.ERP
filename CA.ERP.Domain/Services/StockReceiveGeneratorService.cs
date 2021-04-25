@@ -1,3 +1,5 @@
+using CA.ERP.Common.ErrorCodes;
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.PurchaseOrderAgg;
@@ -26,6 +28,10 @@ namespace CA.ERP.Domain.Services
         }
         public DomainResult<StockReceive> FromPurchaseOrder(PurchaseOrder purchaseOrder, StockCounter stockCounter)
         {
+            if (purchaseOrder.PurchaseOrderStatus != PurchaseOrderStatus.Pending)
+            {
+                return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.PurchaseOrderNotPending, $"Purchase Order should have a status of Pending. Current status is {purchaseOrder.PurchaseOrderStatus}");
+            }
             var createStockReceiveResult = StockReceive.Create(purchaseOrder.Id, purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, _dateTimeProvider);
             if (!createStockReceiveResult.IsSuccess)
             {
@@ -58,7 +64,7 @@ namespace CA.ERP.Domain.Services
                     stockReceive.AddItem(stockReceiveItemResult.Result);
                 }
             }
-
+            purchaseOrder.Generated();
             return createStockReceiveResult;
         }
     }

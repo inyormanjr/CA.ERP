@@ -13,7 +13,7 @@ namespace CA.ERP.Shared.Dto.PurchaseOrder
         public decimal TotalCostPrice { get; set; }
         public Guid ApprovedById { get; set; }
         public Guid SupplierId { get; set; }
-        public Guid BranchId { get; set; }
+        public Guid DestinationBranchId { get; set; }
         public string SupplierName { get; set; }
         public string BranchName { get; set; }
 

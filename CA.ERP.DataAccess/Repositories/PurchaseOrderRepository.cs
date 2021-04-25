@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Dal = CA.ERP.DataAccess.Entities;
 using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Core;
+using CA.ERP.Common.Types;
 
 namespace CA.ERP.DataAccess.Repositories
 {
@@ -38,12 +39,16 @@ namespace CA.ERP.DataAccess.Repositories
 
 
 
-        public async Task<int> CountAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken)
+        public async Task<int> CountAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, CancellationToken cancellationToken)
         {
             var query = _context.PurchaseOrders.AsQueryable();
             if (branchId != null)
             {
                 query = query.Where(po => po.DestinationBranchId == branchId);
+            }
+            if (purchaseOrderStatus != null)
+            {
+                query = query.Where(po => po.PurchaseOrderStatus == purchaseOrderStatus);
             }
             if (!string.IsNullOrEmpty(barcode))
             {
@@ -62,12 +67,16 @@ namespace CA.ERP.DataAccess.Repositories
             return await query.CountAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, int skip, int take, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PurchaseOrder>> GetManyAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int skip, int take, CancellationToken cancellationToken)
         {
             var query = _context.PurchaseOrders.Include(po => po.Supplier).Include(po => po.Branch).AsQueryable();
             if (branchId != null)
             {
                 query = query.Where(po => po.DestinationBranchId == branchId);
+            }
+            if (purchaseOrderStatus != null)
+            {
+                query = query.Where(po => po.PurchaseOrderStatus == purchaseOrderStatus);
             }
             if (!string.IsNullOrEmpty(barcode))
             {

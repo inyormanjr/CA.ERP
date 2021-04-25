@@ -71,6 +71,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
 
             var id = await _stockReceiveRepository.AddAsync(createStockReceiveResult.Result, cancellationToken);
             await _stockCounterRepository.AddOrUpdateStockCounterAsync(stockCounter, cancellationToken);
+            await _purchaseOrderRepository.UpdateAsync(request.PurchaseOrderId, purchaseOrder, cancellationToken);
             await _unitOfWork.CommitAsync(cancellationToken);
             return DomainResult<Guid>.Success(id);
 

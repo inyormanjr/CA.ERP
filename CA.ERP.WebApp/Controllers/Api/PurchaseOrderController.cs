@@ -3,6 +3,7 @@ using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.CreatePurchaseOr
 using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetManyPurchaseOrder;
 using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.GetOnePurchaseOrder;
 using CA.ERP.Application.CommandQuery.PurchaseOrderCommandQuery.UpdatePurchaseOrder;
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.PurchaseOrderAgg;
 using CA.ERP.Domain.UserAgg;
 using FluentValidation.Results;
@@ -105,9 +106,9 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(Guid? branchId ,string barcode = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int skip = 0, int take = 10, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.PurchaseOrder.PurchaseOrderView>>> Get(Guid? branchId ,string barcode = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, PurchaseOrderStatus? purchaseOrderStatus = null, int skip = 0, int take = 10, CancellationToken cancellationToken = default)
         {
-            var query = new GetManyPurchaseOrderQuery(skip, take, barcode:barcode, startDate:startDate, endDate:endDate, branchId: branchId);
+            var query = new GetManyPurchaseOrderQuery(skip, take, barcode:barcode, startDate:startDate, endDate:endDate, branchId: branchId, purchaseOrderStatus: purchaseOrderStatus);
 
             var result = await _mediator.Send(query, cancellationToken);
             if (result.IsSuccess)

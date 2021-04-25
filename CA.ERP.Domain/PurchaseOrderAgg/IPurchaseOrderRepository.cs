@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Core.Repository;
 using System;
@@ -10,8 +11,8 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
 {
     public interface IPurchaseOrderRepository : IRepository<PurchaseOrder>
     {
-        Task<int> CountAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, CancellationToken cancellationToken = default);
+        Task<int> CountAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, CancellationToken cancellationToken = default);
         Task<PurchaseOrder> GetByIdWithPurchaseOrderItemsAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<IEnumerable<PurchaseOrder>> GetManyAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, int skip, int take, CancellationToken cancellationToken = default);
+        Task<IEnumerable<PurchaseOrder>> GetManyAsync(Guid? branchId, string barcode, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int skip, int take, CancellationToken cancellationToken = default);
     }
 }
