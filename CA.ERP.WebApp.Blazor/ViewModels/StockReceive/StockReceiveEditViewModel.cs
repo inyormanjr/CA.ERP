@@ -1,6 +1,7 @@
 using CA.ERP.Shared.Dto.StockReceive;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
 using System;
@@ -15,16 +16,17 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
         private readonly IStockReceiveService _stockReceiveService;
         private readonly ISnackbar _snackbar;
         private readonly ILogger<StockReceiveEditViewModel> _logger;
-
+        private readonly NavigationManager _navigationManager;
 
         public StockReceiveCommit StockReceive { get;  set; }
         public bool IsSaving { get; set; }
 
-        public StockReceiveEditViewModel(IStockReceiveService stockReceiveService, ISnackbar snackbar, ILogger<StockReceiveEditViewModel> logger)
+        public StockReceiveEditViewModel(IStockReceiveService stockReceiveService, ISnackbar snackbar, ILogger<StockReceiveEditViewModel> logger, NavigationManager navigationManager)
         {
             _stockReceiveService = stockReceiveService;
             _snackbar = snackbar;
             _logger = logger;
+            _navigationManager = navigationManager;
         }
 
         public async Task PopulateStockReceive(Guid id)
@@ -41,6 +43,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
                 IsSaving = true;
                 OnPropertyChanged("IsSaving");
                 await _stockReceiveService.Commit(StockReceive);
+                _navigationManager.NavigateTo("/stock-receive/");
             }
             catch (ValidationException ex)
             {
