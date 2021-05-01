@@ -1,0 +1,36 @@
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+@using CA.ERP.WebApp.Blazor.Enums;
+
+
+@inherits ViewBase<GenerateFromPurchaseOrderDialogViewModel>
+
+
+@attribute [Authorize]
+<MudDialog>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="flex-grow-1" OnClick="Back">List</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="flex-grow-1" OnClick="CreateAnother">Create Another</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="flex-grow-1" OnClick="Print">Print</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private void Back()
+    {
+        MudDialog.Close(DialogResult.Ok<OnPurchaseOrderCreateDialogResult>(OnPurchaseOrderCreateDialogResult.List));
+    }
+
+    private void CreateAnother()
+    {
+        MudDialog.Close(DialogResult.Ok<OnPurchaseOrderCreateDialogResult>(OnPurchaseOrderCreateDialogResult.CreateAnother));
+    }
+
+    private void Print()
+    {
+        MudDialog.Close(DialogResult.Ok<OnPurchaseOrderCreateDialogResult>(OnPurchaseOrderCreateDialogResult.Print));
+    }
+
+}

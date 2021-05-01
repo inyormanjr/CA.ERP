@@ -1,12 +1,14 @@
 @page "/"
 
-<MudContainer>
+<MudContainer Class="mt-4 ">
 
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h3">Announcements</MudText>
 
-    <MudText>Hello, world!</MudText>
-
-    <MudText >
-        Announcement goes here.
-    </MudText>
+        <MudAlert Severity="Severity.Normal">Normal announcement</MudAlert>
+        <MudAlert Severity="Severity.Success">Good announcement</MudAlert>
+        <MudAlert Severity="Severity.Warning">Need attention</MudAlert>
+        <MudAlert Severity="Severity.Error">Crital announcement</MudAlert>
+    </MudPaper>
 
 </MudContainer>

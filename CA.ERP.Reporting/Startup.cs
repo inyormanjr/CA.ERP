@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -91,7 +92,12 @@ namespace CA.ERP.Reporting
             services.AddRazorPages();
             services.AddControllersWithViews();
 
-            
+            //set culture info
+            var cultureInfo = new CultureInfo("en-PH");
+            cultureInfo.NumberFormat.CurrencySymbol = "₱";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

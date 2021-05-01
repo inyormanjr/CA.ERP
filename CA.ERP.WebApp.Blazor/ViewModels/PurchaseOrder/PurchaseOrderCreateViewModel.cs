@@ -2,8 +2,11 @@ using CA.ERP.Shared.Dto.Branch;
 using CA.ERP.Shared.Dto.MasterProduct;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.Shared.Dto.Supplier;
+using CA.ERP.WebApp.Blazor.Enums;
 using CA.ERP.WebApp.Blazor.Exceptions;
+using CA.ERP.WebApp.Blazor.Pages.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
 using System;
@@ -21,8 +24,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
         private readonly ISnackbar _snackbar;
         private readonly IPurchaseOrderService _purchaseOrderService;
         private readonly BranchService _branchService;
-        private readonly SupplierService _supplierService;
+        private readonly ISupplierService _supplierService;
         private readonly MasterProductService _masterProductService;
+        private readonly IDialogService _dialogService;
+        private readonly NavigationManager _navigationManager;
         private List<BranchView> _branches = new List<BranchView>();
         private bool _branchesIsLoading = false;
         private SupplierView _selectedSupplier;
@@ -160,7 +165,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
 
         public bool IsSaving { get; set; }
 
-        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, ISnackbar snackbar, IPurchaseOrderService purchaseOrderService, BranchService branchService, SupplierService supplierService, MasterProductService masterProductService)
+        public PurchaseOrderCreateViewModel(ILogger<PurchaseOrderCreateViewModel> logger, ISnackbar snackbar, IPurchaseOrderService purchaseOrderService, BranchService branchService, ISupplierService supplierService, MasterProductService masterProductService, IDialogService dialogService, NavigationManager navigationManager)
         {
             _logger = logger;
             _snackbar = snackbar;
@@ -168,6 +173,8 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
             _branchService = branchService;
             _supplierService = supplierService;
             _masterProductService = masterProductService;
+            _dialogService = dialogService;
+            _navigationManager = navigationManager;
             Init().ConfigureAwait(false);
 
 
@@ -214,7 +221,29 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
                     PurchaseOrderCreate.SupplierId = SelectedSupplier.Id;
 
                     var id = await _purchaseOrderService.CreatePurchaseOrderAsync(PurchaseOrderCreate);
+                    PurchaseOrderCreate = new PurchaseOrderCreate();
+                    OnPropertyChanged(nameof(PurchaseOrderCreate));
                     _snackbar.Add("Saving successful");
+                    var dialog = _dialogService.Show<OnPurchaseOrderSaveDialog>("Purchase order saved!");
+                    var result = await dialog.Result;
+                    if (result.Data is OnPurchaseOrderCreateDialogResult)
+                    {
+                        var dialogResult = (OnPurchaseOrderCreateDialogResult)result.Data;
+                        switch (dialogResult)
+                        {
+                            case OnPurchaseOrderCreateDialogResult.List:
+                                _navigationManager.NavigateTo("/purchase-order");
+                                break;
+                            case OnPurchaseOrderCreateDialogResult.Print:
+                                string url = _purchaseOrderService.GetPurchaseOrderReportUrl(id);
+                                _navigationManager.NavigateTo(url);
+                                break;
+                            case OnPurchaseOrderCreateDialogResult.CreateAnother:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
                 catch (ValidationException ex)
                 {
