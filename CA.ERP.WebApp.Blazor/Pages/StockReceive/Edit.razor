@@ -60,7 +60,7 @@
 
             @if (ViewModel.StockReceive != null)
             {
-                <MudTable Items="@ViewModel.StockReceive.Items" Hover="true" Breakpoint="Breakpoint.Sm">
+                <MudTable Items="@ViewModel.StockReceive.Items.OrderBy(i => i.StockNumber)" Hover="true" Breakpoint="Breakpoint.Sm">
                     <HeaderContent>
                         <MudTh>Brand</MudTh>
                         <MudTh>Model</MudTh>
