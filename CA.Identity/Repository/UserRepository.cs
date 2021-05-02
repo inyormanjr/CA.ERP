@@ -13,6 +13,7 @@ namespace CA.Identity.Repository
     {
         Task<List<ApplicationUser>> GetUsers(string firstName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default);
         Task<int> GetUsersCount(string firstName, string lastName, string userName, CancellationToken cancellationToken = default);
+        Task<ApplicationUser> GetUserById(string id, CancellationToken cancellationToken = default);
     }
     public class UserRepository : IUserRepository
     {
@@ -22,6 +23,12 @@ namespace CA.Identity.Repository
         {
             _applicationDbContext = applicationDbContext;
         }
+
+        public Task<ApplicationUser> GetUserById(string id, CancellationToken cancellationToken = default)
+        {
+            return _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
         public Task<List<ApplicationUser>> GetUsers(string firstName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
         {
             IQueryable<ApplicationUser> query = generateQuery(firstName, lastName, userName);

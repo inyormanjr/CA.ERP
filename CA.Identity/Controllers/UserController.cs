@@ -148,9 +148,25 @@ namespace CA.Identity.Controllers
         }
 
         // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{id}/password")]
+        public async Task<IActionResult> Put(string id, [FromBody] UpdateBaseRequest<PasswordUpdateRequest> updatePasswordRequest)
         {
+            var user = await _userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var passwordRestToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, passwordRestToken, updatePasswordRequest.Data.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+            return Ok();
         }
 
         // DELETE api/<UserController>/5
