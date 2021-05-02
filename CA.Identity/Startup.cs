@@ -50,6 +50,11 @@ namespace CA.Identity
 
             services.AddDefaultIdentity<ApplicationUser>(options => {
                 options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
             })
                       .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
