@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.Shared.Dto.User
 {
-    public class PasswordUpdateRequest
+    public class UserChangePassword
     {
         [Required]
         public string Password { get; set; }

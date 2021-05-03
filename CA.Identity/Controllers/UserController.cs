@@ -149,7 +149,7 @@ namespace CA.Identity.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}/password")]
-        public async Task<IActionResult> Put(string id, [FromBody] UpdateBaseRequest<PasswordUpdateRequest> updatePasswordRequest)
+        public async Task<IActionResult> Put(string id, [FromBody] UpdateBaseRequest<UserChangePassword> updatePasswordRequest)
         {
             var user = await _userRepository.GetUserById(id);
             if (user == null)

@@ -104,6 +104,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<StockReceiveListViewModel>();
             builder.Services.AddScoped<StockReceiveEditViewModel>();
 
+            builder.Services.AddScoped<ChangePasswordViewModel>();
+
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 
             await builder.Build().RunAsync();

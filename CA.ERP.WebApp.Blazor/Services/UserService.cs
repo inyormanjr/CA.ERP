@@ -18,6 +18,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         Task<List<string>> GetRolesAsync();
         Task<PaginatedResponse<UserView>> GetUsersAsync(string firstName, string lastName, int page, int size);
         Task CreateUser(UserCreate user);
+        Task ChangePasswordAsync(string userId, UserChangePassword userChangePassword);
     }
     public class UserService : IUserService
     {
@@ -95,6 +96,23 @@ namespace CA.ERP.WebApp.Blazor.Services
                 throw await ApplicationBaseException.Create(response);
             }
 
+        }
+
+        public async Task ChangePasswordAsync(string userId, UserChangePassword userChangePassword)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiIdentity);
+            var uri = new Uri(client.BaseAddress, $"{UserEndpoint}/{userId}/password");
+
+            UpdateBaseRequest<UserChangePassword> changePasswordRequest = new UpdateBaseRequest<UserChangePassword>() {
+                Data = userChangePassword
+            };
+
+            var response = await client.PutAsJsonAsync(uri, changePasswordRequest);
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
         }
     }
 }
