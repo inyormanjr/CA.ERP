@@ -17,7 +17,7 @@ namespace CA.Identity.Models
         public ICollection<UserBranch> UserBranches { get; set; } = new List<UserBranch>();
 
         [NotMapped]
-        public List<string> Roles { get; set; }
+        public List<string> Roles { get; set; } = new List<string>();
 
     }
 }

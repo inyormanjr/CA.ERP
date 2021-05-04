@@ -9,9 +9,18 @@ namespace CA.ERP.Shared.Dto.User
     public class UserUpdate
     {
         [Required]
-        public string Username { get; set; }
+        [MinLength(3)]
+        public string UserName { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
-        public List<UserBranchUpdate> Branches { get; set; }
+
+        [Required]
+        public List<UserBranchCreate> Branches { get; set; } = new List<UserBranchCreate>();
+
+        [Required]
+        [MinLength(1)]
+        public HashSet<string> Roles { get; set; } = new HashSet<string>();
     }
 }

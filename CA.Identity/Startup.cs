@@ -59,16 +59,18 @@ namespace CA.Identity
                       .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
+            
 
             services.AddIdentityServer()
               .AddDeveloperSigningCredential()
                       .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                       {
+                          var grantTypes = GrantTypes.Code.ToList();
+                          grantTypes.Add("password");
                           options.Clients.Add(new Client
                           {
                               ClientId = "erp",
-                              AllowedGrantTypes = GrantTypes.Code,
+                              AllowedGrantTypes = grantTypes,
                               RequirePkce = true,
                               RequireClientSecret = false,
                               AllowedCorsOrigins = Configuration.GetSection("ErpClient:AllowedCorsOrigins").Get<string[]>(),
