@@ -26,7 +26,7 @@ namespace CA.Identity.Repository
 
         public Task<ApplicationUser> GetUserById(string id, CancellationToken cancellationToken = default)
         {
-            return _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            return _applicationDbContext.Users.Include(u => u.UserBranches).FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
         public Task<List<ApplicationUser>> GetUsers(string firstName, string lastName, string userName, int skip = 0, int take = 100, CancellationToken cancellationToken = default)
