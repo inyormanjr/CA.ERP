@@ -1,0 +1,57 @@
+@page "/management/user/{id}"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.User;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
+
+@layout ManagementLayout
+
+
+
+
+@inherits ViewBase<UserViewViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+<MudContainer>
+    @if (ViewModel.User == null)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="610px" />
+    }
+    else
+    {
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@ViewModel.User?.FullName</MudText>
+                    <MudText Typo="Typo.body2"><b>@ViewModel.User?.UserName</b> - @(string.Join(", ", ViewModel?.User?.Roles ?? new List<string>()))</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Outlined.Edit" title="Edit" />
+                    <MudIconButton Icon="@Icons.Outlined.LockOpen" Link="@( $"/management/user/{ViewModel.User?.Id ?? ""}/password")" title="Change Password" />
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.h5">Assigned Branches</MudText>
+                @foreach (var branch in ViewModel.User.UserBranches)
+                {
+                    <MudText Typo="Typo.body2">@(branch.Name ?? "n/a")</MudText>
+                }
+
+            </MudCardContent>
+        </MudCard>
+    }
+
+</MudContainer>
+@code{
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        ViewModel.Id = Id;
+        return base.OnInitializedAsync();
+    }
+}
