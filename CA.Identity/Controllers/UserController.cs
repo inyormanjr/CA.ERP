@@ -55,7 +55,7 @@ namespace CA.Identity.Controllers
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = user.UserName,
+                    UserName = user.UserName,
                     UserBranches = user.UserBranches.Select(ub => new UserBranchView()
                     {
                         BranchId = ub.BranchId,
@@ -89,7 +89,7 @@ namespace CA.Identity.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Username = user.UserName,
+                UserName = user.UserName,
                 UserBranches = user.UserBranches.Select(ub => new UserBranchView()
                 {
                     BranchId = ub.BranchId,

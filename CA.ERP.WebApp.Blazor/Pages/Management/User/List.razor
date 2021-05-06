@@ -48,8 +48,9 @@
                 <MudTd DataLabel="Last Name">@context.LastName</MudTd>
                 <MudTd DataLabel="Roles">@(string.Join(' ', context.Roles)) </MudTd>
                 <MudTd DataLabel="Action">
-                    <MudIconButton Icon="@Icons.Outlined.Edit" title="Edit" />
-                    <MudIconButton Icon="@Icons.Outlined.Lock" Link="@( $"/management/user/{context.Id}/password")" title="Change Password" />
+                    <MudIconButton Icon="@Icons.Outlined.Description" Link="@($"/management/user/{context.Id}")" title="Details" />
+                    <MudIconButton Icon="@Icons.Outlined.Edit" Link="@($"/management/user/{context.Id}/edit")" title="Edit" />
+                    <MudIconButton Icon="@Icons.Outlined.LockOpen" Link="@( $"/management/user/{context.Id}/password")" title="Change Password" />
                 </MudTd>
             </RowTemplate>
             <PagerContent>

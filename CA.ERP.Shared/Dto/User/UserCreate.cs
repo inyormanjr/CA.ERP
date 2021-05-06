@@ -28,5 +28,13 @@ namespace CA.ERP.Shared.Dto.User
         [Required]
         [MinLength(1)]
         public HashSet<string> Roles { get; set; } = new HashSet<string>();
+
+        public string FullName
+        {
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
     }
 }

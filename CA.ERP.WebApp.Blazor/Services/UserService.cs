@@ -19,6 +19,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         Task<PaginatedResponse<UserView>> GetUsersAsync(string firstName, string lastName, int page, int size);
         Task CreateUser(UserCreate user);
         Task ChangePasswordAsync(string userId, UserChangePassword userChangePassword);
+        Task<UserView> GetUserAsync(string id);
     }
     public class UserService : IUserService
     {
@@ -113,6 +114,20 @@ namespace CA.ERP.WebApp.Blazor.Services
 
                 throw await ApplicationBaseException.Create(response);
             }
+        }
+
+        public async Task<UserView> GetUserAsync(string id)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiIdentity);
+            var uri = new Uri(client.BaseAddress, $"{UserEndpoint}/{id}");
+
+            var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+            return await response.Content.ReadFromJsonAsync<UserView>();
         }
     }
 }
