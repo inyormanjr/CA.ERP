@@ -37,7 +37,6 @@ namespace CA.ERP.WebApp.Blazor
 
             builder.Logging.AddSerilog();
 
-            //builder.Logging.SetMinimumLevel(LogLevel.Debug);
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

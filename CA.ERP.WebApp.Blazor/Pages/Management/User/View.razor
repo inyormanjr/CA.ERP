@@ -29,8 +29,8 @@
                     <MudText Typo="Typo.body2"><b>@ViewModel.User?.UserName</b> - @(string.Join(", ", ViewModel?.User?.Roles ?? new List<string>()))</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
-                    <MudIconButton Icon="@Icons.Outlined.Edit" title="Edit" />
-                    <MudIconButton Icon="@Icons.Outlined.LockOpen" Link="@( $"/management/user/{ViewModel.User?.Id ?? ""}/password")" title="Change Password" />
+                    <MudIconButton Icon="@Icons.Outlined.Edit" Link="@($"/management/user/{ViewModel.Id}/edit")" title="Edit" />
+                    <MudIconButton Icon="@Icons.Outlined.LockOpen" Link="@( $"/management/user/{ViewModel.Id}/password")" title="Change Password" />
                 </CardHeaderActions>
             </MudCardHeader>
             <MudCardContent>
