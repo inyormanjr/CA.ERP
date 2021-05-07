@@ -2,6 +2,7 @@ using CA.ERP.Shared.Dto.Branch;
 using CA.ERP.Shared.Dto.User;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
 using System;
@@ -17,21 +18,22 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
         private readonly IBranchService _branchService;
         private readonly ILogger<UserEditViewModel> _logger;
         private readonly ISnackbar _snackbar;
+        private readonly NavigationManager _navigationManager;
 
         public string Id { get; private set; }
         public UserUpdate User { get; set; }
         public List<string> Roles { get; set; } = new List<string>();
-        public List<BranchView> Branches { get; set; } = new List<BranchView>();
+        public HashSet<BranchView> Branches { get; set; } = new HashSet<BranchView>();
         public HashSet<BranchView> SelectedBranches { get; set; } = new HashSet<BranchView>();
 
 
-        public UserEditViewModel(IUserService userService, IBranchService branchService, ILogger<UserEditViewModel> logger, ISnackbar snackbar)
+        public UserEditViewModel(IUserService userService, IBranchService branchService, ILogger<UserEditViewModel> logger, ISnackbar snackbar, NavigationManager navigationManager)
         {
             _userService = userService;
             _branchService = branchService;
             _logger = logger;
             _snackbar = snackbar;
-
+            _navigationManager = navigationManager;
             InitReferences().ConfigureAwait(false);
         }
 
@@ -40,13 +42,19 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
             Id = id;
             var userView = await _userService.GetUserAsync(id);
             User = _userService.ConvertUserViewToUserUpdate(userView);
+            SelectedBranches = Branches.Where(b => User.Branches.Any(ub => ub.BranchId == b.Id.ToString())).ToHashSet();
             OnPropertyChanged(nameof(User));
+            OnPropertyChanged(nameof(SelectedBranches));
             _logger.LogInformation("user branch count {count}", User.Branches.Count);
         }
 
         public async Task InitReferences()
         {
-            var loadBranchTask = _branchService.GetBranchesAsync().ContinueWith(t => Branches = t.Result.Data.ToList());
+            var loadBranchTask = _branchService.GetBranchesAsync().ContinueWith(t => {
+                Branches = t.Result.Data.ToHashSet();
+                SelectedBranches = Branches.Where(b => User.Branches.Any(ub => ub.BranchId == b.Id.ToString())).ToHashSet();
+                OnPropertyChanged(nameof(SelectedBranches));
+            });
 
             var loadRolesTask = _userService.GetRolesAsync().ContinueWith(t => Roles = t.Result);
 
@@ -57,7 +65,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
         {
             try
             {
+                User.Branches = SelectedBranches.Select(b => UserBranchCreate.Create(b.Id.ToString(), b.Name)).ToList();
                 await _userService.UpdateUserAsync(Id, User);
+                _snackbar.Add("Saved", Severity.Success);
+                _navigationManager.NavigateTo($"/management/user/{Id}");
             }
             catch (ValidationException ex)
             {
