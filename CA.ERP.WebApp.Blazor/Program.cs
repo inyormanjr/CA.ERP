@@ -33,6 +33,8 @@ namespace CA.ERP.WebApp.Blazor
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+
+
             builder.Logging.AddSerilog();
 
             //builder.Logging.SetMinimumLevel(LogLevel.Debug);
@@ -100,6 +102,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<UserListViewModel>();
             builder.Services.AddScoped<UserCreateViewModel>();
             builder.Services.AddScoped<UserViewViewModel>();
+            builder.Services.AddScoped<UserEditViewModel>();
 
             builder.Services.AddScoped<GenerateFromPurchaseOrderDialogViewModel>();
             builder.Services.AddScoped<StockReceiveListViewModel>();

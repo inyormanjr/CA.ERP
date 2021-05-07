@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using CA.ERP.Common.Extensions;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
@@ -20,6 +21,8 @@ namespace CA.ERP.WebApp.Blazor.Services
         Task CreateUser(UserCreate user);
         Task ChangePasswordAsync(string userId, UserChangePassword userChangePassword);
         Task<UserView> GetUserAsync(string id);
+        UserUpdate ConvertUserViewToUserUpdate(UserView userView);
+        Task UpdateUserAsync(string id, UserUpdate userUpdate);
     }
     public class UserService : IUserService
     {
@@ -128,6 +131,35 @@ namespace CA.ERP.WebApp.Blazor.Services
                 throw await ApplicationBaseException.Create(response);
             }
             return await response.Content.ReadFromJsonAsync<UserView>();
+        }
+
+        public async Task UpdateUserAsync(string id, UserUpdate userUpdate)
+        {
+
+            var client = _httpClientFactory.CreateClient(Constants.ApiIdentity);
+            var uri = new Uri(client.BaseAddress, $"{UserEndpoint}/{id}");
+
+            var request = new UpdateBaseRequest<UserUpdate>() {  Data = userUpdate };
+
+            var response = await client.PutAsJsonAsync(uri, request);
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+
+        }
+
+        public UserUpdate ConvertUserViewToUserUpdate(UserView userView)
+        {
+            userView.ThrowIfNullArgument(nameof(userView));
+            return new UserUpdate()
+            {
+                FirstName = userView.FirstName,
+                LastName = userView.LastName,
+                Branches = userView.UserBranches.Select(ub => new UserBranchCreate() { BranchId = ub.BranchId, Name = ub.Name }).ToList(),
+                Roles = userView.Roles.ToHashSet()
+            };
         }
     }
 }

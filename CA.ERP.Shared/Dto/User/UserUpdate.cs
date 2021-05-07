@@ -9,9 +9,6 @@ namespace CA.ERP.Shared.Dto.User
     public class UserUpdate
     {
         [Required]
-        [MinLength(3)]
-        public string UserName { get; set; }
-        [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }

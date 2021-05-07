@@ -57,7 +57,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
         {
             try
             {
-                User.Branches = SelectedBranches.Select(b => UserBranchCreate.Create(b.Id, b.Name)).ToList();
+                User.Branches = SelectedBranches.Select(b => UserBranchCreate.Create(b.Id.ToString(), b.Name)).ToList();
 
                 await _userService.CreateUser(User);
 
