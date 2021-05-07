@@ -204,7 +204,6 @@ namespace CA.Identity.Controllers
                     {
                         return NotFound();
                     }
-                    user.UserName = userUpdateRequest.Data.UserName;
                     user.FirstName = userUpdateRequest.Data.FirstName;
                     user.LastName = userUpdateRequest.Data.LastName;
 
