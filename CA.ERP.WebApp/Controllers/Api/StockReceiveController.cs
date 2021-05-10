@@ -1,9 +1,11 @@
 using AutoMapper;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitDirectStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetOneStockReceive;
 using CA.ERP.Domain.StockReceiveAgg;
+using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.StockReceive;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -93,6 +95,21 @@ namespace CA.ERP.WebApp.Controllers.Api
             if (result.IsSuccess)
             {
                 return Ok();
+            }
+            return HandleDomainResult(result);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Direct(StockReceiveCreate stockReceive, CancellationToken cancellationToken = default)
+        {
+            var query = new CommitDirectStockReceiveCommand(stockReceive);
+
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok(CreateResponse.Create(result.Result));
             }
             return HandleDomainResult(result);
         }

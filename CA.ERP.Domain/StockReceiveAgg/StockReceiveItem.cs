@@ -51,12 +51,19 @@ namespace CA.ERP.Domain.StockReceiveAgg
             {
                 return DomainResult.Error(StockReceiveErrorCodes.UnknownStockSource, "Unknown stock source is not allowed.");
             }
+
             if (serialNumber == string.Empty)
             {
                 serialNumber = null;
             }
+
             Status = status;
-            SerialNumber = serialNumber;
+
+            if (!string.IsNullOrEmpty(SerialNumber))
+            {
+                SerialNumber = serialNumber;
+            }
+            
             return DomainResult.Success();
         }
 
@@ -89,7 +96,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             }
 
 
-            var item = new StockReceiveItem(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, string.Empty, costPrice, brandName, model);
+            var item = new StockReceiveItem(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, null, costPrice, brandName, model);
             return DomainResult<StockReceiveItem>.Success(item);
         }
 

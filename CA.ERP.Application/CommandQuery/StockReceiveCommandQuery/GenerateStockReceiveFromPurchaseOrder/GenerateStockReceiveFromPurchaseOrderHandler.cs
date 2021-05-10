@@ -38,6 +38,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
             _stockReceiveRepository = stockReceiveRepository;
             _stockCounterRepository = stockCounterRepository;
         }
+
         public async Task<DomainResult<Guid>> Handle(GenerateStockReceiveFromPurchaseOrderCommand request, CancellationToken cancellationToken)
         {
             
