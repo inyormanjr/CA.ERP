@@ -6,7 +6,7 @@ namespace CA.ERP.Common.Types
 {
     public enum StockReceiveStage : int
     {
-        Intial = 0,
+        Pending = 0,
         Commited = 1,
         Cancelled = 2,
     }

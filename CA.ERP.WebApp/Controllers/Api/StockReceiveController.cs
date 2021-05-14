@@ -1,6 +1,6 @@
 using AutoMapper;
-using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitDirectStockReceive;
-using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceive;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CreateDirectStockReceive;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetOneStockReceive;
@@ -18,6 +18,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dto = CA.ERP.Shared.Dto;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitDirectStockReceive;
+using CA.ERP.Common.Types;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
@@ -58,10 +60,10 @@ namespace CA.ERP.WebApp.Controllers.Api
 
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int skip = 0, int take = 20 ,CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip = 0, int take = 20, CancellationToken cancellationToken = default)
         {
 
-            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateCreated, dateReceived, skip, take);
+            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateCreated, dateReceived, source, stage, skip, take);
 
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
@@ -86,10 +88,27 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Commit(Guid id, StockReceiveCommit stockReceiveCommit, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> CommitFromPurchaseOrder(Guid id, UpdateBaseRequest<StockReceiveCommit> request, CancellationToken cancellationToken = default)
+        {
+            var stockReceiveCommit = request.Data;
+
+            var query = new CommitStockReceiveFromPurchaseOrderCommand(id, stockReceiveCommit);
+
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+            return HandleDomainResult(result);
+        }
+
+        [HttpPut("{id}/commit-direct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> CommitDirect(Guid id, CancellationToken cancellationToken = default)
         {
 
-            var query = new CommitStockReceiveCommand(id, stockReceiveCommit);
+            var query = new CommitDirectStockReceiveCommand(id);
 
             var result = await _mediator.Send(query, cancellationToken);
             if (result.IsSuccess)
@@ -104,7 +123,7 @@ namespace CA.ERP.WebApp.Controllers.Api
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Direct(StockReceiveCreate stockReceive, CancellationToken cancellationToken = default)
         {
-            var query = new CommitDirectStockReceiveCommand(stockReceive);
+            var query = new CreateDirectStockReceiveCommand(stockReceive);
 
             var result = await _mediator.Send(query, cancellationToken);
             if (result.IsSuccess)

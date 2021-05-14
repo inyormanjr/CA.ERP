@@ -18,5 +18,6 @@ namespace CA.ERP.Common.ErrorCodes
         public const string CostPriceLessThanZero = "stock-receive-item-cost-price-less-than-zero";
         public const string AlreadyCommitted = "stock-receive-already-committed";
         public const string PurchaseOrderNotPending = "stock-receive-generation-purchase-order-not-pending";
+        public const string InvalidStockSource = "stock-receive-invalid-stock-source";
     }
 }

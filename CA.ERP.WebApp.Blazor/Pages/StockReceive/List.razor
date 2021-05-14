@@ -4,6 +4,7 @@
 @using CA.ERP.Shared.Dto.Supplier;
 @using CA.ERP.Shared.Dto.Branch;
 @using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+@using CA.ERP.Common.Types;
 
 @inherits ViewBase<StockReceiveListViewModel>
 
@@ -23,28 +24,42 @@
             <MudAutocomplete Class="mx-4" T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
             <MudDatePicker Class="mx-4" Label="Date Created" @bind-Date="ViewModel.DateCreated" />
             <MudDatePicker Class="mx-4" Label="Date Received" @bind-Date="ViewModel.DateReceive" />
-            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary"  StartIcon="@Icons.Filled.Search" OnClick="Search" DisableElevation="true">
+            <MudSelect Class="mx-4" T="StockSource?" Label="Source" Variant="Variant.Text" @bind-Value="ViewModel.Source" Style="width:124px">
+                <MudSelectItem Value="null" T="StockSource?">All</MudSelectItem>
+                @foreach (var item in Enum.GetValues(typeof(StockSource)).Cast<StockSource>())
+                {
+                    <MudSelectItem Value="item" T="StockSource?">@item.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect Class="mx-4" T="StockReceiveStage?" Label="Stage" Variant="Variant.Text" @bind-Value="ViewModel.Stage" Style="width:124px">
+                <MudSelectItem Value="null" T="StockReceiveStage?">All</MudSelectItem>
+                @foreach (var item in Enum.GetValues(typeof(StockReceiveStage)).Cast<StockReceiveStage>())
+                {
+                    <MudSelectItem Value="item" T="StockReceiveStage?">@item.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Filled.Search" OnClick="Search" DisableElevation="true">
                 Search
             </MudButton>
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Branch</MudTh>
             <MudTh>Supplier</MudTh>
-            <MudTh>Source</MudTh>
             <MudTh>Created At</MudTh>
             <MudTh>Received At</MudTh>
             <MudTh>Delivery Reference</MudTh>
-            <MudTh>Status</MudTh>
+            <MudTh>Source</MudTh>
+            <MudTh>Stage</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
             <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
-            <MudTd DataLabel="Source">@context.StockSource</MudTd>
             <MudTd DataLabel="Created At">@(context.DateCreated.ToString("MMM dd, yyyy")) </MudTd>
             <MudTd DataLabel="Received At">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
             <MudTd DataLabel="Delivery Reference">@(context.DeliveryReference ?? "n/a") </MudTd>
-            <MudTd DataLabel="Delivery Reference">@context.Stage </MudTd>
+            <MudTd DataLabel="Source">@context.StockSource</MudTd>
+            <MudTd DataLabel="Stage">@context.Stage </MudTd>
             <MudTd DataLabel="Action">
                 <MudIconButton Icon="@Icons.Outlined.Edit" Link="@("/stock-receive/edit/" + context.Id)" />
             </MudTd>

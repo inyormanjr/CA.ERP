@@ -1,5 +1,4 @@
 using CA.ERP.Domain.Core.DomainResullts;
-using CA.ERP.Shared.Dto.StockReceive;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -7,13 +6,13 @@ using System.Text;
 
 namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitDirectStockReceive
 {
-    public class CommitDirectStockReceiveCommand : IRequest<DomainResult<Guid>>
+    public class CommitDirectStockReceiveCommand : IRequest<DomainResult>
     {
-        public StockReceiveCreate StockReceive { get; set; }
+        public Guid Id { get; set; }
 
-        public CommitDirectStockReceiveCommand(StockReceiveCreate stockReceive)
+        public CommitDirectStockReceiveCommand(Guid id)
         {
-            StockReceive = stockReceive;
+            Id = id;
         }
     }
 }
