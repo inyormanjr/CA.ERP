@@ -1,4 +1,5 @@
 using AutoMapper;
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.StockReceiveAgg;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,14 +33,14 @@ namespace CA.ERP.DataAccess.Repositories
             }
         }
 
-        public async Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int skip, int take, CancellationToken cancellationToken)
+        public async Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip, int take, CancellationToken cancellationToken)
         {
-            IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateCreated, dateReceived);
+            IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateCreated, dateReceived, source, stage);
 
             return await queryable.Include(sr => sr.Branch).Include(sr=>sr.Supplier).OrderByDescending(sr => sr.DateCreated).Skip(skip).Take(take).Select(e => _mapper.Map<Dal.StockReceive, StockReceive>(e)).AsNoTracking().ToListAsync(cancellationToken: cancellationToken);
         }
 
-        private IQueryable<Dal.StockReceive> generateQuery(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived)
+        private IQueryable<Dal.StockReceive> generateQuery(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage)
         {
             var queryable = _context.Set<Dal.StockReceive>().AsQueryable();
             if (branch != null)
@@ -63,12 +64,22 @@ namespace CA.ERP.DataAccess.Repositories
                 queryable = queryable.Where(e => e.DateReceived >= startDate && e.DateReceived <= endDate);
             }
 
+            if (source != null)
+            {
+                queryable = queryable.Where(e => e.StockSouce == source.Value);
+            }
+
+            if (stage != null)
+            {
+                queryable = queryable.Where(e => e.Stage == stage.Value);
+            }
+
             return queryable;
         }
 
-        public Task<int> GetManyStockReceiveCountAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, CancellationToken cancellationToken)
+        public Task<int> GetManyStockReceiveCountAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, CancellationToken cancellationToken)
         {
-            IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateCreated, dateReceived);
+            IQueryable<Dal.StockReceive> queryable = generateQuery(branch, supplierId, dateCreated, dateReceived, source, stage);
             return queryable.CountAsync(cancellationToken);
         }
 

@@ -14,9 +14,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceive
+namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceiveFromPurchaseOrder
 {
-    public class CommitStockReceiveHandler : IRequestHandler<CommitStockReceiveCommand, DomainResult>
+    public class CommitStockReceiveFromPurchaseOrderHandler : IRequestHandler<CommitStockReceiveFromPurchaseOrderCommand, DomainResult>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStockRepository _stockRepository;
@@ -24,7 +24,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockRe
         private readonly ICommitStockReceiveFromPurchaseOrderService _commitStockReceiveFromPurchaseOrderService;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
 
-        public CommitStockReceiveHandler(IUnitOfWork unitOfWork,IStockRepository stockRepository, IStockReceiveRepository stockReceiveRepository, ICommitStockReceiveFromPurchaseOrderService commitStockReceiveFromPurchaseOrderService, IPurchaseOrderRepository purchaseOrderRepository)
+        public CommitStockReceiveFromPurchaseOrderHandler(IUnitOfWork unitOfWork, IStockRepository stockRepository, IStockReceiveRepository stockReceiveRepository, ICommitStockReceiveFromPurchaseOrderService commitStockReceiveFromPurchaseOrderService, IPurchaseOrderRepository purchaseOrderRepository)
         {
             _unitOfWork = unitOfWork;
             _stockRepository = stockRepository;
@@ -32,21 +32,30 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockRe
             _commitStockReceiveFromPurchaseOrderService = commitStockReceiveFromPurchaseOrderService;
             _purchaseOrderRepository = purchaseOrderRepository;
         }
-        public async Task<DomainResult> Handle(CommitStockReceiveCommand request, CancellationToken cancellationToken)
+
+        public async Task<DomainResult> Handle(CommitStockReceiveFromPurchaseOrderCommand request, CancellationToken cancellationToken)
         {
             var stockReceive = await _stockReceiveRepository.GetByIdWithItemsAsync(request.Id, cancellationToken);
             if (stockReceive == null)
             {
                 return DomainResult.Error(ErrorType.NotFound, StockReceiveErrorCodes.NotFound, "Stock receive was not found.");
             }
+
+            if (stockReceive.StockSouce != StockSource.PurchaseOrder)
+            {
+                return DomainResult.Error(StockReceiveErrorCodes.InvalidStockSource, "Stock source should be from purchase order.");
+            }
+
             if (stockReceive.IsCommitted())
             {
                 return DomainResult.Error(StockReceiveErrorCodes.AlreadyCommitted, "Stock receive can not be edited because it's already committed.");
             }
+
             if (request.StockReceive == null)
             {
                 return DomainResult.Error(ErrorType.NotFound, StockReceiveErrorCodes.NotFound, "Stock receive dto was not found.");
             }
+
             foreach (var item in stockReceive.Items)
             {
                 var itemToCommit = request.StockReceive.Items.FirstOrDefault(i => i.Id == item.Id);
@@ -55,6 +64,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockRe
                     item.Commit(itemToCommit.Status, itemToCommit.SerialNumber);
                 }
             }
+
             switch (stockReceive.StockSouce)
             {
                 case StockSource.PurchaseOrder:

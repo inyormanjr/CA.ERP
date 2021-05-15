@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.StockReceive;
 using MediatR;
@@ -13,10 +14,12 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockR
         public Guid? SupplierId { get; set; }
         public DateTimeOffset? DateReceived { get; set; }
         public DateTimeOffset? DateCreated { get; set; }
+        public StockSource? Source { get; set; }
+        public StockReceiveStage? Stage { get; set; }
         public int Skip { get; set; }
         public int Take { get; set; }
 
-        public GetManyStockReceiveQuery(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int skip, int take )
+        public GetManyStockReceiveQuery(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip, int take)
         {
             Branch = branch;
             SupplierId = supplierId;
@@ -24,7 +27,8 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockR
             DateReceived = dateReceived;
             Skip = skip;
             Take = take;
-            
+            Source = source;
+            Stage = stage;
         }
     }
 }

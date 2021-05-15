@@ -82,6 +82,9 @@ namespace CA.ERP.Domain.Core.DomainResullts
             return new DomainResult<T>(false, default, errorType, errorCode, errorMessage);
         }
 
+        public static implicit operator DomainResult<T>(T result) {
+            return DomainResult<T>.Success(result);
+        }
 
     }
 }

@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceive
+namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceiveFromPurchaseOrder
 {
-    public class CommitStockReceiveCommand : IRequest<DomainResult>
+    public class CommitStockReceiveFromPurchaseOrderCommand : IRequest<DomainResult>
     {
         public Guid Id { get; set; }
         public StockReceiveCommit StockReceive { get; set; }
-        public CommitStockReceiveCommand(Guid id, StockReceiveCommit stockReceive)
+        public CommitStockReceiveFromPurchaseOrderCommand(Guid id, StockReceiveCommit stockReceive)
         {
             Id = id;
             StockReceive = stockReceive;

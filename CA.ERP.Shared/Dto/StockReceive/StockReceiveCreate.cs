@@ -14,7 +14,7 @@ namespace CA.ERP.Shared.Dto.StockReceive
         public StockSource StockSource { get; set; }
         public Guid SupplierId { get; set; }
 
-        public List<StockCreate> Stocks { get; set; } = new List<StockCreate>();
+        public List<StockReceiveItemCreate> Items { get; set; } = new List<StockReceiveItemCreate>();
         public string DeliveryReference { get; set; }
     }
 }

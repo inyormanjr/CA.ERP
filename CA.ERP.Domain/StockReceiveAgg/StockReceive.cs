@@ -74,8 +74,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
             {
                 return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
             }
-            var ret = new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Intial);
-            return DomainResult<StockReceive>.Success(ret);
+            return new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Pending);
+            
         }
 
         public bool IsCommitted()

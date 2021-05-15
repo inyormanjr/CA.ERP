@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.Shared.Dto.StockReceive;
@@ -18,7 +19,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         StockReceiveCommit ConvertStockReceiveViewToCommit(StockReceiveView stockReceiveView);
         Task<Guid> GenerateStockReceiveFromPurchaseOrderAsync(PurchaseOrderView purchaseOrderView);
         Task<StockReceiveView> GetStockReceiveByIdWithItems(Guid id);
-        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int page, int size);
+        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size);
         Task Commit(StockReceiveCommit stockReceive);
     }
     public class StockReceiveService : IStockReceiveService
@@ -45,7 +46,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             return (await response.Content.ReadFromJsonAsync<CreateResponse>()).Id;
         }
 
-        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, int page, int size)
+        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             var uri = new Uri(client.BaseAddress, StockReceiveEndpoint);
@@ -73,6 +74,16 @@ namespace CA.ERP.WebApp.Blazor.Services
             if (dateReceived != null)
             {
                 uri = uri.AddQuery("dateReceived", dateReceived.Value.DateTime.ToString("o"));
+            }
+
+            if (source != null)
+            {
+                uri = uri.AddQuery("source", ((int)source.Value).ToString());
+            }
+
+            if (stage != null)
+            {
+                uri = uri.AddQuery("stage", ((int)stage.Value).ToString());
             }
 
             var response = await client.GetAsync(uri);

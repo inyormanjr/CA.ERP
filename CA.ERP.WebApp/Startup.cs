@@ -236,6 +236,9 @@ namespace CA.ERP.WebApp
             services.AddScoped<IStockReceiveGeneratorService, StockReceiveGeneratorService>();
             services.AddScoped<IStockNumberService, StockNumberService>();
             services.AddScoped<ICommitStockReceiveFromPurchaseOrderService, CommitStockReceiveFromPurchaseOrderService>();
+            services.AddScoped<ICommitDirectStockReceive, CommitDirectStockReceive>();
+
+
 
 
             //set culture info

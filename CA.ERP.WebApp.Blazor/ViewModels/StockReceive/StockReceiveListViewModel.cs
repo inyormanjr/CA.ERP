@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.Branch;
 using CA.ERP.Shared.Dto.StockReceive;
@@ -27,7 +28,14 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
         public BranchView SelectedBranch { get; set; }
         public SupplierView SelectedSupplier { get; set; }
         public DateTime? DateCreated { get; set; }
+
         public DateTime? DateReceive { get; set; }
+
+        public StockSource? Source { get; set; }
+
+        public StockReceiveStage? Stage { get; set; }
+
+        
 
         public StockReceiveListViewModel(IStockReceiveService stockReceiveService, IBranchService branchService, ISupplierService supplierService, ISnackbar snackbar)
         {
@@ -82,7 +90,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
             var ret = new PaginatedResponse<StockReceiveView>();
             try
             {
-                return _stockReceiveService.GetStockReceivesAsync(SelectedBranch?.Id, SelectedSupplier?.Id, DateCreated, DateReceive, page, size);
+                return _stockReceiveService.GetStockReceivesAsync(SelectedBranch?.Id, SelectedSupplier?.Id, DateCreated, DateReceive, Source, Stage, page, size);
             }
             catch (Exception ex)
             {
