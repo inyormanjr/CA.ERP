@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
 {
-    public class UserViewViewModel : ViewModelBase
+    public class UserDetailViewModel : ViewModelBase
     {
         private readonly IUserService _userService;
         private string _id;
@@ -22,7 +22,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Management.User
             }
         }
 
-        public UserViewViewModel(IUserService userService)
+        public UserDetailViewModel(IUserService userService)
         {
             _userService = userService;
 

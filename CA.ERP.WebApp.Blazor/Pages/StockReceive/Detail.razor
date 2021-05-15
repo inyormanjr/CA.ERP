@@ -1,0 +1,112 @@
+@page "/stock-receive/{Id}"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Supplier;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+@using CA.ERP.Common.Types;
+
+
+
+@inherits ViewBase<StockReceiveDetailViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+<MudContainer>
+    @if (ViewModel.StockReceive != null)
+    {
+        <MudPaper Class="pa-4">
+            <MudGrid>
+                <MudItem xs="12" md="1">
+                    <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowBack" Link="/purchase-order/">Stock Receive Detail</MudIconButton>
+                </MudItem>
+                <MudItem xs="12" md="7">
+                    <MudText Class="mt-4">Stock Receive Detail</MudText>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex flex-row-reverse">
+                    <AuthorizeView Roles="Admin">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" DisableElevation="true" Disabled="ViewModel.CanBeApproved()">
+                            Approve
+                        </MudButton>
+                    </AuthorizeView>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" DisableElevation="true" Disabled="ViewModel.CanBeFilledUp()" Link="@("/stock-receive/edit/" + Id)">
+                        Fill Up
+                    </MudButton>
+                </MudItem>
+
+
+                <MudItem xs="12" md="3">
+
+                    <MudText>Branch: @(ViewModel.StockReceive?.BranchName ?? "Loading")</MudText>
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudText>Supplier: @(ViewModel.StockReceive?.SupplierName ?? "Loading")</MudText>
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudText>Date Ordered: @(ViewModel.StockReceive?.DateCreated.ToString("MMM dd, yyyy") ?? "Loading")</MudText>
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudText>Date Received: @(ViewModel.StockReceive?.DateReceived?.ToString("MMM dd, yyyy") ?? "Today")</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+
+        @if (ViewModel.StockReceive != null)
+        {
+            <MudTable Items="@ViewModel.StockReceive.Items.OrderBy(i => i.StockNumber)" Hover="true" Breakpoint="Breakpoint.Sm">
+                <HeaderContent>
+                    <MudTh>Brand</MudTh>
+                    <MudTh>Model</MudTh>
+                    <MudTh>Stock Number</MudTh>
+                    <MudTh>Cost</MudTh>
+                    <MudTh>Serial</MudTh>
+                    <MudTh>Status</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="item">
+                    <MudTd DataLabel="Brand">@item.BrandName </MudTd>
+                    <MudTd DataLabel="Model">@item.Model</MudTd>
+                    <MudTd DataLabel="Stock Number">@item.StockNumber</MudTd>
+                    <MudTd DataLabel="Cost Price">@item.CostPrice</MudTd>
+                    <MudTd DataLabel="Serial Number">
+                        @item.SerialNumber
+                    </MudTd>
+                    <MudTd DataLabel="Status">
+                        @item.Status.ToString()
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+
+
+    }
+
+
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    public MudForm Form { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        await this.ViewModel.PopulateStockReceive(Guid.Parse(Id));
+
+
+    }
+
+
+
+
+
+
+
+}

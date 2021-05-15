@@ -61,6 +61,7 @@
             <MudTd DataLabel="Source">@context.StockSource</MudTd>
             <MudTd DataLabel="Stage">@context.Stage </MudTd>
             <MudTd DataLabel="Action">
+                <MudIconButton Icon="@Icons.Outlined.Description" Link="@("/stock-receive/" + context.Id)" />
                 <MudIconButton Icon="@Icons.Outlined.Edit" Link="@("/stock-receive/edit/" + context.Id)" />
             </MudTd>
         </RowTemplate>

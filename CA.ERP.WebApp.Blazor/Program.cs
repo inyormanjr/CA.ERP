@@ -32,9 +32,6 @@ namespace CA.ERP.WebApp.Blazor
 
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
-
-
             builder.Logging.AddSerilog();
 
             builder.RootComponents.Add<App>("#app");
@@ -100,12 +97,13 @@ namespace CA.ERP.WebApp.Blazor
 
             builder.Services.AddScoped<UserListViewModel>();
             builder.Services.AddScoped<UserCreateViewModel>();
-            builder.Services.AddScoped<UserViewViewModel>();
+            builder.Services.AddScoped<UserDetailViewModel>();
             builder.Services.AddScoped<UserEditViewModel>();
 
             builder.Services.AddScoped<GenerateFromPurchaseOrderDialogViewModel>();
             builder.Services.AddScoped<StockReceiveListViewModel>();
             builder.Services.AddScoped<StockReceiveEditViewModel>();
+            builder.Services.AddScoped<StockReceiveDetailViewModel>();
 
             builder.Services.AddScoped<ChangePasswordViewModel>();
 
@@ -113,7 +111,6 @@ namespace CA.ERP.WebApp.Blazor
 
             await builder.Build().RunAsync();
                 
-
         }
 
         private static IAsyncPolicy<HttpResponseMessage> BuildHttpErrorPolicy(PolicyBuilder<HttpResponseMessage> builder)
