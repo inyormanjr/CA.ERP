@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Base;
 using CA.ERP.Domain.Core.Repository;
 using System;
@@ -12,8 +13,8 @@ namespace CA.ERP.Domain.StockAgg
     {
         Task<bool> StockNumberExist(string stockNumber, Guid exludeId = default);
         Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default);
-        Task<int> CountAsync(string brand, string model, string stockNumber, string serial, CancellationToken cancellationToken = default);
-        Task<IEnumerable<Stock>> GetManyAsync(string brand, string model, string stockNumber, string serial, int skip, int take, CancellationToken cancellationToken = default);
+        Task<int> CountAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Stock>> GetManyAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default);
         Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken = default);
     }
 }

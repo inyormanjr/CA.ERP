@@ -64,11 +64,9 @@
   <ItemGroup>
     <Compile Remove="Controllers\Api\AuthenticationController.cs" />
     <Compile Remove="Controllers\Api\PaymentController.cs" />
-    <Compile Remove="Controllers\Api\StockController.cs" />
     <Compile Remove="Controllers\Api\TransactionController.cs" />
     <Compile Remove="Controllers\Api\UserController.cs" />
     <Compile Remove="Mapping\CustomerMapping.cs" />
-    <Compile Remove="Mapping\StockMapping.cs" />
     <Compile Remove="Mapping\UserMapping.cs" />
     <Compile Remove="Mapping\ValidationErrorMapping.cs" />
   </ItemGroup>

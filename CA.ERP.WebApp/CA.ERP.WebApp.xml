@@ -78,6 +78,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:CA.ERP.WebApp.Controllers.Api.StockController.Get(CA.ERP.Application.CommandQuery.StockCommandCommandQuery.GetManyStock.GetManyStockQuery,System.Threading.CancellationToken)">
+            <summary>
+            Get Paginated Stocks
+            </summary>
+            <param name="query"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:CA.ERP.WebApp.Controllers.Api.SupplierController">
             <summary>
             Contains supplier and supllier brands related endpoints

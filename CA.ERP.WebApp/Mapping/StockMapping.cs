@@ -1,7 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CA.ERP.Domain.StockAgg;
-using CA.ERP.WebApp.Dto.Stock;
-using CA.ERP.WebApp.ReportDto;
+using CA.ERP.Shared.Dto.Stock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +12,10 @@ namespace CA.ERP.WebApp.Mapping
     {
         public StockMapping()
         {
-            CreateMap<StockCreate, Stock>();
             CreateMap<Stock, StockView>();
 
-            CreateMap<Stock, StockListItem>()
-                .ForMember(dest => dest.Status, cfg => cfg.MapFrom(src => src.StockStatus.ToString()));
+            //CreateMap<Stock, StockListItem>()
+            //    .ForMember(dest => dest.Status, cfg => cfg.MapFrom(src => src.StockStatus.ToString()));
         }
     }
 }

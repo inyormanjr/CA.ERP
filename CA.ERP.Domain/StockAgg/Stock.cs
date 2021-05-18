@@ -32,7 +32,11 @@ namespace CA.ERP.Domain.StockAgg
 
         public string BrandName { get; private set; }
         public string Model { get; private set; }
-        
+
+        public Stock()
+        {
+
+        }
 
         protected Stock( Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string brandName, string model)
         {

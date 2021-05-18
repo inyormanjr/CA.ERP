@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.StockAgg;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,17 +18,17 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
-        public async Task<int> CountAsync(string brand, string model, string stockNumber, string serial, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default)
         {
             var query = _context.Stocks.AsQueryable();
 
-            if (!string.IsNullOrEmpty(brand))
+            if (brandId != null)
             {
-                query = query.Where(s => s.MasterProduct.Brand.Name.StartsWith(brand));
+                query = query.Where(s => s.MasterProduct.Brand.Id == brandId);
             }
-            if (!string.IsNullOrEmpty(model))
+            if (masterProductId != null)
             {
-                query = query.Where(s => s.MasterProduct.Model.StartsWith(model));
+                query = query.Where(s => s.MasterProduct.Id == masterProductId);
             }
             if (!string.IsNullOrEmpty(stockNumber))
             {
@@ -40,17 +41,17 @@ namespace CA.ERP.DataAccess.Repositories
             return await query.CountAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Stock>> GetManyAsync(string brand, string model, string stockNumber, string serial, int skip, int take, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Stock>> GetManyAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default)
         {
             var query = _context.Stocks.Include(s=>s.MasterProduct).ThenInclude(m=>m.Brand).AsQueryable();
 
-            if (!string.IsNullOrEmpty(brand))
+            if (brandId != null)
             {
-                query = query.Where(s => s.MasterProduct.Brand.Name.StartsWith(brand));
+                query = query.Where(s => s.MasterProduct.Brand.Id == brandId);
             }
-            if (!string.IsNullOrEmpty(model))
+            if (masterProductId != null)
             {
-                query = query.Where(s => s.MasterProduct.Model.StartsWith(model));
+                query = query.Where(s => s.MasterProduct.Id == masterProductId);
             }
             if (!string.IsNullOrEmpty(stockNumber))
             {
@@ -60,6 +61,7 @@ namespace CA.ERP.DataAccess.Repositories
             {
                 query = query.Where(s => s.SerialNumber.StartsWith(serial));
             }
+
             return await query.Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
         }
 
