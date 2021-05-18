@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <Compile Remove="BankAgg\**" />
-    <Compile Remove="CustomerAgg\**" />
     <Compile Remove="PaymentAgg\**" />
     <Compile Remove="RebateMonthlyAgg\**" />
     <Compile Remove="ReportAgg\**" />
@@ -19,7 +18,6 @@
     <Compile Remove="StockMoveAgg\**" />
     <Compile Remove="TransactionAgg\**" />
     <EmbeddedResource Remove="BankAgg\**" />
-    <EmbeddedResource Remove="CustomerAgg\**" />
     <EmbeddedResource Remove="PaymentAgg\**" />
     <EmbeddedResource Remove="RebateMonthlyAgg\**" />
     <EmbeddedResource Remove="ReportAgg\**" />
@@ -27,7 +25,6 @@
     <EmbeddedResource Remove="StockMoveAgg\**" />
     <EmbeddedResource Remove="TransactionAgg\**" />
     <None Remove="BankAgg\**" />
-    <None Remove="CustomerAgg\**" />
     <None Remove="PaymentAgg\**" />
     <None Remove="RebateMonthlyAgg\**" />
     <None Remove="ReportAgg\**" />
@@ -37,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="CustomerAgg\CustomerService.cs" />
     <Compile Remove="PurchaseOrderAgg\PurchaseOrderService.cs" />
     <Compile Remove="StockAgg\StockService.cs" />
     <Compile Remove="SupplierAgg\SupplierService.cs" />

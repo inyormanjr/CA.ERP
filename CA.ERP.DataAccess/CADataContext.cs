@@ -36,7 +36,7 @@ namespace CA.ERP.DataAccess
         //public DbSet<CashPaymentDetail> CashPaymentDetails { get; set; }
         //public DbSet<CardPaymentDetail> CardPaymentDetails { get; set; }
         //public DbSet<ChequePaymentDetail> ChequePaymentDetails { get; set; }
-        //public DbSet<Customer> Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -60,7 +60,7 @@ namespace CA.ERP.DataAccess
             //builder.ApplyConfiguration(new CashPaymentDetailMapping());
             //builder.ApplyConfiguration(new CardPaymentDetailMapping());
             //builder.ApplyConfiguration(new ChequePaymentDetailMapping());
-            //builder.ApplyConfiguration(new CustomerMapping());
+            builder.ApplyConfiguration(new CustomerMapping());
             //builder.ApplyConfiguration(new UserMapping());
             //builder.ApplyConfiguration(new UserBranchMapping());
             base.OnModelCreating(builder);

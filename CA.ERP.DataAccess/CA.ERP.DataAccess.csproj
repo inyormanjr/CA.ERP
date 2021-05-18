@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AutoMapperProfiles\CustomerMapping.cs" />
     <Compile Remove="AutoMapperProfiles\PaymentMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockInventoryMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockMoveMapping.cs" />
@@ -14,7 +13,6 @@
     <Compile Remove="EFMapping\CardPaymentDetailMapping.cs" />
     <Compile Remove="EFMapping\CashPaymentDetailMapping.cs" />
     <Compile Remove="EFMapping\ChequePaymentDetailMapping.cs" />
-    <Compile Remove="EFMapping\CustomerMapping.cs" />
     <Compile Remove="EFMapping\PaymentMapping.cs" />
     <Compile Remove="EFMapping\StockInventoryMapping.cs" />
     <Compile Remove="EFMapping\StockMoveMapping.cs" />
@@ -24,7 +22,6 @@
     <Compile Remove="Entities\CardPaymentDetail.cs" />
     <Compile Remove="Entities\CashPaymentDetail.cs" />
     <Compile Remove="Entities\ChequePaymentDetail.cs" />
-    <Compile Remove="Entities\Customer.cs" />
     <Compile Remove="Entities\Payment.cs" />
     <Compile Remove="Entities\PurchaseOrderItemStatus.cs" />
     <Compile Remove="Entities\StockInventory.cs" />
@@ -34,7 +31,6 @@
     <Compile Remove="Entities\User.cs" />
     <Compile Remove="Entities\UserBranch.cs" />
     <Compile Remove="Repositories\BankRepository.cs" />
-    <Compile Remove="Repositories\CustomerRepository.cs" />
     <Compile Remove="Repositories\PaymentRepository.cs" />
     <Compile Remove="Repositories\PurchaseOrderItemRepository.cs" />
     <Compile Remove="Repositories\RebateMonthlyRepository.cs" />

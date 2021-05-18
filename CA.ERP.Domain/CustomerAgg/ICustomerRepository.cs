@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CA.ERP.Domain.Base;
+using CA.ERP.Domain.Core.Repository;
 
 namespace CA.ERP.Domain.CustomerAgg
 {

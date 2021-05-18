@@ -1,4 +1,5 @@
-namespace CA.ERP.WebApp.Dto.Customer
+
+namespace CA.ERP.Shared.Dto.Customer
 {
     public class CustomerView : DtoViewBase
     {

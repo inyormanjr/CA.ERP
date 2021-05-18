@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ApiControllerBase : ControllerBase
     {
 

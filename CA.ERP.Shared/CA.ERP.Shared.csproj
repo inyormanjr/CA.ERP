@@ -5,13 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Dto\Customer\**" />
     <Compile Remove="Dto\Payment\**" />
     <Compile Remove="Dto\Transaction\**" />
-    <EmbeddedResource Remove="Dto\Customer\**" />
     <EmbeddedResource Remove="Dto\Payment\**" />
     <EmbeddedResource Remove="Dto\Transaction\**" />
-    <None Remove="Dto\Customer\**" />
     <None Remove="Dto\Payment\**" />
     <None Remove="Dto\Transaction\**" />
   </ItemGroup>
