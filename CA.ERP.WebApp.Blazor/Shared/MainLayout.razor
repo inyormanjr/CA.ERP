@@ -8,35 +8,30 @@
 
 <MudLayout>
     <MudAppBar Elevation="1" Class=" justify-center">
-        <MudText Typo="Typo.h6" >Citi Appliance</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6">Citi Appliance</MudText>
         <MudAppBarSpacer />
         <LoginDisplay />
 
     </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MudNavMenu>
+            <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Filled.Home" Href="/">Home</MudNavLink>
+            <MudNavGroup Icon="@Icons.Filled.Storefront" Title="Item Management" Expanded="true">
+                <MudNavLink Icon="@Icons.Filled.ReceiptLong" Href="/purchase-order">Purchase Order</MudNavLink>
+                <MudNavLink Icon="@Icons.Filled.Receipt" Href="/stock-receive">Stock Receive</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Icon="@Icons.Filled.Print" Href="/reports">Reports</MudNavLink>
+            <MudNavGroup Icon="@Icons.Filled.Settings" Title="Management" Expanded="true">
+                <MudNavLink Href="/management/user">User</MudNavLink>
+                <MudNavLink Href="/management/branch">Branch</MudNavLink>
+            </MudNavGroup>
+
+        </MudNavMenu>
+    </MudDrawer>
 
     <MudMainContent>
-        <MudContainer>
-
-
-            <MudPaper>
-                <MudGrid Justify="Justify.Center" Class="mt-4">
-
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Home" Color="Color.Primary" Class="pa-4" Link="/">Home</MudButton>
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.ReceiptLong" Color="Color.Primary" Class="pa-4" Link="/purchase-order">Purchase Order</MudButton>
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Storefront" Color="Color.Primary" Class="pa-4">Item Management</MudButton>
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Receipt" Color="Color.Primary" Class="pa-4" Link="/stock-receive">Stock Receive</MudButton>
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Print" Color="Color.Primary" Class="pa-4">Reports</MudButton>
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Outlined.Settings" Color="Color.Primary" Class="pa-4" Link="/management/user">Management</MudButton>
-
-
-                </MudGrid>
-            </MudPaper>
-        </MudContainer>
-
-
-            @Body
-       
-
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -60,4 +55,11 @@
 
 
     };
+
+    bool _drawerOpen = false;
+
+    void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
 }
