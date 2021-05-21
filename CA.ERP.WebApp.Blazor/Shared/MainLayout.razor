@@ -17,9 +17,10 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudNavMenu>
             <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Filled.Home" Href="/">Home</MudNavLink>
-            <MudNavGroup Icon="@Icons.Filled.Storefront" Title="Item Management" Expanded="true">
-                <MudNavLink Icon="@Icons.Filled.ReceiptLong" Href="/purchase-order">Purchase Order</MudNavLink>
-                <MudNavLink Icon="@Icons.Filled.Receipt" Href="/stock-receive">Stock Receive</MudNavLink>
+            <MudNavGroup Icon="@Icons.Filled.ReceiptLong" Title="Item Management" Expanded="true">
+                <MudNavLink Href="/stock">Stock</MudNavLink>
+                <MudNavLink Href="/purchase-order">Purchase Order</MudNavLink>
+                <MudNavLink Href="/stock-receive">Stock Receive</MudNavLink>
             </MudNavGroup>
             <MudNavLink Icon="@Icons.Filled.Print" Href="/reports">Reports</MudNavLink>
             <MudNavGroup Icon="@Icons.Filled.Settings" Title="Management" Expanded="true">

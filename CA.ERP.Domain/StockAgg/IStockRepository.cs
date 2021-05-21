@@ -12,9 +12,13 @@ namespace CA.ERP.Domain.StockAgg
     public interface IStockRepository : IRepository<Stock>
     {
         Task<bool> StockNumberExist(string stockNumber, Guid exludeId = default);
+
         Task<bool> SerialNumberExist(string serialNumber, Guid exludeId = default);
-        Task<int> CountAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default);
-        Task<IEnumerable<Stock>> GetManyAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default);
+
+        Task<int> CountAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Stock>> GetManyAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default);
+
         Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken = default);
     }
 }

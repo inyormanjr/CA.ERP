@@ -18,33 +18,20 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
-        public async Task<int> CountAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default)
         {
             var query = _context.Stocks.AsQueryable();
 
-            if (brandId != null)
-            {
-                query = query.Where(s => s.MasterProduct.Brand.Id == brandId);
-            }
-            if (masterProductId != null)
-            {
-                query = query.Where(s => s.MasterProduct.Id == masterProductId);
-            }
-            if (!string.IsNullOrEmpty(stockNumber))
-            {
-                query = query.Where(s => s.StockNumber.StartsWith(stockNumber));
-            }
-            if (!string.IsNullOrEmpty(serial))
-            {
-                query = query.Where(s => s.SerialNumber.StartsWith(serial));
-            }
+            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial);
             return await query.CountAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Stock>> GetManyAsync(Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default)
+        private static IQueryable<Dal.Stock> generateQuery(IQueryable<Dal.Stock> query, Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial)
         {
-            var query = _context.Stocks.Include(s=>s.MasterProduct).ThenInclude(m=>m.Brand).AsQueryable();
-
+            if (branchId != null)
+            {
+                query = query.Where(s => s.BranchId == branchId);
+            }
             if (brandId != null)
             {
                 query = query.Where(s => s.MasterProduct.Brand.Id == brandId);
@@ -61,6 +48,15 @@ namespace CA.ERP.DataAccess.Repositories
             {
                 query = query.Where(s => s.SerialNumber.StartsWith(serial));
             }
+
+            return query;
+        }
+
+        public async Task<IEnumerable<Stock>> GetManyAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default)
+        {
+            var query = _context.Stocks.Include(s => s.Branch).Include(s => s.MasterProduct).ThenInclude(m => m.Brand).AsQueryable();
+
+            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial);
 
             return await query.Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
         }

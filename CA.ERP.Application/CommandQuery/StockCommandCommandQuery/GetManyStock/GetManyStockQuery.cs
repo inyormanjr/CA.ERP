@@ -11,6 +11,8 @@ namespace CA.ERP.Application.CommandQuery.StockCommandCommandQuery.GetManyStock
 {
     public class GetManyStockQuery : IRequest<DomainResult<PaginatedResponse<Dto.Stock.StockView>>>
     {
+        public Guid? BranchId { get; set; }
+
         public Guid? BrandId { get; set; }
 
         public Guid? MasterProductId { get; set; }

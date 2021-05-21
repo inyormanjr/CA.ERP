@@ -25,8 +25,8 @@ namespace CA.ERP.Application.CommandQuery.StockCommandCommandQuery.GetManyStock
 
         public async Task<DomainResult<PaginatedResponse<StockView>>> Handle(GetManyStockQuery request, CancellationToken cancellationToken)
         {
-            var count = await _stockRepository.CountAsync(request.BrandId, request.MasterProductId, request.StockNumber, request.SerialNumber, request.StockStatus, cancellationToken);
-            var stocks = await _stockRepository.GetManyAsync(request.BrandId, request.MasterProductId, request.StockNumber, request.SerialNumber, request.StockStatus, request.Skip, request.Take, cancellationToken);
+            var count = await _stockRepository.CountAsync(request.BranchId, request.BrandId, request.MasterProductId, request.StockNumber, request.SerialNumber, request.StockStatus, cancellationToken);
+            var stocks = await _stockRepository.GetManyAsync(request.BranchId, request.BrandId, request.MasterProductId, request.StockNumber, request.SerialNumber, request.StockStatus, request.Skip, request.Take, cancellationToken);
 
             var list = new PaginatedResponse<StockView>()
             {

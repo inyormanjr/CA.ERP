@@ -46,9 +46,12 @@ namespace CA.ERP.WebApp.Controllers.Api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dto.PaginatedResponse<Dto.Stock.StockView>>> Get([FromQuery]GetManyStockQuery query, CancellationToken cancellationToken = default)
         {
-            var paginatedStocks = await _mediator.Send(query);
-
-            return Ok(paginatedStocks);
+            var paginatedStocksResult = await _mediator.Send(query);
+            if (paginatedStocksResult.IsSuccess)
+            {
+                return Ok(paginatedStocksResult.Result);
+            }
+            return HandleDomainResult(paginatedStocksResult);
         }
 
 

@@ -2,6 +2,7 @@ using CA.ERP.WebApp.Blazor.Options;
 using CA.ERP.WebApp.Blazor.Services;
 using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
+using CA.ERP.WebApp.Blazor.ViewModels.Stock;
 using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -91,6 +92,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IBranchService, BranchService>();
             builder.Services.AddScoped<IStockReceiveService, StockReceiveService>();
+            builder.Services.AddScoped<IStockService, StockService>();
 
             builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();
@@ -106,6 +108,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<StockReceiveDetailViewModel>();
 
             builder.Services.AddScoped<ChangePasswordViewModel>();
+
+            builder.Services.AddScoped<StockListViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 
