@@ -50,7 +50,7 @@ namespace CA.ERP.Utilities
                 var newBranch = newBranches.FirstOrDefault(b => b.BranchNo == Migrator.BranchNumberComverter(oldUser.BranchNo));
                 if (newBranch != null)
                 {
-                    newUser.UserBranches.Add(new Identity.Data.UserBranch() { UserId = newUser.Id, BranchId = newBranch.Id.ToString() });
+                    newUser.UserBranches.Add(new Identity.Data.UserBranch() { UserId = newUser.Id, BranchId = newBranch.Id.ToString(), BranchCode = newBranch.Code, BranchName = newBranch.Name });
                 }
 
                 

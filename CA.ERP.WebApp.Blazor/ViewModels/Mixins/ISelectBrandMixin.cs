@@ -1,5 +1,4 @@
-using CA.ERP.Shared.Dto.Branch;
-using CA.ERP.WebApp.Blazor.Services;
+using CA.ERP.Shared.Dto.Brand;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.ViewModels.Mixins
 {
-    public interface ISelectBranchMixin
+    public interface ISelectBrandMixin
     {
+        public List<BrandView> Brands { get; set; }
 
-        public List<BranchView> Branches { get; set; }
+        public BrandView SelectedBrand { get; set; }
 
-        public BranchView SelectedBranch { get; set; }
-
-        public async Task LoadBranches(IBranchService branchService)
+        public async Task LoadBrands(IBrandService branchService)
         {
 
             var pagindatedData = await branchService.GetBranchesAsync();

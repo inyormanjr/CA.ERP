@@ -14,6 +14,7 @@ namespace CA.ERP.DataAccess.Entities
     {
         public EntityBase()
         {
+            Id = Guid.NewGuid();
             Status = Status.Active;
         }
         public Guid Id { get; set; }

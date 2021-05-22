@@ -1,47 +1,50 @@
 @page "/stock/"
 
 @using CA.ERP.Shared.Dto.Stock;
+@using CA.ERP.Shared.Dto.Branch;
 @using CA.ERP.WebApp.Blazor.ViewModels.Stock;
-@using CA.ERP.WebApp.Blazor.Services;
+@using CA.ERP.WebApp.Blazor.ViewModels.Mixins;
 
 @inherits ViewBase<StockListViewModel>
 
 @attribute [Authorize]
 
-<MudContainer>
-    <MudPaper Class="mt-4 pa-4">
-        <MudText Typo="Typo.h6">Stocks</MudText>
-        <MudGrid>
-            
-        </MudGrid>
-    </MudPaper>
-    <MudTable Class="mt-8" ServerData="@ServerReload" Hover="true" Striped="true" @ref="@table" T="StockView">
+<MudPaper Class="mt-4 pa-4">
+    <MudText Typo="Typo.h6">Stocks</MudText>
+    <MudGrid>
+        <MudItem xs="12" md="2">
+            <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@((ViewModel as ISelectBranchMixin).SearchBranches)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+        </MudItem>
+        <MudItem xs="0" md="3">
 
-        <HeaderContent>
-            <MudTh>Branch Name</MudTh>
-            <MudTh>Brand Name</MudTh>
-            <MudTh>Model</MudTh>
-            <MudTh>Stock Number</MudTh>
-            <MudTh>Serial Number</MudTh>
-            <MudTh>Cost Price</MudTh>
-            <MudTh>Stock Status</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Branch Name">@context.BranchName</MudTd>
-            <MudTd DataLabel="Brand Name">@context.BrandName</MudTd>
-            <MudTd DataLabel="Model">@context.Model</MudTd>
-            <MudTd DataLabel="Stock Number">@context.StockNumber</MudTd>
-            <MudTd DataLabel="Serial Number">@context.SerialNumber</MudTd>
-            <MudTd DataLabel="Cost Price">@context.CostPrice</MudTd>
-            <MudTd DataLabel="Stock Status">@context.StockStatus.ToString()</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+<MudTable Class="mt-8" ServerData="@ServerReload" Hover="true" Striped="true" @ref="@table" T="StockView">
 
-        </PagerContent>
-    </MudTable>
+    <HeaderContent>
+        <MudTh>Branch Name</MudTh>
+        <MudTh>Brand Name</MudTh>
+        <MudTh>Model</MudTh>
+        <MudTh>Stock Number</MudTh>
+        <MudTh>Serial Number</MudTh>
+        <MudTh>Cost Price</MudTh>
+        <MudTh>Stock Status</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Branch Name">@context.BranchName</MudTd>
+        <MudTd DataLabel="Brand Name">@context.BrandName</MudTd>
+        <MudTd DataLabel="Model">@context.Model</MudTd>
+        <MudTd DataLabel="Stock Number">@context.StockNumber</MudTd>
+        <MudTd DataLabel="Serial Number">@context.SerialNumber</MudTd>
+        <MudTd DataLabel="Cost Price">@context.CostPrice</MudTd>
+        <MudTd DataLabel="Stock Status">@context.StockStatus.ToString()</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
 
-</MudContainer>
+    </PagerContent>
+</MudTable>
 
 
 @code{

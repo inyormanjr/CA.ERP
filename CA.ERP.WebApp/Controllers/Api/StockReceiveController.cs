@@ -1,5 +1,4 @@
 using AutoMapper;
-using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CreateDirectStockReceive;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromPurchaseOrder;
 using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GetManyStockReceive;
@@ -18,7 +17,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dto = CA.ERP.Shared.Dto;
-using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.CommitDirectStockReceive;
 using CA.ERP.Common.Types;
 
 namespace CA.ERP.WebApp.Controllers.Api
@@ -98,37 +96,6 @@ namespace CA.ERP.WebApp.Controllers.Api
             if (result.IsSuccess)
             {
                 return Ok();
-            }
-            return HandleDomainResult(result);
-        }
-
-        [HttpPut("{id}/commit-direct")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> CommitDirect(Guid id, CancellationToken cancellationToken = default)
-        {
-
-            var query = new CommitDirectStockReceiveCommand(id);
-
-            var result = await _mediator.Send(query, cancellationToken);
-            if (result.IsSuccess)
-            {
-                return Ok();
-            }
-            return HandleDomainResult(result);
-        }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Direct(StockReceiveCreate stockReceive, CancellationToken cancellationToken = default)
-        {
-            var query = new CreateDirectStockReceiveCommand(stockReceive);
-
-            var result = await _mediator.Send(query, cancellationToken);
-            if (result.IsSuccess)
-            {
-                return Ok(CreateResponse.Create(result.Result));
             }
             return HandleDomainResult(result);
         }

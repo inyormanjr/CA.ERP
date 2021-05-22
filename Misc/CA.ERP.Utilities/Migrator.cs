@@ -352,17 +352,18 @@ namespace CA.ERP.Utilities
 
                     oldPurchaseOrderItem.NewPurchaseOrderItem = newPurchaseOrderItem;
 
+                    newPurchaseOrderItem.PurchaseOrderId = newPurchaseOrder.Id;
+
                     newPurchaseOrder.PurchaseOrderItems.Add(newPurchaseOrderItem);
                 }
-
+                if (newPurchaseOrder.Id == Guid.Empty)
+                {
+                    throw new Exception("asd");
+                }
                 newPurchaseOrders.Add(newPurchaseOrder);
                 Console.WriteLine("Added PO");
             });
 
-            //foreach (var oldPurchaseOder in oldPurchaseOrders)
-            //{
-
-            //}
 
             Console.WriteLine("Saving PO");
             using (var scope = services.CreateScope())
@@ -375,85 +376,90 @@ namespace CA.ERP.Utilities
             }
 
             //stocks
-            //var oldStocks = citiAppDatabaseContext.Products.ToList();
-            //var oldStocksGroup = oldStocks.GroupBy(s => s.DeliveryNo);
-            //var oldPurchaseOrderItems = citiAppDatabaseContext.PoDetails.ToList();
-            //var newStockReceives = new List<New.StockReceive>();
-            //var newStocks = new ConcurrentBag<New.Stock>();
-            //Parallel.ForEach(oldStocksGroup, oldStockG => {
-            //    var firstOldStockG = oldStockG.FirstOrDefault();
+            var oldStocks = citiAppDatabaseContext.Products.ToList();
+            var oldStocksGroup = oldStocks.GroupBy(s => s.DeliveryNo);
+            var oldPurchaseOrderItems = citiAppDatabaseContext.PoDetails.ToList();
+            var newStockReceives = new List<New.StockReceive>();
+            var newStocks = new ConcurrentBag<New.Stock>();
+            Parallel.ForEach(oldStocksGroup, oldStockG =>
+            {
+                var firstOldStockG = oldStockG.FirstOrDefault();
 
 
-            //    New.StockReceive newStockReceive = new New.StockReceive();
-            //    newStockReceive.DateReceived = firstOldStockG.DateReceived ?? DateTime.Now;
-            //    newStockReceive.DeliveryReference = firstOldStockG.DeliveryNo;
+                New.StockReceive newStockReceive = new New.StockReceive();
+                newStockReceive.DateReceived = firstOldStockG.DateReceived ?? DateTime.Now;
+                newStockReceive.DeliveryReference = firstOldStockG.DeliveryNo;
 
-            //    //purchaseOrder
-            //    var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
-            //    if (newPurchaseOrder != null)
-            //    {
-            //        newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
-            //        newStockReceive.StockSouce = StockSource.PurchaseOrder;
-            //        newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
-            //    }
-            //    else
-            //    {
-            //        newStockReceive.StockSouce = StockSource.Direct;
-            //        newStockReceive.SupplierId = newDeletedSupplier.Id;
-            //    }
+                //purchaseOrder
+                var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
+                if (newPurchaseOrder != null)
+                {
+                    newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
+                    newStockReceive.StockSouce = StockSource.PurchaseOrder;
+                    newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
+                }
+                else
+                {
+                    newStockReceive.PurchaseOrderId = null;
+                    newStockReceive.StockSouce = StockSource.Direct;
+                    newStockReceive.SupplierId = newDeletedSupplier.Id;
+                }
 
-            //    //branch
-            //    var oldBranchNo = oldStockG.FirstOrDefault()?.BranchNo ?? "";
-            //    New.Branch newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldBranchNo));
-            //    newStockReceive.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+                //branch
+                var oldBranchNo = oldStockG.FirstOrDefault()?.BranchNo ?? "";
+                New.Branch newBranch = newBranches.FirstOrDefault(b => b.BranchNo == BranchNumberComverter(oldBranchNo));
+                newStockReceive.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
 
-            //    foreach (var oldStock in oldStockG)
-            //    {
-            //        New.Stock newStock = new New.Stock();
-            //        newStock.StockNumber = oldStock.StockNo;
-            //        newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
-            //        newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
-            //        newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
+                foreach (var oldStock in oldStockG)
+                {
+                    New.Stock newStock = new New.Stock();
+                    newStock.StockNumber = oldStock.StockNo;
+                    newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
+                    newStock.CostPrice = StringToMoneyConverter(oldStock.Price);
+                    newStock.SerialNumber = getSerialNumber(oldStock.SerialNo, newStocks);
 
-            //        newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
+                    newStock.BranchId = newBranch?.Id ?? newDeletedBranch.Id;
 
-            //        newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
+                    newStock.MasterProductId = newMasterProducts.FirstOrDefault(m => m.Model == oldStock.Model)?.Id ?? newDeletedMasterProduct.Id;
 
-            //        newStock.PurchaseOrderItemId = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem?.Id;
+                    var newPurchaseOrderItem = oldPurchaseOrderItems.FirstOrDefault(poi => poi.PoDetailsId == oldStock.PoDetailsId)?.NewPurchaseOrderItem;
 
-            //        newStockReceive.Stocks.Add(newStock);
-            //        newStocks.Add(newStock);
-            //    }
+                    var newPO = newPurchaseOrders.FirstOrDefault(po => po.Id == newPurchaseOrderItem?.PurchaseOrderId);
 
-            //    Console.WriteLine("Stock receive added");
-            //    newStockReceives.Add(newStockReceive);
-            //});
+                    var supplierId = newPO?.SupplierId;
+
+                    newStock.SupplierId = supplierId ?? newDeletedSupplier.Id;
+
+                    newStockReceive.Stocks.Add(newStock);
+                    newStocks.Add(newStock);
+                }
+
+                Console.WriteLine("Stock receive added");
+                newStockReceives.Add(newStockReceive);
+            });
             //foreach (var oldStockG in oldStocksGroup)
             //{
 
             //}
             //process duplicate serial
-            //Parallel.ForEach(newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1), sg =>
-            //{
-            //    int i = 2;
-            //    foreach (var stock in sg)
-            //    {
-            //        if (stock != sg.FirstOrDefault())
-            //        {
-            //            stock.SerialNumber = $"{stock.SerialNumber}-DUPLICATE-{i++}";
-            //        }
-            //    }
-            //});
-            //foreach (var sg in newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1))
-            //{
+            Parallel.ForEach(newStocks.GroupBy(s => s.SerialNumber).Where(g => g.Count() > 1), sg =>
+            {
+                int i = 2;
+                foreach (var stock in sg)
+                {
+                    if (stock != sg.FirstOrDefault())
+                    {
+                        stock.SerialNumber = $"{stock.SerialNumber}-DUPLICATE-{i++}";
+                    }
+                }
+            });
 
-            //}
-            //Console.WriteLine("Saving Stock receives");
-            //using (var newDbContext = services.GetRequiredService<CADataContext>())
-            //{
-            //    newDbContext.StockReceives.AddRange(newStockReceives);
-            //    await newDbContext.SaveChangesAsync();
-            //}
+            Console.WriteLine("Saving Stock receives");
+            using (var newDbContext = services.GetRequiredService<CADataContext>())
+            {
+                newDbContext.StockReceives.AddRange(newStockReceives);
+                await newDbContext.SaveChangesAsync();
+            }
 
         }
 
@@ -529,23 +535,23 @@ namespace CA.ERP.Utilities
             }
             return dMoney;
         }
-        //private static int serialCounter = 1;
-        //private static object _lock = new object();
-        //private static List<string> emptySerials = new List<string>() { "-", string.Empty, "-0-" };
-        //private static string getSerialNumber(string oldSerialNumber, ConcurrentBag<New.Stock> newStocks)
-        //{
+        private static int serialCounter = 1;
+        private static object _lock = new object();
+        private static List<string> emptySerials = new List<string>() { "-", string.Empty, "-0-" };
+        private static string getSerialNumber(string oldSerialNumber, ConcurrentBag<New.Stock> newStocks)
+        {
 
-        //        if (emptySerials.Contains(oldSerialNumber))
-        //        {
-        //            lock (_lock)
-        //            {
-        //                return "EMPTY-" + serialCounter++;
-        //            }
+            if (emptySerials.Contains(oldSerialNumber))
+            {
+                lock (_lock)
+                {
+                    return "EMPTY-" + serialCounter++;
+                }
 
-        //        }
-        //        return oldSerialNumber;
+            }
+            return oldSerialNumber;
 
-        //}
+        }
 
 
         public static int BranchNumberComverter(string oldBranchNumber)

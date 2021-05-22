@@ -16,20 +16,32 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
 
         public Guid MasterProductId { get; private set; }
+
         public Guid StockReceiveId { get; private set; }
+
         public Guid? PurchaseOrderItemId { get; private set; }
+
+        public Guid? StockId { get; set; }
+
         public Guid BranchId { get; private set; }
+
         public string StockNumber { get; private set; }
+
         public StockReceiveItemStatus Status { get; private set; }
+
         public string SerialNumber { get; private set; }
+
         public decimal CostPrice { get; private set; }
 
         public string BrandName { get; private set; }
+
         public string Model { get; private set; }
+
         public StockReceiveItem()
         {
 
         }
+
         protected StockReceiveItem(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string brandName, string model)
         {
             Id = Guid.NewGuid();
@@ -66,7 +78,6 @@ namespace CA.ERP.Domain.StockReceiveAgg
             
             return DomainResult.Success();
         }
-
 
         public static DomainResult<StockReceiveItem> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, decimal costPrice, string stockNumber, string brandName, string model)
         {

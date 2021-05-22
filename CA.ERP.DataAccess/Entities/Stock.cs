@@ -11,18 +11,25 @@ namespace CA.ERP.DataAccess.Entities
     public class Stock: EntityBase
     {
         public Guid MasterProductId { get; set; }
-        public Guid StockReceiveId { get; set; }
-        public Guid? PurchaseOrderItemId { get; set; }
+
         public string StockNumber { get; set; }
+
         public string SerialNumber { get; set; }
+
         public StockStatus StockStatus { get; set; }
+
         public decimal CostPrice { get; set; }
+
         public Guid BranchId { get; set; }
+
+        public Guid SupplierId { get; set; }
+
+        public Supplier Supplier { get; set; }
+
         public Branch Branch { get; set; }
 
         public MasterProduct MasterProduct { get; set; }
-        public StockReceive StockReceive { get; set; }
-        public PurchaseOrderItem PurchaseOrderItem { get; set; }
-        
+
+        public List<StockReceiveItem> StockReceiveItems { get; set; } = new List<StockReceiveItem>();
     }
 }

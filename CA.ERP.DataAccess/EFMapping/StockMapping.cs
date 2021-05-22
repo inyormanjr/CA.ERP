@@ -1,4 +1,4 @@
-﻿using CA.ERP.DataAccess.Entities;
+using CA.ERP.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -27,14 +27,9 @@ namespace CA.ERP.DataAccess.EFMapping
                 .HasForeignKey(t => t.MasterProductId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(t => t.StockReceive)
+            builder.HasOne(t => t.Supplier)
                 .WithMany(t => t.Stocks)
-                .HasForeignKey(t => t.StockReceiveId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(t => t.PurchaseOrderItem)
-                .WithMany(t => t.Stocks)
-                .HasForeignKey(t => t.PurchaseOrderItemId)
+                .HasForeignKey(t => t.SupplierId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.Branch)

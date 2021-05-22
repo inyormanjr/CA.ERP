@@ -8,6 +8,7 @@ namespace CA.ERP.Domain.StockAgg
         public const string EmptySerialNumber = "stock-empty-serial-number";
         public const string InvaliMasterProductId = "stock-invalid-master-product";
         public const string UnknownStockSource = "stock-unknown-stock-source";
+        public const string InvalidSuplier = "stock-invalid-supplier";
 
     }
 }

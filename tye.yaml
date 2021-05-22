@@ -74,6 +74,7 @@ services:
      target: /var/lib/postgresql/data
   tags:
    - be
+   - database
 
 - name: rabbitmq
   image: rabbitmq:3.8

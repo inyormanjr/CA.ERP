@@ -21,11 +21,9 @@ namespace CA.ERP.Domain.StockAgg
 
         public Status Status { get; private set; }
 
+        public Guid SupplierId { get; private set; }
+
         public Guid MasterProductId { get; private set; }
-
-        public Guid StockReceiveId { get; private set; }
-
-        public Guid? PurchaseOrderItemId { get; private set; }
 
         public Guid BranchId { get; private set; }
 
@@ -48,13 +46,12 @@ namespace CA.ERP.Domain.StockAgg
 
         }
 
-        protected Stock( Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string brandName, string model)
+        protected Stock( Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string brandName, string model)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
             MasterProductId = masterProductId;
-            StockReceiveId = stockReceiveId;
-            PurchaseOrderItemId = purchaseOrderItemId;
+            SupplierId = supplierId;
             StockNumber = stockNumber;
             SerialNumber = serialNumber;
             StockStatus = stockStatus;
@@ -64,19 +61,15 @@ namespace CA.ERP.Domain.StockAgg
             BranchId = branchId;
         }
 
-        public static DomainResult<Stock> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber,  decimal costPrice, string brandName, string model)
+        public static DomainResult<Stock> Create(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber,  decimal costPrice, string brandName, string model)
         {
             if (masterProductId == Guid.Empty)
             {
                 return DomainResult<Stock>.Error(StockErrorCodes.InvaliMasterProductId, "Stock Invalid Master Product Id");
             }
-            if (stockReceiveId == Guid.Empty)
+            if (supplierId == Guid.Empty)
             {
-                return DomainResult<Stock>.Error(StockErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
-            }
-            if (purchaseOrderItemId != null && purchaseOrderItemId.Value == Guid.Empty)
-            {
-                return DomainResult<Stock>.Error(StockErrorCodes.InvalidPurchaseOrderItemId, "Stock Invalid Purchase Order Item Id");
+                return DomainResult<Stock>.Error(StockErrorCodes.InvalidSuplier, "Invalid supplier");
             }
             if (branchId == Guid.Empty)
             {
@@ -91,7 +84,7 @@ namespace CA.ERP.Domain.StockAgg
                 return DomainResult<Stock>.Error(StockErrorCodes.EmptySerialNumber, "Stock empty serial number");
             }
 
-            var ret = new Stock(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, brandName, model);
+            var ret = new Stock(masterProductId, supplierId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, brandName, model);
             return DomainResult<Stock>.Success(ret);
         }
     }

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <None Remove="Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="AutoMapperProfiles\PaymentMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockInventoryMapping.cs" />
     <Compile Remove="AutoMapperProfiles\StockMoveMapping.cs" />
@@ -54,7 +60,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
