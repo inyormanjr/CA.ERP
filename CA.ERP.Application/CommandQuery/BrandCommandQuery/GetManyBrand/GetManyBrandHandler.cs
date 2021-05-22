@@ -6,6 +6,7 @@ using CA.ERP.Shared.Dto.Brand;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace CA.ERP.Application.CommandQuery.BrandCommandQuery.GetManyBrand
             var count = await _brandRepository.GetCountAsync(request.Status, cancellationToken: cancellationToken);
 
             return new PaginatedResponse<BrandView>() {
-                Data = _mapper.Map<List<BrandView>>(brands),
+                Data = _mapper.Map<List<BrandView>>(brands.OrderBy(b => b.Name)),
                 TotalCount = count
             };
         }

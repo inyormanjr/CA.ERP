@@ -13,14 +13,12 @@ namespace CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMaste
 {
     public class GetManyMasterProductQuery : IRequest<PaginatedResponse<MasterProductView>>
     {
-        public int Skip { get; set; }
-        public int Take { get; set; }
-        public Status Status { get; set; }
-        public GetManyMasterProductQuery(int skip = 0, int take = int.MaxValue, Status status = Status.Active)
-        {
-            Skip = skip;
-            Take = take;
-            Status = status;
-        }
+        public int Skip { get; set; } = 0;
+
+        public int Take { get; set; } = 10;
+
+        public string Model { get; set; }
+
+        public Status Status { get; set; } = Status.Active;
     }
 }

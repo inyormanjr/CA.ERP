@@ -108,9 +108,8 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.MasterProduct.MasterProductView>>> Get([FromQuery]GetManyMasterProductQuery query, CancellationToken cancellationToken)
         {
-            var query = new GetManyMasterProductQuery();
             var result = await _mediator.Send(query, cancellationToken);
 
             var dtoMasterProducts = _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result.Data);
@@ -159,5 +158,6 @@ namespace CA.ERP.WebApp.Controllers.Api
             return Ok( _mapper.Map<List<Dto.MasterProduct.MasterProductView>>(result));
             
         }
+
     }
 }

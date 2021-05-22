@@ -73,6 +73,7 @@ namespace CA.ERP.WebApp.Blazor.Services
                 uri = uri.AddQuery("stockStatus", ((int)stockStatus).ToString());
             }
 
+            _logger.LogInformation("uri : {uri}", uri.ToString());
 
             var response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)

@@ -54,7 +54,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Get(System.Threading.CancellationToken)">
+        <member name="M:CA.ERP.WebApp.Controllers.Api.MasterProductController.Get(CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMasterProduct.GetManyMasterProductQuery,System.Threading.CancellationToken)">
             <summary>
             Get a list of master products
             </summary>

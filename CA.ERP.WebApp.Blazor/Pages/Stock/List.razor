@@ -2,8 +2,11 @@
 
 @using CA.ERP.Shared.Dto.Stock;
 @using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Brand;
+@using CA.ERP.Shared.Dto.MasterProduct;
 @using CA.ERP.WebApp.Blazor.ViewModels.Stock;
 @using CA.ERP.WebApp.Blazor.ViewModels.Mixins;
+@using CA.ERP.Common.Types;
 
 @inherits ViewBase<StockListViewModel>
 
@@ -13,10 +16,28 @@
     <MudText Typo="Typo.h6">Stocks</MudText>
     <MudGrid>
         <MudItem xs="12" md="2">
-            <MudAutocomplete T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@((ViewModel as ISelectBranchMixin).SearchBranches)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            <MudAutocomplete Dense="true" T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@((ViewModel as ISelectBranchMixin).SearchBranches)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
         </MudItem>
-        <MudItem xs="0" md="3">
 
+        <MudItem xs="12" md="2">
+            <MudAutocomplete Dense="true" T="BrandView" Label="Brand" @bind-Value="ViewModel.SelectedBrand" SearchFunc="@((ViewModel as ISelectBrandMixin).SearchBrands)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+        </MudItem>
+
+        <MudItem xs="12" md="2">
+            <MudAutocomplete T="MasterProductView" Label="Model" @bind-Value="ViewModel.SelectedMasterProduct" SearchFunc="@((ViewModel as ISelectMasterProductMixin).SearchMasterProducts)" ToStringFunc="@(b => b.Model)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+        </MudItem>
+        <MudItem xs="12" md="2">
+            <MudSelect Dense="true" T="StockStatus?" Label="Status" @bind-Value="ViewModel.StockStatus">
+                <MudSelectItem T="StockStatus?" Value="null"></MudSelectItem>
+                @foreach (var item in Enum.GetValues<StockStatus>())
+                {
+                    <MudSelectItem T="StockStatus?" Value="@item">@item.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+
+        <MudItem xs="12" md="2">
+            <MudButton Class="mt-5" StartIcon="@Icons.Filled.Search" OnClick="@Search" Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary">Search</MudButton>
         </MudItem>
     </MudGrid>
 </MudPaper>
@@ -59,7 +80,9 @@
 
     public void Search()
     {
+        table.CurrentPage = 0;
         table.ReloadServerData();
+
     }
 
 

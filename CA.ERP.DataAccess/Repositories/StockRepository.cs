@@ -18,15 +18,15 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
-        public async Task<int> CountAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? stockStatus, CancellationToken cancellationToken = default)
         {
             var query = _context.Stocks.AsQueryable();
 
-            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial);
+            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial, stockStatus);
             return await query.CountAsync(cancellationToken);
         }
 
-        private static IQueryable<Dal.Stock> generateQuery(IQueryable<Dal.Stock> query, Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial)
+        private static IQueryable<Dal.Stock> generateQuery(IQueryable<Dal.Stock> query, Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? stockStatus)
         {
             if (branchId != null)
             {
@@ -48,15 +48,18 @@ namespace CA.ERP.DataAccess.Repositories
             {
                 query = query.Where(s => s.SerialNumber.StartsWith(serial));
             }
-
+            if (stockStatus != null)
+            {
+                query = query.Where(s => s.StockStatus == stockStatus);
+            }
             return query;
         }
 
-        public async Task<IEnumerable<Stock>> GetManyAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Stock>> GetManyAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? stockStatus, int skip, int take, CancellationToken cancellationToken = default)
         {
             var query = _context.Stocks.Include(s => s.Supplier).Include(s => s.Branch).Include(s => s.MasterProduct).ThenInclude(m => m.Brand).AsQueryable();
 
-            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial);
+            query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial, stockStatus);
 
             return await query.OrderByDescending(s => s.CreatedAt).Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
         }

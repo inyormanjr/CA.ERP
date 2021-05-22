@@ -27,8 +27,8 @@ namespace CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMaste
 
         public async Task<PaginatedResponse<MasterProductView>> Handle(GetManyMasterProductQuery request, CancellationToken cancellationToken)
         {
-            var masterProducts = await _masterProductRepository.GetManyAsync(request.Skip, request.Take, request.Status, cancellationToken: cancellationToken);
-            var count = await _masterProductRepository.GetCountAsync(request.Status, cancellationToken: cancellationToken);
+            var masterProducts = await _masterProductRepository.GetManyAsync(request.Model, request.Skip, request.Take, request.Status, cancellationToken: cancellationToken);
+            var count = await _masterProductRepository.GetCountAsync(request.Model, request.Status, cancellationToken: cancellationToken);
 
             return new PaginatedResponse<MasterProductView>
             {

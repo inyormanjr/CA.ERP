@@ -1,4 +1,5 @@
 using CA.ERP.Shared.Dto.Brand;
+using CA.ERP.WebApp.Blazor.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +13,21 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Mixins
 
         public BrandView SelectedBrand { get; set; }
 
-        public async Task LoadBrands(IBrandService branchService)
+        public async Task LoadBrands(IBrandService brandService)
         {
 
-            var pagindatedData = await branchService.GetBranchesAsync();
-            Branches = pagindatedData.Data.ToList();
+            var pagindatedData = await brandService.GetBrandsAsync();
+            Brands = pagindatedData.Data.ToList();
 
         }
 
-        public async Task<IEnumerable<BranchView>> SearchBranches(string branchName)
+        public async Task<IEnumerable<BrandView>> SearchBrands(string brandName)
         {
-            if (string.IsNullOrEmpty(branchName))
+            if (string.IsNullOrEmpty(brandName))
             {
-                return Branches;
+                return Brands;
             }
-            return Branches.Where(b => b.Name.Contains(branchName));
+            return Brands.Where(b => b.Name.Contains(brandName));
         }
     }
 }
