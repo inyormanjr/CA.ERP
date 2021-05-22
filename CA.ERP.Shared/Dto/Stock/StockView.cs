@@ -8,6 +8,8 @@ namespace CA.ERP.Shared.Dto.Stock
 {
     public class StockView : DtoViewBase
     {
+        public Guid SupplierId { get; set; }
+
         public Guid BranchId { get; set; }
 
         public Guid MasterProductId { get; set; }
@@ -19,6 +21,12 @@ namespace CA.ERP.Shared.Dto.Stock
         public StockStatus StockStatus { get; set; }
 
         public decimal CostPrice { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public DateTimeOffset? UpdatedAt { get; set; }
+
+        public string SupplierName { get; set; }
 
         public string BrandName { get; set; }
 

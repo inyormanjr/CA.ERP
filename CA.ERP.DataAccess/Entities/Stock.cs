@@ -24,6 +24,10 @@ namespace CA.ERP.DataAccess.Entities
 
         public Guid SupplierId { get; set; }
 
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public DateTimeOffset? UpdatedAt { get; set; }
+
         public Supplier Supplier { get; set; }
 
         public Branch Branch { get; set; }

@@ -17,6 +17,9 @@ namespace CA.ERP.DataAccess.EFMapping
 
             builder.HasIndex(t => t.StockNumber).IsUnique();
             builder.HasIndex(t => t.SerialNumber).IsUnique();
+            builder.HasIndex(t => t.StockStatus);
+            builder.HasIndex(t => t.CreatedAt);
+            builder.HasIndex(t => t.UpdatedAt);
 
             builder.Property(t => t.StockNumber).IsRequired().HasMaxLength(50);
             builder.Property(t => t.SerialNumber).HasMaxLength(50);

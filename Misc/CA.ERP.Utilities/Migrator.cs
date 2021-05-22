@@ -394,6 +394,10 @@ namespace CA.ERP.Utilities
                 var newPurchaseOrder = oldPurchaseOrders.FirstOrDefault(p => p.PoDetails.Any(pod => pod.PoDetailsId == firstOldStockG.PoDetailsId))?.NewPurchaseOrder;
                 if (newPurchaseOrder != null)
                 {
+                    if (!newPurchaseOrders.Any(npo => npo.Id == newPurchaseOrder.Id))
+                    {
+                        throw new Exception("No matching purchase order id");
+                    }
                     newStockReceive.PurchaseOrderId = newPurchaseOrder.Id;
                     newStockReceive.StockSouce = StockSource.PurchaseOrder;
                     newStockReceive.SupplierId = newPurchaseOrder.SupplierId;
@@ -413,6 +417,7 @@ namespace CA.ERP.Utilities
                 foreach (var oldStock in oldStockG)
                 {
                     New.Stock newStock = new New.Stock();
+                    newStock.CreatedAt = DateTimeOffset.Now;
                     newStock.StockNumber = oldStock.StockNo;
                     newStock.StockStatus = Enum.Parse<StockStatus>(oldStock.Status);
                     newStock.CostPrice = StringToMoneyConverter(oldStock.Price);

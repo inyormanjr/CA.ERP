@@ -54,11 +54,11 @@ namespace CA.ERP.DataAccess.Repositories
 
         public async Task<IEnumerable<Stock>> GetManyAsync(Guid? branchId, Guid? brandId, Guid? masterProductId, string stockNumber, string serial, StockStatus? StockStatus, int skip, int take, CancellationToken cancellationToken = default)
         {
-            var query = _context.Stocks.Include(s => s.Branch).Include(s => s.MasterProduct).ThenInclude(m => m.Brand).AsQueryable();
+            var query = _context.Stocks.Include(s => s.Supplier).Include(s => s.Branch).Include(s => s.MasterProduct).ThenInclude(m => m.Brand).AsQueryable();
 
             query = generateQuery(query, branchId, brandId, masterProductId, stockNumber, serial);
 
-            return await query.Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
+            return await query.OrderByDescending(s => s.CreatedAt).Skip(skip).Take(take).Select(s => _mapper.Map<Stock>(s)).ToListAsync(cancellationToken);
         }
 
         public async Task<List<Stock>> GetManyAsync(Guid branchId, List<Guid> stockIds, CancellationToken cancellationToken)

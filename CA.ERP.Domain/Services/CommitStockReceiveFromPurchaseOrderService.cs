@@ -39,7 +39,7 @@ namespace CA.ERP.Domain.Services
             foreach (var item in stockReceive.Items.Where(i => i.Status == ERP.Common.Types.StockReceiveItemStatus.Received))
             {
                 var purchaseOrderItem = purchaseOrder.PurchaseOrderItems.FirstOrDefault(poi => poi.Id == item.PurchaseOrderItemId);
-                var stockCreateResult = Stock.Create(item.MasterProductId, purchaseOrder.SupplierId, stockReceive.BranchId, item.StockNumber, item.SerialNumber, purchaseOrderItem.CostPrice, item.BrandName, item.Model );
+                var stockCreateResult = Stock.Create(item.MasterProductId, purchaseOrder.SupplierId, stockReceive.BranchId, item.StockNumber, item.SerialNumber, purchaseOrderItem.CostPrice, purchaseOrder.SupplierName, item.BrandName, item.Model );
 
                 if (!stockCreateResult.IsSuccess)
                 {

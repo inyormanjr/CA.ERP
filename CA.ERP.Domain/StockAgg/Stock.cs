@@ -13,9 +13,9 @@ using System.Text;
 
 namespace CA.ERP.Domain.StockAgg
 {
-    public class Stock: IEntity
+    public class Stock : IEntity
     {
-        
+
 
         public Guid Id { get; private set; }
 
@@ -35,6 +35,12 @@ namespace CA.ERP.Domain.StockAgg
 
         public decimal CostPrice { get; private set; }
 
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public DateTimeOffset? UpdatedAt { get; set; }
+
+        public string SupplierName { get; private set; }
+
         public string BranchName { get; private set; }
 
         public string BrandName { get; private set; }
@@ -46,7 +52,7 @@ namespace CA.ERP.Domain.StockAgg
 
         }
 
-        protected Stock( Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string brandName, string model)
+        protected Stock(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string supplierName, string brandName, string model)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
@@ -56,12 +62,13 @@ namespace CA.ERP.Domain.StockAgg
             SerialNumber = serialNumber;
             StockStatus = stockStatus;
             CostPrice = costPrice;
+            SupplierName = supplierName;
             BrandName = brandName;
             Model = model;
             BranchId = branchId;
         }
 
-        public static DomainResult<Stock> Create(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber,  decimal costPrice, string brandName, string model)
+        public static DomainResult<Stock> Create(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string supplierName, string brandName, string model)
         {
             if (masterProductId == Guid.Empty)
             {
@@ -84,8 +91,8 @@ namespace CA.ERP.Domain.StockAgg
                 return DomainResult<Stock>.Error(StockErrorCodes.EmptySerialNumber, "Stock empty serial number");
             }
 
-            var ret = new Stock(masterProductId, supplierId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, brandName, model);
-            return DomainResult<Stock>.Success(ret);
+            return new Stock(masterProductId, supplierId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, supplierName, brandName, model);
+            
         }
     }
 }
