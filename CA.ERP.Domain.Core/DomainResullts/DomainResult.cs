@@ -28,6 +28,7 @@ namespace CA.ERP.Domain.Core.DomainResullts
             ErrorMessage = errorMessage;
         }
 
+
         public static DomainResult Success()
         {
             return new DomainResult(true, ErrorType.Success, null, null);
@@ -42,6 +43,7 @@ namespace CA.ERP.Domain.Core.DomainResullts
         {
             return new DomainResult(false, errorType, errorCode, errorMessage);
         }
+
     }
 
     public class DomainResult<T> : DomainResult

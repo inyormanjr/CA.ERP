@@ -18,16 +18,26 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         public Guid Id { get; private set; }
 
         public Status Status { get; private set; }
+
         public string Barcode { get; private set; }
+
         public string SupplierName { get; private set; }
+
         public string BranchName { get; private set; }
+
         public DateTimeOffset DeliveryDate { get; private set; }
-        public DateTimeOffset OrderedDate { get; set; }
+
+        public DateTimeOffset OrderedDate { get; private set; }
 
         public Guid OrderedById { get; private set; }
+
         public Guid SupplierId { get; private set; }
+
         public Guid DestinationBranchId { get; private set; }
+
         public PurchaseOrderStatus PurchaseOrderStatus { get; private set; }
+
+        public Guid? StockReceiveId { get; set; }
 
         public decimal GetTotalFreeQuantity
         {
@@ -96,6 +106,7 @@ namespace CA.ERP.Domain.PurchaseOrderAgg
         {
             PurchaseOrderItems.Add(purchaseOrderItem);
         }
+
         public void Received()
         {
             PurchaseOrderStatus = PurchaseOrderStatus.Received;

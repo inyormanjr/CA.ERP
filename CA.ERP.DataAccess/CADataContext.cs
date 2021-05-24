@@ -26,6 +26,11 @@ namespace CA.ERP.DataAccess
         public DbSet<SupplierMasterProduct> SupplierMasterProducts { get; set; }
         public DbSet<StockReceive> StockReceives { get; set; }
         public DbSet<StockReceiveItem> StockReceiveItems { get; set; }
+
+        public DbSet<StockTransfer> StockTransfers { get; set; }
+
+        public DbSet<StockTransferItem> StockTransferItems { get; set; }
+
         public DbSet<Stock> Stocks { get; set; }
         // public DbSet<StockInventory> StockInventories { get; set; }
         // public DbSet<StockMove> StockMoves { get; set; }
@@ -50,6 +55,8 @@ namespace CA.ERP.DataAccess
             builder.ApplyConfiguration(new SupplierMasterProductMapping());
             builder.ApplyConfiguration(new StockReceiveMapping());
             builder.ApplyConfiguration(new StockReceiveItemMapping());
+            builder.ApplyConfiguration(new StockTransferMapping());
+            builder.ApplyConfiguration(new StockTransferItemMapping());
             builder.ApplyConfiguration(new StockMapping());
             //builder.ApplyConfiguration(new StockInventoryMapping());
             //builder.ApplyConfiguration(new StockMoveMapping());

@@ -13,19 +13,29 @@ namespace CA.ERP.DataAccess.Entities
         {
             PurchaseOrderItems = new List<PurchaseOrderItem>();
         }
+
         public string Barcode { get; set; }
+
         public DateTimeOffset DeliveryDate { get; set; }
+
         public DateTimeOffset OrderedDate { get; set; }
+
         public decimal TotalCostPrice { get; set; }
+
         public Guid ApprovedById { get; set; }
+
         public Guid SupplierId { get; set; }
+
         public Guid DestinationBranchId { get; set; }
+
         public PurchaseOrderStatus PurchaseOrderStatus { get; set; }
 
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
         public Supplier Supplier { get; set; }
+
         public Branch Branch { get; set; }
+
         public List<StockReceive> StockReceives { get;  set; }
     }
 }

@@ -20,35 +20,48 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
 
         public Guid Id { get; private set; }
+
         public Status Status { get; private set; }
+
         public DateTimeOffset? DateReceived { get; set; }
+
         public DateTimeOffset DateCreated { get; set; }
+
         public Guid? PurchaseOrderId { get; private set; }
+
+        public Guid? StockTransferId { get; private set; }
+
         public Guid BranchId { get; private set; }
+
         public StockSource StockSouce { get; private set; }
+
         public StockReceiveStage Stage { get; private set; }
+
         public string DeliveryReference { get; private set; }
+
         public Guid SupplierId { get; private set; }
 
         public string SupplierName { get; set; }
+
         public string BranchName { get; set; }
 
         public List<StockReceiveItem> Items { get; set; } = new List<StockReceiveItem>();
+
         public StockReceive()
         {
 
         }
 
-        protected StockReceive(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateCreated, StockReceiveStage stage)
+        protected StockReceive(Guid id, Guid branchId, StockSource stockSource, Guid supplierId, DateTimeOffset dateCreated, StockReceiveStage stage, Guid? purchaseOrderId)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Status = Status.Active;
-            PurchaseOrderId = purchaseOrderId;
             BranchId = branchId;
             StockSouce = stockSource;
             SupplierId = supplierId;
             DateCreated = dateCreated;
             Stage = stage;
+            PurchaseOrderId = purchaseOrderId;
         }
 
         public void AddItem(StockReceiveItem item)
@@ -56,26 +69,38 @@ namespace CA.ERP.Domain.StockReceiveAgg
             Items.Add(item);
         }
 
-        public static DomainResult<StockReceive> Create(Guid? purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, IDateTimeProvider dateTimeProvider)
+        public static DomainResult<StockReceive> CreateForPurchaseOrder(Guid branchId, StockSource stockSource, Guid supplierId, IDateTimeProvider dateTimeProvider, Guid? purchaseOrderId)
         {
-            if (purchaseOrderId != null && purchaseOrderId.Value == Guid.Empty)
+            DomainResult<StockReceive> domainResult = validate(branchId, stockSource, supplierId);
+
+            if (domainResult != null)
             {
-                return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.InvalidPurchaseOrderId, "Stock Receive Invalid Purchase Order Id");
+                return domainResult;
             }
+
+            return new StockReceive(Guid.NewGuid(), branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Pending, purchaseOrderId);
+
+        }
+
+
+        private static DomainResult<StockReceive> validate(Guid branchId, StockSource stockSource, Guid supplierId)
+        {
+            DomainResult<StockReceive> domainResult = null;
+
             if (branchId == Guid.Empty)
             {
-                return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.InvaliBranchId, "Stock Receive Invalid  Branch Id");
+                domainResult = DomainResult<StockReceive>.Error(StockReceiveErrorCodes.InvaliBranchId, "Stock Receive Invalid  Branch Id");
             }
             if (supplierId == Guid.Empty)
             {
-                return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.InvaliSupplierId, "Stock Receive Invalid Supplier Id");
+                domainResult = DomainResult<StockReceive>.Error(StockReceiveErrorCodes.InvaliSupplierId, "Stock Receive Invalid Supplier Id");
             }
             if (stockSource == StockSource.Unknown)
             {
-                return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
+                domainResult = DomainResult<StockReceive>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Unknow Source");
             }
-            return new StockReceive(purchaseOrderId, branchId, stockSource, supplierId, dateTimeProvider.GetCurrentDateTimeOffset(), StockReceiveStage.Pending);
-            
+
+            return domainResult;
         }
 
         public bool IsCommitted()

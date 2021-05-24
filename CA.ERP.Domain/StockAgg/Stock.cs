@@ -52,7 +52,7 @@ namespace CA.ERP.Domain.StockAgg
 
         }
 
-        protected Stock(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, string supplierName, string brandName, string model)
+        protected Stock(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, StockStatus stockStatus, decimal costPrice, DateTimeOffset createdAt, string supplierName, string brandName, string model)
         {
             Id = Guid.NewGuid();
             Status = Status.Active;
@@ -62,13 +62,14 @@ namespace CA.ERP.Domain.StockAgg
             SerialNumber = serialNumber;
             StockStatus = stockStatus;
             CostPrice = costPrice;
+            CreatedAt = createdAt;
             SupplierName = supplierName;
             BrandName = brandName;
             Model = model;
             BranchId = branchId;
         }
 
-        public static DomainResult<Stock> Create(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string supplierName, string brandName, string model)
+        public static DomainResult<Stock> Create(Guid masterProductId, Guid supplierId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string supplierName, string brandName, string model, IDateTimeProvider dateTimeProvider)
         {
             if (masterProductId == Guid.Empty)
             {
@@ -91,7 +92,7 @@ namespace CA.ERP.Domain.StockAgg
                 return DomainResult<Stock>.Error(StockErrorCodes.EmptySerialNumber, "Stock empty serial number");
             }
 
-            return new Stock(masterProductId, supplierId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, supplierName, brandName, model);
+            return new Stock(masterProductId, supplierId, branchId, stockNumber, serialNumber, StockStatus.Available, costPrice, dateTimeProvider.GetCurrentDateTimeOffset(), supplierName, brandName, model);
             
         }
     }
