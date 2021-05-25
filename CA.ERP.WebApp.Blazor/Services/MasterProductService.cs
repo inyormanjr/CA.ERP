@@ -14,7 +14,7 @@ namespace CA.ERP.WebApp.Blazor.Services
     public interface IMasterProductService
     {
         Task<List<MasterProductView>> GetMasterProductsWithBrandAndSupplier(Guid brandId, Guid supplierId);
-        Task<PaginatedResponse<MasterProductView>> GetMasterProducts(string model);
+        Task<PaginatedResponse<MasterProductView>> GetMasterProducts(string model, Guid? brandId = null);
     }
 
     public class MasterProductService : IMasterProductService
@@ -27,7 +27,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<PaginatedResponse<MasterProductView>> GetMasterProducts(string model)
+        public async Task<PaginatedResponse<MasterProductView>> GetMasterProducts(string model, Guid? brandId = null)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
 
@@ -37,7 +37,12 @@ namespace CA.ERP.WebApp.Blazor.Services
             {
                 uri = uri.AddQuery("model", model);
             }
-            
+
+            if (brandId != null)
+            {
+                uri = uri.AddQuery("brandId", brandId.Value.ToString());
+            }
+
 
             var response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)

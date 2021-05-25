@@ -1,0 +1,89 @@
+@page "/stock-transfer/create"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Brand;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockTransfer;
+@using CA.ERP.WebApp.Blazor.ViewModels.Mixins;
+
+
+
+@inherits ViewBase<StockTransferCreateViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+    <MudContainer>
+        <MudText Typo="Typo.h6">New Stock Transfer</MudText>
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudGrid>
+                <MudItem xs="12" sm="4">
+                    <MudAutocomplete T="BranchView" Label="Source Branch" @bind-Value="ViewModel.SourceBranch" SearchFunc="@((ViewModel as ISelectBranchMixin).SearchBranches)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudAutocomplete T="BranchView" Label="Destination Branch" @bind-Value="ViewModel.DestinationBranch" SearchFunc="@((ViewModel as ISelectBranchMixin).SearchBranches)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudDatePicker @bind-Date="@ViewModel.DeliveryDate" Label="Delivery Date"></MudDatePicker>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudAutocomplete T="BrandView" Label="Brand" @bind-Value="ViewModel.SelectedBrand" SearchFunc="@((ViewModel as ISelectBrandMixin).SearchBrands)" ToStringFunc="@(b => b.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudAutocomplete T="MasterProductView" Label="Model" @bind-Value="ViewModel.SelectedMasterProduct" SearchFunc="@((ViewModel as ISelectMasterProductByBrandMixin).SearchMasterProducts)" ToStringFunc="@(b => b.Model)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudButton DisableElevation="true" Variant="Variant.Filled" Color="Color.Secondary" Class="mt-4" Disabled="ViewModel.AddItemCanExecute()" OnClick="ViewModel.AddItemExecute">Include</MudButton>
+                </MudItem>
+            </MudGrid>
+            <MudTable Items="@ViewModel.StockTransfer.Items" Hover="true" Breakpoint="Breakpoint.Sm">
+                <HeaderContent>
+                    <MudTh>Brand</MudTh>
+                    <MudTh>Model</MudTh>
+                    <MudTh>Quantity</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Brand">@context.BrandName</MudTd>
+                    <MudTd DataLabel="Model">@context.Model</MudTd>
+                    <MudTd DataLabel="Ordered Qty.">
+                        <MudTextField @bind-Value="@context.RequestedQuantity" InputType="InputType.Number" />
+                    </MudTd>
+
+                    <MudTd DataLabel="Actions">
+                        <MudIconButton Icon="@Icons.Outlined.Close" Color="Color.Error" OnClick="@(() => ViewModel.RemoveItem(context))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudGrid Class="mt-8">
+                @if (ViewModel.Errors != null && ViewModel.Errors.Count() > 0)
+                {
+                    @foreach (var error in ViewModel.Errors)
+                    {
+                        <MudItem xs="12">
+                            <MudPaper Class="my-2 pa-4 mud-error-text">@error</MudPaper>
+                        </MudItem>
+                    }
+                }
+            </MudGrid>
+            <MudGrid Class="mt-8">
+                <MudItem xs="12" sm="6">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Tertiary" Link="/purchase-order/">Back</MudButton>
+                </MudItem>
+                <MudItem xs="12" sm="6" Class="d-flex flex-row-reverse">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" DisableElevation="true" OnClick="ViewModel.SaveAsync">
+                        <MudText>Save</MudText>
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+
+
+        </MudForm>
+    </MudContainer>
+
+
+    @code {
+        bool success;
+        string[] errors = { };
+        MudTextField<string> pwField1;
+        MudForm form;
+
+    }

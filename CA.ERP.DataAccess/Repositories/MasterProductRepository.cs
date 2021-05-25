@@ -20,16 +20,16 @@ namespace CA.ERP.DataAccess.Repositories
 
         }
 
-        public async Task<List<MasterProduct>> GetManyAsync(string model, int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public async Task<List<MasterProduct>> GetManyAsync(string model, Guid? brandId, int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
 
             var query = _context.MasterProducts.AsQueryable();
-            query = generateQuery(query, model, status);
+            query = generateQuery(query, model, brandId, status);
 
             return await query.OrderBy(mp => mp.Model).Skip(skip).Take(take).Select(mp => _mapper.Map<MasterProduct>(mp)).ToListAsync();
         }
 
-        private static IQueryable<Dto.MasterProduct> generateQuery(IQueryable<Dto.MasterProduct> query, string model, Status status)
+        private static IQueryable<Dto.MasterProduct> generateQuery(IQueryable<Dto.MasterProduct> query, string model, Guid? brandId, Status status)
         {
             if (status != Status.All)
             {
@@ -41,14 +41,19 @@ namespace CA.ERP.DataAccess.Repositories
                 query = query.Where(mp => mp.Model.ToLower().StartsWith(model.ToLower()));
             }
 
+            if (brandId != null)
+            {
+                query = query.Where(mp => mp.BrandId == brandId.Value);
+            }
+
             return query;
         }
 
-        public async Task<int> GetCountAsync(string model, Status status = Status.Active, CancellationToken cancellationToken = default)
+        public async Task<int> GetCountAsync(string model, Guid? brandId,  Status status = Status.Active, CancellationToken cancellationToken = default)
         {
 
             var query = _context.MasterProducts.AsQueryable();
-            query = generateQuery(query, model, status);
+            query = generateQuery(query, model, brandId, status);
 
             return await query.CountAsync();
         }

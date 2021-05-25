@@ -12,7 +12,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Mixins
 
         public List<BranchView> Branches { get; set; }
 
-        public BranchView SelectedBranch { get; set; }
+        //public BranchView SelectedBranch { get; set; }
 
         public async Task LoadBranches(IBranchService branchService)
         {

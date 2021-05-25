@@ -42,13 +42,17 @@ namespace CA.ERP.Application.CommandQuery.StockTransferCommandQuery.CreateStockT
 
             foreach (var item in dtoStockTransfer.Items)
             {
-                var createStockTransferItem = StockTransferItem.Create(stockTransfer.Id, item.StockId);
+                var createStockTransferItem = StockTransferItem.Create(stockTransfer.Id, item.MasterProductId, item.RequestedQuantity);
                 if (!createStockTransferItem.IsSuccess)
                 {
                     return createStockTransferItem.ConvertTo<Guid>();
                 }
 
-                stockTransfer.AddItem(createStockTransferItem.Result);
+                var addItemResult = stockTransfer.AddItem(createStockTransferItem.Result);
+                if (!addItemResult.IsSuccess)
+                {
+                    return addItemResult.ConvertTo<Guid>();
+                }
             }
 
             var id = await _stockTransferRepository.AddAsync(stockTransfer, cancellationToken);

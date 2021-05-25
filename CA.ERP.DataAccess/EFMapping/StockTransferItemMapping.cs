@@ -15,9 +15,9 @@ namespace CA.ERP.DataAccess.EFMapping
         {
             builder.HasKey(t => t.Id);
 
-            builder.HasOne(t => t.Stock)
+            builder.HasOne(t => t.MasterProduct)
                 .WithMany()
-                .HasForeignKey(t => t.StockId);
+                .HasForeignKey(t => t.MasterProductId);
 
             builder.HasOne(t => t.StockTransfer)
                 .WithMany(t=>t.Items)

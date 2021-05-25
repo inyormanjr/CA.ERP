@@ -4,6 +4,7 @@ using CA.ERP.WebApp.Blazor.ViewModels.Management.User;
 using CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.ViewModels.Stock;
 using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+using CA.ERP.WebApp.Blazor.ViewModels.StockTransfer;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -111,6 +112,8 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<ChangePasswordViewModel>();
 
             builder.Services.AddScoped<StockListViewModel>();
+
+            builder.Services.AddScoped<StockTransferCreateViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 

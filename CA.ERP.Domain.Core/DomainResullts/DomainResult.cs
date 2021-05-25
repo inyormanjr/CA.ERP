@@ -28,6 +28,20 @@ namespace CA.ERP.Domain.Core.DomainResullts
             ErrorMessage = errorMessage;
         }
 
+        /// <summary>
+        /// User to convert domain results with data
+        /// </summary>
+        /// <typeparam name="T2">The destination type</typeparam>
+        /// <returns></returns>
+        public DomainResult<T2> ConvertTo<T2>()
+        {
+            if (IsSuccess)
+            {
+                throw new Exception("Unable to convert success result");
+            }
+            return DomainResult<T2>.Error(ErrorType, ErrorCode, ErrorMessage);
+        }
+
 
         public static DomainResult Success()
         {
@@ -55,19 +69,7 @@ namespace CA.ERP.Domain.Core.DomainResullts
             Result = result;
         }
 
-        /// <summary>
-        /// User to convert domain results with data
-        /// </summary>
-        /// <typeparam name="T2">The destination type</typeparam>
-        /// <returns></returns>
-        public DomainResult<T2> ConvertTo<T2>()
-        {
-            if (IsSuccess)
-            {
-                throw new Exception("Unable to convert success result");
-            }
-            return new DomainResult<T2>(false, default, ErrorType, ErrorCode, ErrorMessage);
-        }
+       
 
         public static DomainResult<T> Success(T result)
         {

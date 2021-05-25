@@ -44,13 +44,18 @@ namespace CA.ERP.Domain.StockTransferAgg
             CreatedBy = createdBy;
         }
 
-        public void AddItem(StockTransferItem stockTransferItem)
+        public DomainResult AddItem(StockTransferItem stockTransferItem)
         {
             stockTransferItem.ThrowIfNullArgument(nameof(stockTransferItem));
 
-            if (!Items.Any(i => i.StockId == stockTransferItem.StockId))
+            if (!Items.Any(i => i.MasterProductId == stockTransferItem.MasterProductId))
             {
                 Items.Add(stockTransferItem);
+                return DomainResult.Success();
+            }
+            else
+            {
+                return DomainResult.Error(StockTransferErrorCodes.DuplicateItem, string.Format("There is a duplicate item with model: {0}", stockTransferItem.Model));
             }
         }
 

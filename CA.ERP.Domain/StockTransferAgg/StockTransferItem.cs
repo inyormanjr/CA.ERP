@@ -13,45 +13,45 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         public Guid StockTransferId { get; set; }
 
-        public Guid StockId { get; set; }
+        public Guid MasterProductId { get; set; }
 
-        public string SupplierName { get; set; }
+        public int RequestedQuantity { get; set; }
 
         public string BrandName { get; set; }
 
         public string Model { get; set; }
-
-        public string StockNumber { get; set; }
-
-        public string SerialNumber { get; set; }
-
-        public StockStatus StockStatus { get; set; }
 
         public StockTransferItem()
         {
 
         }
 
-        protected StockTransferItem(Guid id, Guid stockTransferId, Guid stockId)
+        protected StockTransferItem(Guid id, Guid stockTransferId, Guid masterProductId, int requestedQuantity)
         {
             Id = id;
             StockTransferId = stockTransferId;
-            StockId = stockId;
+            MasterProductId = masterProductId;
+            RequestedQuantity = requestedQuantity;
         }
 
-        public static DomainResult<StockTransferItem> Create(Guid stockTransferId, Guid stockId)
+        public static DomainResult<StockTransferItem> Create(Guid stockTransferId, Guid masterProductId, int requestedQuantity)
         {
             if (stockTransferId == Guid.Empty)
             {
                 return DomainResult<StockTransferItem>.Error(StockTransferErrorCodes.InvalidStockTransferId, "Invalid stock transfer id");
             }
 
-            if (stockId == Guid.Empty)
+            if (masterProductId == Guid.Empty)
             {
-                return DomainResult<StockTransferItem>.Error(StockTransferErrorCodes.InvalidStockId, "Invalid stock id");
+                return DomainResult<StockTransferItem>.Error(StockTransferErrorCodes.InvalidMasterProductId, "Invalid master product id");
             }
 
-            return new StockTransferItem(Guid.NewGuid(), stockTransferId, stockId);
+            if (requestedQuantity <= 0)
+            {
+                return DomainResult<StockTransferItem>.Error(StockTransferErrorCodes.RequestedQuantityMustGreaterThanZero, "Requested quantity must be greater than zero");
+            }
+
+            return new StockTransferItem(Guid.NewGuid(), stockTransferId, masterProductId, requestedQuantity);
         }
 
     }

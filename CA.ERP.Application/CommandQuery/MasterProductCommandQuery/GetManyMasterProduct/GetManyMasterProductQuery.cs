@@ -17,6 +17,8 @@ namespace CA.ERP.Application.CommandQuery.MasterProductCommandQuery.GetManyMaste
 
         public int Take { get; set; } = 10;
 
+        public Guid? BrandId { get; set; }
+
         public string Model { get; set; }
 
         public Status Status { get; set; } = Status.Active;
