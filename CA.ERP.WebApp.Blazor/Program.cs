@@ -95,6 +95,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<IStockReceiveService, StockReceiveService>();
             builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IStockTransferService, StockTransferService>();
 
             builder.Services.AddScoped<PurchaseOrderListViewModel>();
             builder.Services.AddScoped<PurchaseOrderCreateViewModel>();

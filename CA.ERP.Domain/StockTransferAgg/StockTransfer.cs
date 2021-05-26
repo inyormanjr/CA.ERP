@@ -22,6 +22,8 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         public string DestinationBranchName { get; set; }
 
+        public DateTimeOffset DeliveryDate { get; set; }
+
         public DateTimeOffset CreatedAt { get; private set; }
 
         public Guid CreatedBy { get; private set; }
@@ -35,13 +37,15 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         }
 
-        private StockTransfer(Guid id, Guid sourceBranchId, Guid destinationBranchId, Guid createdBy, DateTimeOffset createdAt)
+        private StockTransfer(Guid id, Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, DateTimeOffset createdAt)
         {
             Id = id;
             SourceBranchId = sourceBranchId;
             DestinationBranchId = destinationBranchId;
+            DeliveryDate = deliveryDate;
             CreatedAt = createdAt;
             CreatedBy = createdBy;
+            
         }
 
         public DomainResult AddItem(StockTransferItem stockTransferItem)
@@ -59,7 +63,7 @@ namespace CA.ERP.Domain.StockTransferAgg
             }
         }
 
-        public static DomainResult<StockTransfer> Create(Guid sourceBranchId, Guid destinationBranchId, Guid createdBy, IDateTimeProvider datetimeProvider)
+        public static DomainResult<StockTransfer> Create(Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, IDateTimeProvider datetimeProvider)
         {
             if (sourceBranchId == Guid.Empty)
             {
@@ -73,8 +77,12 @@ namespace CA.ERP.Domain.StockTransferAgg
             {
                 return DomainResult<StockTransfer>.Error(StockTransferErrorCodes.InvalidCreator, "Invalid creator");
             }
+            if (deliveryDate.Date < datetimeProvider.GetCurrentDateTimeOffset().Date)
+            {
+                return DomainResult<StockTransfer>.Error(StockTransferErrorCodes.PastDeliveryDate, "Delivery date has past");
+            }
 
-            return new StockTransfer(Guid.NewGuid(), sourceBranchId, destinationBranchId, createdBy, datetimeProvider.GetCurrentDateTimeOffset());
+            return new StockTransfer(Guid.NewGuid(), sourceBranchId, destinationBranchId, deliveryDate, createdBy, datetimeProvider.GetCurrentDateTimeOffset());
         }
     }
 

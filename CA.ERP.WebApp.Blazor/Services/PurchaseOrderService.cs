@@ -3,6 +3,7 @@ using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Extensions;
+using CA.ERP.WebApp.Blazor.Inferfaces.Services;
 using CA.ERP.WebApp.Blazor.Models;
 using CA.ERP.WebApp.Blazor.Options;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -20,24 +21,22 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public interface IPurchaseOrderService
+    public interface IPurchaseOrderService : ICreateService<PurchaseOrderCreate>
     {
-        Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder);
         string GetPurchaseOrderReportUrl(Guid purchaseOrderId);
         Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId, string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int page, int size);
     }
-    public class PurchaseOrderService : IPurchaseOrderService
+
+    public class PurchaseOrderService : ServiceBase<PurchaseOrderCreate>, IPurchaseOrderService
     {
-        private const string PurchaseOrderEndpoint = "/api/PurchaseOrder";
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PurchaseOrderService> _logger;
         private readonly IAccessTokenProvider _accessTokenProvider;
         private readonly BaseAddresses _baseAddresses;
         private  string _accessToken = string.Empty;
 
         public PurchaseOrderService(IHttpClientFactory httpClientFactory, ILogger<PurchaseOrderService> logger, IOptions<BaseAddresses> baseAddressesOptions, IAccessTokenProvider accessTokenProvider)
+            : base(httpClientFactory, "/api/PurchaseOrde")
         {
-            _httpClientFactory = httpClientFactory;
             _logger = logger;
             _accessTokenProvider = accessTokenProvider;
             _baseAddresses = baseAddressesOptions.Value;
@@ -59,7 +58,7 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             _logger.LogDebug("pagination", pagination);
 
-            var uri = new Uri(client.BaseAddress, PurchaseOrderEndpoint);
+            var uri = new Uri(client.BaseAddress, _endPoint);
 
             uri = uri.AddQuery("skip", pagination.Skip.ToString());
             uri = uri.AddQuery("take", pagination.Take.ToString());
@@ -98,26 +97,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             return await response.Content.ReadFromJsonAsync<PaginatedResponse<PurchaseOrderView>>();
         }
 
-        public async Task<Guid> CreatePurchaseOrderAsync(PurchaseOrderCreate purchaseOrder)
-        {
-            var client = _httpClientFactory.CreateClient(Constants.ApiErp);
 
-
-
-            var uri = new Uri(client.BaseAddress, PurchaseOrderEndpoint);
-
-            var createRequest = new CreateBaseRequest<PurchaseOrderCreate>() { Data = purchaseOrder };
-
-            var response = await client.PostAsJsonAsync(uri, createRequest);
-            if (!response.IsSuccessStatusCode)
-            {
-                var exception = await ApplicationBaseException.Create(response);
-                throw exception;
-            }
-
-            var createResponse = await response.Content.ReadFromJsonAsync<CreateResponse>();
-            return createResponse.Id;
-        }
 
         public  string GetPurchaseOrderReportUrl(Guid purchaseOrderId)
         {

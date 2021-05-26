@@ -220,7 +220,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.PurchaseOrder
                     PurchaseOrderCreate.DestinationBranchId = SelectedBranch.Id;
                     PurchaseOrderCreate.SupplierId = SelectedSupplier.Id;
 
-                    var id = await _purchaseOrderService.CreatePurchaseOrderAsync(PurchaseOrderCreate);
+                    var id = await _purchaseOrderService.CreateAsync(PurchaseOrderCreate);
                     PurchaseOrderCreate = new PurchaseOrderCreate();
                     OnPropertyChanged(nameof(PurchaseOrderCreate));
                     _snackbar.Add("Saving successful");

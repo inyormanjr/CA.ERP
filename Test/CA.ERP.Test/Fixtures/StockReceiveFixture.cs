@@ -16,7 +16,7 @@ namespace CA.ERP.Test.Fixtures
         {
             int stockNumberCount = 0;
 
-            var createStockReceiveResult = StockReceive.Create(purchaseOrder.Id, purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, dateTimeProvider);
+            var createStockReceiveResult = StockReceive.CreateForPurchaseOrder(purchaseOrder.Id, purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, dateTimeProvider);
             if (!createStockReceiveResult.IsSuccess)
             {
                 throw new Exception("Create Stock receive null");

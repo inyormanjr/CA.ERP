@@ -10,6 +10,8 @@ namespace CA.ERP.DataAccess.Entities
 
         public Guid MasterProductId { get; set; }
 
+        public int RequestedQuantity { get; set; }
+
         public MasterProduct MasterProduct { get; set; }
 
         public StockTransfer StockTransfer { get; set; }

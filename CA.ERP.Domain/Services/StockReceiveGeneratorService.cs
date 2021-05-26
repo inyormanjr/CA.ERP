@@ -33,7 +33,7 @@ namespace CA.ERP.Domain.Services
                 return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.PurchaseOrderNotPending, $"Purchase Order should have a status of Pending. Current status is {purchaseOrder.PurchaseOrderStatus}");
             }
 
-            var createStockReceiveResult = StockReceive.CreateForPurchaseOrder(purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, _dateTimeProvider, purchaseOrder.Id);
+            var createStockReceiveResult = StockReceive.CreateForPurchaseOrder(purchaseOrder.Id, purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, _dateTimeProvider);
             if (!createStockReceiveResult.IsSuccess)
             {
                 return createStockReceiveResult;

@@ -13,6 +13,8 @@ namespace CA.ERP.DataAccess.Entities
 
         public Guid DestinationBranchId { get; set; }
 
+        public DateTimeOffset DeliveryDate { get; set; }
+
         public DateTimeOffset CreatedAt { get; set; }
 
         public Guid CreatedBy { get; set; }

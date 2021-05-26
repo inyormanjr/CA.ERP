@@ -69,7 +69,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             Items.Add(item);
         }
 
-        public static DomainResult<StockReceive> CreateForPurchaseOrder(Guid branchId, StockSource stockSource, Guid supplierId, IDateTimeProvider dateTimeProvider, Guid? purchaseOrderId)
+        public static DomainResult<StockReceive> CreateForPurchaseOrder(Guid purchaseOrderId, Guid branchId, StockSource stockSource, Guid supplierId, IDateTimeProvider dateTimeProvider)
         {
             DomainResult<StockReceive> domainResult = validate(branchId, stockSource, supplierId);
 

@@ -31,7 +31,7 @@ namespace CA.ERP.Application.CommandQuery.StockTransferCommandQuery.CreateStockT
 
             var currentIdentity = await _identityProvider.GetCurrentIdentity();
             var dtoStockTransfer = request.StockTransfer;
-            var createResult = StockTransfer.Create(dtoStockTransfer.SourceBranchId, dtoStockTransfer.DestinationBranchId, currentIdentity.Id, _dateTimeProvider);
+            var createResult = StockTransfer.Create(dtoStockTransfer.SourceBranchId, dtoStockTransfer.DestinationBranchId, dtoStockTransfer.DeliveryDate, currentIdentity.Id, _dateTimeProvider);
 
             if (!createResult.IsSuccess)
             {

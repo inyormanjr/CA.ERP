@@ -13,5 +13,6 @@ namespace CA.ERP.Common.ErrorCodes
         public const string InvalidMasterProductId = "stock-transfer-item-invalid-master-product-id";
         public const string RequestedQuantityMustGreaterThanZero = "stock-transfer-item-requested-quantity-must-be-greater-than-zero";
         public const string DuplicateItem = "stock-transfer-item-duplicate-item";
+        public const string PastDeliveryDate = "stock-transfer-past-delivery-date";
     }
 }
