@@ -1,0 +1,61 @@
+@page "/stock-transfer/"
+
+@using CA.ERP.Shared.Dto.StockTransfer;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockTransfer;
+
+@inherits ViewBase<StockTransferListViewModel>
+
+@inject IDialogService DialogService;
+
+
+@attribute [Authorize]
+
+<MudContainer>
+    <MudPaper Class="d-flex justify-space-between mt-4 pa-4">
+        <MudText Typo="Typo.h6">Stock Receive List</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Link="/stock-transfer/create" DisableElevation="true">New</MudButton>
+    </MudPaper>
+    <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true" @ref="table">
+        
+        <HeaderContent>
+            <MudTh>Source Branch</MudTh>
+            <MudTh>Destination Branch</MudTh>
+            <MudTh>Created Date</MudTh>
+            <MudTh>Delivery Date</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.SourceBranchName</MudTd>
+            <MudTd>@context.DestinationBranchName</MudTd>
+            <MudTd>@context.CreatedAt.ToString()</MudTd>
+            <MudTd>@context.DeliveryDate.ToString()</MudTd>
+            <MudTd DataLabel="Action">
+                <MudIconButton Icon="@Icons.Outlined.Description" Link="@("/stock-transfer/" + context.Id)" />
+                
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+
+        </PagerContent>
+    </MudTable>
+</MudContainer>
+
+@code {
+    MudTable<StockTransferView> table;
+
+
+    public async Task Search()
+    {
+        table.CurrentPage = 0;
+        await table.ReloadServerData();
+    }
+
+    private async Task<TableData<StockTransferView>> ServerReload(TableState state)
+    {
+        var paginatedStockTransfers = await ViewModel.SearchStockTransferAsync(state.Page, state.PageSize);
+        return new TableData<StockTransferView>() { TotalItems = paginatedStockTransfers.TotalCount, Items = paginatedStockTransfers.Data };
+    }
+
+
+}

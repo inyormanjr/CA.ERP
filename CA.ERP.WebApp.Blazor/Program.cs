@@ -115,6 +115,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<StockListViewModel>();
 
             builder.Services.AddScoped<StockTransferCreateViewModel>();
+            builder.Services.AddScoped<StockTransferListViewModel>();
 
             builder.Services.Configure<BaseAddresses>(baseAddresses => builder.Configuration.GetSection("BaseAddress").Bind(baseAddresses));
 

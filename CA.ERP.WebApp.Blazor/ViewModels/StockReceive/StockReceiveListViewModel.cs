@@ -23,10 +23,13 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
         private readonly ISnackbar _snackbar;
 
         public List<BranchView> Branches { get; set; }
+
         public List<SupplierView> Suppliers { get; set; }
 
         public BranchView SelectedBranch { get; set; }
+
         public SupplierView SelectedSupplier { get; set; }
+
         public DateTime? DateCreated { get; set; }
 
         public DateTime? DateReceive { get; set; }
