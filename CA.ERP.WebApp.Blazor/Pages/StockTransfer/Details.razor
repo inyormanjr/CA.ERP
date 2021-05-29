@@ -1,0 +1,58 @@
+@page "/stock-transfer/{id}"
+
+@using CA.ERP.Shared.Dto.Branch;
+@using CA.ERP.Shared.Dto.Brand;
+@using CA.ERP.Shared.Dto.MasterProduct;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockTransfer;
+@using CA.ERP.WebApp.Blazor.ViewModels.Mixins;
+
+@inherits ViewBase<StockTransferDetailViewModel>
+
+@attribute [Authorize(Roles = "Admin, Manager")]
+<MudContainer>
+    <MudText Typo="Typo.h6">Stock Transfer</MudText>
+    <MudGrid>
+        <MudItem xs="12" sm="3">
+            From @ViewModel.StockTransfer?.SourceBranchName
+            to
+            @ViewModel.StockTransfer?.DestinationBranchName
+        </MudItem>
+        <MudItem xs="12" sm="3">
+
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            Created Date:  @ViewModel.StockTransfer?.CreatedAt.ToString("M")
+        </MudItem>
+
+        <MudItem xs="12" sm="3">
+            Delivery Date:  @ViewModel.StockTransfer?.DeliveryDate.ToString("M")
+        </MudItem>
+
+    </MudGrid>
+    <MudTable Items="@ViewModel.StockTransfer.Items" Hover="true" Breakpoint="Breakpoint.Sm">
+        <HeaderContent>
+            <MudTh>Brand</MudTh>
+            <MudTh>Model</MudTh>
+            <MudTh>Quantity</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Brand">@context.BrandName</MudTd>
+            <MudTd DataLabel="Model">@context.Model</MudTd>
+            <MudTd DataLabel="Ordered Qty.">
+                @context.RequestedQuantity
+            </MudTd>
+
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
+
+@code{
+    [Parameter]
+    public string Id { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await ViewModel.LoadStockTransfer(Guid.Parse(Id));
+    }
+}

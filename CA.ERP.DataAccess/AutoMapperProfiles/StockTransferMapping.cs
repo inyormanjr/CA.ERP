@@ -19,7 +19,9 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
                 .ForMember(dest => dest.SourceBranchName, cfg => cfg.MapFrom(src => src.SourceBranch.Name));
 
             CreateMap<StockTransferItem, Dal.StockTransferItem>();
-            CreateMap<Dal.StockTransferItem, StockTransferItem>();
+            CreateMap<Dal.StockTransferItem, StockTransferItem>()
+                .ForMember(dest => dest.BrandName, cfg => cfg.MapFrom(src => src.MasterProduct.Brand.Name))
+                .ForMember(dest => dest.Model, cfg => cfg.MapFrom(src => src.MasterProduct.Model));
         }
     }
 }

@@ -13,16 +13,17 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public interface IStockTransferService : ICreateService<StockTransferCreate>
+    public interface IStockTransferService : ICreateService<StockTransferCreate>, IGetByIdService<StockTransferView>
     {
         Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(int page, int size);
     }
 
-    public class StockTransferService : ServiceBase<StockTransferCreate>, IStockTransferService
+    public class StockTransferService : ServiceBase<StockTransferCreate, StockTransferView>, IStockTransferService
     {
         public StockTransferService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "api/StockTransfer")
         {
         }
+
 
         public async Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(int page, int size)
         {

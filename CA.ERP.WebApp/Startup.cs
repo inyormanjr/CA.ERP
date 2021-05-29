@@ -220,7 +220,6 @@ namespace CA.ERP.WebApp
 
 
 
-
             //set culture info
             var cultureInfo = new CultureInfo("en-PH");
             cultureInfo.NumberFormat.CurrencySymbol = "₱";

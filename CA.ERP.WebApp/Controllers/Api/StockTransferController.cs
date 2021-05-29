@@ -1,5 +1,6 @@
 using CA.ERP.Application.CommandQuery.StockTransferCommandQuery.CreateStockTransfer;
 using CA.ERP.Application.CommandQuery.StockTransferCommandQuery.GetManyStockTransfer;
+using CA.ERP.Application.CommandQuery.StockTransferCommandQuery.GetOneStockTransfer;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,5 +53,19 @@ namespace CA.ERP.WebApp.Controllers.Api
         {
             return await _mediator.Send(query, cancellationToken);
         }
-}
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dto.ErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockTransfer.StockTransferView>>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var query = new GetOneStockTransferQuery(id);
+            var getResult = await _mediator.Send(query, cancellationToken);
+            if (getResult.IsSuccess)
+            {
+                return Ok(getResult.Result);
+            }
+            return HandleDomainResult(getResult);
+        }
+    }
 }

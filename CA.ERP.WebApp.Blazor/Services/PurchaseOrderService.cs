@@ -21,13 +21,13 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public interface IPurchaseOrderService : ICreateService<PurchaseOrderCreate>
+    public interface IPurchaseOrderService : ICreateService<PurchaseOrderCreate>, IGetByIdService<PurchaseOrderView>
     {
         string GetPurchaseOrderReportUrl(Guid purchaseOrderId);
         Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId, string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int page, int size);
     }
 
-    public class PurchaseOrderService : ServiceBase<PurchaseOrderCreate>, IPurchaseOrderService
+    public class PurchaseOrderService : ServiceBase<PurchaseOrderCreate, PurchaseOrderView>, IPurchaseOrderService
     {
         private readonly ILogger<PurchaseOrderService> _logger;
         private readonly IAccessTokenProvider _accessTokenProvider;
@@ -51,6 +51,7 @@ namespace CA.ERP.WebApp.Blazor.Services
                 _accessToken = accessToken.Value;
             }
         }
+
         public async Task<PaginatedResponse<PurchaseOrderView>> GetPurchaseOrdersAsync(Guid? branchId,string purchaseOrderNumber, DateTimeOffset? startDate, DateTimeOffset? endDate, PurchaseOrderStatus? purchaseOrderStatus, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);

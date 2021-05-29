@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CA.ERP.WebApp.Blazor.Services
 {
-    public abstract class ServiceBase<TCreate> : ICreateService<TCreate> where TCreate : class
+    public class ServiceBase<TCreate, TView> : ICreateService<TCreate>, IGetByIdService<TView> where TCreate : class where TView : class
     {
         protected readonly IHttpClientFactory _httpClientFactory;
 
@@ -41,6 +41,20 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             var createResponse = await response.Content.ReadFromJsonAsync<CreateResponse>();
             return createResponse.Id;
+        }
+
+        public async Task<TView> GetById(Guid id)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiErp);
+            var uri = new Uri(client.BaseAddress, $"{_endPoint}/{id}");
+
+            var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+            return await response.Content.ReadFromJsonAsync<TView>();
         }
     }
 }

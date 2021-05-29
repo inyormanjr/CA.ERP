@@ -6,6 +6,7 @@ namespace CA.ERP.Common.ErrorCodes
 {
     public class StockTransferErrorCodes
     {
+        public const string NotFound = "stock-transfer-not-found";
         public const string InvalidSourceBranch = "stock-transfer-invalid-source-branch";
         public const string InvalidDestinationBranch = "stock-transfer-invalid-destination-branch";
         public const string InvalidCreator = "stock-transfer-invalid-creator";

@@ -31,6 +31,7 @@ namespace CA.ERP.DataAccess.Repositories
             _context = context;
             _mapper = mapper;
         }
+
         public virtual async Task<Guid> AddAsync(TDomain entity, CancellationToken cancellationToken = default)
         {
             entity.ThrowIfNullArgument(nameof(entity));
@@ -51,14 +52,26 @@ namespace CA.ERP.DataAccess.Repositories
 
         public virtual async Task<List<TDomain>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
-            IQueryable<TDal> queryable = generateQuery(status);
+
+            IQueryable<TDal> queryable = _context.Set<TDal>().AsQueryable();
+            queryable = generateQuery(queryable, status);
 
             return await queryable.Select(e => _mapper.Map<TDal, TDomain>(e)).AsNoTracking().ToListAsync(cancellationToken: cancellationToken);
         }
 
+        protected IQueryable<TDal> generateQuery(IQueryable<TDal> queryable, Status status)
+        {
+            if (status != Status.All)
+            {
+                queryable = queryable.Where(e => e.Status == status);
+            }
+
+            return queryable;
+        }
+
         protected IQueryable<TDal> generateQuery(Status status)
         {
-            var queryable = _context.Set<TDal>().AsQueryable();
+            IQueryable<TDal> queryable = _context.Set<TDal>().AsQueryable();
             if (status != Status.All)
             {
                 queryable = queryable.Where(e => e.Status == status);
@@ -69,7 +82,8 @@ namespace CA.ERP.DataAccess.Repositories
 
         public Task<int> GetCountAsync(Status status = Status.Active, CancellationToken cancellationToken = default)
         {
-            IQueryable<TDal> queryable = generateQuery(status);
+            IQueryable<TDal> queryable = _context.Set<TDal>().AsQueryable();
+            queryable = generateQuery(queryable, status);
             return queryable.CountAsync(cancellationToken);
         }
 
