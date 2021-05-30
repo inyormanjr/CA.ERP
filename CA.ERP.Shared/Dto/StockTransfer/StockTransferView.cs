@@ -9,6 +9,8 @@ namespace CA.ERP.Shared.Dto.StockTransfer
     {
         public Guid Id { get; set; }
 
+        public string Number { get; set; }
+
         public Guid SourceBranchId { get; set; }
 
         public string SourceBranchName { get; set; }

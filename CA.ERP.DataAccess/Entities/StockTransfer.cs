@@ -8,6 +8,7 @@ namespace CA.ERP.DataAccess.Entities
 {
     public class StockTransfer : EntityBase
     {
+        public string Number { get; set; }
 
         public Guid SourceBranchId { get; set; }
 

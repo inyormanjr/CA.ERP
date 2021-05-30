@@ -28,7 +28,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.Mixins
             {
                 return Branches;
             }
-            return Branches.Where(b => b.Name.Contains(branchName));
+            return Branches.Where(b => b.Name.Contains(branchName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

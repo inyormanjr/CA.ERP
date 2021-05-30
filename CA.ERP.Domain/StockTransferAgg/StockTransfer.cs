@@ -3,6 +3,7 @@ using CA.ERP.Common.Extensions;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
+using CA.ERP.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace CA.ERP.Domain.StockTransferAgg
     public class StockTransfer : IEntity
     {
         public Guid Id { get; private set; }
+
+        public string Number { get; private set; }
 
         public Guid SourceBranchId { get; private set; }
 
@@ -37,15 +40,15 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         }
 
-        private StockTransfer(Guid id, Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, DateTimeOffset createdAt)
+        private StockTransfer(Guid id, string number, Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, DateTimeOffset createdAt)
         {
             Id = id;
+            Number = number;
             SourceBranchId = sourceBranchId;
             DestinationBranchId = destinationBranchId;
             DeliveryDate = deliveryDate;
             CreatedAt = createdAt;
             CreatedBy = createdBy;
-            
         }
 
         public DomainResult AddItem(StockTransferItem stockTransferItem)
@@ -63,7 +66,7 @@ namespace CA.ERP.Domain.StockTransferAgg
             }
         }
 
-        public static DomainResult<StockTransfer> Create(Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, IDateTimeProvider datetimeProvider)
+        public static DomainResult<StockTransfer> Create(Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, IDateTimeProvider datetimeProvider, IStockTransferNumberGenerator stockTransferNumberGenerator)
         {
             if (sourceBranchId == Guid.Empty)
             {
@@ -82,7 +85,7 @@ namespace CA.ERP.Domain.StockTransferAgg
                 return DomainResult<StockTransfer>.Error(StockTransferErrorCodes.PastDeliveryDate, "Delivery date has past");
             }
 
-            return new StockTransfer(Guid.NewGuid(), sourceBranchId, destinationBranchId, deliveryDate, createdBy, datetimeProvider.GetCurrentDateTimeOffset());
+            return new StockTransfer(Guid.NewGuid(), stockTransferNumberGenerator.Generate(), sourceBranchId, destinationBranchId, deliveryDate, createdBy, datetimeProvider.GetCurrentDateTimeOffset());
         }
     }
 

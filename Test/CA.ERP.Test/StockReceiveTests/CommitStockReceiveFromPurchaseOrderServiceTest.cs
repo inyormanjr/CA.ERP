@@ -52,7 +52,7 @@ namespace CA.ERP.Test.StockReceiveTests
 
             foreach (var purchaseOrderItem in purchaseOrder.PurchaseOrderItems)
             {
-                var receiveStocks = stocks.Where(i => i.PurchaseOrderItemId == purchaseOrderItem.Id);
+                var receiveStocks = stocks.Where(i => i.MasterProductId == purchaseOrderItem.MasterProductId && i.SupplierId == purchaseOrder.SupplierId);
                 receiveStocks.Count().Should().Be(purchaseOrderItem.DeliveredQuantity);
                 foreach (var stock in receiveStocks)
                 {

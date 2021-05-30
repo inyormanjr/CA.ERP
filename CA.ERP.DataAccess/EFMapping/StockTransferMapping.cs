@@ -15,6 +15,10 @@ namespace CA.ERP.DataAccess.EFMapping
         {
             builder.HasKey(t => t.Id);
 
+            builder.Property(t => t.Number).IsRequired();
+
+            builder.HasIndex(t => t.Number)
+                .IsUnique();
             builder.HasIndex(t => t.CreatedAt);
 
             builder.HasOne(t => t.SourceBranch)

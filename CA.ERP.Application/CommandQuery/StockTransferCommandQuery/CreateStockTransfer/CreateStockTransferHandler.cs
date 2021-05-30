@@ -1,6 +1,7 @@
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.IdentityAgg;
+using CA.ERP.Domain.Services;
 using CA.ERP.Domain.StockTransferAgg;
 using MediatR;
 using System;
@@ -17,13 +18,15 @@ namespace CA.ERP.Application.CommandQuery.StockTransferCommandQuery.CreateStockT
         private readonly IStockTransferRepository _stockTransferRepository;
         private readonly IIdentityProvider _identityProvider;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IStockTransferNumberGenerator _stockTransferNumberGenerator;
 
-        public CreateStockTransferHandler(IUnitOfWork unitOfWork, IStockTransferRepository stockTransferRepository, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider)
+        public CreateStockTransferHandler(IUnitOfWork unitOfWork, IStockTransferRepository stockTransferRepository, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider, IStockTransferNumberGenerator stockTransferNumberGenerator)
         {
             _unitOfWork = unitOfWork;
             _stockTransferRepository = stockTransferRepository;
             _identityProvider = identityProvider;
             _dateTimeProvider = dateTimeProvider;
+            _stockTransferNumberGenerator = stockTransferNumberGenerator;
         }
 
         public async Task<DomainResult<Guid>> Handle(CreateStockTransferCommand request, CancellationToken cancellationToken)
@@ -31,7 +34,7 @@ namespace CA.ERP.Application.CommandQuery.StockTransferCommandQuery.CreateStockT
 
             var currentIdentity = await _identityProvider.GetCurrentIdentity();
             var dtoStockTransfer = request.StockTransfer;
-            var createResult = StockTransfer.Create(dtoStockTransfer.SourceBranchId, dtoStockTransfer.DestinationBranchId, dtoStockTransfer.DeliveryDate, currentIdentity.Id, _dateTimeProvider);
+            var createResult = StockTransfer.Create(dtoStockTransfer.SourceBranchId, dtoStockTransfer.DestinationBranchId, dtoStockTransfer.DeliveryDate, currentIdentity.Id, _dateTimeProvider, _stockTransferNumberGenerator);
 
             if (!createResult.IsSuccess)
             {
