@@ -19,5 +19,10 @@ namespace CA.ERP.Common.ErrorCodes
         public const string AlreadyCommitted = "stock-receive-already-committed";
         public const string PurchaseOrderNotPending = "stock-receive-generation-purchase-order-not-pending";
         public const string InvalidStockSource = "stock-receive-invalid-stock-source";
+
+        public const string StockTransferNotPending = "stock-receive-generation-stock-transfer-not-pending";
+        public const string InvalidStockTransferItemId = "stock-receive-invalid-stock-transfer-item-id";
+
+
     }
 }

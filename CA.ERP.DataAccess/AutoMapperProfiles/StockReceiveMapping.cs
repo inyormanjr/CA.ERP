@@ -15,7 +15,6 @@ namespace CA.ERP.DataAccess.AutoMapperProfiles
         {
             CreateMap<StockReceive, Dal.StockReceive>();
             CreateMap<Dal.StockReceive, StockReceive>()
-                .ForMember(dest => dest.SupplierName, cfg => cfg.MapFrom(src => src.Supplier.Name))
                 .ForMember(dest => dest.BranchName, cfg => cfg.MapFrom(src => src.Branch.Name));
         }
     }

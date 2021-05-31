@@ -19,7 +19,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         StockReceiveCommit ConvertStockReceiveViewToCommit(StockReceiveView stockReceiveView);
         Task<Guid> GenerateStockReceiveFromPurchaseOrderAsync(PurchaseOrderView purchaseOrderView);
         Task<StockReceiveView> GetStockReceiveByIdWithItems(Guid id);
-        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size);
+        Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size);
         Task Commit(StockReceiveCommit stockReceive);
     }
     public class StockReceiveService : IStockReceiveService
@@ -46,7 +46,7 @@ namespace CA.ERP.WebApp.Blazor.Services
             return (await response.Content.ReadFromJsonAsync<CreateResponse>()).Id;
         }
 
-        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size)
+        public async Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             var uri = new Uri(client.BaseAddress, StockReceiveEndpoint);
@@ -59,11 +59,6 @@ namespace CA.ERP.WebApp.Blazor.Services
             if (branchId != null)
             {
                 uri = uri.AddQuery("branchId", branchId.ToString());
-            }
-
-            if (supplierId != null)
-            {
-                uri = uri.AddQuery("supplierId", supplierId.ToString());
             }
 
             if (dateCreated != null)
@@ -115,7 +110,6 @@ namespace CA.ERP.WebApp.Blazor.Services
            StockReceiveCommit commit = new StockReceiveCommit() {
                Id = stockReceiveView.Id,
                 BranchName = stockReceiveView.BranchName,
-                SupplierName = stockReceiveView.SupplierName,
                 DateCreated = stockReceiveView.DateCreated,
                 DateReceived = stockReceiveView.DateReceived,
                 Stage = stockReceiveView.Stage,

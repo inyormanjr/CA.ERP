@@ -23,18 +23,18 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IBranchRepository _branchRepository;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
-        private readonly IStockReceiveGeneratorService _stockReceiveGeneratorService;
+        private readonly IStockReceiveGeneratorFromPurchaseOrderService _stockReceiveGeneratorFromPurchaseOrderService;
         private readonly IStockReceiveRepository _stockReceiveRepository;
         private readonly IStockCounterRepository _stockCounterRepository;
 
-        public GenerateStockReceiveFromPurchaseOrderHandler(IUnitOfWork unitOfWork, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider, IBranchRepository branchRepository, IPurchaseOrderRepository purchaseOrderRepository, IStockReceiveGeneratorService stockReceiveGeneratorService, IStockReceiveRepository stockReceiveRepository, IStockCounterRepository stockCounterRepository)
+        public GenerateStockReceiveFromPurchaseOrderHandler(IUnitOfWork unitOfWork, IIdentityProvider identityProvider, IDateTimeProvider dateTimeProvider, IBranchRepository branchRepository, IPurchaseOrderRepository purchaseOrderRepository, IStockReceiveGeneratorFromPurchaseOrderService stockReceiveGeneratorFromPurchaseOrderService, IStockReceiveRepository stockReceiveRepository, IStockCounterRepository stockCounterRepository)
         {
             _unitOfWork = unitOfWork;
             _identityProvider = identityProvider;
             _dateTimeProvider = dateTimeProvider;
             _branchRepository = branchRepository;
             _purchaseOrderRepository = purchaseOrderRepository;
-            _stockReceiveGeneratorService = stockReceiveGeneratorService;
+            _stockReceiveGeneratorFromPurchaseOrderService = stockReceiveGeneratorFromPurchaseOrderService;
             _stockReceiveRepository = stockReceiveRepository;
             _stockCounterRepository = stockCounterRepository;
         }
@@ -50,7 +50,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
             var identity = await _identityProvider.GetCurrentIdentity();
             if (!identity.BelongsToBranch(purchaseOrder.DestinationBranchId))
             {
-                return DomainResult<Guid>.Error(ErrorType.Forbidden, IdentityErrorCodes.Forbidden, "Your are no assigned to this branch.");
+                return DomainResult<Guid>.Error(ErrorType.Forbidden, IdentityErrorCodes.Forbidden, "Your are not assigned to this branch.");
             }
             var branch = await _branchRepository.GetByIdAsync(purchaseOrder.DestinationBranchId);
             if (branch == null)
@@ -64,7 +64,7 @@ namespace CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStock
                 stockCounter = StockCounter.Create(branch.Code, _dateTimeProvider.GetCurrentDateTimeOffset().Year);
             }
 
-            var createStockReceiveResult =  _stockReceiveGeneratorService.FromPurchaseOrder(purchaseOrder, stockCounter);
+            var createStockReceiveResult = _stockReceiveGeneratorFromPurchaseOrderService.Generate(purchaseOrder, stockCounter);
             if (!createStockReceiveResult.IsSuccess)
             {
                 return createStockReceiveResult.ConvertTo<Guid>();

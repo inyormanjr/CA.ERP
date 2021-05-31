@@ -39,17 +39,14 @@
                 </MudItem>
 
 
-                <MudItem xs="12" md="3">
+                <MudItem xs="12" md="4">
 
                     <MudText>Branch: @(ViewModel.StockReceive?.BranchName ?? "Loading")</MudText>
                 </MudItem>
-                <MudItem xs="12" md="3">
-                    <MudText>Supplier: @(ViewModel.StockReceive?.SupplierName ?? "Loading")</MudText>
-                </MudItem>
-                <MudItem xs="12" md="3">
+                <MudItem xs="12" md="4">
                     <MudText>Date Ordered: @(ViewModel.StockReceive?.DateCreated.ToString("MMM dd, yyyy") ?? "Loading")</MudText>
                 </MudItem>
-                <MudItem xs="12" md="3">
+                <MudItem xs="12" md="4">
                     <MudText>Date Received: @(ViewModel.StockReceive?.DateReceived?.ToString("MMM dd, yyyy") ?? "Today")</MudText>
                 </MudItem>
             </MudGrid>

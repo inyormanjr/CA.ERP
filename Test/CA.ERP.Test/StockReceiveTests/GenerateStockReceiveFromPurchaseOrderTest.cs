@@ -66,10 +66,10 @@ namespace CA.ERP.Test.StockReceiveTests
             
             A.CallTo(() => purchaseOrderRepository.GetByIdWithPurchaseOrderItemsAsync(purchaseOrderId, cancellationToken)).Returns(Task.FromResult(purchaseOrder));
 
-            IStockReceiveGeneratorService stockReceiveGeneratorService = A.Fake<IStockReceiveGeneratorService>();
+            IStockReceiveGeneratorFromPurchaseOrderService stockReceiveGeneratorService = A.Fake<IStockReceiveGeneratorFromPurchaseOrderService>();
 
             StockReceive stockReceive = new StockReceive();
-            A.CallTo(() => stockReceiveGeneratorService.FromPurchaseOrder(purchaseOrder, stockCounter)).Returns(DomainResult<StockReceive>.Success(stockReceive));
+            A.CallTo(() => stockReceiveGeneratorService.Generate(purchaseOrder, stockCounter)).Returns(DomainResult<StockReceive>.Success(stockReceive));
 
             IStockReceiveRepository stockReceiveRepository = A.Fake<IStockReceiveRepository>();
             A.CallTo(() => stockReceiveRepository.AddAsync(stockReceive, cancellationToken)).Returns(Task.FromResult(Guid.NewGuid()));

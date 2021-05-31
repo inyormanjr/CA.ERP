@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dto = CA.ERP.Shared.Dto;
 using CA.ERP.Common.Types;
+using CA.ERP.Application.CommandQuery.StockReceiveCommandQuery.GenerateStockReceiveFromStockTransfer;
 
 namespace CA.ERP.WebApp.Controllers.Api
 {
@@ -56,13 +57,26 @@ namespace CA.ERP.WebApp.Controllers.Api
             return HandleDomainResult(createResult);
         }
 
-        [HttpGet("")]
+        [HttpPost("GenerateFromStockTransfer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany(Guid? branchId, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip = 0, int take = 20, CancellationToken cancellationToken = default)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Dto.CreateResponse>> GenerateFromStockTransfer(GenerateStockReceiveFromStockTransferCommand command, CancellationToken cancellationToken)
         {
 
-            var query = new GetManyStockReceiveQuery(branchId, supplierId, dateCreated, dateReceived, source, stage, skip, take);
+            var createResult = await _mediator.Send(command, cancellationToken);
 
+            if (createResult.IsSuccess)
+            {
+                var dto = new Dto.CreateResponse() { Id = createResult.Result };
+                return Ok(dto);
+            }
+            return HandleDomainResult(createResult);
+        }
+
+        [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Dto.PaginatedResponse<Dto.StockReceive.StockReceiveView>>> GetMany([FromQuery]GetManyStockReceiveQuery query, CancellationToken cancellationToken = default)
+        {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }

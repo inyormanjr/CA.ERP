@@ -21,6 +21,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
         public Guid? PurchaseOrderItemId { get; private set; }
 
+        public Guid? StockTransferItemId { get; private set; }
+
         public Guid? StockId { get; set; }
 
         public Guid BranchId { get; private set; }
@@ -42,7 +44,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
 
         }
 
-        protected StockReceiveItem(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string brandName, string model)
+        protected StockReceiveItem(Guid masterProductId, Guid stockReceiveId, Guid branchId, string stockNumber, string serialNumber, decimal costPrice, string brandName, string model, Guid? purchaseOrderItemId = null, Guid? stockTransferItemId = null)
         {
             Id = Guid.NewGuid();
             Status = StockReceiveItemStatus.Unknown;
@@ -55,6 +57,7 @@ namespace CA.ERP.Domain.StockReceiveAgg
             CostPrice = costPrice;
             BrandName = brandName;
             Model = model;
+            StockTransferItemId = stockTransferItemId;
         }
 
         public DomainResult Commit(StockReceiveItemStatus status, string serialNumber = null)
@@ -79,37 +82,68 @@ namespace CA.ERP.Domain.StockReceiveAgg
             return DomainResult.Success();
         }
 
-        public static DomainResult<StockReceiveItem> Create(Guid masterProductId, Guid stockReceiveId, Guid? purchaseOrderItemId, Guid branchId, decimal costPrice, string stockNumber, string brandName, string model)
+        public static DomainResult<StockReceiveItem> CreateForPurchaseOrder(Guid masterProductId, Guid stockReceiveId, Guid purchaseOrderItemId, Guid branchId, decimal costPrice, string stockNumber, string brandName, string model)
         {
-            if (masterProductId == Guid.Empty)
+            DomainResult<StockReceiveItem> domainResult = validate(masterProductId, stockReceiveId, branchId, costPrice, stockNumber, purchaseOrderItemId: purchaseOrderItemId);
+
+            if (domainResult != null)
             {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvaliMasterProductId, "Stock Receive Item Invalid Master Product Id");
-            }
-            if (stockReceiveId == Guid.Empty)
-            {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Item Unknow Source");
-            }
-            if (purchaseOrderItemId != null && purchaseOrderItemId.Value == Guid.Empty)
-            {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvalidPurchaseOrderItemId, "Stock Receive Item Invalid Purchase Order Item Id");
-            }
-            if (branchId == Guid.Empty)
-            {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvaliBranchId, "Stock Receive Item Invalid Branch Id");
-            }
-            if (string.IsNullOrEmpty(stockNumber))
-            {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.EmptyStockNumber, "Stock Receive Item stock number is empty");
-            }
-            if (costPrice < 0)
-            {
-                return DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.EmptyStockNumber, "Stock Receive Item cost price should be greater that zero(0).");
+                return domainResult;
             }
 
-
-            var item = new StockReceiveItem(masterProductId, stockReceiveId, purchaseOrderItemId, branchId, stockNumber, null, costPrice, brandName, model);
+            var item = new StockReceiveItem(masterProductId, stockReceiveId, branchId, stockNumber, null, costPrice, brandName, model, purchaseOrderItemId: purchaseOrderItemId);
             return DomainResult<StockReceiveItem>.Success(item);
         }
 
+        public static DomainResult<StockReceiveItem> CreateForStockTransfer(Guid masterProductId, Guid stockReceiveId, Guid stockTransferItemId, Guid branchId, string stockNumber, string brandName, string model)
+        {
+            DomainResult<StockReceiveItem> domainResult = validate(masterProductId, stockReceiveId, branchId, 0, stockNumber, stockTransferItemId: stockTransferItemId);
+
+            if (domainResult != null)
+            {
+                return domainResult;
+            }
+
+            var item = new StockReceiveItem(masterProductId, stockReceiveId, branchId, stockNumber, null, 0, brandName, model, stockTransferItemId: stockTransferItemId);
+            return DomainResult<StockReceiveItem>.Success(item);
+        }
+
+        private static DomainResult<StockReceiveItem> validate(Guid masterProductId, Guid stockReceiveId, Guid branchId, decimal costPrice, string stockNumber, Guid? purchaseOrderItemId = null, Guid? stockTransferItemId = null)
+        {
+            DomainResult<StockReceiveItem> domainResult = null;
+            if (purchaseOrderItemId != null && purchaseOrderItemId == Guid.Empty)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvalidPurchaseOrderItemId, "Stock Receive Item Invalid Purchase Order Item Id");
+            }
+
+            if (stockTransferItemId != null && stockTransferItemId == Guid.Empty)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvalidPurchaseOrderItemId, "Stock Receive Item Invalid Stock Transfer Item Id");
+            }
+
+            if (masterProductId == Guid.Empty)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvaliMasterProductId, "Stock Receive Item Invalid Master Product Id");
+            }
+            if (stockReceiveId == Guid.Empty)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.UnknownStockSource, "Stock Receive Item Unknow Source");
+            }
+
+            if (branchId == Guid.Empty)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.InvaliBranchId, "Stock Receive Item Invalid Branch Id");
+            }
+            if (string.IsNullOrEmpty(stockNumber))
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.EmptyStockNumber, "Stock Receive Item stock number is empty");
+            }
+            if (costPrice < 0)
+            {
+                domainResult = DomainResult<StockReceiveItem>.Error(StockReceiveErrorCodes.EmptyStockNumber, "Stock Receive Item cost price should be greater that zero(0).");
+            }
+
+            return domainResult;
+        }
     }
 }

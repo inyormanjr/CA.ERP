@@ -34,7 +34,7 @@ namespace CA.ERP.Test.StockReceiveTests
 
             A.CallTo(() => stockNumberService.GenerateStockNumbers(stockCounter)).Returns(Enumerable.Range(0, 1000).Select(i => i.ToString()));
 
-            IStockReceiveGeneratorService sut = new StockReceiveGeneratorService(_dateTimeProviderFixture.GetDateTimeProvider(), stockNumberService);
+            IStockReceiveGeneratorService sut = new StockReceiveGeneratorFromPurchaseOrderService(_dateTimeProviderFixture.GetDateTimeProvider(), stockNumberService);
             PurchaseOrder purchaseOrder = _purchaseOrderFixture.GetPurchaseOrder(_dateTimeProviderFixture.GetDateTimeProvider());
             var itemCostPrice = purchaseOrder.PurchaseOrderItems.FirstOrDefault().CostPrice;
 

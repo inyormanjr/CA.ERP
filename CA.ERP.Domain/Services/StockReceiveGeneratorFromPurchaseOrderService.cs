@@ -12,28 +12,31 @@ using System.Text;
 
 namespace CA.ERP.Domain.Services
 {
-    public interface IStockReceiveGeneratorService
+    public interface IStockReceiveGeneratorFromPurchaseOrderService
     {
-        DomainResult<StockReceive> FromPurchaseOrder(PurchaseOrder purchaseOrder, StockCounter stockCounter);
+        DomainResult<StockReceive> Generate(PurchaseOrder purchaseOrder, StockCounter stockCounter);
     }
-    public class StockReceiveGeneratorService : IStockReceiveGeneratorService
+
+    public class StockReceiveGeneratorFromPurchaseOrderService : IStockReceiveGeneratorFromPurchaseOrderService
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IStockNumberService _stockNumberService;
 
-        public StockReceiveGeneratorService(IDateTimeProvider dateTimeProvider, IStockNumberService stockNumberService)
+        public StockReceiveGeneratorFromPurchaseOrderService(IDateTimeProvider dateTimeProvider, IStockNumberService stockNumberService)
         {
             _dateTimeProvider = dateTimeProvider;
             _stockNumberService = stockNumberService;
         }
-        public DomainResult<StockReceive> FromPurchaseOrder(PurchaseOrder purchaseOrder, StockCounter stockCounter)
+
+
+        public DomainResult<StockReceive> Generate(PurchaseOrder purchaseOrder, StockCounter stockCounter)
         {
             if (purchaseOrder.PurchaseOrderStatus != PurchaseOrderStatus.Pending)
             {
                 return DomainResult<StockReceive>.Error(StockReceiveErrorCodes.PurchaseOrderNotPending, $"Purchase Order should have a status of Pending. Current status is {purchaseOrder.PurchaseOrderStatus}");
             }
 
-            var createStockReceiveResult = StockReceive.CreateForPurchaseOrder(purchaseOrder.Id, purchaseOrder.DestinationBranchId, ERP.Common.Types.StockSource.PurchaseOrder, purchaseOrder.SupplierId, _dateTimeProvider);
+            var createStockReceiveResult = StockReceive.CreateForPurchaseOrder(purchaseOrder.Id, purchaseOrder.DestinationBranchId,  _dateTimeProvider);
             if (!createStockReceiveResult.IsSuccess)
             {
                 return createStockReceiveResult;
@@ -46,7 +49,7 @@ namespace CA.ERP.Domain.Services
                 for (int i = 0; i < purchaseOrderItem.OrderedQuantity; i++)
                 {
 
-                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, purchaseOrderItem.CostPrice, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    var stockReceiveItemResult = StockReceiveItem.CreateForPurchaseOrder(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, purchaseOrderItem.CostPrice, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
                     if (!stockReceiveItemResult.IsSuccess)
                     {
                         return stockReceiveItemResult.ConvertTo<StockReceive>();
@@ -57,7 +60,7 @@ namespace CA.ERP.Domain.Services
                 for (int i = 0; i < purchaseOrderItem.FreeQuantity; i++)
                 {
 
-                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, 0, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    var stockReceiveItemResult = StockReceiveItem.CreateForPurchaseOrder(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, 0, stockNumbers.Take(1).FirstOrDefault(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
                     if (!stockReceiveItemResult.IsSuccess)
                     {
                         return stockReceiveItemResult.ConvertTo<StockReceive>();

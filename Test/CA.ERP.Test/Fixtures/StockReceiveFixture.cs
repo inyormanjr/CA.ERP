@@ -29,7 +29,7 @@ namespace CA.ERP.Test.Fixtures
                 for (int i = 0; i < purchaseOrderItem.OrderedQuantity; i++)
                 {
 
-                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, purchaseOrderItem.CostPrice, stockNumberCount++.ToString(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    var stockReceiveItemResult = StockReceiveItem.CreateForPurchaseOrder(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, purchaseOrderItem.CostPrice, stockNumberCount++.ToString(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
                     if (!stockReceiveItemResult.IsSuccess)
                     {
                         throw new Exception("Stock receive item creation error");
@@ -41,7 +41,7 @@ namespace CA.ERP.Test.Fixtures
                 for (int i = 0; i < purchaseOrderItem.FreeQuantity; i++)
                 {
 
-                    var stockReceiveItemResult = StockReceiveItem.Create(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, 0, stockNumberCount++.ToString(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
+                    var stockReceiveItemResult = StockReceiveItem.CreateForPurchaseOrder(purchaseOrderItem.MasterProductId, stockReceive.Id, purchaseOrderItem.Id, purchaseOrder.DestinationBranchId, 0, stockNumberCount++.ToString(), purchaseOrderItem.BrandName, purchaseOrderItem.Model);
                     if (!stockReceiveItemResult.IsSuccess)
                     {
                         throw new Exception("Stock receive item creation error");

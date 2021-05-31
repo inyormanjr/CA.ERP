@@ -19,16 +19,12 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
     {
         private readonly IStockReceiveService _stockReceiveService;
         private readonly IBranchService _branchService;
-        private readonly ISupplierService _supplierService;
         private readonly ISnackbar _snackbar;
 
         public List<BranchView> Branches { get; set; }
 
-        public List<SupplierView> Suppliers { get; set; }
 
         public BranchView SelectedBranch { get; set; }
-
-        public SupplierView SelectedSupplier { get; set; }
 
         public DateTime? DateCreated { get; set; }
 
@@ -40,11 +36,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
 
         
 
-        public StockReceiveListViewModel(IStockReceiveService stockReceiveService, IBranchService branchService, ISupplierService supplierService, ISnackbar snackbar)
+        public StockReceiveListViewModel(IStockReceiveService stockReceiveService, IBranchService branchService, ISnackbar snackbar)
         {
             _stockReceiveService = stockReceiveService;
             _branchService = branchService;
-            _supplierService = supplierService;
             _snackbar = snackbar;
 
 
@@ -54,18 +49,10 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
         public async Task Init()
         {
             var loadBranchsTask = LoadBranches();
-            var loadSuppliersTask = LoadSuppliers();
-            await Task.WhenAll(loadBranchsTask, loadSuppliersTask);
+            await Task.WhenAll(loadBranchsTask);
         }
 
-        private async Task LoadSuppliers()
-        {
-            //load all supplier to memory
-            var paginatedSuppliers = await _supplierService.GetSuppliersAsync(null, 0, 99999);
 
-            Suppliers = paginatedSuppliers.Data.ToList();
-            OnPropertyChanged(nameof(Suppliers));
-        }
 
         private async Task LoadBranches()
         {
@@ -75,12 +62,6 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
             OnPropertyChanged(nameof(Branches));
         }
 
-        public Task<IEnumerable<SupplierView>> SearchSuppliers(string name)
-        {
-            var suppliers = Suppliers.Where(s => s.Name.StartsWith(name ?? "", StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.Name).ToList();
-
-            return Task.FromResult<IEnumerable<SupplierView>>(suppliers);
-        }
 
         public Task<IEnumerable<BranchView>> SearchBranches(string name)
         {
@@ -93,7 +74,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockReceive
             var ret = new PaginatedResponse<StockReceiveView>();
             try
             {
-                return _stockReceiveService.GetStockReceivesAsync(SelectedBranch?.Id, SelectedSupplier?.Id, DateCreated, DateReceive, Source, Stage, page, size);
+                return _stockReceiveService.GetStockReceivesAsync(SelectedBranch?.Id, DateCreated, DateReceive, Source, Stage, page, size);
             }
             catch (Exception ex)
             {

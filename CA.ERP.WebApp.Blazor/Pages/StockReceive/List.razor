@@ -21,7 +21,6 @@
     <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true" @ref="table">
         <ToolBarContent>
             <MudAutocomplete Class="mx-4" T="BranchView" Label="Branch" @bind-Value="ViewModel.SelectedBranch" SearchFunc="@ViewModel.SearchBranches" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
-            <MudAutocomplete Class="mx-4" T="SupplierView" Label="Supplier" @bind-Value="ViewModel.SelectedSupplier" SearchFunc="@ViewModel.SearchSuppliers" ToStringFunc="@(s => s.Name)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
             <MudDatePicker Class="mx-4" Label="Date Created" @bind-Date="ViewModel.DateCreated" />
             <MudDatePicker Class="mx-4" Label="Date Received" @bind-Date="ViewModel.DateReceive" />
             <MudSelect Class="mx-4" T="StockSource?" Label="Source" Variant="Variant.Text" @bind-Value="ViewModel.Source" Style="width:124px">
@@ -44,7 +43,6 @@
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Branch</MudTh>
-            <MudTh>Supplier</MudTh>
             <MudTh>Created At</MudTh>
             <MudTh>Received At</MudTh>
             <MudTh>Delivery Reference</MudTh>
@@ -54,7 +52,6 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Branch">@context.BranchName</MudTd>
-            <MudTd DataLabel="Supplier">@context.SupplierName</MudTd>
             <MudTd DataLabel="Created At">@(context.DateCreated.ToString("MMM dd, yyyy")) </MudTd>
             <MudTd DataLabel="Received At">@(context.DateReceived?.ToString("MMM dd, yyyy") ?? "N/A") </MudTd>
             <MudTd DataLabel="Delivery Reference">@(context.DeliveryReference ?? "n/a") </MudTd>

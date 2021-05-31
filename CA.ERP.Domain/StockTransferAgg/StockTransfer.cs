@@ -1,5 +1,6 @@
 using CA.ERP.Common.ErrorCodes;
 using CA.ERP.Common.Extensions;
+using CA.ERP.Common.Types;
 using CA.ERP.Domain.Core;
 using CA.ERP.Domain.Core.DomainResullts;
 using CA.ERP.Domain.Core.Entity;
@@ -33,6 +34,8 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         public string CreatedByName { get; private set; }
 
+        public StockTransferStatus StockTransferStatus { get; private set; }
+
         public ICollection<StockTransferItem> Items { get; set; } = new List<StockTransferItem>();
 
         public StockTransfer()
@@ -40,7 +43,7 @@ namespace CA.ERP.Domain.StockTransferAgg
 
         }
 
-        private StockTransfer(Guid id, string number, Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, DateTimeOffset createdAt)
+        private StockTransfer(Guid id, string number, Guid sourceBranchId, Guid destinationBranchId, DateTimeOffset deliveryDate, Guid createdBy, DateTimeOffset createdAt, StockTransferStatus stockTransferStatus)
         {
             Id = id;
             Number = number;
@@ -49,6 +52,7 @@ namespace CA.ERP.Domain.StockTransferAgg
             DeliveryDate = deliveryDate;
             CreatedAt = createdAt;
             CreatedBy = createdBy;
+            StockTransferStatus = stockTransferStatus;
         }
 
         public DomainResult AddItem(StockTransferItem stockTransferItem)
@@ -85,7 +89,12 @@ namespace CA.ERP.Domain.StockTransferAgg
                 return DomainResult<StockTransfer>.Error(StockTransferErrorCodes.PastDeliveryDate, "Delivery date has past");
             }
 
-            return new StockTransfer(Guid.NewGuid(), stockTransferNumberGenerator.Generate(), sourceBranchId, destinationBranchId, deliveryDate, createdBy, datetimeProvider.GetCurrentDateTimeOffset());
+            return new StockTransfer(Guid.NewGuid(), stockTransferNumberGenerator.Generate(), sourceBranchId, destinationBranchId, deliveryDate, createdBy, datetimeProvider.GetCurrentDateTimeOffset(), StockTransferStatus.Pending);
+        }
+
+        public void Generated()
+        {
+            StockTransferStatus = StockTransferStatus.Generated;
         }
     }
 

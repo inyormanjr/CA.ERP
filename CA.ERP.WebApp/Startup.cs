@@ -214,7 +214,8 @@ namespace CA.ERP.WebApp
             services.AddScoped<IIdentityProvider, IdentityProvider>();
             services.AddScoped<IPurchaseOrderBarcodeGenerator, PurchaseOrderBarcodeGenerator>();
             services.AddScoped<IEventBus, MassTransitEventBus>();
-            services.AddScoped<IStockReceiveGeneratorService, StockReceiveGeneratorService>();
+            services.AddScoped<IStockReceiveGeneratorFromPurchaseOrderService, StockReceiveGeneratorFromPurchaseOrderService>();
+            services.AddScoped<IStockReceiveGeneratorFromStockTransferService, StockReceiveGeneratorFromStockTransferService>();
             services.AddScoped<IStockNumberService, StockNumberService>();
             services.AddScoped<ICommitStockReceiveFromPurchaseOrderService, CommitStockReceiveFromPurchaseOrderService>();
             services.AddScoped<IStockTransferNumberGenerator, StockTransferNumberGenerator>();

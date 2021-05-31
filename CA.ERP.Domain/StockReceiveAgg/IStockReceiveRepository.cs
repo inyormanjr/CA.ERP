@@ -11,8 +11,8 @@ namespace CA.ERP.Domain.StockReceiveAgg
 {
     public interface IStockReceiveRepository : IRepository<StockReceive>
     {
-        Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip, int take, CancellationToken cancellationToken);
-        Task<int> GetManyStockReceiveCountAsync(Guid? branch, Guid? supplierId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, CancellationToken cancellationToken);
+        Task<List<StockReceive>> GetManyStockReceiveAsync(Guid? branch, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int skip, int take, CancellationToken cancellationToken);
+        Task<int> GetManyStockReceiveCountAsync(Guid? branch, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, CancellationToken cancellationToken);
         Task<StockReceive> GetByIdWithItemsAsync(Guid id, CancellationToken cancellationToken);
     }
 }

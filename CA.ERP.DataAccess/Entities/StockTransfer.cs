@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace CA.ERP.DataAccess.Entities
         public DateTimeOffset CreatedAt { get; set; }
 
         public Guid CreatedBy { get; set; }
+
+        public StockTransferStatus StockTransferStatus { get; set; }
 
         public ICollection<StockTransferItem> Items { get; set; } = new List<StockTransferItem>();
 

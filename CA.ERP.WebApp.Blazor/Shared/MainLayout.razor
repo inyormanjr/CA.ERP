@@ -18,10 +18,10 @@
         <MudNavMenu>
             <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Filled.Home" Href="/">Home</MudNavLink>
             <MudNavGroup Icon="@Icons.Filled.ReceiptLong" Title="Item Management" Expanded="true">
-                <MudNavLink Href="/stock">Stock</MudNavLink>
-                <MudNavLink Href="/purchase-order">Purchase Order</MudNavLink>
-                <MudNavLink Href="/stock-transfer">Stock Transfer</MudNavLink>
-                <MudNavLink Href="/stock-receive">Stock Receive</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/stock">Stock</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/purchase-order">Purchase Order</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/stock-transfer">Stock Transfer</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/stock-receive">Stock Receive</MudNavLink>
             </MudNavGroup>
             <MudNavLink Icon="@Icons.Filled.Print" Href="/reports">Reports</MudNavLink>
             <MudNavGroup Icon="@Icons.Filled.Settings" Title="Management" Expanded="true">
