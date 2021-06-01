@@ -106,6 +106,7 @@ namespace CA.ERP.WebApp.Blazor
             builder.Services.AddScoped<UserEditViewModel>();
 
             builder.Services.AddScoped<GenerateFromPurchaseOrderDialogViewModel>();
+            builder.Services.AddScoped<GenerateFromStockTransferDialogViewModel>();
             builder.Services.AddScoped<StockReceiveListViewModel>();
             builder.Services.AddScoped<StockReceiveEditViewModel>();
             builder.Services.AddScoped<StockReceiveDetailViewModel>();

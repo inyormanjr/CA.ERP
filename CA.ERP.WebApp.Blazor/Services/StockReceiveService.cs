@@ -2,6 +2,7 @@ using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.PurchaseOrder;
 using CA.ERP.Shared.Dto.StockReceive;
+using CA.ERP.Shared.Dto.StockTransfer;
 using CA.ERP.WebApp.Blazor.Exceptions;
 using CA.ERP.WebApp.Blazor.Extensions;
 using CA.ERP.WebApp.Blazor.Models;
@@ -21,6 +22,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         Task<StockReceiveView> GetStockReceiveByIdWithItems(Guid id);
         Task<PaginatedResponse<StockReceiveView>> GetStockReceivesAsync(Guid? branchId, DateTimeOffset? dateCreated, DateTimeOffset? dateReceived, StockSource? source, StockReceiveStage? stage, int page, int size);
         Task Commit(StockReceiveCommit stockReceive);
+        Task<Guid> GenerateStockReceiveFromStockTransferAsyncAsync(StockTransferView selectedStockTransfer);
     }
     public class StockReceiveService : IStockReceiveService
     {
@@ -142,6 +144,19 @@ namespace CA.ERP.WebApp.Blazor.Services
                 throw await ApplicationBaseException.Create(response);
             }
 
+        }
+
+        public async Task<Guid> GenerateStockReceiveFromStockTransferAsyncAsync(StockTransferView selectedStockTransfer)
+        {
+            var client = _httpClientFactory.CreateClient(Constants.ApiErp);
+            var uri = new Uri(client.BaseAddress, $"{StockReceiveEndpoint}/GenerateFromStockTransfer");
+            var response = await client.PostAsJsonAsync(uri, new StockReceiveGenerateFromStockTransfer(selectedStockTransfer.Id));
+            if (!response.IsSuccessStatusCode)
+            {
+
+                throw await ApplicationBaseException.Create(response);
+            }
+            return (await response.Content.ReadFromJsonAsync<CreateResponse>()).Id;
         }
     }
 }

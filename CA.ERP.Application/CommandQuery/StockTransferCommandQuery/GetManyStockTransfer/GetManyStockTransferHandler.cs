@@ -24,8 +24,8 @@ namespace CA.ERP.Application.CommandQuery.StockTransferCommandQuery.GetManyStock
 
         public async Task<PaginatedResponse<StockTransferView>> Handle(GetManyStockTransferQuery request, CancellationToken cancellationToken)
         {
-            var data = await _stockTransferRepository.GetManyAsync(request.Skip, request.Take, Common.Types.Status.All);
-            var count = await _stockTransferRepository.GetCountAsync(Common.Types.Status.All);
+            var data = await _stockTransferRepository.GetManyAsync(request.Number, request.StockTransferStatus, request.Skip, request.Take, Common.Types.Status.All);
+            var count = await _stockTransferRepository.GetCountAsync(request.Number, request.StockTransferStatus, Common.Types.Status.All);
 
             return new PaginatedResponse<StockTransferView>(_mapper.Map<List<StockTransferView>>(data), count);
         }

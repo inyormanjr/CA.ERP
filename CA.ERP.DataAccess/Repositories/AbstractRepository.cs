@@ -59,7 +59,7 @@ namespace CA.ERP.DataAccess.Repositories
             return await queryable.Select(e => _mapper.Map<TDal, TDomain>(e)).AsNoTracking().ToListAsync(cancellationToken: cancellationToken);
         }
 
-        protected IQueryable<TDal> generateQuery(IQueryable<TDal> queryable, Status status)
+        private IQueryable<TDal> generateQuery(IQueryable<TDal> queryable, Status status)
         {
             if (status != Status.All)
             {

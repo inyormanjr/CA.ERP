@@ -1,0 +1,47 @@
+
+@using CA.ERP.Shared.Dto.StockReceive;
+@using CA.ERP.Shared.Dto.StockTransfer;
+@using CA.ERP.WebApp.Blazor.ViewModels.StockReceive;
+
+@inherits ViewBase<GenerateFromStockTransferDialogViewModel>
+
+@attribute [Authorize]
+<MudDialog>
+    <DialogContent>
+        <MudContainer>
+            <MudText Typo="Typo.h6">Stock Transfer</MudText>
+            <MudAutocomplete T="StockTransferView" Label="Stock Transfer Number" @bind-Value="ViewModel.SelectedStockTransfer" SearchFunc="@ViewModel.Search" ToStringFunc="@(b => b.Number)" ResetValueOnEmptyText="true" CoerceText="true" MaxItems="null" />
+            
+            @if (ViewModel.IsSaving)
+            {
+                <div class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+
+            }
+            else
+            {
+                <MudButton Class="mt-4" FullWidth="true" Color="Color.Primary" Variant="Variant.Filled" Command="@ViewModel.GenerateAsyncCommand" Disabled="@(!ViewModel.GenerateAsyncCommand.CanExecute(ViewModel.SelectedStockTransfer))">
+                    <MudText>Generate</MudText>
+                </MudButton>
+            }
+
+            <MudGrid Class="mt-8">
+                @if (ViewModel.Errors != null && ViewModel.Errors.Count() > 0)
+                {
+                    @foreach (var error in ViewModel.Errors)
+                    {
+                        <MudItem xs="12">
+                            <MudPaper Class="my-2 pa-4 mud-error-text">@error</MudPaper>
+                        </MudItem>
+                    }
+                }
+
+            </MudGrid>
+
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+
+    </DialogActions>
+</MudDialog>

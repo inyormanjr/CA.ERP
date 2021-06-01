@@ -1,3 +1,4 @@
+using CA.ERP.Common.Types;
 using CA.ERP.Shared.Dto;
 using CA.ERP.Shared.Dto.StockTransfer;
 using CA.ERP.WebApp.Blazor.Exceptions;
@@ -15,7 +16,7 @@ namespace CA.ERP.WebApp.Blazor.Services
 {
     public interface IStockTransferService : ICreateService<StockTransferCreate>, IGetByIdService<StockTransferView>
     {
-        Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(int page, int size);
+        Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(string number = null, StockTransferStatus? stockTransferStatus = null, int page = 0, int size = 10);
     }
 
     public class StockTransferService : ServiceBase<StockTransferCreate, StockTransferView>, IStockTransferService
@@ -25,7 +26,7 @@ namespace CA.ERP.WebApp.Blazor.Services
         }
 
 
-        public async Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(int page, int size)
+        public async Task<PaginatedResponse<StockTransferView>> GetStockTransfersAsync(string number, StockTransferStatus? stockTransferStatus, int page, int size)
         {
             var client = _httpClientFactory.CreateClient(Constants.ApiErp);
             var uri = new Uri(client.BaseAddress, _endPoint);
@@ -35,8 +36,15 @@ namespace CA.ERP.WebApp.Blazor.Services
 
             uri = uri.AddQuery("skip", pagination.Skip.ToString());
             uri = uri.AddQuery("take", pagination.Take.ToString());
-           
 
+            if (!string.IsNullOrEmpty(number))
+            {
+                uri = uri.AddQuery("number", number);
+            }
+            if (stockTransferStatus != null)
+            {
+                uri = uri.AddQuery("stockTransferStatus", ((int)stockTransferStatus.Value).ToString());
+            }
             var response = await client.GetAsync(uri);
 
             if (!response.IsSuccessStatusCode)

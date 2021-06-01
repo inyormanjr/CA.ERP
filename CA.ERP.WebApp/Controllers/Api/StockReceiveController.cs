@@ -60,9 +60,9 @@ namespace CA.ERP.WebApp.Controllers.Api
         [HttpPost("GenerateFromStockTransfer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Dto.CreateResponse>> GenerateFromStockTransfer(GenerateStockReceiveFromStockTransferCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dto.CreateResponse>> GenerateFromStockTransfer(StockReceiveGenerateFromStockTransfer request, CancellationToken cancellationToken)
         {
-
+            GenerateStockReceiveFromStockTransferCommand command = new GenerateStockReceiveFromStockTransferCommand(request.StockTransferId);
             var createResult = await _mediator.Send(command, cancellationToken);
 
             if (createResult.IsSuccess)

@@ -16,7 +16,8 @@
 <MudContainer>
     <MudPaper Class="d-flex justify-space-between mt-4 pa-4">
         <MudText Typo="Typo.h6">Stock Receive List</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@ShowGenerateFromPurchaseOrder" DisableElevation="true">Generate</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@ShowGenerateFromPurchaseOrder" DisableElevation="true">Generate From Purchase Order</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@ShowGenerateFromStockTransfer" DisableElevation="true">Generate From Stock Transfer</MudButton>
     </MudPaper>
     <MudTable Class="mt-8" ServerData="ServerReload" Hover="true" Striped="true" @ref="table">
         <ToolBarContent>
@@ -75,6 +76,11 @@
     public void ShowGenerateFromPurchaseOrder()
     {
         DialogService.Show<CA.ERP.WebApp.Blazor.Pages.StockReceive.GenerateFromPurchaseOrderDialog>();
+    }
+
+    public void ShowGenerateFromStockTransfer()
+    {
+        DialogService.Show<CA.ERP.WebApp.Blazor.Pages.StockReceive.GenerateFromStockTransferDialog>();
     }
 
     public async Task Search()

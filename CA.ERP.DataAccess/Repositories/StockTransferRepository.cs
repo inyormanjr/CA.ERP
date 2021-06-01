@@ -18,13 +18,38 @@ namespace CA.ERP.DataAccess.Repositories
         {
         }
 
-        public async override Task<List<StockTransfer>> GetManyAsync(int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
+        private IQueryable<Dal.StockTransfer> generateQuery(IQueryable<Dal.StockTransfer> queryable, string number, StockTransferStatus? stockTransferStatus, Status status)
+        {
+            if (!string.IsNullOrEmpty(number))
+            {
+                queryable = queryable.Where(e => e.Number.ToLower().StartsWith(number.ToLower()));
+            }
+            if (stockTransferStatus != null)
+            {
+                queryable = queryable.Where(e => e.StockTransferStatus == stockTransferStatus);
+            }
+            if (status != Status.All)
+            {
+                queryable = queryable.Where(e => e.Status == status);
+            }
+
+            return queryable;
+        }
+
+        public async Task<List<StockTransfer>> GetManyAsync(string number, StockTransferStatus? stockTransferStatus, int skip = 0, int take = int.MaxValue, Status status = Status.Active, CancellationToken cancellationToken = default)
         {
             IQueryable<Dal.StockTransfer> queryable = _context.StockTransfers.Include(st => st.SourceBranch).Include(st => st.DestinationBranch).AsQueryable();
-            queryable = generateQuery(queryable, status);
+            queryable = generateQuery(queryable, number, stockTransferStatus, status);
 
 
             return await queryable.OrderBy(st => st.CreatedAt).Skip(skip).Take(take).AsNoTracking().Select(e => _mapper.Map<StockTransfer>(e)).ToListAsync(cancellationToken: cancellationToken);
+        }
+
+        public Task<int> GetCountAsync(string number, StockTransferStatus? stockTransferStatus, Status status = Status.Active, CancellationToken cancellationToken = default)
+        {
+            IQueryable<Dal.StockTransfer> queryable = _context.Set<Dal.StockTransfer>().AsQueryable();
+            queryable = generateQuery(queryable, number, stockTransferStatus, status);
+            return queryable.CountAsync(cancellationToken);
         }
 
         public async override Task<StockTransfer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

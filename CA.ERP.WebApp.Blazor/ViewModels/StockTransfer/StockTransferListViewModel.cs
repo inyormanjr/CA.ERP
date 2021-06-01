@@ -25,7 +25,7 @@ namespace CA.ERP.WebApp.Blazor.ViewModels.StockTransfer
 
             try
             {
-                return _stockTransferService.GetStockTransfersAsync(page, size);
+                return _stockTransferService.GetStockTransfersAsync(page:page, size:size);
             }
             catch (Exception ex)
             {
